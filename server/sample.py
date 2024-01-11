@@ -20,9 +20,9 @@ GRAPHSIGNAL_API_KEY = os.getenv('GRAPHSIGNAL_API_KEY')
 OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')
 DEPLOYMENT = os.getenv('deployment')
 
+# graphsignal.configure(api_url=API_URL,api_key=GRAPHSIGNAL_API_KEY, deployment=DEPLOYMENT) # to send to flask app
 
-graphsignal.configure(api_url=API_URL,api_key=GRAPHSIGNAL_API_KEY, deployment=DEPLOYMENT)
-
+graphsignal.configure(api_key=GRAPHSIGNAL_API_KEY, deployment=DEPLOYMENT) # to send to graphsignal dashboard
 
 def solve(user_id, task):
     graphsignal.set_context_tag('user', user_id)

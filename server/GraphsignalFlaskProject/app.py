@@ -1,67 +1,121 @@
-from flask import Flask, request, send_file, make_response
-import paramiko
-import io
+from flask import Flask, request, send_file, make_response, jsonify
 import os
-import zipfile
 import gzip
-import time
 import random
+import shutil
+import requests
 
 app = Flask(__name__)
 
-
 @app.route('/signals', methods=['POST'])
 def upload():
-    # Get the zip file data from the request body
-    #zip_file = request.files['zip_file']
-    zip_file_data = request.data
+    try:
+        # Get the gzip data from the request body
+        gzip_data = request.data
+        print(gzip_data)
+        # Generate a unique file name
+        id = random.randint(0, 10)
+        file_name = f"response.gzip"
+        file_path = os.path.join("/tmp/test", file_name)
 
-    # Set up the SSH client
-    ssh = paramiko.SSHClient()
-    ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+        if os.path.isfile(file_path):
+            os.remove(file_path)
 
-    # Connect to the remote server 
-    ssh.connect('9.20.196.62', username='root', password='Langchain!12345')
-    #ssh.connect('9.30.51.154', username='root', password='Vijay!Trustgood1')
+        # Save the received gzip data to a file on your system
+        with open(file_path, 'wb') as file:
+            file.write(gzip_data)
 
+        # Decompress the saved gzip file
+        output_file_path = os.path.splitext(file_path)[0]  # Remove .gzip extension
+        if os.path.isfile(output_file_path):
+            os.remove(output_file_path)
 
-    sftp = ssh.open_sftp()
-    zip_file_d = io.BytesIO(zip_file_data)
+        with gzip.open(file_path, 'rb') as gzipped_file, open(output_file_path, 'wb') as output_file:
+            shutil.copyfileobj(gzipped_file, output_file)
 
-    id = random.randint(0, 10)
-    file_path = "/home/test"
-    file_name = f"dummy_new_{id}.gzip"
+        # Create a Flask JSON response
+        response_data = {
+            "uploadMs": "1702017204072",
+        }
+        response = make_response(jsonify(response_data))
 
-    # Check if the original file already exists
-    complete_filepath = os.path.join(file_path, file_name)
-    print(complete_filepath)
+        return response
 
+    except Exception as e:
+        return str(e)
     
-    #print(f"<<<<<<<< path : {os.path.normpath(complete_filepath)} >>>>>>")
-    print(complete_filepath )
-   # sftp.putfo(zip_file_d, os.path.normpath(file_path))
+def loginData():
+    url = "https://app.graphsignal.com/user/login"
     
-    with ssh.open_sftp() as sftp:
-        # Upload the zip file to the remote server
-        sftp.putfo(zip_file_d, complete_filepath)
- 
-    ssh.close()
-    zip_file_d.seek(0)
+    headers = {
+        "accept": "application/json, text/plain, */*",
+        "accept-language": "en-GB,en-US;q=0.9,en;q=0.8",
+        "content-type": "application/json",
+    }
 
-    # Create a response object
-    response = make_response(zip_file_d.getvalue())
+    data = {
+        "email": "abdulla.thanseeh@ibm.com",
+        "password": "Abdullaibm01997$",
+        "token": None
+    }
 
-    # Add headers to the response
-    response.headers['Content-Disposition'] = f'attachment; filename={file_name}'
-    response.headers['Content-Type'] = 'application/zip'
-    response.headers['Content-Encoding'] = 'gzip'
+    response = requests.post(url, headers=headers, json=data, cookies=request.cookies)
+    data = response.json()
+    user = data.get("user")
+    token = user.get("token")
+    return token
+    
+@app.route('/user/build_dashboard/', methods=['POST'])
+def build_dashboard():
+    url = "https://app.graphsignal.com/user/build_dashboard"
 
-    return response
- 
-    #return send_file(zip_file_d, download_name='dummy.gzip', as_attachment=True, mimetype="application/gzip")
+    dashboard_name = request.json.get("dashboard_name")
+    view = request.json.get("view")
 
+    token = loginData()
 
+    print(token)
+    
+    headers = {
+        "accept": "application/json, text/plain, */*",
+        "accept-language": "en-GB,en-US;q=0.9,en;q=0.8",
+        "authorization": "Bearer "+ token,
+        "content-type": "application/json",
+        "sec-ch-ua": "\"Not_A Brand\";v=\"8\", \"Chromium\";v=\"120\", \"Google Chrome\";v=\"120\"",
+        "sec-ch-ua-mobile": "?0",
+        "sec-ch-ua-platform": "\"macOS\"",
+        "sec-fetch-dest": "empty",
+        "sec-fetch-mode": "cors",
+        "sec-fetch-site": "same-origin"
+    }
 
+    payload = {
+        "dashboard_name": dashboard_name,
+        "passed_params": {
+            "range_end": 1704976624,
+            "range_start": 1704371824,
+            "range_type": "last7d",
+            "tag_component": "*",
+            "tag_deployment": "*",
+            "tag_hostname": "*",
+            "tag_operation": "*",
+            "tag_user": "*",
+            "view": view
+        },
+        "cached_params": {},
+        "no_cache": False
+    }
+
+    try:
+        response = requests.post(url, headers=headers, json=payload)
+        response.raise_for_status()  # Raise an exception if the response status code is not 2xx
+
+        # Handle the response as needed
+        response_json = response.json()
+        return jsonify(response_json), 200
+    except requests.exceptions.RequestException as e:
+        # Handle exceptions (e.g., connection error)
+        return jsonify({"error": str(e)}), 500
 
 if __name__ == '__main__':
     app.run()
