@@ -1,5 +1,5 @@
 # Stage 1: Build the React app
-FROM node:16 as build
+FROM registry.access.redhat.com/ubi8/nodejs-16:latest as build
 
 WORKDIR /app
 
@@ -14,7 +14,11 @@ COPY . .
 RUN npm run build
 
 # Stage 2: Serve the React app using Nginx
-FROM nginx:alpine
+FROM registry.access.redhat.com/ubi8/ubi-minimal:latest
+
+RUN microdnf install yum
+
+RUN yum -y install nginx
 
 # Copy the built app from the previous stage to the NGINX directory
 COPY --from=build /app/build /usr/share/nginx/html
