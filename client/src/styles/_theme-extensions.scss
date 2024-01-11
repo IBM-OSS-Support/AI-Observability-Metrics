@@ -1,0 +1,186 @@
+/* ******************************************************************************
+ * IBM Confidential
+ *
+ * OCO Source Materials
+ *
+ *  Copyright IBM Corp. 2023  All Rights Reserved.
+ *
+ * The source code for this program is not published or otherwise divested
+ * of its trade secrets, irrespective of what has been deposited with
+ * the U.S. Copyright Office.
+ ****************************************************************************** */
+// Light theme
+$light-theme-extension: (
+  // general
+  --dot-color: transparentize($gray-30, .3),
+  --overlay-color: transparentize($gray-100, .5),
+  --custom-scrollbar-background: $gray-30,
+
+  // colors
+  --blue-primary: $blue-60,
+  --cyan-primary: $cyan-50,
+  --green-primary: $green-50,
+  --magenta-primary: $magenta-60,
+  --orange-primary: $orange-60,
+  --purple-primary: $purple-60,
+  --red-primary: $red-60,
+  --teal-primary: $teal-50,
+  --yellow-primary: $yellow-50,
+
+  // home
+  --home-header-background: $white,
+  --home-callout-tile-background: linear-gradient(to bottom, $blue-60, $blue-70),
+  --home-callout-tile-docs-hover: var(--cds-button-primary-hover),
+  --home-callout-tile-docs-active: var(--cds-button-primary-active),
+  --home-callout-tile-docs-border: $blue-60,
+
+  // topology view
+  --tv-header-background: $white,
+  --tv-background: $white,
+  --tv-gradient-start: rgba(0, 0, 0, 0),
+  --tv-gradient-end: rgba(0, 0, 0, 0),
+  --tv-border-color: $gray-40,
+  --tv-border-disabled-color: #c1c7cd,
+  --tv-minimap-mask: transparentize($gray-30, .7),
+  --tv-zoom-buttons-background: rgb(238, 238, 238),
+  --tv-parent-node-box-shadow: rgba(255, 255, 255, .16),
+
+  --tv-action-button-background: $gray-20,
+  --tv-action-button-hover: var(--cds-layer-hover-03),
+  --tv-action-button-color: $text-primary,
+
+  --tv-transparent-node-background: transparentize($white, .8),
+
+  --tv-blue-parent-node-background: transparentize($blue-20, .7),
+  --tv-blue-parent-node-label-background: transparentize($blue-20, .7),
+  --tv-blue-parent-node-count: $blue-60,
+  --tv-blue-node-background: $blue-20,
+  --tv-blue-node-hover: $blue-30,
+  --tv-blue-disabled-node-background: transparentize($blue-20, .8),
+  --tv-blue-disabled-node-hover: transparentize($blue-30, .5),
+
+  --tv-registered-node-background: transparentize(#343a3f, .9),
+  --tv-registered-node-hover: transparentize(#343a3f, .75),
+  --tv-registered-node-handle: #c1c7cd,
+
+  --tv-purple-parent-node-background: transparentize($purple-20, .7),
+  --tv-purple-parent-node-label-background: transparentize($purple-20, .7),
+  --tv-purple-parent-node-count: $purple-60,
+  --tv-purple-node-background: $purple-20,
+  --tv-purple-node-hover: $purple-30,
+
+  --tv-magenta-parent-node-background: transparentize($magenta-20, .7),
+  --tv-magenta-parent-node-label-background: transparentize($magenta-20, .7),
+  --tv-magenta-parent-node-count: $magenta-60,
+  --tv-magenta-node-background: $magenta-20,
+  --tv-magenta-node-hover: $magenta-30,
+
+  --tv-teal-parent-node-background: transparentize($teal-20, .7),
+  --tv-teal-parent-node-label-background: transparentize($teal-20, .7),
+  --tv-teal-parent-node-count: $teal-60,
+  --tv-teal-node-background: $teal-20,
+  --tv-teal-node-hover: $teal-30,
+
+  --tv-cyan-parent-node-background: transparentize($cyan-20, .7),
+  --tv-cyan-parent-node-label-background: transparentize($cyan-20, .7),
+  --tv-cyan-parent-node-count: $cyan-60,
+  --tv-cyan-node-background: $cyan-20,
+  --tv-cyan-node-hover: $cyan-30,
+
+  // query workspace
+  --qe-active-line: transparentize($gray-20, .5),
+  --qe-active-line-gutter: $gray-20,
+  --qe-autocomplete-text-layer: transparentize($gray-20, .5),
+  --qe-autocomplete-highlight: $blue-50,
+  --qe-background-01: $gray-10,
+  --qe-background-02: $gray-10
+);
+
+// Dark theme
+$dark-theme-extension: (
+  // general
+  --dot-color: transparentize($gray-80, .5),
+  --overlay-color: transparentize($gray-100, .5),
+  --custom-scrollbar-background: $gray-70,
+
+  // colors
+  --blue-primary: $blue-50,
+  --cyan-primary: $cyan-40,
+  --green-primary: $green-40,
+  --magenta-primary: $magenta-40,
+  --orange-primary: $orange-60,
+  --purple-primary: $purple-40,
+  --red-primary: $red-50,
+  --teal-primary: $teal-40,
+  --yellow-primary: $yellow-40,
+
+  // home
+  --home-header-background: $gray-100,
+  --home-callout-tile-background: linear-gradient(to bottom, $blue-80, $blue-90),
+  --home-callout-tile-docs-hover: $blue-80,
+  --home-callout-tile-docs-active: $blue-70,
+  --home-callout-tile-docs-border: $blue-80,
+
+  // topology view
+  --tv-header-background: $gray-100,
+  --tv-background: $gray-100,
+  --tv-gradient-start: transparentize($purple-70, .8),
+  --tv-gradient-end: transparentize($blue-70, .8),
+  --tv-border-color: $gray-40,
+  --tv-border-disabled-color: #697077,
+  --tv-minimap-mask: transparentize($gray-80, .56),
+  --tv-zoom-buttons-background: $gray-90,
+  --tv-parent-node-box-shadow: rgba(0, 0, 0, .16),
+
+  --tv-action-button-background: $gray-90,
+  --tv-action-button-hover: var(--cds-layer-hover-01),
+  --tv-action-button-color: $text-primary,
+
+  --tv-parent-node-background: transparentize($gray-90, .9),
+  --tv-parent-node-count: $gray-30,
+
+  --tv-transparent-node-background: transparentize($gray-60, .8),
+
+  --tv-blue-parent-node-background: transparentize($blue-80, .8),
+  --tv-blue-parent-node-count: $blue-30,
+  --tv-blue-node-background: $blue-80,
+  --tv-blue-node-hover: $blue-70,
+
+  --tv-registered-node-background: transparentize($cool-gray-20, .9),
+  --tv-registered-node-hover: transparentize($cool-gray-20, .75),
+  --tv-registered-node-handle: $cool-gray-60,
+
+  --tv-purple-parent-node-background: transparentize($purple-80, .8),
+  --tv-purple-parent-node-count: $purple-30,
+  --tv-purple-node-background: $purple-80,
+  --tv-purple-node-hover: $purple-70,
+
+  --tv-magenta-parent-node-background: transparentize($magenta-80, .8),
+  --tv-magenta-parent-node-count: $magenta-30,
+  --tv-magenta-node-background: transparentize($magenta-70, .2),
+  --tv-magenta-node-hover: transparentize($magenta-60, .2),
+
+  --tv-teal-parent-node-background: transparentize($teal-80, .8),
+  --tv-teal-parent-node-count: $teal-30,
+  --tv-teal-node-background: $teal-80,
+  --tv-teal-node-hover: $teal-70,
+
+  --tv-cyan-parent-node-background: transparentize($cyan-80, .8),
+  --tv-cyan-parent-node-count: $cyan-30,
+  --tv-cyan-node-background: $cyan-80,
+  --tv-cyan-node-hover: $cyan-70,
+
+  // query workspace
+  --qe-active-line: transparentize($gray-70, .5),
+  --qe-active-line-gutter: $gray-70,
+  --qe-autocomplete-text-layer: transparentize($gray-80, .5),
+  --qe-autocomplete-highlight: $blue-40,
+  --qe-background-01: $gray-80,
+  --qe-background-02: $gray-90
+);
+
+@mixin spread-map($map: ()) {
+  @each $key, $value in $map {
+    #{$key}: $value;
+  }
+}

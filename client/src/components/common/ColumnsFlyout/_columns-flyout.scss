@@ -1,0 +1,105 @@
+/* ******************************************************************************
+ * IBM Confidential
+ *
+ * OCO Source Materials
+ *
+ *  Copyright IBM Corp. 2023  All Rights Reserved.
+ *
+ * The source code for this program is not published or otherwise divested
+ * of its trade secrets, irrespective of what has been deposited with
+ * the U.S. Copyright Office.
+ ****************************************************************************** */
+.columns {
+  position: relative;
+
+  .cds--popover--bottom-right {
+    .cds--tooltip-content {
+      right: $spacing-05;
+    }
+  }
+
+  .button-wrapper {
+    background-color: rgba(0, 0, 0, 0);
+    will-change: background-color;
+    transition: background-color 110ms motion(exit, productive);
+
+    .open {
+      background-color: rgba(0, 0, 0, 0) !important;
+    }
+  }
+
+  .flyout-panel {
+    position: absolute;
+    right: 0;
+    top: 100%;
+    z-index: -1;
+    background-color: $layer-01;
+    box-shadow: 0 .25rem 1rem transparentize($black, .5);
+    width: 16rem;
+    pointer-events: none;
+
+    opacity: 0;
+    will-change: opacity;
+    transition: opacity 110ms motion(exit, productive);
+
+    .flyout-panel-content {
+      &:before {
+        content: '';
+        position: absolute;
+        top: -1rem;
+        width: 3rem;
+        height: 1rem;
+        right: 0;
+        background: linear-gradient(to top, $layer-01, rgba(0, 0, 0, 0));
+      }
+
+      padding: $spacing-05 $spacing-05 $spacing-07;
+      height: calc(100% - 3rem);
+      overflow: auto;
+
+      > h6 {
+        margin-bottom: $spacing-05;
+      }
+
+      .cds--label {
+        margin-bottom: $spacing-03;
+
+        &:not(:first-of-type) {
+          margin-top: $spacing-05;
+        }
+      }
+
+      .cds--checkbox-wrapper {
+        margin-left: -.125rem;
+      }
+    }
+
+    .reset-button {
+      width: 100%;
+      max-width: 100%;
+    }
+  }
+
+  &.flyout {
+    .button-wrapper {
+      z-index: 5999;
+      box-shadow: 0 0 1rem transparentize($black, .5);
+      background-color: $layer-01;
+
+      transition: background-color 240ms motion(entrance, expressive);
+    }
+
+    .flyout-panel {
+      z-index: 5995;
+      pointer-events: auto;
+
+      opacity: 1;
+      transition: opacity 240ms motion(entrance, expressive);
+    }
+
+    .cds--popover,
+    .cds--popover > * {
+      display: none;
+    }
+  }
+}
