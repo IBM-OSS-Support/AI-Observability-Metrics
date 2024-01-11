@@ -9,5 +9,5 @@
  * of its trade secrets, irrespective of what has been deposited with
  * the U.S. Copyright Office.
  ****************************************************************************** */
-import Transactions from "./Transactions";
-export default Transactions;
+import Operations from "./Operations";
+export default Operations;

@@ -9,15 +9,5 @@
  * of its trade secrets, irrespective of what has been deposited with
  * the U.S. Copyright Office.
  ****************************************************************************** */
-import React from "react";
-
-import TracesTransaction from "./Transactions";
-
-function Traces() {
-    return (
-        
-        <TracesTransaction />
-    )
-}
-
+import Traces from './Traces';
 export default Traces;

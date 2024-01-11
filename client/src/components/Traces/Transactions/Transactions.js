@@ -9,5 +9,10 @@
  * of its trade secrets, irrespective of what has been deposited with
  * the U.S. Copyright Office.
  ****************************************************************************** */
-import Transactions from "./Transactions";
+import React from 'react';
+
+function Transactions() {
+    return (<div>Transactions</div>)
+}
+
 export default Transactions;

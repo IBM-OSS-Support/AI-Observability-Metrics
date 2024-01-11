@@ -17,11 +17,13 @@ import {
 
 import Navigation from './components/Navigation';
 
+// Styles --------------------------------------------------------------------->
+import '@carbon/ibm-products/css/index.min.css';
 import './App.scss';
 import Traces from './components/Traces';
 
 const ROUTES = [
-  { path: '/home', component: () => <Traces /> }
+  { path: '/', component: () => <Traces /> }
 ];
 
 function App() {
