@@ -1,4 +1,4 @@
-Flask==2.1.1
+Flask==3.0.0
 graphsignal==0.13.44
 matplotlib==3.8.2 
 numpy==1.26.2  
