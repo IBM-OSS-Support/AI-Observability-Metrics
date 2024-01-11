@@ -36,3 +36,17 @@ pip3 install -r requirements.txt
 cd server/GraphsignalFlaskProject
 python3 app.py
 ```
+
+### RUN THE SAMPLE PROGRAM
+```
+cd server/
+pip3 install langchain
+pip install openai
+pip install numexpr
+python3 sample.py
+```
+
+### To decompress
+```
+gzip -d -S .gzip dummy_new_9.gzip
+```
