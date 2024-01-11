@@ -27,13 +27,7 @@ import {
   Reset
 } from '@carbon/react/icons';
 
-// Utils ---------------------------------------------------------------------->
-import { injectIntl } from 'react-intl';
-
-
 const ColumnsFlyout = ({
-  intl: { formatMessage },
-
   id,
   className = '',
   buttonOverrides,
@@ -100,14 +94,8 @@ const ColumnsFlyout = ({
           size="lg"
           kind="ghost"
           renderIcon={Column}
-          iconDescription={formatMessage({
-            id: 'ColumnsFlyout.customizeIcon',
-            defaultMessage: 'Customize'
-          })}
-          label={formatMessage({
-            id: 'ColumnsFlyout.customizeColumns',
-            defaultMessage: 'Customize columns'
-          })}
+          iconDescription={'Customize'}
+          label={'Customize columns'}
           align="top-right"
           enterDelayMs={0}
           leaveDelayMs={0}
@@ -132,16 +120,10 @@ const ColumnsFlyout = ({
         <div className="flyout-panel">
           <div className="flyout-panel-content">
             <h6>
-              {formatMessage({
-                id: 'ColumnsFlyout.customizeColumns',
-                defaultMessage: 'Customize columns'
-              })}
+              {'Customize columns'}
             </h6>
             <FormLabel>
-              {formatMessage({
-                id: 'ColumnsFlyout.columns',
-                defaultMessage: 'Columns'
-              })} ({checked}/{total})
+              {'Columns'} ({checked}/{total})
             </FormLabel>
             {columns.map(c => {
               if (c.header) {
@@ -175,16 +157,10 @@ const ColumnsFlyout = ({
             size="lg"
             kind="secondary"
             renderIcon={Reset}
-            iconDescription={formatMessage({
-              id: 'ColumnsFlyout.reset',
-              defaultMessage: 'Reset'
-            })}
+            iconDescription={'Reset'}
             onClick={() => reset()}
           >
-            {formatMessage({
-              id: 'ColumnsFlyout.reset',
-              defaultMessage: 'Reset'
-            })}
+            {'Reset'}
           </Button>
         </div>
       }
@@ -192,4 +168,4 @@ const ColumnsFlyout = ({
   );
 };
 
-export default injectIntl(ColumnsFlyout);
+export default ColumnsFlyout;

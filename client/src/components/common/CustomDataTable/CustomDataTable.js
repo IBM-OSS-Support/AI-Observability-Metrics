@@ -9,7 +9,7 @@
  * of its trade secrets, irrespective of what has been deposited with
  * the U.S. Copyright Office.
  ****************************************************************************** */
-import React, { useContext } from 'react';
+import React from 'react';
 
 // Components ----------------------------------------------------------------->
 import {
@@ -42,9 +42,6 @@ import FilterFlyout from '../FilterFlyout';
 
 // Utils ---------------------------------------------------------------------->
 import Moment from 'moment';
-import { injectIntl } from 'react-intl';
-import { observer } from 'mobx-react-lite';
-import { Context } from '../../state/store';
 
 // Globals -------------------------------------------------------------------->
 const {
@@ -93,8 +90,6 @@ const sortRow = (cellA, cellB, { sortDirection, sortStates }) => {
 
 
 const CustomDataTable = ({
-  intl: { formatMessage },
-
   id,
   className,
 
@@ -131,14 +126,6 @@ const CustomDataTable = ({
   sortRowHandler = undefined,
   tableHeaderClickHandler = undefined
 }) => {
-  const {
-    currentUserStore: {
-      currentUser: {
-        preferences: { theme }
-      }
-    }
-  } = useContext(Context);
-
   // Render
   const hasSelectedFilters = !!Object.values((filter?.selectedFilters || {})).flat().length || (filter?.hasDateRange && filter?.startDate && filter?.endDate);
 
@@ -270,10 +257,7 @@ const CustomDataTable = ({
               {hasSelectedFilters &&
                 <div className="filter-summary-content">
                   <FormLabel>
-                    {formatMessage({
-                      id: 'CustomDataTable.filters',
-                      defaultMessage: 'Filters:'
-                    })}
+                    {'Filters:'}
                   </FormLabel>
                   {Object.entries((filter?.selectedFilters || {})).map(([key, values]) =>
                     values.map(value =>
@@ -315,10 +299,7 @@ const CustomDataTable = ({
                       }
                     }}
                   >
-                    {formatMessage({
-                      id: 'CustomDataTable.clearFilters',
-                      defaultMessage: 'Clear filters'
-                    })}
+                    {'Clear filters'}
                   </Button>
                 </div>
               }
@@ -378,18 +359,9 @@ const CustomDataTable = ({
                                   kind="ghost"
                                   className="disabled-overflow-menu"
                                   renderIcon={OverflowMenuVertical}
-                                  iconDescription={formatMessage({
-                                    id: 'CustomDataTable.actions',
-                                    defaultMessage: 'Actions'
-                                  })}
-                                  label={formatMessage({
-                                    id: 'CustomDataTable.actions',
-                                    defaultMessage: 'Actions'
-                                  })}
-                                  aria-label={formatMessage({
-                                    id: 'CustomDataTable.actions',
-                                    defaultMessage: 'Actions'
-                                  })}
+                                  iconDescription={'Actions'}
+                                  label={'Actions'}
+                                  aria-label={'Actions'}
                                 />
                               );
                             } else {
@@ -399,10 +371,7 @@ const CustomDataTable = ({
                                   className="actions-column"
                                   light={false}
                                   flipped
-                                  aria-label={formatMessage({
-                                    id: 'CustomDataTable.actions',
-                                    defaultMessage: 'Actions'
-                                  })}
+                                  aria-label={'Actions'}
                                   onOpen={() => window.scrollTo(0, document.body.scrollHeight)}
                                 >
                                   {value.items.map(item => (
@@ -606,7 +575,7 @@ const CustomDataTable = ({
           {emptyState?.type === 'NoData' &&
             <NoDataEmptyState
               size="lg"
-              illustrationTheme={theme}
+              illustrationTheme={"dark"}
               title={emptyState?.title}
               subtitle={emptyState?.noDataSubtitle}
             />
@@ -614,15 +583,9 @@ const CustomDataTable = ({
           {emptyState?.type === 'NotFound' &&
             <NotFoundEmptyState
               size="lg"
-              illustrationTheme={theme}
-              title={formatMessage({
-                id: 'CustomDataTable.notFoundTitle',
-                defaultMessage: 'No matches found.'
-              })}
-              subtitle={formatMessage({
-                id: 'CustomDataTable.notFoundSubtitle',
-                defaultMessage: 'Try adjusting your search term or filters.'
-              })}
+              illustrationTheme={"dark"}
+              title={'No matches found.'}
+              subtitle={'Try adjusting your search term or filters.'}
             />
           }
         </div>
@@ -638,51 +601,15 @@ const CustomDataTable = ({
             offset: (page - 1) * pageSize,
             first: pageSize
           })}
-          backwardText={formatMessage({
-            id: 'CustomDataTable.previous',
-            defaultMessage: 'Previous page'
-          })}
-          forwardText={formatMessage({
-            id: 'CustomDataTable.nextPage',
-            defaultMessage: 'Next page'
-          })}
-          itemRangeText={(min, max, total) => formatMessage(
-            {
-              id: 'CustomDataTable.itemRangeText',
-              defaultMessage: '{min}–{max} of {total} items'
-            },
-            {
-              min: min,
-              max: max,
-              total: total
-            }
-          )}
-          pageRangeText={(_current, total) =>
-            formatMessage(
-              {
-                id: 'CustomDataTable.pageRangeText',
-                defaultMessage: 'of {total} {pages}'
-              },
-              {
-                total: total,
-                pages: total === 1 ? formatMessage({
-                  id: 'CustomDataTable.page',
-                  defaultMessage: 'page'
-                }) : formatMessage({
-                  id: 'CustomDataTable.pages',
-                  defaultMessage: 'pages'
-                })
-              }
-            )
-          }
-          itemsPerPageText={formatMessage({
-            id: 'CustomDataTable.itemsPerPageText',
-            defaultMessage: 'Items per page:'
-          })}
+          backwardText={'Previous page'}
+          forwardText={'Next page'}
+          itemRangeText={(min, max, total) => `${min}-${max} of ${total} items`}
+          pageRangeText={(_current, total) => `of ${total} pages(s)`}
+          itemsPerPageText={'Items per page:'}
         />
       }
     </div>
   );
 };
 
-export default injectIntl(observer(CustomDataTable));
+export default CustomDataTable;

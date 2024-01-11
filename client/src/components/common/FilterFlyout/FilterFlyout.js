@@ -31,23 +31,11 @@ import {
 import { EmptyState } from '@carbon/ibm-products';
 
 // Utils ---------------------------------------------------------------------->
-import {
-  defineMessage,
-  injectIntl
-} from 'react-intl';
 import Moment from 'moment';
 
-// Globals -------------------------------------------------------------------->
-import FILTER_MAP from '../../constants/global-messages';
-
-const filter = defineMessage({
-  id: 'FilterFlyout.filter',
-  defaultMessage: 'Filter'
-});
+const filter = 'Filter';
 
 const FilterFlyout = ({
-  intl: { formatMessage },
-
   id,
   className = '',
   buttonOverrides,
@@ -114,8 +102,8 @@ const FilterFlyout = ({
           size="lg"
           kind="ghost"
           renderIcon={Filter}
-          iconDescription={formatMessage(filter)}
-          label={formatMessage(filter)}
+          iconDescription={filter}
+          label={filter}
           enterDelayMs={0}
           leaveDelayMs={0}
           {...buttonOverrides}
@@ -141,7 +129,7 @@ const FilterFlyout = ({
         <div className="flyout-panel">
           <div className="flyout-panel-content">
             <h6>
-              {formatMessage(filter)}
+              {filter}
             </h6>
             {!!filters && Array.isArray(filters) && filters.map(({
               formLabel,
@@ -155,7 +143,7 @@ const FilterFlyout = ({
                       {formLabel}
                     </FormLabel>
                     {Object.entries(checkboxes).map(([labelText, count]) => {
-                      const label = FILTER_MAP[labelText] ? formatMessage(FILTER_MAP[labelText]) : labelText;
+                      const label = labelText;
                       return (
                         <Checkbox
                           tabIndex={open ? 0 : -1}
@@ -218,10 +206,7 @@ const FilterFlyout = ({
             )}
             {noFilters &&
               <EmptyState
-                subtitle={formatMessage({
-                  id: 'FilterFlyout.emptyState',
-                  defaultMessage: 'No filters available yet.'
-                })}
+                subtitle={'No filters available yet.'}
               />
             }
           </div>
@@ -231,10 +216,7 @@ const FilterFlyout = ({
             size="lg"
             kind="secondary"
             renderIcon={FilterReset}
-            iconDescription={formatMessage({
-              id: 'FilterFlyout.reset',
-              defaultMessage: 'Reset'
-            })}
+            iconDescription={'Reset'}
             onClick={() => {
               setSelectedFilters({});
               if (hasDateRange) {
@@ -243,10 +225,7 @@ const FilterFlyout = ({
               }
             }}
           >
-            {formatMessage({
-              id: 'FilterFlyout.reset',
-              defaultMessage: 'Reset'
-            })}
+            Reset
           </Button>
         </div>
       }
@@ -254,4 +233,4 @@ const FilterFlyout = ({
   );
 };
 
-export default injectIntl(FilterFlyout);
+export default FilterFlyout;

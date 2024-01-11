@@ -26,6 +26,9 @@
 @import './styles/mixins';
 @import './styles/theme-extensions';
 
+@import './components/common/FilterFlyout/filter-flyout';
+@import './components/common/CustomDataTable/custom-data-table';
+
 @import './components/Navigation/navigation';
 @import './components/common/PageContainer/page-container';
 

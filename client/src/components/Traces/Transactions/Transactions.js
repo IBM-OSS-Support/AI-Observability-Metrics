@@ -92,7 +92,7 @@ function Transactions() {
     <div>
       <CustomDataTable
         headers={headers.filter((h) => h.checked || h.key === "actions")}
-        rows={rows.length}
+        rows={rows}
         loading={false}
         search={{
           searchText: searchText,

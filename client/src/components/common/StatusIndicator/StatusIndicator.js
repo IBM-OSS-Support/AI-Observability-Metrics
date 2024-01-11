@@ -28,12 +28,6 @@ import { StatusIcon } from '@carbon/ibm-products';
 
 // Utils ---------------------------------------------------------------------->
 import { get } from 'lodash';
-import { observer } from 'mobx-react-lite';
-import { Context } from '../../state/store';
-import { injectIntl } from 'react-intl';
-
-// Globals -------------------------------------------------------------------->
-import GLOBAL_MESSAGES from '../../constants/global-messages';
 
 const MAP = {
   component: {
@@ -143,14 +137,6 @@ const StatusIndicator = ({
   subType,
   overrides
 }) => {
-  const {
-    currentUserStore: {
-      currentUser: {
-        preferences: { theme }
-      }
-    }
-  } = useContext(Context);
-
 
   // Render
   if (!status || !type) {
@@ -173,7 +159,7 @@ const StatusIndicator = ({
   } else {
     icon = (
       <StatusIcon
-        theme={theme}
+        theme={"dark"}
         size="sm"
         kind={mapped}
         iconDescription={status}
@@ -195,10 +181,10 @@ const StatusIndicator = ({
         className="truncate"
         title={status}
       >
-        {!!GLOBAL_MESSAGES[status] ? formatMessage(GLOBAL_MESSAGES[status]) : status}
+        {status}
       </span>
     </div>
   );
 };
 
-export default injectIntl(observer(StatusIndicator));
+export default StatusIndicator;
