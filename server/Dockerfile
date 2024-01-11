@@ -5,6 +5,9 @@ USER 0
 RUN mkdir /app
 WORKDIR /app
 
+RUN microdnf install yum
+RUN yum install python3-pip
+
 # Copy only the requirements file to leverage Docker layer caching
 COPY requirements.txt .
 
