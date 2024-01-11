@@ -28,17 +28,13 @@ import {
   HeaderMenuButton,
   HeaderName,
   SideNav,
-  SideNavDivider,
   SideNavItems,
   SideNavLink,
   Theme
 } from '@carbon/react';
 import {
-  Home,
-  ParentChild,
   SidePanelOpen,
   SidePanelClose,
-  Sql,
   UserAvatar,
   Time,
   Activity,
@@ -48,7 +44,6 @@ import {
 // Utils ---------------------------------------------------------------------->
 
 const Navigation = () => {
-  const [openAboutModal, setOpenAboutModal] = useState(false);
   const sections = [
     {
       name: 'Group 1',
@@ -61,7 +56,8 @@ const Navigation = () => {
         {
           name: 'Sessions',
           subpath: '/sessions',
-          icon: Time
+          icon: Time,
+          disabled: true
         },
         {
           name: 'Metrics',
@@ -151,24 +147,8 @@ const Navigation = () => {
               />
             ) : <Fragment />}
             <SideNavItems id='navBar'>
-              {/* <SideNavLink
-                title={'Home'}
-                renderIcon={Home}
-                element={Link}
-                to={'/home'}
-                isActive={pathname.endsWith('/') || pathname.endsWith('/home')}
-                onClick={() => {
-                  setSideNavOpen(false);
-                  document.activeElement.blur();
-                }}
-              >
-                {'Home'}
-              </SideNavLink> */}
               {sections.map((s, i) =>
                 <Fragment key={s.name}>
-                  {i !== 2 && 
-                    <SideNavDivider />
-                  }
                   {s.links.map(l => {
                     let hrefLinks = `#${l.subpath}`;
 
@@ -179,10 +159,15 @@ const Navigation = () => {
                         href={hrefLinks}
                         renderIcon={l.icon}
                         isActive={pathname.endsWith(l.subpath)}
-                        onClick={() => {
+                        onClick={(e) => {
+                          if (l.disabled) {
+                            e.preventDefault();
+                            return;
+                          }
                           setSideNavOpen(false);
                           document.activeElement.blur();
                         }}
+                        disabled={l.disabled}
                       >
                         {l.name}
                       </SideNavLink>
