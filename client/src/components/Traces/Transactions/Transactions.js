@@ -18,52 +18,108 @@ import CustomDataTable from "../../common/CustomDataTable";
 import { Download } from "@carbon/icons-react";
 import { Accordion, AccordionItem } from "@carbon/react";
 
+import data from "../../../constants/transactions.json";
+
+const chartData = [
+  {
+    group: "Qty",
+    value: 65000,
+  },
+  {
+    group: "More",
+    value: 29123,
+  },
+  {
+    group: "Sold",
+    value: 35213,
+  },
+  {
+    group: "Restocking",
+    value: 51213,
+  },
+  {
+    group: "Misc",
+    value: 16932,
+  },
+];
+
+const chartOptions = {
+  theme: "g100",
+  title: "",
+  axes: {
+    left: {
+      mapsTo: "value",
+    },
+    bottom: {
+      mapsTo: "group",
+      scaleType: "labels",
+    },
+  },
+  legend: {
+    enabled: false,
+  },
+  toolbar: {
+    enabled: false,
+  },
+  height: "170px",
+  width: "100%",
+  color: {
+    scale: {
+      Qty: "#4589ff",
+      More: "#4589ff",
+      Sold: "#4589ff",
+      Restocking: "#4589ff",
+      Misc: "#4589ff",
+    },
+  },
+};
+
 function Transactions() {
   const navigate = useNavigate();
   const defaultHeaders = [
     {
-      key: "query_id",
+      key: "label",
       header: "Label",
       checked: true,
       required: true,
     },
     {
-      key: "query",
+      key: "trace",
       header: "Trace",
       checked: true,
     },
     {
-      key: "state",
+      key: "generations",
       header: "Generations",
       checked: true,
     },
     {
-      key: "engine",
+      key: "latency",
       header: "Latency",
       checked: true,
     },
     {
-      key: "user",
+      key: "deployment",
       header: "Deployment",
       checked: true,
     },
     {
-      key: "source",
+      key: "component",
       header: "Component",
       checked: true,
     },
     {
-      key: "queued_time_ms",
+      key: "operation",
       header: "Operation",
       checked: true,
     },
     {
-      key: "analysis_time_ms",
+      key: "hostname",
       header: "Hostname",
       checked: true,
     },
     {
-      key: "created",
+      key: "user",
       header: "User",
       checked: true,
     },
@@ -84,61 +140,7 @@ function Transactions() {
   const [modal, setModal] = useState(false);
   const [startDate, setStartDate] = useState(undefined);
   const [endDate, setEndDate] = useState(undefined);
-  const [rows, setRows] = useState([]);
-
-  const chartData = [
-    {
-      group: "Qty",
-      value: 65000,
-    },
-    {
-      group: "More",
-      value: 29123,
-    },
-    {
-      group: "Sold",
-      value: 35213,
-    },
-    {
-      group: "Restocking",
-      value: 51213,
-    },
-    {
-      group: "Misc",
-      value: 16932,
-    },
-  ];
-
-  const chartOptions = {
-    theme: "g100",
-    title: "",
-    axes: {
-      left: {
-        mapsTo: "value",
-      },
-      bottom: {
-        mapsTo: "group",
-        scaleType: "labels",
-      },
-    },
-    legend: {
-      enabled: false,
-    },
-    toolbar: {
-      enabled: false,
-    },
-    height: "170px",
-    width: "100%",
-    color: {
-      scale: {
-        Qty: "#4589ff",
-        More: "#4589ff",
-        Sold: "#4589ff",
-        Restocking: "#4589ff",
-        Misc: "#4589ff",
-      },
-    },
-  };
+  const [rows, setRows] = useState(data);
 
   return (
     <div>
