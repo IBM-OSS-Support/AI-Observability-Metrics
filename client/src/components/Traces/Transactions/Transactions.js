@@ -10,10 +10,9 @@
  * the U.S. Copyright Office.
  ****************************************************************************** */
 import React, { useMemo, useState } from "react";
-import {
-  useNavigate,
-  useSearchParams
-} from 'react-router-dom';
+import { useNavigate, useSearchParams } from "react-router-dom";
+
+import { SimpleBarChart } from "@carbon/charts-react";
 
 import CustomDataTable from "../../common/CustomDataTable";
 import { Download } from "@carbon/icons-react";
@@ -77,9 +76,7 @@ function Transactions() {
   const [searchText, setSearchText] = useState("");
   const [filters, setFilters] = useState([]);
   const [initialSelectedFilters, setInitialSelectedFilters] = useState({
-    'source': [
-      'Web client'
-    ]
+    source: ["Web client"],
   });
   const [selectedFilters, setSelectedFilters] = useState({});
   const [pagination, setPagination] = useState({ offset: 0, first: 10 });
@@ -88,8 +85,66 @@ function Transactions() {
   const [endDate, setEndDate] = useState(undefined);
   const [rows, setRows] = useState([]);
 
+  const chartData = [
+    {
+      group: "Qty",
+      value: 65000,
+    },
+    {
+      group: "More",
+      value: 29123,
+    },
+    {
+      group: "Sold",
+      value: 35213,
+    },
+    {
+      group: "Restocking",
+      value: 51213,
+    },
+    {
+      group: "Misc",
+      value: 16932,
+    },
+  ];
+
+  const chartOptions = {
+    theme: "g100",
+    title: "Timeline",
+    axes: {
+      left: {
+        mapsTo: "value",
+      },
+      bottom: {
+        mapsTo: "group",
+        scaleType: "labels",
+      },
+    },
+    legend: {
+      enabled: false,
+    },
+    toolbar: {
+      enabled: false,
+    },
+    height: "170px",
+    color: {
+      scale: {
+        Qty: "#4589ff",
+        More: "#4589ff",
+        Sold: "#4589ff",
+        Restocking: "#4589ff",
+        Misc: "#4589ff",
+      },
+    },
+  };
+
   return (
     <div>
+      <SimpleBarChart data={chartData} options={chartOptions}></SimpleBarChart>
+
+      <br />
+      <br />
+
       <CustomDataTable
         headers={headers.filter((h) => h.checked || h.key === "actions")}
         rows={rows}
@@ -166,7 +221,8 @@ function Transactions() {
           !rows.length && {
             type: false ? "NotFound" : "NoData",
             title: "No queries yet.",
-            noDataSubtitle: "Any queries run on your existing engines may be monitored here after submission.",
+            noDataSubtitle:
+              "Any queries run on your existing engines may be monitored here after submission.",
           }
         }
         sortRowHandler={() => {}}

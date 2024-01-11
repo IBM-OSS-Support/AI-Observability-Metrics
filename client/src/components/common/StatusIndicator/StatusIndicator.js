@@ -125,12 +125,7 @@ const EXTENSIONS = {
   },
 };
 
-
 const StatusIndicator = ({
-  intl: { 
-    formatMessage
-  },
-
   className,
   status,
   type,
