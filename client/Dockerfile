@@ -1,6 +1,8 @@
 # Stage 1: Build the React app
 FROM registry.access.redhat.com/ubi8/nodejs-16:latest as build
 
+USER 0
+RUN mkdir /app
 WORKDIR /app
 
 # Copy package.json and package-lock.json first to leverage Docker layer caching
