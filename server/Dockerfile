@@ -6,7 +6,6 @@ RUN mkdir /app
 WORKDIR /app
 
 RUN microdnf install yum
-RUN yum install pip
 
 # Copy only the requirements file to leverage Docker layer caching
 COPY requirements.txt .
