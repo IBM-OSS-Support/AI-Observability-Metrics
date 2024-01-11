@@ -7,16 +7,20 @@ WORKDIR /app
 
 RUN microdnf install yum
 RUN yum update -y && \
-    yum install -y python3-pip
-    
+    yum -y remove python3 && \
+    yum -y install python3.8 && \
+    alternatives --config python3 && \
+    yum -y install python38-devel && \
+    pip3 install --upgrade pip
+
 # Copy only the requirements file to leverage Docker layer caching
 COPY requirements.txt .
 
 # Install the Python dependencies
-RUN pip3 install --no-cache-dir -r requirements.txt
-RUN pip3 install langchain
-RUN pip3 install openai
-RUN pip3 install numexpr
+RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install langchain
+RUN pip install openai
+RUN pip install numexpr
 
 # Copy the rest of the application files
 COPY . .
