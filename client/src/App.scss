@@ -59,3 +59,8 @@
     overscroll-behavior-x: none;
     overscroll-behavior-y: none;
   }
+
+  .cds--accordion__content {
+    padding-inline-end: 0 !important;
+    margin-left: 0 !important;
+  }

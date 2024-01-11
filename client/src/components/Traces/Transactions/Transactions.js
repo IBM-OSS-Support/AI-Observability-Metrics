@@ -16,54 +16,55 @@ import { SimpleBarChart } from "@carbon/charts-react";
 
 import CustomDataTable from "../../common/CustomDataTable";
 import { Download } from "@carbon/icons-react";
+import { Accordion, AccordionItem } from "@carbon/react";
 
 function Transactions() {
   const navigate = useNavigate();
   const defaultHeaders = [
     {
       key: "query_id",
-      header: "Query ID",
+      header: "Label",
       checked: true,
       required: true,
     },
     {
       key: "query",
-      header: "Query",
+      header: "Trace",
       checked: true,
     },
     {
       key: "state",
-      header: "State",
+      header: "Generations",
       checked: true,
     },
     {
       key: "engine",
-      header: "Engine",
+      header: "Latency",
       checked: true,
     },
     {
       key: "user",
-      header: "User",
+      header: "Deployment",
       checked: true,
     },
     {
       key: "source",
-      header: "Source",
+      header: "Component",
       checked: true,
     },
     {
       key: "queued_time_ms",
-      header: "Queued time",
-      checked: false,
+      header: "Operation",
+      checked: true,
     },
     {
       key: "analysis_time_ms",
-      header: "Analysis time",
-      checked: false,
+      header: "Hostname",
+      checked: true,
     },
     {
       key: "created",
-      header: "Created",
+      header: "User",
       checked: true,
     },
     { key: "actions", header: "" },
@@ -110,7 +111,7 @@ function Transactions() {
 
   const chartOptions = {
     theme: "g100",
-    title: "Timeline",
+    title: "",
     axes: {
       left: {
         mapsTo: "value",
@@ -127,6 +128,7 @@ function Transactions() {
       enabled: false,
     },
     height: "170px",
+    width: "100%",
     color: {
       scale: {
         Qty: "#4589ff",
@@ -140,10 +142,14 @@ function Transactions() {
 
   return (
     <div>
-      <SimpleBarChart data={chartData} options={chartOptions}></SimpleBarChart>
-
-      <br />
-      <br />
+      <Accordion align="start">
+        <AccordionItem title="Timeline chart">
+          <SimpleBarChart
+            data={chartData}
+            options={chartOptions}
+          ></SimpleBarChart>
+        </AccordionItem>
+      </Accordion>
 
       <CustomDataTable
         headers={headers.filter((h) => h.checked || h.key === "actions")}
@@ -172,7 +178,7 @@ function Transactions() {
 
             if (!Object.keys(newSelectedFilters).length) {
               setInitialSelectedFilters({});
-              return navigate("/query-history");
+              return navigate("/");
             }
 
             Object.entries(newSelectedFilters).forEach(([key, values]) =>
@@ -220,9 +226,9 @@ function Transactions() {
         emptyState={
           !rows.length && {
             type: false ? "NotFound" : "NoData",
-            title: "No queries yet.",
+            title: "No traces yet.",
             noDataSubtitle:
-              "Any queries run on your existing engines may be monitored here after submission.",
+              "All traces from your data are listed here.",
           }
         }
         sortRowHandler={() => {}}
