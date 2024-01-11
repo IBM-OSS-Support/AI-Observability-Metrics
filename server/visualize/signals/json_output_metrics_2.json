@@ -1,0 +1,910 @@
+{
+    "uploadMs": "1702017204072",
+    "metrics": [
+        {
+            "scope": "performance",
+            "name": "latency",
+            "tags": [
+                {
+                    "key": "deployment",
+                    "value": "langchain-demo"
+                },
+                {
+                    "key": "operation",
+                    "value": "openai.chat.completions.create"
+                },
+                {
+                    "key": "hostname",
+                    "value": "langchain1.fyre.ibm.com"
+                },
+                {
+                    "key": "user",
+                    "value": "user7"
+                },
+                {
+                    "key": "component",
+                    "value": "LLM"
+                },
+                {
+                    "key": "endpoint",
+                    "value": "https://api.openai.com/v1/chat/completions"
+                },
+                {
+                    "key": "model",
+                    "value": "gpt-3.5-turbo"
+                }
+            ],
+            "type": "HISTOGRAM_METRIC",
+            "isTime": true,
+            "histogram": {
+                "bins": [
+                    "1900000000",
+                    "2100000000",
+                    "1200000000"
+                ],
+                "counts": [
+                    "1",
+                    "1",
+                    "1"
+                ]
+            },
+            "updateTs": "1702017198"
+        },
+        {
+            "scope": "performance",
+            "name": "call_count",
+            "tags": [
+                {
+                    "key": "deployment",
+                    "value": "langchain-demo"
+                },
+                {
+                    "key": "operation",
+                    "value": "openai.chat.completions.create"
+                },
+                {
+                    "key": "hostname",
+                    "value": "langchain1.fyre.ibm.com"
+                },
+                {
+                    "key": "user",
+                    "value": "user7"
+                },
+                {
+                    "key": "component",
+                    "value": "LLM"
+                },
+                {
+                    "key": "endpoint",
+                    "value": "https://api.openai.com/v1/chat/completions"
+                },
+                {
+                    "key": "model",
+                    "value": "gpt-3.5-turbo"
+                }
+            ],
+            "type": "COUNTER_METRIC",
+            "counter": "3",
+            "updateTs": "1702017198"
+        },
+        {
+            "scope": "data",
+            "name": "element_count",
+            "tags": [
+                {
+                    "key": "deployment",
+                    "value": "langchain-demo"
+                },
+                {
+                    "key": "operation",
+                    "value": "openai.chat.completions.create"
+                },
+                {
+                    "key": "hostname",
+                    "value": "langchain1.fyre.ibm.com"
+                },
+                {
+                    "key": "user",
+                    "value": "user7"
+                },
+                {
+                    "key": "component",
+                    "value": "LLM"
+                },
+                {
+                    "key": "endpoint",
+                    "value": "https://api.openai.com/v1/chat/completions"
+                },
+                {
+                    "key": "model",
+                    "value": "gpt-3.5-turbo"
+                },
+                {
+                    "key": "data",
+                    "value": "messages"
+                }
+            ],
+            "type": "COUNTER_METRIC",
+            "counter": "3",
+            "updateTs": "1702017198"
+        },
+        {
+            "scope": "data",
+            "name": "token_count",
+            "tags": [
+                {
+                    "key": "deployment",
+                    "value": "langchain-demo"
+                },
+                {
+                    "key": "operation",
+                    "value": "openai.chat.completions.create"
+                },
+                {
+                    "key": "hostname",
+                    "value": "langchain1.fyre.ibm.com"
+                },
+                {
+                    "key": "user",
+                    "value": "user7"
+                },
+                {
+                    "key": "component",
+                    "value": "LLM"
+                },
+                {
+                    "key": "endpoint",
+                    "value": "https://api.openai.com/v1/chat/completions"
+                },
+                {
+                    "key": "model",
+                    "value": "gpt-3.5-turbo"
+                },
+                {
+                    "key": "data",
+                    "value": "messages"
+                }
+            ],
+            "type": "COUNTER_METRIC",
+            "counter": "557",
+            "updateTs": "1702017198"
+        },
+        {
+            "scope": "data",
+            "name": "finish_reason_stop",
+            "tags": [
+                {
+                    "key": "deployment",
+                    "value": "langchain-demo"
+                },
+                {
+                    "key": "operation",
+                    "value": "openai.chat.completions.create"
+                },
+                {
+                    "key": "hostname",
+                    "value": "langchain1.fyre.ibm.com"
+                },
+                {
+                    "key": "user",
+                    "value": "user7"
+                },
+                {
+                    "key": "component",
+                    "value": "LLM"
+                },
+                {
+                    "key": "endpoint",
+                    "value": "https://api.openai.com/v1/chat/completions"
+                },
+                {
+                    "key": "model",
+                    "value": "gpt-3.5-turbo"
+                },
+                {
+                    "key": "data",
+                    "value": "completion"
+                }
+            ],
+            "type": "COUNTER_METRIC",
+            "counter": "3",
+            "updateTs": "1702017198"
+        },
+        {
+            "scope": "data",
+            "name": "finish_reason_length",
+            "tags": [
+                {
+                    "key": "deployment",
+                    "value": "langchain-demo"
+                },
+                {
+                    "key": "operation",
+                    "value": "openai.chat.completions.create"
+                },
+                {
+                    "key": "hostname",
+                    "value": "langchain1.fyre.ibm.com"
+                },
+                {
+                    "key": "user",
+                    "value": "user7"
+                },
+                {
+                    "key": "component",
+                    "value": "LLM"
+                },
+                {
+                    "key": "endpoint",
+                    "value": "https://api.openai.com/v1/chat/completions"
+                },
+                {
+                    "key": "model",
+                    "value": "gpt-3.5-turbo"
+                },
+                {
+                    "key": "data",
+                    "value": "completion"
+                }
+            ],
+            "type": "COUNTER_METRIC",
+            "updateTs": "1702017198"
+        },
+        {
+            "scope": "data",
+            "name": "finish_reason_function_call",
+            "tags": [
+                {
+                    "key": "deployment",
+                    "value": "langchain-demo"
+                },
+                {
+                    "key": "operation",
+                    "value": "openai.chat.completions.create"
+                },
+                {
+                    "key": "hostname",
+                    "value": "langchain1.fyre.ibm.com"
+                },
+                {
+                    "key": "user",
+                    "value": "user7"
+                },
+                {
+                    "key": "component",
+                    "value": "LLM"
+                },
+                {
+                    "key": "endpoint",
+                    "value": "https://api.openai.com/v1/chat/completions"
+                },
+                {
+                    "key": "model",
+                    "value": "gpt-3.5-turbo"
+                },
+                {
+                    "key": "data",
+                    "value": "completion"
+                }
+            ],
+            "type": "COUNTER_METRIC",
+            "updateTs": "1702017198"
+        },
+        {
+            "scope": "data",
+            "name": "token_count",
+            "tags": [
+                {
+                    "key": "deployment",
+                    "value": "langchain-demo"
+                },
+                {
+                    "key": "operation",
+                    "value": "openai.chat.completions.create"
+                },
+                {
+                    "key": "hostname",
+                    "value": "langchain1.fyre.ibm.com"
+                },
+                {
+                    "key": "user",
+                    "value": "user7"
+                },
+                {
+                    "key": "component",
+                    "value": "LLM"
+                },
+                {
+                    "key": "endpoint",
+                    "value": "https://api.openai.com/v1/chat/completions"
+                },
+                {
+                    "key": "model",
+                    "value": "gpt-3.5-turbo"
+                },
+                {
+                    "key": "data",
+                    "value": "completion"
+                }
+            ],
+            "type": "COUNTER_METRIC",
+            "counter": "81",
+            "updateTs": "1702017198"
+        },
+        {
+            "scope": "performance",
+            "name": "latency",
+            "tags": [
+                {
+                    "key": "deployment",
+                    "value": "langchain-demo"
+                },
+                {
+                    "key": "operation",
+                    "value": "langchain.chat_models.openai.ChatOpenAI"
+                },
+                {
+                    "key": "hostname",
+                    "value": "langchain1.fyre.ibm.com"
+                },
+                {
+                    "key": "user",
+                    "value": "user7"
+                },
+                {
+                    "key": "component",
+                    "value": "LLM"
+                }
+            ],
+            "type": "HISTOGRAM_METRIC",
+            "isTime": true,
+            "histogram": {
+                "bins": [
+                    "1900000000",
+                    "2100000000",
+                    "1200000000"
+                ],
+                "counts": [
+                    "1",
+                    "1",
+                    "1"
+                ]
+            },
+            "updateTs": "1702017198"
+        },
+        {
+            "scope": "performance",
+            "name": "call_count",
+            "tags": [
+                {
+                    "key": "deployment",
+                    "value": "langchain-demo"
+                },
+                {
+                    "key": "operation",
+                    "value": "langchain.chat_models.openai.ChatOpenAI"
+                },
+                {
+                    "key": "hostname",
+                    "value": "langchain1.fyre.ibm.com"
+                },
+                {
+                    "key": "user",
+                    "value": "user7"
+                },
+                {
+                    "key": "component",
+                    "value": "LLM"
+                }
+            ],
+            "type": "COUNTER_METRIC",
+            "counter": "3",
+            "updateTs": "1702017198"
+        },
+        {
+            "scope": "data",
+            "name": "element_count",
+            "tags": [
+                {
+                    "key": "deployment",
+                    "value": "langchain-demo"
+                },
+                {
+                    "key": "operation",
+                    "value": "langchain.chat_models.openai.ChatOpenAI"
+                },
+                {
+                    "key": "hostname",
+                    "value": "langchain1.fyre.ibm.com"
+                },
+                {
+                    "key": "user",
+                    "value": "user7"
+                },
+                {
+                    "key": "component",
+                    "value": "LLM"
+                },
+                {
+                    "key": "data",
+                    "value": "messages"
+                }
+            ],
+            "type": "COUNTER_METRIC",
+            "counter": "3",
+            "updateTs": "1702017198"
+        },
+        {
+            "scope": "data",
+            "name": "element_count",
+            "tags": [
+                {
+                    "key": "deployment",
+                    "value": "langchain-demo"
+                },
+                {
+                    "key": "operation",
+                    "value": "langchain.chat_models.openai.ChatOpenAI"
+                },
+                {
+                    "key": "hostname",
+                    "value": "langchain1.fyre.ibm.com"
+                },
+                {
+                    "key": "user",
+                    "value": "user7"
+                },
+                {
+                    "key": "component",
+                    "value": "LLM"
+                },
+                {
+                    "key": "data",
+                    "value": "generations"
+                }
+            ],
+            "type": "COUNTER_METRIC",
+            "counter": "3",
+            "updateTs": "1702017198"
+        },
+        {
+            "scope": "performance",
+            "name": "latency",
+            "tags": [
+                {
+                    "key": "deployment",
+                    "value": "langchain-demo"
+                },
+                {
+                    "key": "operation",
+                    "value": "langchain.chains.llm.LLMChain"
+                },
+                {
+                    "key": "hostname",
+                    "value": "langchain1.fyre.ibm.com"
+                },
+                {
+                    "key": "user",
+                    "value": "user7"
+                },
+                {
+                    "key": "component",
+                    "value": "Agent"
+                }
+            ],
+            "type": "HISTOGRAM_METRIC",
+            "isTime": true,
+            "histogram": {
+                "bins": [
+                    "1900000000",
+                    "2100000000",
+                    "1200000000"
+                ],
+                "counts": [
+                    "1",
+                    "1",
+                    "1"
+                ]
+            },
+            "updateTs": "1702017198"
+        },
+        {
+            "scope": "performance",
+            "name": "call_count",
+            "tags": [
+                {
+                    "key": "deployment",
+                    "value": "langchain-demo"
+                },
+                {
+                    "key": "operation",
+                    "value": "langchain.chains.llm.LLMChain"
+                },
+                {
+                    "key": "hostname",
+                    "value": "langchain1.fyre.ibm.com"
+                },
+                {
+                    "key": "user",
+                    "value": "user7"
+                },
+                {
+                    "key": "component",
+                    "value": "Agent"
+                }
+            ],
+            "type": "COUNTER_METRIC",
+            "counter": "3",
+            "updateTs": "1702017198"
+        },
+        {
+            "scope": "system",
+            "name": "process_cpu_usage",
+            "tags": [
+                {
+                    "key": "deployment",
+                    "value": "langchain-demo"
+                },
+                {
+                    "key": "hostname",
+                    "value": "langchain1.fyre.ibm.com"
+                }
+            ],
+            "type": "GAUGE_METRIC",
+            "unit": "%",
+            "gauge": 4.105488099255525,
+            "updateTs": "1702017195"
+        },
+        {
+            "scope": "system",
+            "name": "process_memory",
+            "tags": [
+                {
+                    "key": "deployment",
+                    "value": "langchain-demo"
+                },
+                {
+                    "key": "hostname",
+                    "value": "langchain1.fyre.ibm.com"
+                }
+            ],
+            "type": "GAUGE_METRIC",
+            "isSize": true,
+            "gauge": 122164000,
+            "updateTs": "1702017195"
+        },
+        {
+            "scope": "system",
+            "name": "virtual_memory",
+            "tags": [
+                {
+                    "key": "deployment",
+                    "value": "langchain-demo"
+                },
+                {
+                    "key": "hostname",
+                    "value": "langchain1.fyre.ibm.com"
+                }
+            ],
+            "type": "GAUGE_METRIC",
+            "isSize": true,
+            "gauge": 605316000,
+            "updateTs": "1702017195"
+        },
+        {
+            "scope": "system",
+            "name": "node_memory_used",
+            "tags": [
+                {
+                    "key": "deployment",
+                    "value": "langchain-demo"
+                },
+                {
+                    "key": "hostname",
+                    "value": "langchain1.fyre.ibm.com"
+                }
+            ],
+            "type": "GAUGE_METRIC",
+            "isSize": true,
+            "gauge": 1679856000,
+            "updateTs": "1702017195"
+        },
+        {
+            "scope": "performance",
+            "name": "latency",
+            "tags": [
+                {
+                    "key": "deployment",
+                    "value": "langchain-demo"
+                },
+                {
+                    "key": "operation",
+                    "value": "langchain.chains.llm_math.base.LLMMathChain"
+                },
+                {
+                    "key": "hostname",
+                    "value": "langchain1.fyre.ibm.com"
+                },
+                {
+                    "key": "user",
+                    "value": "user7"
+                },
+                {
+                    "key": "component",
+                    "value": "Agent"
+                }
+            ],
+            "type": "HISTOGRAM_METRIC",
+            "isTime": true,
+            "histogram": {
+                "bins": [
+                    "2100000000"
+                ],
+                "counts": [
+                    "1"
+                ]
+            },
+            "updateTs": "1702017197"
+        },
+        {
+            "scope": "performance",
+            "name": "call_count",
+            "tags": [
+                {
+                    "key": "deployment",
+                    "value": "langchain-demo"
+                },
+                {
+                    "key": "operation",
+                    "value": "langchain.chains.llm_math.base.LLMMathChain"
+                },
+                {
+                    "key": "hostname",
+                    "value": "langchain1.fyre.ibm.com"
+                },
+                {
+                    "key": "user",
+                    "value": "user7"
+                },
+                {
+                    "key": "component",
+                    "value": "Agent"
+                }
+            ],
+            "type": "COUNTER_METRIC",
+            "counter": "1",
+            "updateTs": "1702017197"
+        },
+        {
+            "scope": "performance",
+            "name": "latency",
+            "tags": [
+                {
+                    "key": "deployment",
+                    "value": "langchain-demo"
+                },
+                {
+                    "key": "operation",
+                    "value": "langchain.agents.tools.Calculator"
+                },
+                {
+                    "key": "hostname",
+                    "value": "langchain1.fyre.ibm.com"
+                },
+                {
+                    "key": "user",
+                    "value": "user7"
+                },
+                {
+                    "key": "component",
+                    "value": "Tool"
+                }
+            ],
+            "type": "HISTOGRAM_METRIC",
+            "isTime": true,
+            "histogram": {
+                "bins": [
+                    "2100000000"
+                ],
+                "counts": [
+                    "1"
+                ]
+            },
+            "updateTs": "1702017197"
+        },
+        {
+            "scope": "performance",
+            "name": "call_count",
+            "tags": [
+                {
+                    "key": "deployment",
+                    "value": "langchain-demo"
+                },
+                {
+                    "key": "operation",
+                    "value": "langchain.agents.tools.Calculator"
+                },
+                {
+                    "key": "hostname",
+                    "value": "langchain1.fyre.ibm.com"
+                },
+                {
+                    "key": "user",
+                    "value": "user7"
+                },
+                {
+                    "key": "component",
+                    "value": "Tool"
+                }
+            ],
+            "type": "COUNTER_METRIC",
+            "counter": "1",
+            "updateTs": "1702017197"
+        },
+        {
+            "scope": "data",
+            "name": "char_count",
+            "tags": [
+                {
+                    "key": "deployment",
+                    "value": "langchain-demo"
+                },
+                {
+                    "key": "operation",
+                    "value": "langchain.agents.tools.Calculator"
+                },
+                {
+                    "key": "hostname",
+                    "value": "langchain1.fyre.ibm.com"
+                },
+                {
+                    "key": "user",
+                    "value": "user7"
+                },
+                {
+                    "key": "component",
+                    "value": "Tool"
+                },
+                {
+                    "key": "data",
+                    "value": "input"
+                }
+            ],
+            "type": "COUNTER_METRIC",
+            "counter": "13",
+            "updateTs": "1702017197"
+        },
+        {
+            "scope": "data",
+            "name": "char_count",
+            "tags": [
+                {
+                    "key": "deployment",
+                    "value": "langchain-demo"
+                },
+                {
+                    "key": "operation",
+                    "value": "langchain.agents.tools.Calculator"
+                },
+                {
+                    "key": "hostname",
+                    "value": "langchain1.fyre.ibm.com"
+                },
+                {
+                    "key": "user",
+                    "value": "user7"
+                },
+                {
+                    "key": "component",
+                    "value": "Tool"
+                },
+                {
+                    "key": "data",
+                    "value": "output"
+                }
+            ],
+            "type": "COUNTER_METRIC",
+            "counter": "26",
+            "updateTs": "1702017197"
+        },
+        {
+            "scope": "performance",
+            "name": "latency",
+            "tags": [
+                {
+                    "key": "deployment",
+                    "value": "langchain-demo"
+                },
+                {
+                    "key": "operation",
+                    "value": "langchain.agents.agent.AgentExecutor"
+                },
+                {
+                    "key": "hostname",
+                    "value": "langchain1.fyre.ibm.com"
+                },
+                {
+                    "key": "user",
+                    "value": "user7"
+                },
+                {
+                    "key": "component",
+                    "value": "Agent"
+                }
+            ],
+            "type": "HISTOGRAM_METRIC",
+            "isTime": true,
+            "histogram": {
+                "bins": [
+                    "5400000000"
+                ],
+                "counts": [
+                    "1"
+                ]
+            },
+            "updateTs": "1702017198"
+        },
+        {
+            "scope": "performance",
+            "name": "call_count",
+            "tags": [
+                {
+                    "key": "deployment",
+                    "value": "langchain-demo"
+                },
+                {
+                    "key": "operation",
+                    "value": "langchain.agents.agent.AgentExecutor"
+                },
+                {
+                    "key": "hostname",
+                    "value": "langchain1.fyre.ibm.com"
+                },
+                {
+                    "key": "user",
+                    "value": "user7"
+                },
+                {
+                    "key": "component",
+                    "value": "Agent"
+                }
+            ],
+            "type": "COUNTER_METRIC",
+            "counter": "1",
+            "updateTs": "1702017198"
+        },
+        {
+            "scope": "data",
+            "name": "element_count",
+            "tags": [
+                {
+                    "key": "deployment",
+                    "value": "langchain-demo"
+                },
+                {
+                    "key": "operation",
+                    "value": "langchain.agents.agent.AgentExecutor"
+                },
+                {
+                    "key": "hostname",
+                    "value": "langchain1.fyre.ibm.com"
+                },
+                {
+                    "key": "user",
+                    "value": "user7"
+                },
+                {
+                    "key": "component",
+                    "value": "Agent"
+                },
+                {
+                    "key": "data",
+                    "value": "actions"
+                }
+            ],
+            "type": "COUNTER_METRIC",
+            "counter": "1",
+            "updateTs": "1702017198"
+        }
+    ]
+}
