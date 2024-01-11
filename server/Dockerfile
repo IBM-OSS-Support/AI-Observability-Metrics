@@ -7,7 +7,15 @@ WORKDIR /app
 
 RUN microdnf install yum
 RUN yum update -y && \
-    yum install -y python3-pip
+    yum -y install python3.8 && \
+    alternatives --set python3 /usr/bin/python3.8 && \
+    alternatives --set python /usr/bin/python3.8 && \
+    python3 --version && \
+    python --version && \
+    yum -y install python38-devel && \
+    pip3 install --upgrade pip && \
+    pip3 --version && \
+    pip --version 
 
 # Copy only the requirements file to leverage Docker layer caching
 COPY requirements.txt .
