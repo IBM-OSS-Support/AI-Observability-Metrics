@@ -6,16 +6,16 @@ RUN mkdir /app
 WORKDIR /app
 
 RUN microdnf install yum
-RUN yum install python3-pip
+RUN yum install pip
 
 # Copy only the requirements file to leverage Docker layer caching
 COPY requirements.txt .
 
 # Install the Python dependencies
-RUN pip install --no-cache-dir -r requirements.txt
-RUN pip install langchain
-RUN pip install openai
-RUN pip install numexpr
+RUN pip3 install --no-cache-dir -r requirements.txt
+RUN pip3 install langchain
+RUN pip3 install openai
+RUN pip3 install numexpr
 
 # Copy the rest of the application files
 COPY . .
