@@ -9,95 +9,95 @@
  * of its trade secrets, irrespective of what has been deposited with
  * the U.S. Copyright Office.
  ****************************************************************************** */
-import React, { useMemo } from "react";
+import React, { useMemo, useState } from "react";
+import {
+  useNavigate,
+  useSearchParams
+} from 'react-router-dom';
 
 import CustomDataTable from "../../common/CustomDataTable";
+import { Download } from "@carbon/icons-react";
 
 function Transactions() {
-  const defaultHeaders = useMemo(
-    () => [
-      {
-        key: "query_id",
-        header: "Query ID",
-        checked: true,
-        required: true,
-      },
-      {
-        key: "query",
-        header: "Query",
-        checked: true,
-      },
-      {
-        key: "state",
-        header: "State",
-        checked: true,
-      },
-      {
-        key: "engine",
-        header: "Engine",
-        checked: true,
-      },
-      {
-        key: "user",
-        header: formatMessage({
-          id: "QueryHistoryList.user",
-          defaultMessage: "User",
-        }),
-        checked: true,
-      },
-      {
-        key: "source",
-        header: formatMessage({
-          id: "QueryHistoryList.source",
-          defaultMessage: "Source",
-        }),
-        checked: true,
-      },
-      {
-        key: "queued_time_ms",
-        header: formatMessage({
-          id: "QueryHistoryList.queuedTime",
-          defaultMessage: "Queued time",
-        }),
-        checked: false,
-      },
-      {
-        key: "analysis_time_ms",
-        header: formatMessage({
-          id: "QueryHistoryList.analysisTime",
-          defaultMessage: "Analysis time",
-        }),
-        checked: false,
-      },
-      {
-        key: "created",
-        header: formatMessage({
-          id: "QueryHistoryList.created",
-          defaultMessage: "Created",
-        }),
-        checked: true,
-      },
-      { key: "actions", header: "" },
-    ],
-    [formatMessage]
-  );
+  const navigate = useNavigate();
+  const defaultHeaders = [
+    {
+      key: "query_id",
+      header: "Query ID",
+      checked: true,
+      required: true,
+    },
+    {
+      key: "query",
+      header: "Query",
+      checked: true,
+    },
+    {
+      key: "state",
+      header: "State",
+      checked: true,
+    },
+    {
+      key: "engine",
+      header: "Engine",
+      checked: true,
+    },
+    {
+      key: "user",
+      header: "User",
+      checked: true,
+    },
+    {
+      key: "source",
+      header: "Source",
+      checked: true,
+    },
+    {
+      key: "queued_time_ms",
+      header: "Queued time",
+      checked: false,
+    },
+    {
+      key: "analysis_time_ms",
+      header: "Analysis time",
+      checked: false,
+    },
+    {
+      key: "created",
+      header: "Created",
+      checked: true,
+    },
+    { key: "actions", header: "" },
+  ];
 
   const [headers, setHeaders] = useState(
     defaultHeaders.map((h) => Object.assign({}, h))
   );
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchText, setSearchText] = useState("");
+  const [filters, setFilters] = useState([]);
+  const [initialSelectedFilters, setInitialSelectedFilters] = useState({
+    'source': [
+      'Web client'
+    ]
+  });
+  const [selectedFilters, setSelectedFilters] = useState({});
+  const [pagination, setPagination] = useState({ offset: 0, first: 10 });
+  const [modal, setModal] = useState(false);
+  const [startDate, setStartDate] = useState(undefined);
+  const [endDate, setEndDate] = useState(undefined);
+  const [rows, setRows] = useState([]);
+
   return (
     <div>
       <CustomDataTable
         headers={headers.filter((h) => h.checked || h.key === "actions")}
-        rows={rows || []}
-        loading={!lastUpdated}
+        rows={rows.length}
+        loading={false}
         search={{
           searchText: searchText,
           persistent: true,
-          placeholder: formatMessage({
-            id: "QueryHistoryList.searchPlaceholder",
-            defaultMessage: "Search for queries",
-          }),
+          placeholder: "Search for queries",
           onChange: setSearchText,
         }}
         filter={{
@@ -110,17 +110,14 @@ function Transactions() {
           endDate,
           setEndDate,
           hasDateRange: true,
-          dateLabel: formatMessage({
-            id: "QueryHistoryList.created",
-            defaultMessage: "Created",
-          }),
+          dateLabel: "Created",
           setSelectedFilters: (newSelectedFilters) => {
             setSelectedFilters(newSelectedFilters);
             setPagination((prev) => ({ ...prev, offset: 0 }));
 
             if (!Object.keys(newSelectedFilters).length) {
               setInitialSelectedFilters({});
-              return navigate(getPath("/query-history"));
+              return navigate("/query-history");
             }
 
             Object.entries(newSelectedFilters).forEach(([key, values]) =>
@@ -149,56 +146,31 @@ function Transactions() {
             setHeaders(defaultHeaders.map((h) => Object.assign({}, h))),
         }}
         refresh={{
-          label: !!lastUpdated
-            ? formatMessage(
-                {
-                  id: "QueryHistoryList.lastUpdated",
-                  defaultMessage: "Refresh (last updated {timestamp} ago)",
-                },
-                {
-                  timestamp: Moment.duration(Date.now() - lastUpdated)
-                    .locale(locale)
-                    .humanize(),
-                }
-              )
-            : formatMessage({
-                id: "QueryHistoryList.loading",
-                defaultMessage: "Refresh (loading...)",
-              }),
+          label: "Refresh",
           align: "bottom-right",
-          onClick: () => refresh(),
+          onClick: () => {},
         }}
         primaryButton={{
           kind: "primary",
           renderIcon: Download,
-          children: formatMessage({
-            id: "QueryHistoryList.exportToCSV",
-            defaultMessage: "Export to CSV",
-          }),
-          onClick: () => handleExportCSV(exportRows, headers, "QueryHistory"),
-          disabled: rows.length === 0 || !lastUpdated,
+          children: "Export to CSV",
+          onClick: () => {},
+          disabled: true,
         }}
         pagination={{
-          totalItems,
+          totalItems: rows.length,
           setPagination,
           ...pagination,
         }}
         emptyState={
           !rows.length && {
-            type: noMatches ? "NotFound" : "NoData",
-            title: formatMessage({
-              id: "QueryHistoryList.emptyStateTitle",
-              defaultMessage: "No queries yet.",
-            }),
-            noDataSubtitle: formatMessage({
-              id: "QueryHistoryList.noDataSubtitle1",
-              defaultMessage:
-                "Any queries run on your existing engines may be monitored here after submission.",
-            }),
+            type: false ? "NotFound" : "NoData",
+            title: "No queries yet.",
+            noDataSubtitle: "Any queries run on your existing engines may be monitored here after submission.",
           }
         }
-        sortRowHandler={sortRowHandler}
-        tableHeaderClickHandler={tableHeaderClickHandler}
+        sortRowHandler={() => {}}
+        tableHeaderClickHandler={() => {}}
       />
     </div>
   );
