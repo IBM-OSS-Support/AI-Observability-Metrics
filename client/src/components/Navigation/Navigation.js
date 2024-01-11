@@ -34,19 +34,15 @@ import {
   Theme
 } from '@carbon/react';
 import {
-  DataTable,
-  GroupSecurity,
   Home,
-  Information,
-  Money,
   ParentChild,
-  RecentlyViewed,
   SidePanelOpen,
   SidePanelClose,
   Sql,
   UserAvatar,
-  Ticket,
-  Idea
+  Time,
+  Activity,
+  ChartBullet
 } from '@carbon/react/icons';
 
 // Utils ---------------------------------------------------------------------->
@@ -58,69 +54,19 @@ const Navigation = () => {
       name: 'Group 1',
       links: [
         {
-          name: 'Infrastructure manager',
-          subpath: '/infrastructure-manager',
-          icon: ParentChild
+          name: 'Traces',
+          subpath: '/',
+          icon: ChartBullet
         },
         {
-          name: 'Data manager',
-          subpath: '/data-manager',
-          icon: DataTable
+          name: 'Sessions',
+          subpath: '/sessions',
+          icon: Time
         },
         {
-          name: 'Query workspace',
-          subpath: '/query-workspace',
-          icon: Sql
-        },
-        {
-          name: 'Query history',
-          subpath: '/query-history',
-          icon: RecentlyViewed
-        }
-      ]
-    },
-    {
-      name: 'Group 2',
-      links: [
-        {
-          name: 'Access control',
-          subpath: '/access-control',
-          icon: GroupSecurity
-        },
-        {
-          name: 'Billing and usage',
-          subpath: '/billing-and-usage',
-          icon: Money
-        }
-      ]
-    },
-    {
-      name: 'Group 3',
-      links: [
-        {
-           name: 'seperator',
-        },
-      ]
-    },
-    {
-      name: 'Group 4',
-      links: [
-        {
-          name: 'Instance details',
-          onClick: () => setOpenAboutModal(true),
-          icon: Information
-        },
-        {
-          name: 'Requests',
-          subpath: '/requests',
-          href: 'https://ibm-data-and-ai.ideas.ibm.com/',
-          icon: Idea
-        },
-        {
-          name: 'Support',
-          subpath: '/support',
-          href: 'https://cloud.ibm.com/login?redirect=%2Funifiedsupport%2Fsupportcenter',
-          icon: Ticket
+          name: 'Metrics',
+          subpath: '/metrics',
+          icon: Activity
         }
       ]
     }
@@ -205,7 +151,7 @@ const Navigation = () => {
               />
             ) : <Fragment />}
             <SideNavItems id='navBar'>
-              <SideNavLink
+              {/* <SideNavLink
                 title={'Home'}
                 renderIcon={Home}
                 element={Link}
@@ -217,47 +163,20 @@ const Navigation = () => {
                 }}
               >
                 {'Home'}
-              </SideNavLink>
+              </SideNavLink> */}
               {sections.map((s, i) =>
                 <Fragment key={s.name}>
                   {i !== 2 && 
                     <SideNavDivider />
                   }
                   {s.links.map(l => {
-                    if (l.name === 'Instance details') {
-                      return (
-                        <SideNavLink
-                          title={l.name}
-                          key={l.name}
-                          renderIcon={l.icon}
-                          onClick={() => {
-                            l.onClick();
-                            setSideNavOpen(false);
-                            document.activeElement.blur();
-                          }}
-                          className="instance-details"
-                        >
-                          {l.name}
-                        </SideNavLink>
-                      );
-                    }
-
-                    // For other links, include href, subpath, and other attributes
-                    let hrefLinks;
-                    const newTab = ['/requests', '/support'].includes(l.subpath) ? '_blank' : '_self';
-
-                    if (['/requests', '/support'].includes(l.subpath)) {
-                      hrefLinks = l.href;
-                    } else {
-                      hrefLinks = `#${l.subpath}`;
-                    }
+                    let hrefLinks = `#${l.subpath}`;
 
                     return (
                       <SideNavLink
                         title={l.name}
                         key={l.name}
                         href={hrefLinks}
-                        target={newTab}
                         renderIcon={l.icon}
                         isActive={pathname.endsWith(l.subpath)}
                         onClick={() => {
