@@ -22,12 +22,14 @@ import {
   OverflowMenu,
   OverflowMenuItem,
   Pagination,
+  Slider,
   Tag,
   Toggletip,
   ToggletipButton,
   ToggletipContent,
 } from '@carbon/react';
 import {
+  Document,
   Download,
   OverflowMenuVertical,
   Renew
@@ -540,6 +542,66 @@ const CustomDataTable = ({
                                     }
                                     {value?.description}
                                   </div>
+                                }
+                              </div>
+                            );
+                            break;
+                          case 'operation':
+                            formattedCell = (
+                              <div className="operation-column">
+                                <div 
+                                  className="truncate"
+                                  style={{ marginLeft:`${ value?.level * 1}rem` }}
+                                >
+                                  {value?.operation}
+                                </div>
+                              </div>
+                            );
+                            break;
+                          case 'latency':
+                            formattedCell = (
+                              <div className="latency-column">
+                                <div 
+                                  className="truncate"
+                                >
+                                  {value?.latency}
+                                </div>
+                              </div>
+                            );
+                            break;
+                          case 'timeline':
+                            formattedCell = (
+                              <div className="timeline-column">
+                               <Slider
+                                  labelText=""
+                                  value={value?.delay / value?.total}
+                                  unstable_valueUpper={(value?.delay + value?.latency) / value?.total}
+                                  min={0}
+                                  max={1}
+                                  hideTextInput
+                                  readOnly
+                                />
+                              </div>
+                            );
+                            break;
+                          case 'parameters':
+                            formattedCell = (
+                              <div className="parameters-column">
+                                {
+                                  value.parameters.map((param, i) => <span key={i} className="parameter">
+                                    {param}
+                                  </span>)
+                                }
+                              </div>
+                            );
+                            break;
+                          case 'data':
+                            formattedCell = (
+                              <div className="data-column">
+                                {
+                                  value.data.map((d, i) => <Button key={i} className="data" kind="ghost" renderIcon={Document}>
+                                  {d.name}
+                                </Button>)
                                 }
                               </div>
                             );

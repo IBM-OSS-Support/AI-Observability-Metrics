@@ -1,0 +1,128 @@
+[
+  {
+    "label": "root",
+    "trace": "2024-01-11 18:06:56",
+    "generations": "",
+    "latency": 5.4,
+    "delay": 0,
+    "deployment": "my-app-prod",
+    "component": "Agent",
+    "operation": "langchain.agents.agent.AgentExecutor",
+    "hostname": "Abdullas-MacBook-Pro.local",
+    "user": "user3",
+    "parameters": [],
+    "data": [],
+    "libraries": [
+      {
+        "library": "LangChain",
+        "version": "0.1"
+      },
+      {
+        "library": "OpenAI Python Library",
+        "version": "1.7.1"
+      }
+    ],
+    "process": [
+      {
+        "pid": "93138",
+        "started": "2024-01-11 18:06:44",
+        "peakMemory": "111 MB",
+        "runtime": "Python 3.9.6",
+        "runtimeImplementation": "CPython",
+        "graphSignalVersion": "0.13.44"
+      }
+    ],
+    "node": [
+      {
+        "hostname": "Abdullas-MacBook-Pro.local",
+        "platform": "darwin",
+        "machine": "arm64",
+        "os": "Darwin 23.2.0"
+      }
+    ],
+    "traces": [
+      {
+        "label": "langchain.agents.agent.AgentExecutor",
+        "trace": "2024-01-11 18:06:56",
+        "generations": "",
+        "latency": 2.3,
+        "delay": 0,
+        "deployment": "my-app-prod",
+        "component": "Agent",
+        "operation": "langchain.chains.llm.LLMChain",
+        "hostname": "Abdullas-MacBook-Pro.local",
+        "user": "user3",
+        "parameters": [],
+        "data": [
+          {
+            "name": "inputs"
+          },
+          {
+            "name": "actions"
+          },
+          {
+            "name": "outputs"
+          }
+        ],
+        "traces": [
+          {
+            "label": "langchain.chains.llm.LLMChain",
+            "trace": "2024-01-11 18:06:56",
+            "generations": "",
+            "latency": 2.3,
+            "delay": 0,
+            "deployment": "my-app-prod",
+            "component": "Agent",
+            "operation": "langchain.chat_models.openai.ChatOpenAI",
+            "hostname": "Abdullas-MacBook-Pro.local",
+            "user": "user3",
+            "parameters": [],
+            "data": [
+              {
+                "name": "inputs"
+              },
+              {
+                "name": "actions"
+              },
+              {
+                "name": "outputs"
+              }
+            ],
+            "traces": [
+              {
+                "label": "langchain.chat_models.openai.ChatOpenAI",
+                "trace": "2024-01-11 18:06:56",
+                "generations": "",
+                "latency": 2.3,
+                "delay": 0,
+                "deployment": "my-app-prod",
+                "component": "Agent",
+                "operation": "openai.chat.completions.create",
+                "hostname": "Abdullas-MacBook-Pro.local",
+                "user": "user3",
+                "parameters": [
+                  "model=gpt-3.5-turbo",
+                  "temperature=0.0",
+                  "n=1",
+                  "stream=False",
+                  "stop=['\nObservation:', '\n\tObservation:']"
+                ],
+                "data": [
+                  {
+                    "name": "inputs"
+                  },
+                  {
+                    "name": "actions"
+                  },
+                  {
+                    "name": "outputs"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+]

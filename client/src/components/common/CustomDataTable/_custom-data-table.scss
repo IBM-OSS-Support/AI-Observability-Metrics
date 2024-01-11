@@ -101,6 +101,11 @@
         transform: rotate(180deg);
       }
     }
+
+    .cds--slider__range-label {
+      display: none;
+    }
+
   }
 
   th > .cds--table-sort, td {
@@ -287,6 +292,25 @@
 
       color: $gray-40;
       margin-top: .875rem;
+    }
+  }
+
+  .data-column {
+    display: flex;
+
+    span {
+      margin-right: .5rem;
+    }
+  }
+  
+  .parameters-column {
+    display: flex;
+    flex-wrap: wrap;
+    margin-top: .25rem;
+    margin-bottom: .25rem;
+
+    span {
+      margin-right: .5rem;
     }
   }
 }

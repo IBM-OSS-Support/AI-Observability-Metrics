@@ -22,10 +22,12 @@ import '@carbon/ibm-products/css/index.min.css';
 import './App.scss';
 import Traces from './components/Traces';
 import Metrics from './components/Metrics';
+import TraceAnalysis from './components/TraceAnalysis';
 
 const ROUTES = [
   { path: '/', component: () => <Traces /> },
-  { path: '/metrics', component: () => <Metrics /> }
+  { path: '/metrics', component: () => <Metrics /> },
+  { path: '/trace-analysis', component: () => <TraceAnalysis /> },
 ];
 
 function App() {
