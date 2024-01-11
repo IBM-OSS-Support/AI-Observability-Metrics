@@ -45,7 +45,7 @@ function Traces() {
         </TabList>
         <TabPanels>
           <TabPanel>
-            {/* <Transactions /> */}
+            <Transactions />
           </TabPanel>
           <TabPanel>
             <Generations />
