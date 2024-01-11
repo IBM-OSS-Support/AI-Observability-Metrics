@@ -1,6 +1,8 @@
 # Stage 1: Build the Flask app
-FROM python:3.9 AS build
+FROM registry.access.redhat.com/ubi8/ubi-minimal:latest
 
+USER 0
+RUN mkdir /app
 WORKDIR /app
 
 # Copy only the requirements file to leverage Docker layer caching
@@ -13,18 +15,6 @@ RUN pip install openai
 RUN pip install numexpr
 
 # Copy the rest of the application files
-COPY . .
-
-# Stage 2: Run the Flask app
-FROM python:3.9-slim
-
-WORKDIR /app
-
-# Copy the installed Python dependencies from the previous stage
-COPY --from=build /usr/local/lib/python3.9/site-packages /usr/local/lib/python3.9/site-packages
-COPY --from=build /usr/local/bin/gunicorn /usr/local/bin/gunicorn
-
-# Copy the Flask application code
 COPY . .
 
 # Expose the Flask app's port (replace 5000 with your app's port if needed)
