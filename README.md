@@ -50,3 +50,9 @@ python3 sample.py
 ```
 gzip -d -S .gzip dummy_new_9.gzip
 ```
+
+### Start the dockerfiles
+
+```shell
+./start.sh
+```
