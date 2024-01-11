@@ -32,7 +32,7 @@ function Traces() {
       className="query-workspace-container"
       header={{
         title: "Traces",
-        subtitle: "Traces fpr your data.",
+        subtitle: "Traces for your data.",
       }}
     >
       <Tabs>
