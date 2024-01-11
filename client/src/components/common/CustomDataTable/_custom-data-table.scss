@@ -1,0 +1,292 @@
+/* ******************************************************************************
+ * IBM Confidential
+ *
+ * OCO Source Materials
+ *
+ *  Copyright IBM Corp. 2023  All Rights Reserved.
+ *
+ * The source code for this program is not published or otherwise divested
+ * of its trade secrets, irrespective of what has been deposited with
+ * the U.S. Copyright Office.
+ ****************************************************************************** */
+.custom-data-table-skeleton {
+  margin-top: -3.125rem;
+
+  .cds--data-table-header,
+  .cds--table-toolbar {
+    display: none;
+  }
+
+  .cds--data-table.cds--skeleton th span,
+  .cds--data-table.cds--skeleton td span {
+    width: 100%;
+  }
+}
+
+.custom-data-table {
+  &.reveal-filter-summary {
+    .cds--data-table-content {
+      margin-top: 0;
+    }
+  }
+
+  .cds--table-toolbar {
+    z-index: 1;
+  }
+
+  .cds--batch-actions[aria-hidden="true"] ~ .cds--toolbar-content {
+    clip-path: unset !important;
+  }
+
+  .cdt-filter-summary {
+    position: relative;
+    display: flex;
+    align-items: center;
+    background-color: $layer-01;
+    height: 3rem;
+    padding: $spacing-05;
+    border-top: .0625rem solid $border-subtle;
+
+    .filter-summary-content {
+      @include fadeInAnimation(240ms, 190ms);
+
+      .cds--label {
+        margin-right: $spacing-03;
+      }
+
+      .cds--btn--ghost {
+        margin-left: $spacing-03;
+        padding: 0 $spacing-03;
+      }
+    }
+
+    &.suppress {
+      z-index: -1;
+
+      * {
+        z-index: -1;
+      }
+    }
+  }
+
+  // allow tooltip to break out of container
+  .cds--data-table-content {
+    overflow: visible;
+  }
+
+  .cds--data-table-content {
+    margin-top: -3rem;
+    will-change: margin-top;
+    transition: margin-top 240ms motion(standard, productive);
+  }
+
+  .cds--data-table {
+    table-layout: fixed;
+
+    .cds--table-header-label {
+      max-width: 100%;
+      text-overflow: ellipsis;
+      overflow: hidden;
+      white-space: nowrap;
+      line-height: 1.125rem;
+    }
+
+    .cds--table-column-checkbox {
+      padding-left: 0.875rem;
+      padding-right: 2.1875rem;
+    }
+
+    .cds--table-sort--ascending {
+      .cds--table-sort__icon {
+        transform: rotate(180deg);
+      }
+    }
+  }
+
+  th > .cds--table-sort, td {
+    min-width: 6rem !important;
+  }
+
+  .truncate {
+    display: block;
+    max-width: 100%;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+
+  &.table-layout-auto {
+    .cds--data-table-content {
+      overflow-x: auto !important;
+    }
+
+    .cds--data-table {
+      table-layout: auto !important;
+    }
+  }
+
+  &.has-actions-columns {
+    th:last-of-type {
+      .cds--table-sort {
+        display: none;
+      }
+    }
+
+    th:last-of-type,
+    td:last-of-type {
+      position: sticky;
+      right: 0;
+      max-width: 6rem;
+      width: 6rem;
+      min-width: 6rem;
+
+      &:before {
+        content: '';
+        position: absolute;
+        top: -.0625rem;
+        left: 0;
+        height: calc(100% + .0625rem);
+        width: .0625rem;
+        background-color: $border-subtle;
+      }
+    }
+
+    td:last-of-type > .cds--overflow-menu {
+      margin: 0 auto;
+    }
+  }
+
+  // .cds--select {
+  //   @include monospace();
+  //   padding-left: 1rem;
+  //
+  //   .cds--label {
+  //     font-size: 0.875rem;
+  //     color: $purple-40;
+  //   }
+  //
+  //   .cds--select-input {
+  //     background-color: rgba(0, 0, 0, 0) !important;
+  //     color: var(--teal-primary);
+  //   }
+  // }
+
+  // Custom columns
+  .button-link {
+    background-color: rgba(0, 0, 0, 0);
+  }
+
+  .delete-button {
+    cursor: pointer;
+  }
+
+  tr:not(:hover) .button-link {
+    color: unset !important;
+  }
+
+  .code {
+    @include monospace();
+  }
+
+  .disabled-overflow-menu {
+    margin-left: $spacing-04;
+  }
+
+  &.hidden-page-sizes {
+    .cds--pagination__left {
+      label,
+      .cds--select__item-count {
+        display: none;
+      }
+    }
+
+    .cds--pagination__items-count {
+      margin-left: 0;
+    }
+  }
+
+  &.sticky-pagination {
+    .cds--data-table {
+      margin-bottom: calc($spacing-09 - .0625rem);
+    }
+
+    .cds--pagination {
+      border-top: .0625rem solid $border-subtle;
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100% !important;
+    }
+  }
+
+  .empty-state {
+    background-color: $layer-01;
+    padding: $spacing-11;
+
+    .c4p--empty-state {
+      max-width: 17.5rem;
+      width: 17.5rem;
+    }
+  }
+
+  .user-profile-column {
+    display: flex;
+    align-items: center;
+
+    .photo {
+      margin-right: $spacing-05;
+      height: 1.5rem;
+      width: 1.5rem;
+      min-width: 1.5rem;
+      background-color: $text-secondary;
+      border-radius: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: .75rem;
+      font-weight: 400;
+      color: $background;
+    }
+
+    .metadata {
+      width: calc(100% - 4rem);
+
+      .email {
+        @include type-style('helper-text-01');
+
+        color: $text-secondary;
+      }
+    }
+  }
+
+  .watsonx-column {
+    width: 200%;
+
+    svg {
+      margin: 0 $spacing-02 -.1875rem -.0625rem;
+
+      > path {
+        fill: $purple-40;
+      }
+
+      line {
+        stroke: $purple-40;
+      }
+    }
+
+    strong {
+      color: $white;
+      font-weight: 400;
+      padding: .0625rem $spacing-03;
+      border-radius: .5rem;
+      background: linear-gradient(to right, transparentize($purple-70, .3), transparentize($blue-70, .3) 200%);
+    }
+
+    .concept-description {
+      @include type-style('helper-text-01');
+
+      color: $gray-40;
+      margin-top: .875rem;
+    }
+  }
+}
