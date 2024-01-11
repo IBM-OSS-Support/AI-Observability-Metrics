@@ -40,7 +40,7 @@ python3 app.py
 ### RUN THE SAMPLE PROGRAM
 ```
 cd server/
-pip3 install langchain
+pip install langchain
 pip install openai
 pip install numexpr
 python3 sample.py
