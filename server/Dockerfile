@@ -13,10 +13,10 @@ RUN yum update -y && \
 COPY requirements.txt .
 
 # Install the Python dependencies
-RUN pip install -r requirements.txt
-RUN pip install langchain
-RUN pip install openai
-RUN pip install numexpr
+RUN pip3 install -r requirements.txt
+RUN pip3 install langchain
+RUN pip3 install openai
+RUN pip3 install numexpr
 
 # Copy the rest of the application files
 COPY . .
