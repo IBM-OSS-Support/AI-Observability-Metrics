@@ -1,5 +1,5 @@
 # Stage 1: Build the React app
-FROM node:latest as build
+FROM node:16 as build
 
 WORKDIR /app
 
