@@ -38,6 +38,7 @@ import {
   UserAvatar,
   Time,
   Activity,
+  Home,
   ChartBullet
 } from '@carbon/react/icons';
 
@@ -49,8 +50,13 @@ const Navigation = () => {
       name: 'Group 1',
       links: [
         {
-          name: 'Traces',
+          name: 'Home',
           subpath: '/',
+          icon: Home
+        },
+        {
+          name: 'Traces',
+          subpath: '/traces',
           icon: ChartBullet
         },
         {

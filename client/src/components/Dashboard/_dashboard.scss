@@ -1,0 +1,143 @@
+/* ******************************************************************************
+ * IBM Confidential
+ *
+ * OCO Source Materials
+ *
+ *  Copyright IBM Corp. 2024  All Rights Reserved.
+ *
+ * The source code for this program is not published or otherwise divested
+ * of its trade secrets, irrespective of what has been deposited with
+ * the U.S. Copyright Office.
+ ****************************************************************************** */
+ .home-container {
+  > .header {
+    max-height: 24rem;
+    padding: $spacing-05 !important;
+    overflow: hidden;
+    position: relative;
+    // border-bottom: .0625rem solid $border-subtle;
+
+    .cds--css-grid-column:first-of-type {
+      margin-right: $spacing-03;
+    }
+
+    .left {
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-around;
+      padding: .625rem 0 $spacing-05;
+
+      .title {
+        padding-left: $spacing-05;
+
+        > h5 {
+          @include type-style('body-short-01');
+
+          margin-top: .75rem;
+          display: flex;
+          align-items: center;
+
+          .cds--popover-container {
+            margin: 0 0 -.0625rem $spacing-02;
+
+            .cds--definition-tooltip {
+              max-width: 30rem !important;
+            }
+          }
+        }
+      }
+
+      .quick-actions {
+        z-index: 1;
+
+        margin: 0 0 -1rem 0;
+        display: flex;
+        align-items: flex-start;
+        padding: $spacing-10 0 0;
+        @include breakpoint-between(0px, xlg) {
+          padding-top: $spacing-09;
+        }
+
+        .quick-action {
+          width: 50%;
+          display: flex;
+          flex-direction: column;
+          justify-content: space-between;
+          height: 100%;
+          padding-right: $spacing-07;
+
+          &:first-of-type {
+            margin-right: $spacing-05;
+          }
+
+          &:not(:hover):not(:focus) {
+            background-color: rgba(0, 0, 0, 0);
+          }
+
+          p {
+            @include type-style('body-short-01');
+
+            color: $text-secondary;
+            margin-top: $spacing-02;
+          }
+
+          svg {
+            margin-top: $spacing-01;
+          }
+
+          .destination {
+            margin-top: $spacing-05;
+            width: max-content;
+            display: flex;
+            align-items: center;
+
+            color: $link-primary;
+            will-change: color;
+            transition: color 110ms motion(standard, productive);
+
+            > svg {
+              margin-left: $spacing-03;
+            }
+          }
+
+          &:hover > .destination {
+            color: $link-primary-hover;
+          }
+        }
+      }
+    }
+
+    .right {
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      position: relative;
+      z-index: 1;
+
+      img {
+        max-height: 21rem;
+        padding: 0;
+        margin-top: -1rem;
+        margin-bottom: -1rem;
+        height: calc(100% + 2rem);
+        margin-right: -2rem;
+      }
+    }
+  }
+
+  > .body {
+    position: relative;
+    width: calc(100% - 1rem) !important;
+    max-width: 100% !important;
+    padding: 0 !important;
+    background: none;
+    margin-top: 0;
+
+    .content-tile {
+      margin-bottom: 1rem;
+      max-height: 24rem;
+    }
+  }
+}
