@@ -31,6 +31,7 @@ import {
 import {
   Document,
   Download,
+  Movement,
   OverflowMenuVertical,
   Renew
 } from '@carbon/react/icons';
@@ -165,6 +166,8 @@ const CustomDataTable = ({
           getTableContainerProps
         }) => (
           <>
+          {
+            (!!getBatchActions || !!search || !!filter || !!columnCustomization || !!refresh || !!exportButton || !!secondaryButtons || !!primaryButton) &&
             <TableToolbar {...getToolbarProps()}>
               {!!getBatchActions &&
                 <TableBatchActions {...getBatchActionProps()}>
@@ -250,6 +253,7 @@ const CustomDataTable = ({
                 }
               </TableToolbarContent>
             </TableToolbar>
+          }
             <div
               className={`
                 cdt-filter-summary
@@ -548,10 +552,12 @@ const CustomDataTable = ({
                             break;
                           case 'operation':
                             formattedCell = (
-                              <div className="operation-column">
+                              <div className="operation-column"
+                                style={{ marginLeft:`${ value?.level * 1}rem` }}
+                              >
+                                <Movement />
                                 <div 
                                   className="truncate"
-                                  style={{ marginLeft:`${ value?.level * 1}rem` }}
                                 >
                                   {value?.operation}
                                 </div>
@@ -564,7 +570,7 @@ const CustomDataTable = ({
                                 <div 
                                   className="truncate"
                                 >
-                                  {value?.latency}
+                                  {value?.latency}s
                                 </div>
                               </div>
                             );
@@ -587,11 +593,14 @@ const CustomDataTable = ({
                           case 'parameters':
                             formattedCell = (
                               <div className="parameters-column">
-                                {
+                                {/* {
                                   value.parameters.map((param, i) => <span key={i} className="parameter">
                                     {param}
                                   </span>)
-                                }
+                                } */}
+                                <span className="parameter">
+                                  {value.parameters[0]}
+                                </span>
                               </div>
                             );
                             break;
@@ -599,9 +608,11 @@ const CustomDataTable = ({
                             formattedCell = (
                               <div className="data-column">
                                 {
-                                  value.data.map((d, i) => <Button key={i} className="data" kind="ghost" renderIcon={Document}>
-                                  {d.name}
-                                </Button>)
+                                  value.data.map((d, i) => 
+                                    <Tag key={i} className="data" type="outline" renderIcon={Document} size="sm">
+                                      {d.name}
+                                    </Tag>
+                                  )
                                 }
                               </div>
                             );

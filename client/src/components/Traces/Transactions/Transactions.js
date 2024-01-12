@@ -142,6 +142,24 @@ function Transactions() {
   const [endDate, setEndDate] = useState(undefined);
   const [rows, setRows] = useState(data);
 
+  function formatData(rowData) {
+    return rowData.map((row, i) => {
+      return defaultHeaders.reduce((r, h) => {
+        switch(h.key) {
+          case 'trace':
+            r[h.key] = {
+              displayType: 'link',
+              data: row[h.key],
+              href: `#/trace-analysis/${row[h.key]}`
+            }
+            break;
+          default:
+            r[h.key] = row[h.key]
+        }
+        return r
+      }, {id: `row_${i}`})
+    })
+  }
   return (
     <div>
       <Accordion align="start">
@@ -155,7 +173,7 @@ function Transactions() {
 
       <CustomDataTable
         headers={headers.filter((h) => h.checked || h.key === "actions")}
-        rows={rows}
+        rows={formatData(rows)}
         loading={false}
         search={{
           searchText: searchText,
