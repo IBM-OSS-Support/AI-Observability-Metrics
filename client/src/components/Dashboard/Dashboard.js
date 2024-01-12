@@ -90,6 +90,29 @@ function Dashboard() {
             </Column>
 
 
+            <Column
+              max={8}
+              xlg={8}
+              lg={8}
+              md={8}
+              sm={4}
+              className="content-tile space-5"
+            >
+              <div className="metrics-panel">
+                <h1>Visualize graphically</h1>
+              </div>
+            </Column>
+
+            <Column
+              max={4}
+              xlg={4}
+              lg={4}
+              md={4}
+              sm={4}
+              className="content-tile space-5"
+            >
+              <MetricsTile />
+            </Column>
 
             <Column
               max={16}
@@ -97,7 +120,7 @@ function Dashboard() {
               lg={16}
               md={8}
               sm={4}
-              className="content-tile space-5"
+              className="content-tile"
             >
               <ClickableTile
                 // className="chart-tile"
