@@ -13,6 +13,7 @@ import React from "react";
 import { Button, ClickableTile, Column, Content, Grid, TextInput } from "@carbon/react";
 
 import { ArrowRight, Send } from "@carbon/icons-react";
+import { SimpleBarChart } from "@carbon/charts-react";
 
 // Globals -------------------------------------------------------------------->
 import { DARK_THEME_ILLUSTRATION } from "./media/dark-theme-illustration";
@@ -35,7 +36,7 @@ function Dashboard() {
     <Content className="page-container home-container">
       <Grid fullWidth className="page-content">
         <Column max={12} xlg={12} lg={12} md={8} sm={4} className="left-container">
-          <Grid fullWidth narrow id="header" className="header">
+          <Grid fullWidth narrow id="header" className="page-header">
             <Column max={6} xlg={6} lg={6} md={8} sm={4}>
               <div className="left">
                 <div className="title">
@@ -113,17 +114,33 @@ function Dashboard() {
             >
               <MetricsTile />
             </Column>
-
             <Column
-              max={16}
-              xlg={16}
-              lg={16}
-              md={8}
-              sm={4}
+              max={6}
+              xlg={6}
+              lg={6}
+              md={6}
+              sm={6}
               className="content-tile"
             >
               <ClickableTile
-                // className="chart-tile"
+                className="chart-tile"
+                style={{}}
+                href={"#/"}
+                onKeyDown={(event) => {}}
+              >
+                <CustomLineChart data={latencyData} options={latencyOptions} />
+              </ClickableTile>
+            </Column>
+            <Column
+              max={6}
+              xlg={6}
+              lg={6}
+              md={6}
+              sm={6}
+              className="content-tile"
+            >
+              <ClickableTile
+                className="chart-tile"
                 style={{}}
                 href={"#/"}
                 onKeyDown={(event) => {}}
@@ -135,37 +152,20 @@ function Dashboard() {
               </ClickableTile>
             </Column>
             <Column
-              max={8}
-              xlg={8}
-              lg={8}
+              max={16}
+              xlg={16}
+              lg={16}
               md={8}
               sm={4}
               className="content-tile"
             >
               <ClickableTile
-                // className="chart-tile"
+                className="chart-tile"
                 style={{}}
                 href={"#/"}
                 onKeyDown={(event) => {}}
               >
-                <CustomLineChart data={latencyData} options={latencyOptions} />
-              </ClickableTile>
-            </Column>
-            <Column
-              max={8}
-              xlg={8}
-              lg={8}
-              md={8}
-              sm={4}
-              className="content-tile"
-            >
-              <ClickableTile
-                // className="chart-tile"
-                style={{}}
-                href={"#/"}
-                onKeyDown={(event) => {}}
-              >
-                <CustomLineChart
+                <SimpleBarChart
                   data={latencyDistData}
                   options={latencyDistOptions}
                 />

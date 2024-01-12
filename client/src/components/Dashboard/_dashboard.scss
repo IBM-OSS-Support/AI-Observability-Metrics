@@ -21,7 +21,11 @@
     margin: 0 !important;
   }
 
-  .header {
+  .chart-tile {
+    padding: 1.25rem;
+  }
+
+  .page-header {
     max-height: 15rem;
     padding: $spacing-05 !important;
     overflow: hidden;

@@ -12,6 +12,7 @@
 import React, { useMemo } from "react";
 
 import { LineChart } from '@carbon/charts-react';
+import moment from "moment";
 
 const defaultOptions = {
   theme: "g100",
@@ -24,7 +25,11 @@ const defaultOptions = {
     },
     bottom: {
       mapsTo: "key",
-      scaleType: "time"
+      scaleType: "time",
+      ticks: {
+        number: 4,
+        formatter: (tick => moment(tick).format('hh:MM A'))
+      }
     }
   },
   grid: {
