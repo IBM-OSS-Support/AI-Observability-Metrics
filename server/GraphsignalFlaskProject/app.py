@@ -53,7 +53,7 @@ def upload():
 
         if os.path.isfile(file_path):
             os.remove(file_path)
-            
+
         # Save the received gzip data to a file on your system
         with open(file_path, 'w') as file:
             file.write(json_data)
