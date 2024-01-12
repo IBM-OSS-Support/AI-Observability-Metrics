@@ -30,7 +30,7 @@ import {
   latencyDistData,
   latencyDistOptions,
   latencyOptions
-} from "../Metrics/constants";
+} from "../Metrics/Performance/constants";
 
 function Dashboard() {
 
