@@ -10,7 +10,7 @@
  * the U.S. Copyright Office.
  ****************************************************************************** */
  .home-container {
-  > .header {
+  .header {
     max-height: 24rem;
     padding: $spacing-05 !important;
     overflow: hidden;
@@ -127,7 +127,7 @@
     }
   }
 
-  > .body {
+  .body {
     position: relative;
     width: calc(100% - 1rem) !important;
     max-width: 100% !important;
@@ -138,6 +138,29 @@
     .content-tile {
       margin-bottom: 1rem;
       max-height: 24rem;
+    }
+  }
+  .chat-container {
+    height: 100%;
+    max-height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: end;
+    background-color: #111;
+
+    .chat-box {
+      margin-bottom: 1rem;
+    }
+    .title {
+      font-size: 2.5rem;
+      font-weight: normal;
+      margin-bottom: 2rem;
+    }
+
+    .chat-info {
+      font-size: .75rem;
+      margin-top: .5rem;
+      color: grey;
     }
   }
 }
