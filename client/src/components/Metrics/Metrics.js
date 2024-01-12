@@ -22,8 +22,8 @@ function Metrics() {
     <PageContainer
       className='metrics-container'
       header={{
-        title: "Traces",
-        subtitle: "Traces fpr your data.",
+        title: "Metrics",
+        subtitle: "Metrics based on your data.",
       }}
     >
       <div className="line-chart-section">
