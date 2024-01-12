@@ -20,9 +20,12 @@
   margin-bottom: 1rem;
   background-color: $layer-01;
 
-  .title {
-    padding: 1rem 1rem 0;
-    font-weight: bold;
+  .cds--slider__filled-track {
+    background-color: $interactive;
+  }
+
+  .cds--accordion__content {
+    padding-left: 0;
   }
 
 }

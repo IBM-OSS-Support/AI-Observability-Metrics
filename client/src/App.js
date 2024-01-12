@@ -27,7 +27,7 @@ import TraceAnalysis from './components/TraceAnalysis';
 const ROUTES = [
   { path: '/', component: () => <Traces /> },
   { path: '/metrics', component: () => <Metrics /> },
-  { path: '/trace-analysis', component: () => <TraceAnalysis /> },
+  { path: '/trace-analysis/:id', component: () => <TraceAnalysis /> },
 ];
 
 function App() {

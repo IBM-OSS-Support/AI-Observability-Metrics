@@ -4,45 +4,68 @@ import gzip
 import random
 import shutil
 import requests
+import json
+from google.protobuf import message
+import graphsignal
+from graphsignal.proto import signals_pb2
+from graphsignal.proto.signals_pb2 import UploadRequest
+from google.protobuf.json_format import MessageToDict
+import logging
 
 app = Flask(__name__)
+
+# Set up basic logging
+logging.basicConfig(level=logging.DEBUG)
 
 @app.route('/signals', methods=['POST'])
 def upload():
     try:
-        # Get the gzip data from the request body
-        gzip_data = request.data
-        print(gzip_data)
-        # Generate a unique file name
-        id = random.randint(0, 10)
-        file_name = f"response.gzip"
+        logging.debug("Received request")
+
+        # Get the gzipped data from the request body
+        gzipped_protobuf_data = request.data
+        logging.debug(f"Raw gzipped data received: {gzipped_protobuf_data}")
+
+        # Decompress the gzipped data
+        protobuf_data = gzip.decompress(gzipped_protobuf_data)
+        logging.debug(f"Decompressed Protobuf data: {protobuf_data}")
+
+        # Parse the Protobuf data
+        signal = UploadRequest()
+        signal.ParseFromString(protobuf_data)
+        logging.debug("Parsed Protobuf data")
+
+        # Right after parsing the Protobuf data
+        logging.debug(f"Protobuf message: {signal}")
+
+        # Convert the Protobuf message to a Python dictionary
+        signal_dict = MessageToDict(signal, preserving_proto_field_name=True)
+        logging.debug("Converted Protobuf to dictionary")
+
+        # Convert the Python dictionary to JSON
+        json_data = json.dumps(signal_dict, indent=4)  # Add indentation for readability
+        logging.debug("Converted dictionary to JSON")
+
+        print(json_data)  # Print the JSON data
+
+        file_name = f"response.json"
         file_path = os.path.join("/tmp/test", file_name)
 
         if os.path.isfile(file_path):
             os.remove(file_path)
 
         # Save the received gzip data to a file on your system
-        with open(file_path, 'wb') as file:
-            file.write(gzip_data)
+        with open(file_path, 'w') as file:
+            file.write(json_data)
 
-        # Decompress the saved gzip file
-        output_file_path = os.path.splitext(file_path)[0]  # Remove .gzip extension
-        if os.path.isfile(output_file_path):
-            os.remove(output_file_path)
+        logging.debug("Processed request successfully")
 
-        with gzip.open(file_path, 'rb') as gzipped_file, open(output_file_path, 'wb') as output_file:
-            shutil.copyfileobj(gzipped_file, output_file)
-
-        # Create a Flask JSON response
-        response_data = {
-            "uploadMs": "1702017204072",
-        }
-        response = make_response(jsonify(response_data))
-
-        return response
+        # You can now use the parsed JSON data as needed
+        return 'Signal received successfully'
 
     except Exception as e:
-        return str(e)
+        logging.error(f'Error processing request: {str(e)}')
+        return f'Error: {str(e)}', 500
     
 def loginData():
     url = "https://app.graphsignal.com/user/login"

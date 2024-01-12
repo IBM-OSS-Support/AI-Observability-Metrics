@@ -298,8 +298,9 @@
   .data-column {
     display: flex;
 
-    span {
+    > div {
       margin-right: .5rem;
+      cursor: pointer;
     }
   }
   
@@ -311,6 +312,15 @@
 
     span {
       margin-right: .5rem;
+    }
+  }
+  .operation-column {
+    display: flex;
+    color: $interactive;
+    cursor: pointer;
+
+    > .truncate {
+      margin-left: .5rem;
     }
   }
 }

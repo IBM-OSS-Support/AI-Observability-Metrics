@@ -15,14 +15,14 @@ load_dotenv(find_dotenv())
 
 # Load environment variables
 #API_URL = os.getenv('API_URL')
-API_URL = "http://127.0.0.1:5000"
+API_URL = "http://127.0.0.1:6000"
 GRAPHSIGNAL_API_KEY = os.getenv('GRAPHSIGNAL_API_KEY')
 OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')
 DEPLOYMENT = os.getenv('deployment')
 
-# graphsignal.configure(api_url=API_URL,api_key=GRAPHSIGNAL_API_KEY, deployment=DEPLOYMENT) # to send to flask app
+graphsignal.configure(api_url=API_URL,api_key=GRAPHSIGNAL_API_KEY, deployment=DEPLOYMENT) # to send to flask app
 
-graphsignal.configure(api_key=GRAPHSIGNAL_API_KEY, deployment=DEPLOYMENT) # to send to graphsignal dashboard
+# graphsignal.configure(api_key=GRAPHSIGNAL_API_KEY, deployment=DEPLOYMENT) # to send to graphsignal dashboard
 
 def solve(user_id, task):
     graphsignal.set_context_tag('user', user_id)
@@ -47,3 +47,5 @@ except:
 
 
 print("Done")
+
+
