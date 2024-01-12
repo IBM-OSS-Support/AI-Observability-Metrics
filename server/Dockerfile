@@ -29,8 +29,8 @@ RUN pip3 install numexpr
 # Copy the rest of the application files
 COPY . .
 
-# Expose the Flask app's port (replace 5000 with your app's port if needed)
-EXPOSE 5000
+# # Expose the Flask app's port (replace 5000 with your app's port if needed)
+# EXPOSE 5000
 
 CMD ["python3", "GraphsignalFlaskProject/app.py"]
 
