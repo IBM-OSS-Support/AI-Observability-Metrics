@@ -18,14 +18,30 @@ const defaultOptions = {
   axes: {
     left: {
       mapsTo: "value",
+      ticks: {
+        number: 3
+      }
     },
     bottom: {
       mapsTo: "key",
-      scaleType: "time",
+      scaleType: "time"
+    }
+  },
+  grid: {
+    x: {
+      alignWithAxisTicks: true,
     },
+    y: {
+      numberOfTicks: 3
+    }
+  },
+  points: {
+    fillOpacity: 1,
+    filled: true,
+    radius: 4
   },
   timeScale: {
-    addSpaceOnEdges: 0
+    addSpaceOnEdges: 0.1
   },
   legend: {
     enabled: false,
@@ -33,7 +49,12 @@ const defaultOptions = {
   toolbar: {
     enabled: false,
   },
-  height: "170px"
+  color: {
+    scale: {
+      'Dataset1': '#893ffc'
+    }
+  },
+  height: "240px"
 }
 
 function Metrics(props) {

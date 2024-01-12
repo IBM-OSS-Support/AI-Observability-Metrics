@@ -87,7 +87,7 @@ export const latencyDistOptions = {
   toolbar: {
     enabled: false,
   },
-  height: "170px",
+  height: "200px",
   color: {
     scale: {
       Qty: "#4589ff",
