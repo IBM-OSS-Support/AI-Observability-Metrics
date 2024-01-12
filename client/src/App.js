@@ -20,12 +20,14 @@ import Navigation from './components/Navigation';
 // Styles --------------------------------------------------------------------->
 import '@carbon/ibm-products/css/index.min.css';
 import './App.scss';
+import Dashboard from './components/Dashboard';
 import Traces from './components/Traces';
 import Metrics from './components/Metrics';
 import TraceAnalysis from './components/TraceAnalysis';
 
 const ROUTES = [
-  { path: '/', component: () => <Traces /> },
+  { path: '/', component: () => <Dashboard /> },
+  { path: '/traces', component: () => <Traces /> },
   { path: '/metrics', component: () => <Metrics /> },
   { path: '/trace-analysis/:id', component: () => <TraceAnalysis /> },
 ];
