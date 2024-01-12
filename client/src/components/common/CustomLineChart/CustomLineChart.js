@@ -21,19 +21,17 @@ const defaultOptions = {
     },
     bottom: {
       mapsTo: "key",
-      scaleType: "labels",
+      scaleType: "time",
     },
+  },
+  timeScale: {
+    addSpaceOnEdges: 0
   },
   legend: {
     enabled: false,
   },
   toolbar: {
     enabled: false,
-  },
-  color: {
-    scale: {
-      'Dataset1': '#4589ff'
-    }
   },
   height: "170px"
 }

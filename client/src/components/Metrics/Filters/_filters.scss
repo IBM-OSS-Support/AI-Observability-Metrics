@@ -1,0 +1,26 @@
+/* ******************************************************************************
+ * IBM Confidential
+ *
+ * OCO Source Materials
+ *
+ *  Copyright IBM Corp. 2023  All Rights Reserved.
+ *
+ * The source code for this program is not published or otherwise divested
+ * of its trade secrets, irrespective of what has been deposited with
+ * the U.S. Copyright Office.
+ ****************************************************************************** */
+.filters-container {
+  margin-bottom: 1rem;
+  background-color: $layer-01;
+
+  .filters {
+    display: flex;
+    align-items: center;
+
+    .filter {
+      margin-right: 1rem;
+      min-width: 140px;
+      max-width: 175px;
+    }
+  }
+}

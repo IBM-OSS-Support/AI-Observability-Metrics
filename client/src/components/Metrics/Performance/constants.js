@@ -10,16 +10,18 @@
  * the U.S. Copyright Office.
  ****************************************************************************** */
 
+import moment from 'moment';
+
 export const callCountData = [
   {
     group: 'Dataset1',
-    key: 'Qty',
-    value: 34200
+    key: moment(1704976200).toDate(),
+    value: 12
   },
   {
     group: 'Dataset1',
-    key: 'Misc',
-    value: 12300
+    key: moment(1704970800).toDate(),
+    value: 48
   }
 ];
 
@@ -30,13 +32,13 @@ export const callCountOptions = {
 export const latencyData = [
   {
     group: 'Dataset1',
-    key: 'Qty',
-    value: 34200
+    key: moment(1704976200).toDate(),
+    value: 6.5
   },
   {
     group: 'Dataset1',
-    key: 'Misc',
-    value: 12300
+    key: moment(1704970800).toDate(),
+    value: 5.4
   }
 ];
 
@@ -96,3 +98,37 @@ export const latencyDistOptions = {
     },
   },
 };
+
+export const filterValues = {
+  deployment: {
+    label: 'deployment',
+    options: [
+      { id: 'All', label: 'All' },
+      { id: 'Each', label: 'Each' },
+      { id: 'my-app-prod', label: 'my-app-prod' }
+    ]
+  },
+  component: {
+    label: 'component',
+    options: [
+      { id: 'All', label: 'All' },
+      { id: 'Each', label: 'Each' },
+      { id: 'Agent', label: 'Agent' },
+      { id: 'LLM', label: 'LLM' },
+      { id: 'Tool', label: 'Tool' }
+    ]
+  },
+  operation: {
+    label: 'operation',
+    options: [
+      { id: 'All', label: 'All' },
+      { id: 'Each', label: 'Each' },
+      { id: 'langchain.chains.llm_math.base', label: 'langchain.chains.llm_math.base' },
+      { id: 'openai.chat.completions.create', label: 'openai.chat.completions.create' },
+      { id: 'langchain.chat_models.openai.ChatOpenAI', label: 'langchain.chat_models.openai.ChatOpenAI' },
+      { id: 'langchain.agents.agent.AgentExecutor', label: 'langchain.agents.agent.AgentExecutor' },
+      { id: 'langchain.chains.llm.LLMChain', label: 'langchain.chains.llm.LLMChain' },
+      { id: 'langchain.agents.tools.Calculator', label: 'langchain.agents.tools.Calculator' }
+    ]
+  },
+}

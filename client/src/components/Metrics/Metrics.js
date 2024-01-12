@@ -9,43 +9,50 @@
  * of its trade secrets, irrespective of what has been deposited with
  * the U.S. Copyright Office.
  ****************************************************************************** */
-import React from "react";
+import React, { useState } from "react";
 
-import { SimpleBarChart } from "@carbon/charts-react";
+import {
+  Tab,
+  TabList,
+  Tabs,
+} from "@carbon/react";
 
 import PageContainer from "../common/PageContainer";
-import CustomLineChart from "../common/CustomLineChart";
-import { callCountData, callCountOptions, latencyData, latencyDistData, latencyDistOptions, latencyOptions } from "./constants";
+import Performance from "./Performance";
 
 function Metrics() {
+  const [tab, setTab] = useState(0);
+
+  let content;
+  switch(tab) {
+    case 0:
+      content = <Performance />;
+      break;
+    default: break;
+  }
+
   return (
     <PageContainer
       className='metrics-container'
       header={{
         title: "Metrics",
         subtitle: "Metrics based on your data.",
+        navigation: (
+          <Tabs
+            selectedIndex={tab}
+            onChange={({ selectedIndex }) => { setTab(selectedIndex) }}
+          >
+            <TabList aria-label="List of tabs">
+              <Tab>Performance</Tab>
+              <Tab>Data</Tab>
+              <Tab>System</Tab>
+              <Tab>Cost</Tab>
+            </TabList>
+          </Tabs>
+        )
       }}
     >
-      <div className="line-chart-section">
-        <CustomLineChart
-          data={callCountData}
-          options={callCountOptions}
-        />
-      </div>
-
-      <div className="line-chart-section">
-        <CustomLineChart
-          data={latencyData}
-          options={latencyOptions}
-        />
-      </div>
-
-      <div className="line-chart-section">
-        <SimpleBarChart
-          data={latencyDistData}
-          options={latencyDistOptions}
-        />
-      </div>
+      {content}
     </PageContainer>
   );
 }
