@@ -72,7 +72,7 @@ const TracesTile = () => {
       <Button
         kind="ghost"
         className="bottom-link"
-        // href={getPath("#/infrastructure-manager")}
+        href="#/traces"
       >
         <span>Go to traces</span>
       </Button>

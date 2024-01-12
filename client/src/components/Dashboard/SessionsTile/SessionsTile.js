@@ -72,7 +72,7 @@ const SessionsTile = () => {
       <Button
         kind="ghost"
         className="bottom-link"
-        // href={getPath("#/infrastructure-manager")}
+        href="#/session"
       >
         <span>Go to sessions</span>
       </Button>

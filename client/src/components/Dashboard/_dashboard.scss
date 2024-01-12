@@ -14,6 +14,13 @@
     margin-top: 3rem;
   }
 
+  .page-content {
+    padding: 0 !important;
+  }
+  .left-container {
+    margin: 0 !important;
+  }
+
   .header {
     max-height: 15rem;
     padding: $spacing-05 !important;
@@ -126,7 +133,7 @@
         margin-top: -1rem;
         margin-bottom: -1rem;
         height: calc(100% + 2rem);
-        margin-right: -2rem;
+        margin-right: -1rem;
       }
     }
   }
@@ -145,12 +152,14 @@
     }
   }
   .chat-container {
-    height: 100%;
+    height: calc(100vh - 3rem);
     max-height: 100%;
     display: flex;
     flex-direction: column;
     justify-content: end;
     background-color: #111;
+    margin: 0 !important;
+    padding: 1rem;
 
     .chat-box {
       margin-bottom: 1rem;
@@ -165,6 +174,15 @@
       font-size: .75rem;
       margin-top: .5rem;
       color: grey;
+    }
+    .input-container {
+      position: relative;
+
+      .button-wrapper {
+        position: absolute;
+        bottom: .25rem;
+        right: 0rem;
+      }
     }
   }
 

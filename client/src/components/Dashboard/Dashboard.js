@@ -10,9 +10,9 @@
  * the U.S. Copyright Office.
  ****************************************************************************** */
 import React from "react";
-import { ClickableTile, Column, Content, Grid, TextInput } from "@carbon/react";
+import { Button, ClickableTile, Column, Content, Grid, TextInput } from "@carbon/react";
 
-import { ArrowRight } from "@carbon/icons-react";
+import { ArrowRight, Send } from "@carbon/icons-react";
 
 // Globals -------------------------------------------------------------------->
 import { DARK_THEME_ILLUSTRATION } from "./media/dark-theme-illustration";
@@ -34,7 +34,7 @@ function Dashboard() {
   return (
     <Content className="page-container home-container">
       <Grid fullWidth className="page-content">
-        <Column max={12} xlg={12} lg={12} md={8} sm={4}>
+        <Column max={12} xlg={12} lg={12} md={8} sm={4} className="left-container">
           <Grid fullWidth narrow id="header" className="header">
             <Column max={6} xlg={6} lg={6} md={8} sm={4}>
               <div className="left">
@@ -53,7 +53,7 @@ function Dashboard() {
             </Column>
           </Grid>
           <Grid
-            // fullWidth
+            fullWidth
             narrow
             id="body"
             className="body"
@@ -176,7 +176,14 @@ function Dashboard() {
         <Column max={4} xlg={4} lg={4} md={8} sm={4} className="chat-container">
           <div className="chat-box">
             <h5 className="title">Talk to Roja</h5>
+            <div className="input-container">
+
             <TextInput placeholder="What do you want to ask?"></TextInput>
+            <div className="button-wrapper">
+
+            <Button className="button-go" size="sm" hasIconOnly renderIcon={Send} kind="ghost"/>
+            </div>
+            </div>
             <label className="chat-info">
               Roja may generate incorrect information. <br />
               Verify important information.

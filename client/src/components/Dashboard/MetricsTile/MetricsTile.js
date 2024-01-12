@@ -32,7 +32,7 @@ const MetricsTile = () => {
       <Button
         kind="ghost"
         className="bottom-link"
-        // href={getPath("#/infrastructure-manager")}
+        href="#/metrics"
       >
         <span>Go to metrics</span>
       </Button>
