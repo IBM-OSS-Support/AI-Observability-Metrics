@@ -15,7 +15,7 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import { SimpleBarChart } from "@carbon/charts-react";
 
 import CustomDataTable from "../../common/CustomDataTable";
-import { Download } from "@carbon/icons-react";
+import { Download, Maximize } from "@carbon/icons-react";
 import { Accordion, AccordionItem } from "@carbon/react";
 
 import data from "../../../constants/transactions.json";
@@ -59,9 +59,9 @@ const chartOptions = {
     enabled: false,
   },
   toolbar: {
-    enabled: false,
+    enabled: false
   },
-  height: "170px",
+  height: "180px",
   width: "100%",
   color: {
     scale: {
@@ -163,7 +163,7 @@ function Transactions() {
   return (
     <div>
       <Accordion align="start">
-        <AccordionItem title="Timeline chart">
+        <AccordionItem title="Timeline chart" open={true}>
           <SimpleBarChart
             data={chartData}
             options={chartOptions}

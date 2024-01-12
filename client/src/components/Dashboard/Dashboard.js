@@ -12,7 +12,7 @@
 import React from "react";
 import { Button, ClickableTile, Column, Content, Grid, TextInput } from "@carbon/react";
 
-import { ArrowRight, Send } from "@carbon/icons-react";
+import { Send } from "@carbon/icons-react";
 import { SimpleBarChart } from "@carbon/charts-react";
 
 // Globals -------------------------------------------------------------------->

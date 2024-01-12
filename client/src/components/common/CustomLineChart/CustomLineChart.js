@@ -12,6 +12,7 @@
 import React, { useMemo } from "react";
 
 import { LineChart } from '@carbon/charts-react';
+import { Maximize } from '@carbon/icons-react';
 import moment from "moment";
 
 const defaultOptions = {
@@ -52,7 +53,15 @@ const defaultOptions = {
     enabled: false,
   },
   toolbar: {
-    enabled: false,
+    enabled: true,
+    controls:[{
+      type: "Make fullscreen"
+    }],
+    text: "Make fullscreen",
+    iconSVG: {
+      content: Maximize
+    },
+    shouldBeDisabled: false
   },
   color: {
     scale: {

@@ -10,6 +10,7 @@
  * the U.S. Copyright Office.
  ****************************************************************************** */
 
+import { Maximize } from '@carbon/icons-react';
 import moment from 'moment';
 
 export const callCountData = [
@@ -85,9 +86,17 @@ export const latencyDistOptions = {
     enabled: false,
   },
   toolbar: {
-    enabled: false,
+    enabled: true,
+    controls:[{
+      type: "Make fullscreen"
+    }],
+    text: "Make fullscreen",
+    iconSVG: {
+      content: Maximize
+    },
+    shouldBeDisabled: false
   },
-  height: "200px",
+  height: "240px",
   color: {
     scale: {
       Qty: "#4589ff",
