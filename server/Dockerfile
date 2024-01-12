@@ -32,5 +32,7 @@ COPY . .
 # Expose the Flask app's port (replace 5000 with your app's port if needed)
 EXPOSE 5000
 
-# Run the Flask app using Gunicorn (adjust the parameters as needed)
-CMD ["gunicorn", "--bind", "0.0.0.0:5000", "GraphsignalFlaskProject.app:app"]
+CMD ["python3", "GraphsignalFlaskProject/app.py"]
+
+# # Run the Flask app using Gunicorn (adjust the parameters as needed)
+# CMD ["gunicorn", "--bind", "0.0.0.0:5000", "GraphsignalFlaskProject.app:app"]
