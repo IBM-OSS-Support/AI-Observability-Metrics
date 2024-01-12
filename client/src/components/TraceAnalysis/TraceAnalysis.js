@@ -10,16 +10,14 @@
  * the U.S. Copyright Office.
  ****************************************************************************** */
 import React, { useEffect, useState } from "react";
-import { useNavigate, useSearchParams } from "react-router-dom";
 
 import CustomDataTable from "../common/CustomDataTable";
-import { Download } from "@carbon/icons-react";
 import PageContainer from "../common/PageContainer";
 
 import data from "../../constants/operations.json";
+import { Accordion, AccordionItem } from "@carbon/react";
 
 function TraceAnalysis() {
-  const navigate = useNavigate();
   const defaultHeaders = [
     {
       key: "operation",
@@ -127,24 +125,12 @@ function TraceAnalysis() {
     },
   ];
 
-  const [headers, setHeaders] = useState(
-    defaultHeaders.map((h) => Object.assign({}, h))
-  );
-  const [searchParams, setSearchParams] = useSearchParams();
   const [searchText, setSearchText] = useState("");
-  const [filters, setFilters] = useState([]);
-  const [initialSelectedFilters, setInitialSelectedFilters] = useState({
-    source: ["Web client"],
-  });
-  const [selectedFilters, setSelectedFilters] = useState({});
   const [pagination, setPagination] = useState({ offset: 0, first: 10 });
-  const [modal, setModal] = useState(false);
-  const [startDate, setStartDate] = useState(undefined);
-  const [endDate, setEndDate] = useState(undefined);
-  const [rows, setRows] = useState(data);
+  const [rows, setRows] = useState([data]);
 
   useEffect(() => {
-    setRows(data.filter(d => d.operation.includes(searchText)));
+    setRows([data].filter(d => d.operation.includes(searchText)));
   }, [searchText])
 
   function formatRowData(rowData, totalLatency, level) {
@@ -158,7 +144,7 @@ function TraceAnalysis() {
           ...rest
         }
         return o
-      }, {})
+      }, {id: `${level}_row_${rest.id}`})
       return arr.concat([row]).concat(formatRowData(traces || [], totalLatency || rest.latency, level + 1))
     }, []);
   }
@@ -166,77 +152,26 @@ function TraceAnalysis() {
     <PageContainer
       className="trace-analysis-container"
       header={{
-        title: "Trace",
+        title: `Trace : ${data.trace}`,
         subtitle: "Trace analysis for your data.",
       }}
     >
       <div className="trace-analysis-section">
         <CustomDataTable
-          headers={headers}
+          headers={defaultHeaders}
           rows={formatRowData(rows, 0, 0)}
           loading={false}
+          // useStaticWidth={true}
           search={{
             searchText: searchText,
             persistent: true,
             placeholder: "Search for operations",
             onChange: setSearchText,
           }}
-          filter={{
-            id: "query-history-filter",
-            buttonOverrides: { align: "bottom" },
-            filters,
-            selectedFilters,
-            startDate,
-            setStartDate,
-            endDate,
-            setEndDate,
-            hasDateRange: true,
-            dateLabel: "Created",
-            setSelectedFilters: (newSelectedFilters) => {
-              setSelectedFilters(newSelectedFilters);
-              setPagination((prev) => ({ ...prev, offset: 0 }));
-
-              if (!Object.keys(newSelectedFilters).length) {
-                setInitialSelectedFilters({});
-                return navigate("/query-history");
-              }
-
-              Object.entries(newSelectedFilters).forEach(([key, values]) =>
-                setSearchParams((prev) => {
-                  const newSearchParams = [];
-
-                  prev.forEach((v, k) => {
-                    if (k !== key) {
-                      newSearchParams.push([k, v]);
-                    }
-                  });
-
-                  values.forEach((v) => newSearchParams.push([key, v]));
-
-                  return newSearchParams;
-                })
-              );
-            },
-          }}
-          columnCustomization={{
-            id: "query-history-list-columns",
-            buttonOverrides: { align: "bottom" },
-            columns: headers,
-            setColumns: setHeaders,
-            reset: () =>
-              setHeaders(defaultHeaders.map((h) => Object.assign({}, h))),
-          }}
           refresh={{
             label: "Refresh",
             align: "bottom-right",
             onClick: () => { },
-          }}
-          primaryButton={{
-            kind: "primary",
-            renderIcon: Download,
-            children: "Export to CSV",
-            onClick: () => { },
-            disabled: true,
           }}
           pagination={{
             totalItems: rows.length,
@@ -256,58 +191,67 @@ function TraceAnalysis() {
         />
       </div>
       <div className="trace-analysis-section">
-        <div className="title">Libraries</div>
-        <CustomDataTable
-          headers={defaultLibraryHeaders}
-          rows={rows[0].libraries}
-          loading={false}
-          emptyState={
-            !rows.length && {
-              type: false ? "NotFound" : "NoData",
-              title: "No queries yet.",
-              noDataSubtitle:
-                "Any queries run on your existing engines may be monitored here after submission.",
-            }
-          }
-          sortRowHandler={() => { }}
-          tableHeaderClickHandler={() => { }}
-        />
+        <Accordion align="start">
+          <AccordionItem title="Libraries" open>
+            <CustomDataTable
+              headers={defaultLibraryHeaders}
+              rows={rows[0].libraries}
+              loading={false}
+              emptyState={
+                !rows.length && {
+                  type: false ? "NotFound" : "NoData",
+                  title: "No queries yet.",
+                  noDataSubtitle:
+                    "Any queries run on your existing engines may be monitored here after submission.",
+                }
+              }
+              sortRowHandler={() => { }}
+              tableHeaderClickHandler={() => { }}
+            />
+          </AccordionItem>
+        </Accordion>
       </div>
       <div className="trace-analysis-section">
-        <div className="title">Process</div>
-        <CustomDataTable
-          headers={defaultProcessHeaders}
-          rows={rows[0].process}
-          loading={false}
-          emptyState={
-            !rows.length && {
-              type: false ? "NotFound" : "NoData",
-              title: "No queries yet.",
-              noDataSubtitle:
-                "Any queries run on your existing engines may be monitored here after submission.",
-            }
-          }
-          sortRowHandler={() => { }}
-          tableHeaderClickHandler={() => { }}
-        />
+        <Accordion align="start">
+          <AccordionItem title="Process" open>
+            <CustomDataTable
+              headers={defaultProcessHeaders}
+              rows={rows[0].process}
+              loading={false}
+              emptyState={
+                !rows.length && {
+                  type: false ? "NotFound" : "NoData",
+                  title: "No queries yet.",
+                  noDataSubtitle:
+                    "Any queries run on your existing engines may be monitored here after submission.",
+                }
+              }
+              sortRowHandler={() => { }}
+              tableHeaderClickHandler={() => { }}
+            />
+          </AccordionItem>
+        </Accordion>
       </div>
       <div className="trace-analysis-section">
-        <div className="title">Node</div>
-        <CustomDataTable
-          headers={defaultNodeHeaders}
-          rows={rows[0].node}
-          loading={false}
-          emptyState={
-            !rows.length && {
-              type: false ? "NotFound" : "NoData",
-              title: "No queries yet.",
-              noDataSubtitle:
-                "Any queries run on your existing engines may be monitored here after submission.",
-            }
-          }
-          sortRowHandler={() => { }}
-          tableHeaderClickHandler={() => { }}
-        />
+        <Accordion align="start" size="sm">
+          <AccordionItem title="Node" open>
+            <CustomDataTable
+              headers={defaultNodeHeaders}
+              rows={rows[0].node}
+              loading={false}
+              emptyState={
+                !rows.length && {
+                  type: false ? "NotFound" : "NoData",
+                  title: "No queries yet.",
+                  noDataSubtitle:
+                    "Any queries run on your existing engines may be monitored here after submission.",
+                }
+              }
+              sortRowHandler={() => { }}
+              tableHeaderClickHandler={() => { }}
+            />
+          </AccordionItem>
+        </Accordion>
       </div>
     </PageContainer>
   );
