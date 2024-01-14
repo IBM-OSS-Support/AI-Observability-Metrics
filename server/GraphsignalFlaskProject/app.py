@@ -11,6 +11,8 @@ from graphsignal.proto import signals_pb2
 from graphsignal.proto.signals_pb2 import UploadRequest
 from google.protobuf.json_format import MessageToDict
 import logging
+# import psycopg2
+# from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
 
 app = Flask(__name__)
 
@@ -57,6 +59,48 @@ def upload():
         # Save the received gzip data to a file on your system
         with open(file_path, 'w') as file:
             file.write(json_data)
+        
+        # # Database credentials
+        # dbname = "your_dbname"
+        # user = "your_username"
+        # password = "your_password"
+        # host = "your_host"
+
+        # # Connect to the default database (like 'postgres')
+        # conn = psycopg2.connect(dbname="postgres", user=user, password=password, host=host)
+        # conn.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
+        # cursor = conn.cursor()
+
+        # # Create a new database if it does not exist
+        # cursor.execute(f"SELECT 1 FROM pg_database WHERE datname = '{dbname}'")
+        # if cursor.fetchone() is None:
+        #     cursor.execute(f"CREATE DATABASE {dbname}")
+        
+        # cursor.close()
+        # conn.close()
+
+        # # Connect to the new database
+        # conn = psycopg2.connect(dbname=dbname, user=user, password=password, host=host)
+        # cursor = conn.cursor()
+
+        # # Create a table if it does not exist
+        # create_table_sql = """
+        # CREATE TABLE IF NOT EXISTS signals (
+        #     id SERIAL PRIMARY KEY,
+        #     data JSONB NOT NULL
+        # )
+        # """
+        # cursor.execute(create_table_sql)
+
+        # # SQL command to insert the JSON data
+        # insert_sql = "INSERT INTO signals (data) VALUES (%s)"
+        # cursor.execute(insert_sql, (json_data,))
+
+        # conn.commit()
+        # cursor.close()
+        # conn.close()
+
+        # logging.debug("JSON data written to PostgreSQL")
 
         logging.debug("Processed request successfully")
 
