@@ -1,9 +1,9 @@
 #!/bin/bash
 
 export HOME=/dist
-mkdir -p /mnt/vol/postgresql/data
-mkdir -p /mnt/vol/postgresql/run
-ln -f -s /mnt/vol/postgresql/run /var/run/postgresql
+mkdir -p /tmp/vol/postgresql/data
+mkdir -p /tmp/vol/postgresql/run
+ln -f -s /tmp/vol/postgresql/run /var/run/postgresql
 
 
 curruser="$(id -u)"
@@ -20,7 +20,7 @@ else
     export NSS_WRAPPER_GROUP=/etc/group
 fi
 
-export PGDATA=/mnt/vol/postgresql/data
+export PGDATA=/tmp/vol/postgresql/data
 echo PGDATA is: $PGDATA
 export PATH=/usr/pgsql-15/bin:$PATH
 
