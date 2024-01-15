@@ -11,8 +11,9 @@ from graphsignal.proto import signals_pb2
 from graphsignal.proto.signals_pb2 import UploadRequest
 from google.protobuf.json_format import MessageToDict
 import logging
-# import psycopg2
-# from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
+import psycopg2
+from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
+from psycopg2.extras import Json
 
 app = Flask(__name__)
 
@@ -60,47 +61,35 @@ def upload():
         with open(file_path, 'w') as file:
             file.write(json_data)
         
-        # # Database credentials
-        # dbname = "your_dbname"
-        # user = "your_username"
-        # password = "your_password"
-        # host = "your_host"
+        # Database credentials
+        dbname = "roja_postgres"
+        user = "postgres"
+        password = "postgres"
+        host = "roja-metric-backend-db"
+        port: '5432'
 
-        # # Connect to the default database (like 'postgres')
-        # conn = psycopg2.connect(dbname="postgres", user=user, password=password, host=host)
-        # conn.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
-        # cursor = conn.cursor()
+        # Connect to the database
+        conn = psycopg2.connect(dbname=dbname, user=user, password=password, host=host, port=port)
+        cursor = conn.cursor()
 
-        # # Create a new database if it does not exist
-        # cursor.execute(f"SELECT 1 FROM pg_database WHERE datname = '{dbname}'")
-        # if cursor.fetchone() is None:
-        #     cursor.execute(f"CREATE DATABASE {dbname}")
-        
-        # cursor.close()
-        # conn.close()
+        # Create a table if it does not exist
+        create_table_sql = """
+        CREATE TABLE IF NOT EXISTS signals (
+            id SERIAL PRIMARY KEY,
+            data JSONB NOT NULL
+        )
+        """
+        cursor.execute(create_table_sql)
 
-        # # Connect to the new database
-        # conn = psycopg2.connect(dbname=dbname, user=user, password=password, host=host)
-        # cursor = conn.cursor()
+        # SQL command to insert the JSON data
+        insert_sql = "INSERT INTO signals (data) VALUES (%s)"
+        cursor.execute(insert_sql, (json_data,))
 
-        # # Create a table if it does not exist
-        # create_table_sql = """
-        # CREATE TABLE IF NOT EXISTS signals (
-        #     id SERIAL PRIMARY KEY,
-        #     data JSONB NOT NULL
-        # )
-        # """
-        # cursor.execute(create_table_sql)
+        conn.commit()
+        cursor.close()
+        conn.close()
 
-        # # SQL command to insert the JSON data
-        # insert_sql = "INSERT INTO signals (data) VALUES (%s)"
-        # cursor.execute(insert_sql, (json_data,))
-
-        # conn.commit()
-        # cursor.close()
-        # conn.close()
-
-        # logging.debug("JSON data written to PostgreSQL")
+        logging.debug("JSON data written to PostgreSQL")
 
         logging.debug("Processed request successfully")
 
@@ -110,79 +99,7 @@ def upload():
     except Exception as e:
         logging.error(f'Error processing request: {str(e)}')
         return f'Error: {str(e)}', 500
-    
-def loginData():
-    url = "https://app.graphsignal.com/user/login"
-    
-    headers = {
-        "accept": "application/json, text/plain, */*",
-        "accept-language": "en-GB,en-US;q=0.9,en;q=0.8",
-        "content-type": "application/json",
-    }
 
-    data = {
-        "email": "abdulla.thanseeh@ibm.com",
-        "password": "Abdullaibm01997$",
-        "token": None
-    }
-
-    response = requests.post(url, headers=headers, json=data, cookies=request.cookies)
-    data = response.json()
-    user = data.get("user")
-    token = user.get("token")
-    return token
-    
-@app.route('/user/build_dashboard/', methods=['POST'])
-def build_dashboard():
-    url = "https://app.graphsignal.com/user/build_dashboard"
-
-    dashboard_name = request.json.get("dashboard_name")
-    view = request.json.get("view")
-
-    token = loginData()
-
-    print(token)
-    
-    headers = {
-        "accept": "application/json, text/plain, */*",
-        "accept-language": "en-GB,en-US;q=0.9,en;q=0.8",
-        "authorization": "Bearer "+ token,
-        "content-type": "application/json",
-        "sec-ch-ua": "\"Not_A Brand\";v=\"8\", \"Chromium\";v=\"120\", \"Google Chrome\";v=\"120\"",
-        "sec-ch-ua-mobile": "?0",
-        "sec-ch-ua-platform": "\"macOS\"",
-        "sec-fetch-dest": "empty",
-        "sec-fetch-mode": "cors",
-        "sec-fetch-site": "same-origin"
-    }
-
-    payload = {
-        "dashboard_name": dashboard_name,
-        "passed_params": {
-            "range_end": 1704976624,
-            "range_start": 1704371824,
-            "range_type": "last7d",
-            "tag_component": "*",
-            "tag_deployment": "*",
-            "tag_hostname": "*",
-            "tag_operation": "*",
-            "tag_user": "*",
-            "view": view
-        },
-        "cached_params": {},
-        "no_cache": False
-    }
-
-    try:
-        response = requests.post(url, headers=headers, json=payload)
-        response.raise_for_status()  # Raise an exception if the response status code is not 2xx
-
-        # Handle the response as needed
-        response_json = response.json()
-        return jsonify(response_json), 200
-    except requests.exceptions.RequestException as e:
-        # Handle exceptions (e.g., connection error)
-        return jsonify({"error": str(e)}), 500
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=6000)

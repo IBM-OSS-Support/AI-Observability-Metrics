@@ -5,7 +5,7 @@ FROM registry.access.redhat.com/ubi8/ubi-minimal:latest
 ENV POSTGRES_VERSION=12
 ENV POSTGRES_USER=postgres
 ENV POSTGRES_PASSWORD=postgres
-ENV POSTGRES_DB=postgres
+ENV POSTGRES_DB=roja_postgres
 ENV PGDATA=/var/lib/postgresql/data
 
 # Install PostgreSQL
