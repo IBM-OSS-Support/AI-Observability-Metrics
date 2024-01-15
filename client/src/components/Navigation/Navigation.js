@@ -62,8 +62,7 @@ const Navigation = () => {
         {
           name: 'Sessions',
           subpath: '/sessions',
-          icon: Time,
-          disabled: true
+          icon: Time
         },
         {
           name: 'Metrics',
