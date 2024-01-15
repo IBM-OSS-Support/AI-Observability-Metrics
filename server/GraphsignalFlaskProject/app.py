@@ -153,4 +153,4 @@ def run_script():
         return jsonify({"error": "An error occurred while executing the script"}), 500
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=6000)
+    app.run(host='0.0.0.0', port=3001)

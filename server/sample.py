@@ -15,7 +15,7 @@ load_dotenv(find_dotenv())
 
 # Load environment variables
 #API_URL = os.getenv('API_URL')
-API_URL = "http://127.0.0.1:6000"
+API_URL = "http://127.0.0.1:3001"
 GRAPHSIGNAL_API_KEY = os.getenv('GRAPHSIGNAL_API_KEY')
 OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')
 DEPLOYMENT = os.getenv('deployment')
