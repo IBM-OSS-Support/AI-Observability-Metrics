@@ -122,7 +122,7 @@ const Navigation = () => {
             to={'/'}
             prefix="IBM"
           >
-            ROJA Monitoring & Observation
+            ROJA
           </HeaderName>
           <SideNav
             id="side-nav"

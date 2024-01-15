@@ -10,9 +10,8 @@
  * the U.S. Copyright Office.
  ****************************************************************************** */
 import React from "react";
-import { Button, ClickableTile, Column, Content, Grid, TextInput } from "@carbon/react";
+import { ClickableTile, Column, Content, Grid } from "@carbon/react";
 
-import { Send } from "@carbon/icons-react";
 import { SimpleBarChart } from "@carbon/charts-react";
 
 // Globals -------------------------------------------------------------------->
@@ -30,6 +29,7 @@ import {
 import TracesTile from "./TracesTile/TracesTile";
 import SessionsTile from "./SessionsTile/SessionsTile";
 import MetricsTile from "./MetricsTile/MetricsTile";
+import RojaChat from "../common/RojaChat";
 
 function Dashboard() {
   return (
@@ -37,19 +37,13 @@ function Dashboard() {
       <Grid fullWidth className="page-content">
         <Column max={12} xlg={12} lg={12} md={8} sm={4} className="left-container">
           <Grid fullWidth narrow id="header" className="page-header">
-            <Column max={6} xlg={6} lg={6} md={8} sm={4}>
+            <Column max={12} xlg={12} lg={12} md={8} sm={4}>
               <div className="left">
                 <div className="title">
                   <h3>
-                    Welcome back, <br /> Alice
+                    AI Ops Observability & Monitoring
                   </h3>
                 </div>
-              </div>
-            </Column>
-            {/* <Column max={1} xlg={1} lg={1} md={1} sm={0} /> */}
-            <Column max={6} xlg={6} lg={6} md={0} sm={0}>
-              <div className="right">
-                <img src={DARK_THEME_ILLUSTRATION} alt="illustration" />
               </div>
             </Column>
           </Grid>
@@ -100,7 +94,7 @@ function Dashboard() {
               className="content-tile space-5"
             >
               <div className="metrics-panel">
-                <h1>Visualize graphically</h1>
+                <h3>Visualize graphically</h3>
               </div>
             </Column>
 
@@ -173,22 +167,8 @@ function Dashboard() {
             </Column>
           </Grid>
         </Column>
-        <Column max={4} xlg={4} lg={4} md={8} sm={4} className="chat-container">
-          <div className="chat-box">
-            <h5 className="title">Talk to Roja</h5>
-            <div className="input-container">
-
-            <TextInput placeholder="What do you want to ask?"></TextInput>
-            <div className="button-wrapper">
-
-            <Button className="button-go" size="sm" hasIconOnly renderIcon={Send} kind="ghost"/>
-            </div>
-            </div>
-            <label className="chat-info">
-              Roja may generate incorrect information. <br />
-              Verify important information.
-            </label>
-          </div>
+        <Column max={4} xlg={4} lg={4} md={0} sm={0}>
+          <RojaChat />
         </Column>
       </Grid>
     </Content>
