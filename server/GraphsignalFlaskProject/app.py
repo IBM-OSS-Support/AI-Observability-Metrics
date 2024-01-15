@@ -68,8 +68,6 @@ def upload():
         # Save the received gzip data to a file on your system
         with open(file_path, 'w') as file:
             file.write(json_data)
-        
-       
 
         # Connect to the database
         conn = psycopg2.connect(dbname=dbname, user=user, password=password, host=host, port=port)
