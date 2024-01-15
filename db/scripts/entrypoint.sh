@@ -1,9 +1,9 @@
 #!/bin/bash
 
 export HOME=/dist
-mkdir -p /tmp/vol/postgresql/data
-mkdir -p /tmp/vol/postgresql/run
-ln -f -s /tmp/vol/postgresql/run /var/run/postgresql
+mkdir -p /mnt/vol/postgresql/data
+mkdir -p /mnt/vol/postgresql/run
+ln -f -s /mnt/vol/postgresql/run /var/run/postgresql
 
 
 curruser="$(id -u)"
