@@ -20,7 +20,7 @@ else
     export NSS_WRAPPER_GROUP=/etc/group
 fi
 
-export PGDATA=/mnt/vol/postgresql/data
+export PGDATA=/tmp/vol/postgresql/data
 echo PGDATA is: $PGDATA
 export PATH=/usr/pgsql-15/bin:$PATH
 
