@@ -334,6 +334,7 @@ const CustomDataTable = ({
                         id={`${id}-${header.key}-header`}
                         key={i}
                         title={header.header}
+                        className={header.key}
                         onClickCapture={tableHeaderClickHandler}
                       >
                         {header.header}
@@ -351,7 +352,7 @@ const CustomDataTable = ({
                           disabled={batchActionsDisabled}
                         />
                       }
-                      {row.cells.map(({ id, value }) => {
+                      {row.cells.map(({ id, value, info : {header} }) => {
                         let formattedCell = value;
 
                         switch (value?.displayType) {
@@ -630,7 +631,7 @@ const CustomDataTable = ({
                         }
 
                         return (
-                          <TableCell key={id}>
+                          <TableCell key={id} className={header}>
                             {formattedCell}
                           </TableCell>
                         );
