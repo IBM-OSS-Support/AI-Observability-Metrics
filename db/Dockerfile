@@ -10,16 +10,23 @@ ENV PGDATA=/var/lib/postgresql/data
 # Install PostgreSQL
 RUN microdnf -y install yum
 
-RUN yum install -y https://download.postgresql.org/pub/repos/yum/reporpms/EL-7-x86_64/pgdg-redhat-repo-latest.noarch.rpm && \
-    yum install -y postgresql15-server && \
-    yum clean all
+RUN microdnf update -y \
+    && microdnf update tzdata -y  \
+    && microdnf reinstall tzdata -y \
+    && microdnf install -y --disableplugin=subscription-manager yum wget findutils nss_wrapper gettext\
+    && yum install -y https://download.postgresql.org/pub/repos/yum/reporpms/EL-8-x86_64/pgdg-redhat-repo-latest.noarch.rpm \
+    && yum install -y postgresql15-server \
+    && mkdir /docker-entrypoint-initdb.d \
+    && wget -O /usr/local/bin/gosu "https://github.com/tianon/gosu/releases/download/1.16/gosu-amd64" \
+    && chmod -R 777 /usr/local/bin/gosu /var/lib/pgsql /docker-entrypoint-initdb.d /var/run/postgresql \
+    && echo "listen_addresses = '*'" >> /usr/pgsql-15/share/postgresql.conf.sample \
+    && yum clean all \
+    && rm -rf /var/cache/yum \
+    && microdnf clean all 
 
-# Initialize the database
-RUN /usr/pgsql-15/bin/postgresql-15-setup initdb
+ENV PATH /usr/pgsql-15/bin:$PATH
 
-# Adjust PostgreSQL configuration to allow remote connections
-RUN echo "host all all 0.0.0.0/0 md5" >> "$PGDATA/pg_hba.conf"
-RUN echo "listen_addresses='*'" >> "$PGDATA/postgresql.conf"
+STOPSIGNAL SIGINT
 
 # Expose the PostgreSQL port
 EXPOSE 5432
