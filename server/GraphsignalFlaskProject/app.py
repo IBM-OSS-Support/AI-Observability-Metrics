@@ -35,11 +35,11 @@ def upload():
 
         # Get the gzipped data from the request body
         gzipped_protobuf_data = request.data
-        logging.debug(f"Raw gzipped data received: {gzipped_protobuf_data}")
+        # logging.debug(f"Raw gzipped data received: {gzipped_protobuf_data}")
 
         # Decompress the gzipped data
         protobuf_data = gzip.decompress(gzipped_protobuf_data)
-        logging.debug(f"Decompressed Protobuf data: {protobuf_data}")
+        # logging.debug(f"Decompressed Protobuf data: {protobuf_data}")
 
         # Parse the Protobuf data
         signal = UploadRequest()
@@ -47,7 +47,7 @@ def upload():
         logging.debug("Parsed Protobuf data")
 
         # Right after parsing the Protobuf data
-        logging.debug(f"Protobuf message: {signal}")
+        # logging.debug(f"Protobuf message: {signal}")
 
         # Convert the Protobuf message to a Python dictionary
         signal_dict = MessageToDict(signal, preserving_proto_field_name=True)
@@ -57,7 +57,7 @@ def upload():
         json_data = json.dumps(signal_dict, indent=4)  # Add indentation for readability
         logging.debug("Converted dictionary to JSON")
 
-        print(json_data)  # Print the JSON data
+        # print(json_data)  # Print the JSON data
 
         file_name = f"response.json"
         file_path = os.path.join("/tmp/test", file_name)
