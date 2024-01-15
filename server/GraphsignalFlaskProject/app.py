@@ -14,6 +14,7 @@ import logging
 import psycopg2
 from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
 from psycopg2.extras import Json
+import subprocess
 
 app = Flask(__name__)
 
@@ -104,7 +105,7 @@ def upload():
     
     
 # Route to get data from PostgreSQL and send it to UI
-@app.route('/rojametrics', methods=['GET'])
+@app.route('/roja-metrics', methods=['GET'])
 def get_latest_data():
     try:
         # Connect to the database
@@ -131,6 +132,22 @@ def get_latest_data():
         print(e)
         return jsonify({"error": "Unable to fetch data from the database"}), 500
 
+@app.route('/run-roja-script', methods=['POST'])
+def run_script():
+    try:
+        # Execute the sample.py script
+        result = subprocess.run(['python', 'sample.py'], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+
+        # Check if the script ran successfully
+        if result.returncode == 0:
+            return jsonify({"message": "Script executed successfully", "output": result.stdout})
+        else:
+            return jsonify({"error": "Script execution failed", "output": result.stderr}), 500
+
+    except Exception as e:
+        # In case of any exception, return a failure message
+        print(e)
+        return jsonify({"error": "An error occurred while executing the script"}), 500
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=6000)
