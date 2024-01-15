@@ -17,6 +17,13 @@ from psycopg2.extras import Json
 
 app = Flask(__name__)
 
+ # Database credentials
+dbname = "roja_postgres"
+user = "postgres"
+password = "postgres"
+host = "roja-metric-backend-db"
+port: '5432'
+
 # Set up basic logging
 logging.basicConfig(level=logging.DEBUG)
 
@@ -61,12 +68,7 @@ def upload():
         with open(file_path, 'w') as file:
             file.write(json_data)
         
-        # Database credentials
-        dbname = "roja_postgres"
-        user = "postgres"
-        password = "postgres"
-        host = "roja-metric-backend-db"
-        port: '5432'
+       
 
         # Connect to the database
         conn = psycopg2.connect(dbname=dbname, user=user, password=password, host=host, port=port)
@@ -99,6 +101,35 @@ def upload():
     except Exception as e:
         logging.error(f'Error processing request: {str(e)}')
         return f'Error: {str(e)}', 500
+    
+    
+# Route to get data from PostgreSQL and send it to UI
+@app.route('/rojametrics', methods=['GET'])
+def get_latest_data():
+    try:
+        # Connect to the database
+        conn = psycopg2.connect(dbname=dbname, user=user, password=password, host=host, port=port)
+        cursor = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+
+        # SQL command to fetch the most recent data
+        fetch_sql = "SELECT * FROM signals ORDER BY id DESC LIMIT 1"
+        cursor.execute(fetch_sql)
+
+        # Fetch the most recent row from the database
+        row = cursor.fetchone()
+        result = dict(row) if row else {}
+
+        # Close the cursor and connection
+        cursor.close()
+        conn.close()
+
+        # Return the fetched data as JSON
+        return jsonify(result)
+
+    except Exception as e:
+        # In case of any exception, print the error and return a failure message
+        print(e)
+        return jsonify({"error": "Unable to fetch data from the database"}), 500
 
 
 if __name__ == '__main__':
