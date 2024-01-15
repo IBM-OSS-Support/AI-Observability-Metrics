@@ -1,0 +1,50 @@
+/* ******************************************************************************
+ * IBM Confidential
+ *
+ * OCO Source Materials
+ *
+ *  Copyright IBM Corp. 2024  All Rights Reserved.
+ *
+ * The source code for this program is not published or otherwise divested
+ * of its trade secrets, irrespective of what has been deposited with
+ * the U.S. Copyright Office.
+ ****************************************************************************** */
+
+ .chat-container {
+  height: calc(100vh - 3rem);
+  max-height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: end;
+  background-color: #111;
+  margin: 0 !important;
+  padding: 1rem;
+  position: fixed;
+  top: 3rem;
+  right: 0;
+  width: calc((100% - 3rem) / 4);
+
+  .chat-box {
+    margin-bottom: 1rem;
+  }
+  .title {
+    font-size: 2.5rem;
+    font-weight: normal;
+    margin-bottom: 2rem;
+  }
+
+  .chat-info {
+    font-size: .75rem;
+    margin-top: .5rem;
+    color: grey;
+  }
+  .input-container {
+    position: relative;
+
+    .button-wrapper {
+      position: absolute;
+      bottom: .25rem;
+      right: 0rem;
+    }
+  }
+}
