@@ -30,6 +30,7 @@ import TracesTile from "./TracesTile/TracesTile";
 import SessionsTile from "./SessionsTile/SessionsTile";
 import MetricsTile from "./MetricsTile/MetricsTile";
 import RojaChat from "../common/RojaChat";
+import CpuUsage from "./CpuUsage/CpuUsage";
 
 function Dashboard() {
   return (
@@ -61,7 +62,7 @@ function Dashboard() {
               sm={4}
               className="content-tile"
             >
-              <MetricsTile />
+              <CpuUsage />
             </Column>
             <Column
               max={4}
