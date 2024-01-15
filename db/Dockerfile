@@ -23,7 +23,11 @@ RUN microdnf -y install yum \
     && rm -rf /var/cache/yum \
     && microdnf clean all 
 
-# Adjust permissions as needed (be more specific than 777)
+# Create a non-root user 'postgres' and set ownership
+RUN useradd --create-home --shell /bin/bash postgres \
+    && chown -R postgres:postgres /var/lib/pgsql /docker-entrypoint-initdb.d /var/run/postgresql
+
+# Adjust permissions as needed
 RUN chmod -R 700 /var/lib/pgsql /docker-entrypoint-initdb.d /var/run/postgresql
 
 # Expose the PostgreSQL port
