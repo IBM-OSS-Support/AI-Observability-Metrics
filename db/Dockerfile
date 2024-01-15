@@ -22,12 +22,9 @@ RUN microdnf -y install yum \
     && rm -rf /var/cache/yum \
     && microdnf clean all 
 
+ENV PATH /usr/pgsql-15/bin:$PATH
+COPY /scripts /scripts
+ENTRYPOINT ["/scripts/entrypoint.sh"]
 # Expose the PostgreSQL port
 EXPOSE 5432
-
-# Copy the custom initialization script
-COPY start-db.sh /usr/local/bin/
-RUN chmod +x /usr/local/bin/start-db.sh
-
-# Set the command to run the initialization script
-CMD ["start-db.sh"]
+USER 1001
