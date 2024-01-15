@@ -8,9 +8,7 @@ ENV POSTGRES_DB=roja_postgres
 ENV PGDATA=/var/lib/postgresql/data
 
 # Install PostgreSQL
-RUN microdnf -y update && \
-    microdnf -y install yum && \
-    microdnf clean all
+RUN microdnf -y install yum
 
 RUN yum install -y https://download.postgresql.org/pub/repos/yum/reporpms/EL-7-x86_64/pgdg-redhat-repo-latest.noarch.rpm && \
     yum install -y postgresql15-server && \
