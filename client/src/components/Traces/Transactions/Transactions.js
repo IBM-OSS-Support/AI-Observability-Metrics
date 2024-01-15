@@ -123,7 +123,6 @@ function Transactions() {
       header: "User",
       checked: true,
     },
-    { key: "actions", header: "" },
   ];
 
   const [headers, setHeaders] = useState(
