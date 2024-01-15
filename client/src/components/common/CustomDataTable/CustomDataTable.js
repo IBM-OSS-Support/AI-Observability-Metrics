@@ -553,16 +553,16 @@ const CustomDataTable = ({
                             break;
                           case 'operation':
                             formattedCell = (
-                              <div className="operation-column"
+                              <Link
                                 style={{ marginLeft:`${ value?.level * 1}rem` }}
+                                href={value.href || null}
+                                onClick={() => !value.href && value.onClick ? value.onClick() : null}
+                                renderIcon={value.renderIcon}
+                                className="truncate"
                               >
-                                <Movement />
-                                <div 
-                                  className="truncate"
-                                >
-                                  {value?.operation}
-                                </div>
-                              </div>
+                                <Movement></Movement>&nbsp;&nbsp;
+                                {value?.operation}
+                              </Link>
                             );
                             break;
                           case 'latency':

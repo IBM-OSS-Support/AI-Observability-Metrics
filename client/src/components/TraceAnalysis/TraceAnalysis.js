@@ -137,11 +137,24 @@ function TraceAnalysis() {
     return rowData.reduce((arr, r, i) => {
       const {traces, ...rest} = r;
       const row = defaultHeaders.reduce((o, h) => {
-        o[h.key] = {
-          displayType: h.key,
-          level,
-          total: totalLatency || rest.latency,
-          ...rest
+        switch (h.key) {
+          case 'operation': {
+            o[h.key] = {
+              displayType: h.key,
+              href: `#/traces/?operation=${rest[h.key]}`,
+              level,
+              total: totalLatency || rest.latency,
+              ...rest
+            }
+            break;
+          }
+          default: 
+            o[h.key] = {
+              displayType: h.key,
+              level,
+              total: totalLatency || rest.latency,
+              ...rest
+            }
         }
         return o
       }, {id: `${level}_row_${rest.id}`})

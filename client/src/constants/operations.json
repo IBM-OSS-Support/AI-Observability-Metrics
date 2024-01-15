@@ -171,7 +171,7 @@
           "delay": 2.3,
           "deployment": "my-app-prod",
           "component": "Agent",
-          "operation": " langchain.chains.llm_math.base.LLMMathChain",
+          "operation": "langchain.chains.llm_math.base.LLMMathChain",
           "hostname": "Abdullas-MacBook-Pro.local",
           "user": "user3",
           "parameters": [],
