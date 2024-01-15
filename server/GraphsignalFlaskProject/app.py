@@ -15,6 +15,8 @@ import psycopg2
 from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
 from psycopg2.extras import Json
 import subprocess
+import time
+from io import BytesIO
 
 app = Flask(__name__)
 
@@ -22,7 +24,7 @@ app = Flask(__name__)
 dbname = "roja_postgres"
 user = "postgres"
 password = "postgres"
-host = "roja-metric-backend-db"
+host = "9.30.147.134"
 port: '5432'
 
 # Set up basic logging
@@ -36,14 +38,20 @@ def upload():
         # Get the gzipped data from the request body
         gzipped_protobuf_data = request.data
         # logging.debug(f"Raw gzipped data received: {gzipped_protobuf_data}")
+        
+        content = _gunzip_data(gzipped_protobuf_data)
 
         # Decompress the gzipped data
         protobuf_data = gzip.decompress(gzipped_protobuf_data)
         # logging.debug(f"Decompressed Protobuf data: {protobuf_data}")
+        
+        signal = signals_pb2.UploadRequest()
+        signal.ParseFromString(content)
+                
+        # logging.debug(content)
 
         # Parse the Protobuf data
-        signal = UploadRequest()
-        signal.ParseFromString(protobuf_data)
+
         logging.debug("Parsed Protobuf data")
 
         # Right after parsing the Protobuf data
@@ -112,28 +120,31 @@ def get_latest_data():
         cursor = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
 
         # SQL command to fetch the most recent data
-        fetch_sql = "SELECT data FROM signals ORDER BY id DESC LIMIT 1"
+        fetch_sql = "SELECT data FROM signals ORDER BY id DESC LIMIT 2"
         cursor.execute(fetch_sql)
 
         # Fetch the most recent row from the database
         logging.debug("Fetching data from the database...")
-        row = cursor.fetchone()
-        result = dict(row) if row else {}
+        rows = cursor.fetchall()
+        results = [dict(row) for row in rows] if rows else []
 
-        # Logging the fetched row for debugging
-        logging.debug("Fetched row: %s", row)
+        # Logging the fetched rows for debugging
+        logging.debug("Fetched rows: %s", results)
 
         # Close the cursor and connection
         cursor.close()
         conn.close()
 
         # Return the fetched data as JSON
-        return jsonify(result)
+        return jsonify(results)
 
     except Exception as e:
         # Log the error
         logging.error("Error occurred: %s", e)
         return jsonify({"error": "Unable to fetch data from the database"}), 500
+
+def _gunzip_data(data):
+    return gzip.GzipFile('', 'r', 0, BytesIO(data)).read()
 
 @app.route('/run-roja-script', methods=['POST'])
 def run_script():
