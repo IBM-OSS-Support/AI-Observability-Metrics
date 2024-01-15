@@ -609,8 +609,8 @@ const CustomDataTable = ({
                             formattedCell = (
                               <div className="data-column">
                                 {
-                                  value.data.map((d, i) => 
-                                    <Tag key={i} className="data" type="outline" renderIcon={Document} size="sm">
+                                  value.items.map((d, i) => 
+                                    <Tag key={i} className="data" type="outline" renderIcon={Document} size="sm" onClick={d.onClick}>
                                       {d.name}
                                     </Tag>
                                   )
