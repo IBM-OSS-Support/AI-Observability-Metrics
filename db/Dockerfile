@@ -28,4 +28,4 @@ COPY /scripts /scripts
 ENTRYPOINT ["/scripts/entrypoint.sh"]
 # Expose the PostgreSQL port
 EXPOSE 5432
-USER 1001
+# USER 1001
