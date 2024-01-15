@@ -111,12 +111,14 @@ def get_latest_data():
         cursor = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
 
         # SQL command to fetch the most recent data
-        fetch_sql = "SELECT * FROM signals ORDER BY id DESC LIMIT 1"
+        fetch_sql = "SELECT data FROM signals ORDER BY id DESC LIMIT 1"
+        
         cursor.execute(fetch_sql)
 
         # Fetch the most recent row from the database
         row = cursor.fetchone()
         result = dict(row) if row else {}
+        logging.debug("row:" + row)
 
         # Close the cursor and connection
         cursor.close()
