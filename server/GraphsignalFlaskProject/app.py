@@ -70,7 +70,7 @@ def upload():
             file.write(json_data)
 
         # Connect to the database
-        conn = psycopg2.connect(dbname=dbname, user=user, password=password, host=host, port=port)
+        conn = psycopg2.connect(dbname=dbname, user=user, password=password, host=host)
         cursor = conn.cursor()
 
         # Create a table if it does not exist
