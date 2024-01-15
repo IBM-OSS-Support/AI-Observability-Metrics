@@ -15,20 +15,12 @@ RUN microdnf -y install yum \
     && yum install -y https://download.postgresql.org/pub/repos/yum/reporpms/EL-8-x86_64/pgdg-redhat-repo-latest.noarch.rpm \
     && yum -y module disable postgresql \
     && yum install -y postgresql15-server \
-    && mkdir /docker-entrypoint-initdb.d \
     && wget -O /usr/local/bin/gosu "https://github.com/tianon/gosu/releases/download/1.16/gosu-amd64" \
     && chmod +x /usr/local/bin/gosu \
     && echo "listen_addresses = '*'" >> /usr/pgsql-15/share/postgresql.conf.sample \
     && yum clean all \
     && rm -rf /var/cache/yum \
     && microdnf clean all 
-
-# Create a non-root user 'postgres' and set ownership
-RUN useradd --create-home --shell /bin/bash postgres \
-    && chown -R postgres:postgres /var/lib/pgsql /docker-entrypoint-initdb.d /var/run/postgresql
-
-# Adjust permissions as needed
-RUN chmod -R 700 /var/lib/pgsql /docker-entrypoint-initdb.d /var/run/postgresql
 
 # Expose the PostgreSQL port
 EXPOSE 5432
