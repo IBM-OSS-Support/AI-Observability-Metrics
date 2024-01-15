@@ -107,18 +107,21 @@ def upload():
 def get_latest_data():
     try:
         # Connect to the database
-        conn = psycopg2.connect(dbname=dbname, user=user, password=password, host=host, port=port)
+        logging.debug("Attempting database connection...")
+        conn = psycopg2.connect(dbname=dbname, user=user, password=password, host=host)
         cursor = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
 
         # SQL command to fetch the most recent data
         fetch_sql = "SELECT data FROM signals ORDER BY id DESC LIMIT 1"
-        
         cursor.execute(fetch_sql)
 
         # Fetch the most recent row from the database
+        logging.debug("Fetching data from the database...")
         row = cursor.fetchone()
         result = dict(row) if row else {}
-        logging.debug("row:" + row)
+
+        # Logging the fetched row for debugging
+        logging.debug("Fetched row: %s", row)
 
         # Close the cursor and connection
         cursor.close()
@@ -128,8 +131,8 @@ def get_latest_data():
         return jsonify(result)
 
     except Exception as e:
-        # In case of any exception, print the error and return a failure message
-        print(e)
+        # Log the error
+        logging.error("Error occurred: %s", e)
         return jsonify({"error": "Unable to fetch data from the database"}), 500
 
 @app.route('/run-roja-script', methods=['POST'])
