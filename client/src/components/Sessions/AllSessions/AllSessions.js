@@ -125,14 +125,6 @@ function AllSessions() {
             );
           },
         }}
-        columnCustomization={{
-          id: "query-history-list-columns",
-          buttonOverrides: { align: "bottom" },
-          columns: headers,
-          setColumns: setHeaders,
-          reset: () =>
-            setHeaders(defaultHeaders.map((h) => Object.assign({}, h))),
-        }}
         refresh={{
           label: "Refresh",
           align: "bottom-right",
