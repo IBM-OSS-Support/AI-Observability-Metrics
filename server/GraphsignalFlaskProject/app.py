@@ -40,9 +40,6 @@ def upload():
         gzipped_protobuf_data = request.data
         
         content = _gunzip_data(gzipped_protobuf_data)
-
-        # Decompress the gzipped data
-        protobuf_data = gzip.decompress(gzipped_protobuf_data)
         
         signal = signals_pb2.UploadRequest()
         signal.ParseFromString(content)
@@ -50,21 +47,35 @@ def upload():
         # Convert the Protobuf message to a Python dictionary
         signal_dict = MessageToDict(signal, preserving_proto_field_name=True)
 
-        # Function to add 'application-name' based on 'deployment' key
-        def add_application_name(json_obj):
-            if 'deployment' in json_obj:
-                json_obj['application-name'] = json_obj['deployment']
-            for key, value in json_obj.items():
-                if isinstance(value, dict):
-                    add_application_name(value)
+        # def extract_application_name(data_obj):
+        #     if 'tags' in data_obj and isinstance(data_obj['tags'], list):
+        #         for tag in data_obj['tags']:
+        #             if tag.get('key') == 'deployment':
+        #                 return tag.get('value')
+        #     return None
 
-        add_application_name(signal_dict)  # Add 'application-name'
 
-        # Check for the presence of 'metric' or 'span' keys inside 'data'
-        if 'data' in signal_dict and isinstance(signal_dict['data'], dict):
-            data_obj = signal_dict['data']
-            if 'metric' in data_obj or 'span' in data_obj:
-                signal_dict['tag'] = 'tag_value_here'
+        # # Check for the presence of 'metrics' or 'span' keys inside 'data'
+        if 'metrics' in signal_dict:
+            signal_dict['tag'] = 'metrics'
+        elif 'span' in signal_dict:
+            signal_dict['tag'] = 'span'
+            
+        def extract_application_name(data_obj):
+            if isinstance(data_obj, list):
+                for item in data_obj:
+                    if 'tags' in item and isinstance(item['tags'], list):
+                        for tag in item['tags']:
+                            if tag.get('key') == 'deployment':
+                                return tag.get('value')
+            return None
+
+        # Extract application name from the JSON
+        signal_dict['application-name'] = extract_application_name(signal_dict[signal_dict['tag']])
+
+        logging.debug(signal_dict['upload_ms'])
+        logging.debug(signal_dict['tag'])
+        logging.debug(signal_dict['application-name'])
 
         # Convert the Python dictionary to JSON
         json_data = json.dumps(signal_dict, indent=4)  # Add indentation for readability
@@ -83,18 +94,38 @@ def upload():
         conn = psycopg2.connect(dbname=dbname, user=user, password=password, host=host)
         cursor = conn.cursor()
 
+        # Create a table if it does not exist
+        create_table_sql = """
+        CREATE TABLE IF NOT EXISTS signals (
+            id SERIAL PRIMARY KEY,
+            metrics JSONB NOT NULL,
+            span JSONB NOT NULL,
+            application_name TEXT,
+            timestamp TIMESTAMP,
+            tag TEXT,
+            CONSTRAINT unique_tag_application_name UNIQUE (tag, application_name)
+        )
+        """
+        cursor.execute(create_table_sql)
+        
         # Get the current timestamp
         current_timestamp = datetime.datetime.now()
 
         # SQL command to insert the JSON data along with 'application-name', 'tag', and timestamp
-        insert_sql = "INSERT INTO signals (data, application_name, timestamp, tag) VALUES (%s, %s, %s, %s) ON CONFLICT (tag, application_name) DO UPDATE SET data = %s, timestamp = %s"
-        cursor.execute(insert_sql, (json_data, signal_dict.get('application-name', None), current_timestamp, signal_dict.get('tag', None), json_data, current_timestamp))
+        insert_metric_sql = "INSERT INTO signals (metrics, span, application_name, timestamp, tag) VALUES (%s, %s, %s, %s, %s) ON CONFLICT ON CONSTRAINT unique_tag_application_name DO UPDATE SET metrics = %s, timestamp = %s"
+        insert_span_sql = "INSERT INTO signals (metrics, span, application_name, timestamp, tag) VALUES (%s, %s, %s, %s, %s) ON CONFLICT ON CONSTRAINT unique_tag_application_name DO UPDATE SET span = %s, timestamp = %s"
+
+
+        if 'metrics' in signal_dict:
+            cursor.execute(insert_metric_sql, (json_data, signal_dict.get('application-name', None), current_timestamp, signal_dict.get('tag', None), json_data, current_timestamp))
+        elif 'span' in signal_dict:
+            cursor.execute(insert_span_sql, (json_data, signal_dict.get('application-name', None), current_timestamp, signal_dict.get('tag', None), json_data, current_timestamp))
 
         conn.commit()
         cursor.close()
         conn.close()
 
-        logging.debug("JSON data, 'application-name', 'tag', and timestamp written to PostgreSQL")
+        logging.debug("JSON metric, span, 'application-name', 'tag', and timestamp written to PostgreSQL")
 
         logging.debug("Processed request successfully")
 
@@ -116,7 +147,7 @@ def get_latest_data():
         cursor = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
 
         # SQL command to fetch the most recent data
-        fetch_sql = "SELECT data FROM signals ORDER BY id DESC LIMIT 2"
+        fetch_sql = "SELECT * FROM signals"
         cursor.execute(fetch_sql)
 
         # Fetch the most recent row from the database
