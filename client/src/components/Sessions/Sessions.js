@@ -30,7 +30,7 @@ function Sessions() {
       className="sessions-container"
       header={{
         title: "Sessions",
-        subtitle: "",
+        subtitle: "All sessions details here",
       }}
     >
       <Tabs>
