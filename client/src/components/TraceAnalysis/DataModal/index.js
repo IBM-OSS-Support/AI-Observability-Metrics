@@ -9,10 +9,5 @@
  * of its trade secrets, irrespective of what has been deposited with
  * the U.S. Copyright Office.
  ****************************************************************************** */
-import React from 'react';
-
-function Operations() {
-    return (<div>Operations</div>)
-}
-
-export default Operations;
+import DataModal from './DataModal';
+export default DataModal;
