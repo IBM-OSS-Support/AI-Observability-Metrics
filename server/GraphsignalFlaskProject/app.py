@@ -47,19 +47,12 @@ def upload():
         # Convert the Protobuf message to a Python dictionary
         signal_dict = MessageToDict(signal, preserving_proto_field_name=True)
 
-        # def extract_application_name(data_obj):
-        #     if 'tags' in data_obj and isinstance(data_obj['tags'], list):
-        #         for tag in data_obj['tags']:
-        #             if tag.get('key') == 'deployment':
-        #                 return tag.get('value')
-        #     return None
-
-
-        # # Check for the presence of 'metrics' or 'span' keys inside 'data'
+        tag = 'none'
+        # Check for the presence of 'metrics' or 'span' keys inside 'data'
         if 'metrics' in signal_dict:
-            signal_dict['tag'] = 'metrics'
+            tag = 'metrics'
         elif 'span' in signal_dict:
-            signal_dict['tag'] = 'span'
+            tag = 'span'
             
         def extract_application_name(data_obj):
             if isinstance(data_obj, list):
@@ -71,10 +64,9 @@ def upload():
             return None
 
         # Extract application name from the JSON
-        signal_dict['application-name'] = extract_application_name(signal_dict[signal_dict['tag']])
+        signal_dict['application-name'] = extract_application_name(signal_dict[tag])
 
         logging.debug(signal_dict['upload_ms'])
-        logging.debug(signal_dict['tag'])
         logging.debug(signal_dict['application-name'])
 
         # Convert the Python dictionary to JSON
@@ -98,12 +90,10 @@ def upload():
         create_table_sql = """
         CREATE TABLE IF NOT EXISTS signals (
             id SERIAL PRIMARY KEY,
-            metrics JSONB NOT NULL,
-            span JSONB NOT NULL,
+            data JSONB,
             application_name TEXT,
             timestamp TIMESTAMP,
-            tag TEXT,
-            CONSTRAINT unique_tag_application_name UNIQUE (tag, application_name)
+            CONSTRAINT unique_tag_application_name UNIQUE (application_name)
         )
         """
         cursor.execute(create_table_sql)
@@ -112,20 +102,15 @@ def upload():
         current_timestamp = datetime.datetime.now()
 
         # SQL command to insert the JSON data along with 'application-name', 'tag', and timestamp
-        insert_metric_sql = "INSERT INTO signals (metrics, application_name, timestamp, tag) VALUES (%s, %s, %s, %s) ON CONFLICT ON CONSTRAINT unique_tag_application_name DO UPDATE SET metrics = %s, timestamp = %s"
-        insert_span_sql = "INSERT INTO signals (span, application_name, timestamp, tag) VALUES (%s, %s, %s, %s) ON CONFLICT ON CONSTRAINT unique_tag_application_name DO UPDATE SET span = %s, timestamp = %s"
+        insert_metric_sql = "INSERT INTO signals (data, application_name, timestamp) VALUES (%s, %s, %s) ON CONFLICT ON CONSTRAINT unique_tag_application_name DO UPDATE SET data = %s, timestamp = %s"
 
-
-        if 'metrics' in signal_dict:
-            cursor.execute(insert_metric_sql, (json_data, signal_dict.get('application-name', None), current_timestamp, signal_dict.get('tag', None), json_data, current_timestamp))
-        elif 'span' in signal_dict:
-            cursor.execute(insert_span_sql, (json_data, signal_dict.get('application-name', None), current_timestamp, signal_dict.get('tag', None), json_data, current_timestamp))
+        cursor.execute(insert_metric_sql, (json_data, signal_dict.get('application-name', None), current_timestamp, json_data, current_timestamp))
 
         conn.commit()
         cursor.close()
         conn.close()
 
-        logging.debug("JSON metric, span, 'application-name', 'tag', and timestamp written to PostgreSQL")
+        logging.debug("JSON metric, span, 'application-name', and timestamp written to PostgreSQL")
 
         logging.debug("Processed request successfully")
 
