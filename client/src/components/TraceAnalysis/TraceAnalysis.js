@@ -9,21 +9,20 @@
  * of its trade secrets, irrespective of what has been deposited with
  * the U.S. Copyright Office.
  ****************************************************************************** */
-import React, { Fragment, useEffect, useState } from "react";
+import React, { Fragment, useContext, useEffect, useState } from "react";
 import moment from 'moment';
 
 import CustomDataTable from "../common/CustomDataTable";
 import PageContainer from "../common/PageContainer";
 
-import data from "../../constants/operations.json";
 import { Accordion, AccordionItem } from "@carbon/react";
 import DataModal from "./DataModal";
 import { useParams } from "react-router-dom";
+import { AppContext } from "../../appContext";
 
 const MODALS = [
   { component: DataModal, string: 'DataModal' },
 ];
-
 
 const defaultHeaders = [
   {
@@ -79,7 +78,7 @@ const defaultProcessHeaders = [
     required: true,
   },
   {
-    key: "runtimeImpl",
+    key: "runtime_impl",
     header: "Runtime Implementation",
     checked: true,
     required: true,
@@ -119,7 +118,7 @@ const defaultNodeHeaders = [
     required: true,
   },
   {
-    key: "osName",
+    key: "os_name",
     header: "OS",
     checked: true,
     required: true,
@@ -129,38 +128,49 @@ const defaultNodeHeaders = [
 
 function formatData(span, spans, level, rootStartUs, rootEndUs) {
   // const span = spans.find(span => span.spanId === span.spanId)
-  const startUs = Number(span.startUs) / 1000;
-  const endUs = Number(span.endUs) / 1000;
+  const startUs = Number(span.start_us) / 1000;
+  const endUs = Number(span.end_us) / 1000;
   span.level = level;
   span.operation = span.tags?.find(tag => tag.key === 'operation')?.value;
   span.latency = endUs - startUs
-  span.startPerc = (startUs - rootStartUs) / (rootEndUs - rootStartUs);
-  span.latencyPerc = (span.latency / (rootEndUs - rootStartUs));
+  span.start_perc = (startUs - rootStartUs) / (rootEndUs - rootStartUs);
+  span.latency_perc = (span.latency / (rootEndUs - rootStartUs));
   return [span]
-  .concat(spans.filter(_span => _span.context.parentSpanId === span.spanId)
-    .map(_span => formatData(_span, spans, level + 1, rootStartUs, rootEndUs))
-    .flat()
-  );
+    .concat(spans.filter(_span => _span.context.parent_span_id === span.span_id)
+      .map(_span => formatData(_span, spans, level + 1, rootStartUs, rootEndUs))
+      .flat()
+    );
 }
 
 function TraceAnalysis() {
 
-  const spanId = "e6c358881ba9";
-  const trace = data.spans.find(span => span.spanId === spanId);
-  const operations = formatData(trace, data.spans, 0, trace.startUs / 1000, trace.endUs / 1000);
-  let { appName } = useParams();
+  const { appName } = useParams();
 
   const [searchText, setSearchText] = useState("");
+  const [trace, setTrace] = useState({});
   const [pagination, setPagination] = useState({ offset: 0, first: 10 });
-  const [rows, setRows] = useState(operations);
+  const [rows, setRows] = useState([]);
   const [modal, setModal] = useState(false);
+  const {status, data} = useContext(AppContext);
 
   useEffect(() => {
-    // setRows(operations.filter(d => d.operation.includes(searchText)));
-  }, [searchText]);
+    if (status === 'success'){
+      const app = data.find(data => data['application-name'] === appName);
+      const rootSpanId = app.spans?.[0]?.context?.root_span_id
+      const root = app.spans.find(span => span.span_id === rootSpanId);
+      const operations = formatData(root, app.spans, 0, root.start_us / 1000, root.end_us / 1000);
+      if (!!searchText.trim()) {
+        setRows(operations.filter(op => op.operation.includes(searchText)));
+      } else
+        setRows(operations);
+      setTrace(root);
+    } else {
+      setRows([]);
+      setTrace({});
+    }
+  }, [appName, status, data, searchText])
 
-
-  function formatRowData(rowData, headers) {
+  function formatRowData(rowData = [], headers) {
     return rowData.reduce((arr, r, i) => {
       const row = headers.reduce((o, h) => {
         switch (h.key) {
@@ -170,7 +180,7 @@ function TraceAnalysis() {
               href: `#/traces/?operation=${r.operation}`,
               level: r.level,
               operation: r.operation,
-              spanId: r.spanId
+              spanId: r.span_id
             }
             break;
           }
@@ -198,16 +208,16 @@ function TraceAnalysis() {
           case 'data': {
             o[h.key] = {
               displayType: h.key,
-              items: (r.dataSamples || []).map(d => ({
-               id: d.dataName,
-               name: d.dataName,
+              items: (r.data_samples || []).map(d => ({
+               id: d.data_name,
+               name: d.data_name,
                onClick: () => setModal({
                  name: 'DataModal',
                  props: {
-                   name: d.dataName,
-                   modalLabel: d.dataName,
-                   modalHeading: d.dataName,
-                   data: JSON.parse(atob(d.contentBytes)),
+                   name: d.data_name,
+                   modalLabel: d.data_name,
+                   modalHeading: d.data_name,
+                   data: JSON.parse(atob(d.content_bytes)),
                    primaryButtonText: 'Close',
                    onRequestSubmit: closeModal,
                  }
@@ -217,14 +227,14 @@ function TraceAnalysis() {
             break;
           }
           case 'latency': {
-            o[h.key] = `${Math.round(moment.duration(r.latency).asSeconds())}s`;
+            o[h.key] = `${moment.duration(r.latency).asSeconds().toFixed(1)}s`;
             break;
           }
           case 'timeline': {
             o[h.key] = {
               displayType: h.key,
-              start: r.startPerc,
-              end: r.startPerc + r.latencyPerc,
+              start: r.start_perc,
+              end: r.start_perc + r.latency_perc,
             }
             break;
           }
@@ -233,22 +243,22 @@ function TraceAnalysis() {
             break;
           }
           case 'runtime': {
-            o[h.key] = `${r.runtime} ${r.runtimeVersion.major || 0}.${r.runtimeVersion.minor || 0}.${r.runtimeVersion.patch || 0}`;
+            o[h.key] = `${r.runtime} ${r.runtime_version.major || 0}.${r.runtime_version.minor || 0}.${r.runtime_version.patch || 0}`;
             break;
           }
           case 'started': {
-            o[h.key] = moment(Number(r.startMs)).format('YYYY-MM-DD HH:mm:ss');
+            o[h.key] = moment(Number(r.start_ms)).format('YYYY-MM-DD HH:mm:ss');
             break;
           }
           case 'peakMemory': {
-            o[h.key] = `${Math.round(r.vmSize / Math.pow(1000, 2))} MB`;
+            o[h.key] = `${Math.round(r.max_rss / Math.pow(1000, 2))} MB`;
             break;
           }
           default: 
             o[h.key] = r[h.key] || r.name || ''
         }
         return o
-      }, {id: `${r.level}_row_${r.spanId}_${i}`})
+      }, {id: `row_${i}`})
       return arr.concat([row]);
     }, []);
   }
@@ -272,7 +282,7 @@ function TraceAnalysis() {
       <PageContainer
         className="trace-analysis-container"
         header={{
-          title: `Application Trace : ${appName}`,
+          title: `Application trace : ${appName}`,
           subtitle: "Trace analysis for your application.",
         }}
       >
@@ -280,8 +290,7 @@ function TraceAnalysis() {
           <CustomDataTable
             headers={defaultHeaders}
             rows={formatRowData(rows, defaultHeaders)}
-            loading={false}
-            // useStaticWidth={true}
+            loading={status === 'loading'}
             search={{
               searchText: searchText,
               persistent: true,
@@ -316,7 +325,7 @@ function TraceAnalysis() {
               <CustomDataTable
                 headers={defaultLibraryHeaders}
                 rows={formatRowData(trace.libraries, defaultLibraryHeaders)}
-                loading={false}
+                loading={status === 'loading'}
                 emptyState={
                   !rows.length && {
                     type: false ? "NotFound" : "NoData",
@@ -336,8 +345,8 @@ function TraceAnalysis() {
             <AccordionItem title="Process" open>
               <CustomDataTable
                 headers={defaultProcessHeaders}
-                rows={formatRowData([trace.processUsage], defaultProcessHeaders)}
-                loading={false}
+                rows={!trace.process_usage ? [] : formatRowData([trace.process_usage], defaultProcessHeaders)}
+                loading={status === 'loading'}
                 emptyState={
                   !rows.length && {
                     type: false ? "NotFound" : "NoData",
@@ -357,8 +366,8 @@ function TraceAnalysis() {
             <AccordionItem title="Node" open>
               <CustomDataTable
                 headers={defaultNodeHeaders}
-                rows={formatRowData([trace.nodeUsage], defaultNodeHeaders)}
-                loading={false}
+                rows={!trace.node_usage ? []: formatRowData([trace.node_usage], defaultNodeHeaders)}
+                loading={status === 'loading'}
                 emptyState={
                   !rows.length && {
                     type: false ? "NotFound" : "NoData",

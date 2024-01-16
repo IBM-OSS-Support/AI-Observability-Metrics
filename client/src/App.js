@@ -9,7 +9,7 @@
  * of its trade secrets, irrespective of what has been deposited with
  * the U.S. Copyright Office.
  ****************************************************************************** */
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Routes,
   Route
@@ -26,6 +26,7 @@ import Metrics from './components/Metrics';
 import TraceAnalysis from './components/TraceAnalysis';
 import Sessions from './components/Sessions';
 import { fetchAppData } from './appData';
+import { AppContext } from './appContext';
 
 const ROUTES = [
   { path: '/', component: () => <Dashboard /> },
@@ -36,23 +37,36 @@ const ROUTES = [
 ];
 
 function App() {
+  const [status, setStatus] = useState('')
+  const [appData, setAppData] = useState([])
   useEffect(() => {
-    fetchAppData();
+    setStatus('loading')
+    fetchAppData()
+      .then(data => {
+        setStatus('success');
+        setAppData(data);
+      })
+      .catch(err => {
+        setStatus('error');
+        setAppData([]);
+      });
   }, []);
 
   return (
-    <div className="App">
-      <Navigation />
-      <Routes>
-        {ROUTES.map(({ path, component: Component }) =>
-          <Route
-            key={path}
-            path={path}
-            element={<Component />}
-          />
-        )}
-      </Routes>
-    </div>
+    <AppContext.Provider value={{status, data: appData}}>
+      <div className="App">
+        <Navigation />
+        <Routes>
+          {ROUTES.map(({ path, component: Component }) =>
+            <Route
+              key={path}
+              path={path}
+              element={<Component />}
+            />
+          )}
+        </Routes>
+      </div>
+    </AppContext.Provider>
   );
 }
 

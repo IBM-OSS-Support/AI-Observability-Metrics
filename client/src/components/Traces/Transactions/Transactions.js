@@ -9,7 +9,8 @@
  * of its trade secrets, irrespective of what has been deposited with
  * the U.S. Copyright Office.
  ****************************************************************************** */
-import React, { useMemo, useState } from "react";
+import React, { useContext, useEffect, useMemo, useState } from "react";
+import moment from 'moment';
 import { useNavigate, useSearchParams } from "react-router-dom";
 
 import { SimpleBarChart } from "@carbon/charts-react";
@@ -18,7 +19,7 @@ import CustomDataTable from "../../common/CustomDataTable";
 import { Download, Maximize } from "@carbon/icons-react";
 import { Accordion, AccordionItem } from "@carbon/react";
 
-import data from "../../../constants/transactions.json";
+import { AppContext } from "../../../appContext";
 
 const chartData = [
   {
@@ -123,7 +124,31 @@ function Transactions() {
   const [modal, setModal] = useState(false);
   const [startDate, setStartDate] = useState(undefined);
   const [endDate, setEndDate] = useState(undefined);
-  const [rows, setRows] = useState(data);
+  const [rows, setRows] = useState([]);
+  const {status, data} = useContext(AppContext);
+
+  useEffect(() => {
+    if(status === 'success'){
+      const rowData = data.map(data => {
+        const rootSpanId = data.spans?.[0]?.context?.root_span_id
+        const root = data.spans.find(s => s.span_id === rootSpanId)
+        
+        return root.tags.reduce((res, tag) =>  {
+          res[tag.key] = tag.value
+          return res
+        }, {
+          deployment: data['application-name'],
+          trace: moment(Number(data.upload_ms)).format('YYYY-MM-DD HH:mm:ss'),
+          latency: (Number(root.end_us) - Number(root.start_us)) / 1000,
+          start_us: root.start_us,
+          end_us: root.end_us,
+        })
+      })
+      setRows(rowData)
+    } else {
+      setRows([])
+    }
+  }, [data, status])
 
   function formatData(rowData) {
     return rowData.map((row, i) => {
@@ -136,6 +161,9 @@ function Transactions() {
                 data: row[h.key],
                 href: `#/trace-analysis/${row[h.key]}`,
               };
+              break;
+            case 'latency': 
+              r[h.key] = `${moment.duration(row[h.key]).asSeconds().toFixed(1)}s`;
               break;
             default:
               r[h.key] = row[h.key];
@@ -163,7 +191,7 @@ function Transactions() {
         <CustomDataTable
           headers={headers.filter((h) => h.checked || h.key === "actions")}
           rows={formatData(rows)}
-          loading={false}
+          loading={status === 'loading'}
           search={{
             searchText: searchText,
             persistent: true,
