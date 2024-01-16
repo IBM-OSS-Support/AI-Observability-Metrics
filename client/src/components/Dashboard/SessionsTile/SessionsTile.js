@@ -72,7 +72,7 @@ const SessionsTile = () => {
       <Button
         kind="ghost"
         className="bottom-link"
-        href="#/session"
+        href="#/sessions"
       >
         <span>Go to sessions</span>
       </Button>

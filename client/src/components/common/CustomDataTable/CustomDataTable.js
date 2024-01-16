@@ -334,6 +334,7 @@ const CustomDataTable = ({
                         id={`${id}-${header.key}-header`}
                         key={i}
                         title={header.header}
+                        className={header.key}
                         onClickCapture={tableHeaderClickHandler}
                       >
                         {header.header}
@@ -351,7 +352,7 @@ const CustomDataTable = ({
                           disabled={batchActionsDisabled}
                         />
                       }
-                      {row.cells.map(({ id, value }) => {
+                      {row.cells.map(({ id, value, info : {header} }) => {
                         let formattedCell = value;
 
                         switch (value?.displayType) {
@@ -552,16 +553,16 @@ const CustomDataTable = ({
                             break;
                           case 'operation':
                             formattedCell = (
-                              <div className="operation-column"
+                              <Link
                                 style={{ marginLeft:`${ value?.level * 1}rem` }}
+                                href={value.href || null}
+                                onClick={() => !value.href && value.onClick ? value.onClick() : null}
+                                renderIcon={value.renderIcon}
+                                className="truncate"
                               >
-                                <Movement />
-                                <div 
-                                  className="truncate"
-                                >
-                                  {value?.operation}
-                                </div>
-                              </div>
+                                <Movement></Movement>&nbsp;&nbsp;
+                                {value?.operation}
+                              </Link>
                             );
                             break;
                           case 'latency':
@@ -608,8 +609,8 @@ const CustomDataTable = ({
                             formattedCell = (
                               <div className="data-column">
                                 {
-                                  value.data.map((d, i) => 
-                                    <Tag key={i} className="data" type="outline" renderIcon={Document} size="sm">
+                                  value.items.map((d, i) => 
+                                    <Tag key={i} className="data" type="outline" renderIcon={Document} size="sm" onClick={d.onClick}>
                                       {d.name}
                                     </Tag>
                                   )
@@ -630,7 +631,7 @@ const CustomDataTable = ({
                         }
 
                         return (
-                          <TableCell key={id}>
+                          <TableCell key={id} className={header}>
                             {formattedCell}
                           </TableCell>
                         );

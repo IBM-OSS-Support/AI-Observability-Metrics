@@ -24,11 +24,13 @@ import Dashboard from './components/Dashboard';
 import Traces from './components/Traces';
 import Metrics from './components/Metrics';
 import TraceAnalysis from './components/TraceAnalysis';
+import Sessions from './components/Sessions';
 import { fetchAppData } from './appData';
 
 const ROUTES = [
   { path: '/', component: () => <Dashboard /> },
   { path: '/traces', component: () => <Traces /> },
+  { path: '/sessions', component: () => <Sessions /> },
   { path: '/metrics', component: () => <Metrics /> },
   { path: '/trace-analysis/:id', component: () => <TraceAnalysis /> },
 ];

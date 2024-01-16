@@ -26,6 +26,8 @@ RUN pip3 install langchain
 RUN pip3 install openai
 RUN pip3 install numexpr
 
+RUN mkdir -p /tmp/test
+
 # Copy the rest of the application files
 COPY . .
 

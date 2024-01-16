@@ -59,7 +59,7 @@ const chartOptions = {
     enabled: false,
   },
   toolbar: {
-    enabled: false
+    enabled: false,
   },
   height: "180px",
   width: "100%",
@@ -123,7 +123,6 @@ function Transactions() {
       header: "User",
       checked: true,
     },
-    { key: "actions", header: "" },
   ];
 
   const [headers, setHeaders] = useState(
@@ -144,117 +143,123 @@ function Transactions() {
 
   function formatData(rowData) {
     return rowData.map((row, i) => {
-      return defaultHeaders.reduce((r, h) => {
-        switch(h.key) {
-          case 'trace':
-            r[h.key] = {
-              displayType: 'link',
-              data: row[h.key],
-              href: `#/trace-analysis/${row[h.key]}`
-            }
-            break;
-          default:
-            r[h.key] = row[h.key]
-        }
-        return r
-      }, {id: `row_${i}`})
-    })
+      return defaultHeaders.reduce(
+        (r, h) => {
+          switch (h.key) {
+            case "trace":
+              r[h.key] = {
+                displayType: "link",
+                data: row[h.key],
+                href: `#/trace-analysis/${row[h.key]}`,
+              };
+              break;
+            default:
+              r[h.key] = row[h.key];
+          }
+          return r;
+        },
+        { id: `row_${i}` }
+      );
+    });
   }
   return (
-    <div>
-      <Accordion align="start">
-        <AccordionItem title="Timeline chart" open={true}>
-          <SimpleBarChart
-            data={chartData}
-            options={chartOptions}
-          ></SimpleBarChart>
-        </AccordionItem>
-      </Accordion>
+    <>
+      <div className="trace-sections">
+        <Accordion align="start">
+          <AccordionItem title="Timeline chart" open={true}>
+            <SimpleBarChart
+              data={chartData}
+              options={chartOptions}
+            ></SimpleBarChart>
+          </AccordionItem>
+        </Accordion>
+      </div>
 
-      <CustomDataTable
-        headers={headers.filter((h) => h.checked || h.key === "actions")}
-        rows={formatData(rows)}
-        loading={false}
-        search={{
-          searchText: searchText,
-          persistent: true,
-          placeholder: "Search for queries",
-          onChange: setSearchText,
-        }}
-        filter={{
-          id: "query-history-filter",
-          buttonOverrides: { align: "bottom" },
-          filters,
-          selectedFilters,
-          startDate,
-          setStartDate,
-          endDate,
-          setEndDate,
-          hasDateRange: true,
-          dateLabel: "Created",
-          setSelectedFilters: (newSelectedFilters) => {
-            setSelectedFilters(newSelectedFilters);
-            setPagination((prev) => ({ ...prev, offset: 0 }));
+      <div className="trace-sections">
+        <CustomDataTable
+          headers={headers.filter((h) => h.checked || h.key === "actions")}
+          rows={formatData(rows)}
+          loading={false}
+          search={{
+            searchText: searchText,
+            persistent: true,
+            placeholder: "Search for queries",
+            onChange: setSearchText,
+          }}
+          filter={{
+            id: "query-history-filter",
+            buttonOverrides: { align: "bottom" },
+            filters,
+            selectedFilters,
+            startDate,
+            setStartDate,
+            endDate,
+            setEndDate,
+            hasDateRange: true,
+            dateLabel: "Created",
+            setSelectedFilters: (newSelectedFilters) => {
+              setSelectedFilters(newSelectedFilters);
+              setPagination((prev) => ({ ...prev, offset: 0 }));
 
-            if (!Object.keys(newSelectedFilters).length) {
-              setInitialSelectedFilters({});
-              return navigate("/");
+              if (!Object.keys(newSelectedFilters).length) {
+                setInitialSelectedFilters({});
+                return navigate("/");
+              }
+
+              Object.entries(newSelectedFilters).forEach(([key, values]) =>
+                setSearchParams((prev) => {
+                  const newSearchParams = [];
+
+                  prev.forEach((v, k) => {
+                    if (k !== key) {
+                      newSearchParams.push([k, v]);
+                    }
+                  });
+
+                  values.forEach((v) => newSearchParams.push([key, v]));
+
+                  return newSearchParams;
+                })
+              );
+            },
+          }}
+          columnCustomization={{
+            id: "query-history-list-columns",
+            buttonOverrides: { align: "bottom" },
+            columns: headers,
+            setColumns: setHeaders,
+            reset: () =>
+              setHeaders(defaultHeaders.map((h) => Object.assign({}, h))),
+          }}
+          refresh={{
+            label: "Refresh",
+            align: "bottom-right",
+            onClick: () => {},
+          }}
+          primaryButton={{
+            kind: "primary",
+            renderIcon: Download,
+            children: "Export to CSV",
+            onClick: () => {},
+            disabled: true,
+          }}
+          pagination={{
+            totalItems: rows.length,
+            setPagination,
+            ...pagination,
+          }}
+          emptyState={
+            !rows.length && {
+              type: false ? "NotFound" : "NoData",
+              title: "No traces yet.",
+              noDataSubtitle: "All traces from your data are listed here.",
             }
-
-            Object.entries(newSelectedFilters).forEach(([key, values]) =>
-              setSearchParams((prev) => {
-                const newSearchParams = [];
-
-                prev.forEach((v, k) => {
-                  if (k !== key) {
-                    newSearchParams.push([k, v]);
-                  }
-                });
-
-                values.forEach((v) => newSearchParams.push([key, v]));
-
-                return newSearchParams;
-              })
-            );
-          },
-        }}
-        columnCustomization={{
-          id: "query-history-list-columns",
-          buttonOverrides: { align: "bottom" },
-          columns: headers,
-          setColumns: setHeaders,
-          reset: () =>
-            setHeaders(defaultHeaders.map((h) => Object.assign({}, h))),
-        }}
-        refresh={{
-          label: "Refresh",
-          align: "bottom-right",
-          onClick: () => {},
-        }}
-        primaryButton={{
-          kind: "primary",
-          renderIcon: Download,
-          children: "Export to CSV",
-          onClick: () => {},
-          disabled: true,
-        }}
-        pagination={{
-          totalItems: rows.length,
-          setPagination,
-          ...pagination,
-        }}
-        emptyState={
-          !rows.length && {
-            type: false ? "NotFound" : "NoData",
-            title: "No traces yet.",
-            noDataSubtitle:
-              "All traces from your data are listed here.",
           }
-        }
-        sortRowHandler={() => {}}
-        tableHeaderClickHandler={() => {}}
-      />
-    </div>
+          sortRowHandler={() => {}}
+          tableHeaderClickHandler={() => {}}
+        />
+      </div>
+    </>
   );
 }
 

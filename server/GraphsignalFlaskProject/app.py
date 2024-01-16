@@ -15,6 +15,8 @@ import psycopg2
 from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
 from psycopg2.extras import Json
 import subprocess
+import time
+from io import BytesIO
 
 app = Flask(__name__)
 
@@ -22,7 +24,7 @@ app = Flask(__name__)
 dbname = "roja_postgres"
 user = "postgres"
 password = "postgres"
-host = "roja-metric-backend-db"
+host = "9.30.147.134"
 port: '5432'
 
 # Set up basic logging
@@ -35,19 +37,25 @@ def upload():
 
         # Get the gzipped data from the request body
         gzipped_protobuf_data = request.data
-        logging.debug(f"Raw gzipped data received: {gzipped_protobuf_data}")
+        # logging.debug(f"Raw gzipped data received: {gzipped_protobuf_data}")
+        
+        content = _gunzip_data(gzipped_protobuf_data)
 
         # Decompress the gzipped data
         protobuf_data = gzip.decompress(gzipped_protobuf_data)
-        logging.debug(f"Decompressed Protobuf data: {protobuf_data}")
+        # logging.debug(f"Decompressed Protobuf data: {protobuf_data}")
+        
+        signal = signals_pb2.UploadRequest()
+        signal.ParseFromString(content)
+                
+        # logging.debug(content)
 
         # Parse the Protobuf data
-        signal = UploadRequest()
-        signal.ParseFromString(protobuf_data)
+
         logging.debug("Parsed Protobuf data")
 
         # Right after parsing the Protobuf data
-        logging.debug(f"Protobuf message: {signal}")
+        # logging.debug(f"Protobuf message: {signal}")
 
         # Convert the Protobuf message to a Python dictionary
         signal_dict = MessageToDict(signal, preserving_proto_field_name=True)
@@ -57,7 +65,7 @@ def upload():
         json_data = json.dumps(signal_dict, indent=4)  # Add indentation for readability
         logging.debug("Converted dictionary to JSON")
 
-        print(json_data)  # Print the JSON data
+        # print(json_data)  # Print the JSON data
 
         file_name = f"response.json"
         file_path = os.path.join("/tmp/test", file_name)
@@ -68,11 +76,9 @@ def upload():
         # Save the received gzip data to a file on your system
         with open(file_path, 'w') as file:
             file.write(json_data)
-        
-       
 
         # Connect to the database
-        conn = psycopg2.connect(dbname=dbname, user=user, password=password, host=host, port=port)
+        conn = psycopg2.connect(dbname=dbname, user=user, password=password, host=host)
         cursor = conn.cursor()
 
         # Create a table if it does not exist
@@ -109,28 +115,36 @@ def upload():
 def get_latest_data():
     try:
         # Connect to the database
-        conn = psycopg2.connect(dbname=dbname, user=user, password=password, host=host, port=port)
+        logging.debug("Attempting database connection...")
+        conn = psycopg2.connect(dbname=dbname, user=user, password=password, host=host)
         cursor = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
 
         # SQL command to fetch the most recent data
-        fetch_sql = "SELECT * FROM signals ORDER BY id DESC LIMIT 1"
+        fetch_sql = "SELECT data FROM signals ORDER BY id DESC LIMIT 2"
         cursor.execute(fetch_sql)
 
         # Fetch the most recent row from the database
-        row = cursor.fetchone()
-        result = dict(row) if row else {}
+        logging.debug("Fetching data from the database...")
+        rows = cursor.fetchall()
+        results = [dict(row) for row in rows] if rows else []
+
+        # Logging the fetched rows for debugging
+        logging.debug("Fetched rows: %s", results)
 
         # Close the cursor and connection
         cursor.close()
         conn.close()
 
         # Return the fetched data as JSON
-        return jsonify(result)
+        return jsonify(results)
 
     except Exception as e:
-        # In case of any exception, print the error and return a failure message
-        print(e)
+        # Log the error
+        logging.error("Error occurred: %s", e)
         return jsonify({"error": "Unable to fetch data from the database"}), 500
+
+def _gunzip_data(data):
+    return gzip.GzipFile('', 'r', 0, BytesIO(data)).read()
 
 @app.route('/run-roja-script', methods=['POST'])
 def run_script():
@@ -150,4 +164,4 @@ def run_script():
         return jsonify({"error": "An error occurred while executing the script"}), 500
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=6000)
+    app.run(host='0.0.0.0', port=3001)

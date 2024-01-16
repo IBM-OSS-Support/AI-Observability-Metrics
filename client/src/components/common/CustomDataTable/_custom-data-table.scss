@@ -112,6 +112,40 @@
     min-width: 6rem !important;
   }
 
+  th.label,
+  td.label {
+    max-width: 7%;
+    width: 7%;
+  }
+
+  th.latency,
+  td.latency {
+    max-width: 9%;
+    width: 9%;
+  }
+
+  th.trace,
+  td.trace {
+    min-width: 18% !important;
+    width: 18% !important;
+
+    .cds--link {
+      text-wrap: nowrap;
+    }
+  }
+
+  th.parameters,
+  td.parameters {
+    max-width: 18%;
+    width: 18%;
+  }
+
+  th.generations,
+  td.generations {
+    max-width: 10%;
+    width: 10%;
+  }
+
   .truncate {
     display: block;
     max-width: 100%;
@@ -321,6 +355,12 @@
 
     > .truncate {
       margin-left: .5rem;
+    }
+  }
+  
+  .timeline-column {
+    .cds--slider-container {
+      width: 100%;
     }
   }
 }

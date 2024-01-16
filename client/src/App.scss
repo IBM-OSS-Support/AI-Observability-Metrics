@@ -33,12 +33,14 @@
 
 @import './components/Navigation/navigation';
 @import './components/common/PageContainer/page-container';
+@import './components/Traces/traces';
 @import './components/Metrics/metrics';
 @import './components/Metrics/Filters/filters';
 @import './components/TraceAnalysis/trace_analysis';
 @import './components/Dashboard/dashboard';
 @import './components/Dashboard/TracesTile/traces-tile';
 @import './components/Dashboard/CpuUsage/cpu-usage';
+@import './components/Sessions/sessions';
 
 // Theming
 :root {

@@ -9,29 +9,15 @@
  * of its trade secrets, irrespective of what has been deposited with
  * the U.S. Copyright Office.
  ****************************************************************************** */
-.trace-analysis-container {
-  .body {
-    margin: 1rem;
-    background-color: transparent;
+ .sessions-container {
+    .body {
+      margin: 1rem;
+      background-color: transparent;
+    }
   }
-}
-
-.trace-analysis-section {
-  margin-bottom: 1rem;
-  background-color: $layer-01;
-
-  .cds--slider__filled-track {
-    background-color: $interactive;
+  
+  .session-sections {
+    padding: 1rem;
+    margin-bottom: 1rem;
+    background-color: $layer-01;
   }
-
-  .cds--accordion__content {
-    padding-left: 0;
-  }
-
-}
-
-.cds--modal-content {
-  .cds--snippet--multi {
-    background-color: $layer-02;
-  }
-}
