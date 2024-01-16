@@ -37,35 +37,36 @@ def upload():
 
         # Get the gzipped data from the request body
         gzipped_protobuf_data = request.data
-        # logging.debug(f"Raw gzipped data received: {gzipped_protobuf_data}")
         
         content = _gunzip_data(gzipped_protobuf_data)
 
         # Decompress the gzipped data
         protobuf_data = gzip.decompress(gzipped_protobuf_data)
-        # logging.debug(f"Decompressed Protobuf data: {protobuf_data}")
         
         signal = signals_pb2.UploadRequest()
         signal.ParseFromString(content)
                 
-        # logging.debug(content)
-
-        # Parse the Protobuf data
-
-        logging.debug("Parsed Protobuf data")
-
-        # Right after parsing the Protobuf data
-        # logging.debug(f"Protobuf message: {signal}")
-
         # Convert the Protobuf message to a Python dictionary
         signal_dict = MessageToDict(signal, preserving_proto_field_name=True)
-        logging.debug("Converted Protobuf to dictionary")
+
+        # Function to add 'application-name' based on 'deployment' key
+        def add_application_name(json_obj):
+            if 'deployment' in json_obj:
+                json_obj['application-name'] = json_obj['deployment']
+            for key, value in json_obj.items():
+                if isinstance(value, dict):
+                    add_application_name(value)
+
+        add_application_name(signal_dict)  # Add 'application-name'
+
+        # Check for the presence of 'metric' or 'span' keys inside 'data'
+        if 'data' in signal_dict and isinstance(signal_dict['data'], dict):
+            data_obj = signal_dict['data']
+            if 'metric' in data_obj or 'span' in data_obj:
+                signal_dict['tag'] = 'tag_value_here'
 
         # Convert the Python dictionary to JSON
         json_data = json.dumps(signal_dict, indent=4)  # Add indentation for readability
-        logging.debug("Converted dictionary to JSON")
-
-        # print(json_data)  # Print the JSON data
 
         file_name = f"response.json"
         file_path = os.path.join("/tmp/test", file_name)
@@ -81,33 +82,23 @@ def upload():
         conn = psycopg2.connect(dbname=dbname, user=user, password=password, host=host)
         cursor = conn.cursor()
 
-        # Create a table if it does not exist
-        create_table_sql = """
-        CREATE TABLE IF NOT EXISTS signals (
-            id SERIAL PRIMARY KEY,
-            data JSONB NOT NULL
-        )
-        """
-        cursor.execute(create_table_sql)
+        # Get the current timestamp
+        current_timestamp = datetime.datetime.now()
 
-        # SQL command to insert the JSON data
-        insert_sql = "INSERT INTO signals (data) VALUES (%s)"
-        cursor.execute(insert_sql, (json_data,))
+        # SQL command to insert the JSON data along with 'application-name', 'tag', and timestamp
+        insert_sql = "INSERT INTO signals (data, application_name, timestamp, tag) VALUES (%s, %s, %s, %s) ON CONFLICT (tag, application_name) DO UPDATE SET data = %s, timestamp = %s"
+        cursor.execute(insert_sql, (json_data, signal_dict.get('application-name', None), current_timestamp, signal_dict.get('tag', None), json_data, current_timestamp))
 
         conn.commit()
         cursor.close()
         conn.close()
 
-        logging.debug("JSON data written to PostgreSQL")
+        logging.debug("JSON data, 'application-name', 'tag', and timestamp written to PostgreSQL")
 
         logging.debug("Processed request successfully")
 
         # You can now use the parsed JSON data as needed
         return 'Signal received successfully'
-
-    except Exception as e:
-        logging.error(f'Error processing request: {str(e)}')
-        return f'Error: {str(e)}', 500
     
     
 # Route to get data from PostgreSQL and send it to UI
@@ -120,7 +111,7 @@ def get_latest_data():
         cursor = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
 
         # SQL command to fetch the most recent data
-        fetch_sql = "SELECT data FROM signals ORDER BY id DESC LIMIT 2"
+        fetch_sql = "SELECT * FROM signals"
         cursor.execute(fetch_sql)
 
         # Fetch the most recent row from the database
