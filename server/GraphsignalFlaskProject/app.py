@@ -17,6 +17,7 @@ from psycopg2.extras import Json
 import subprocess
 import time
 from io import BytesIO
+import datetime
 
 app = Flask(__name__)
 
@@ -99,6 +100,10 @@ def upload():
 
         # You can now use the parsed JSON data as needed
         return 'Signal received successfully'
+
+    except Exception as e:
+        logging.error(f'Error processing request: {str(e)}')
+        return f'Error: {str(e)}', 500
     
     
 # Route to get data from PostgreSQL and send it to UI
@@ -111,7 +116,7 @@ def get_latest_data():
         cursor = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
 
         # SQL command to fetch the most recent data
-        fetch_sql = "SELECT * FROM signals"
+        fetch_sql = "SELECT data FROM signals ORDER BY id DESC LIMIT 2"
         cursor.execute(fetch_sql)
 
         # Fetch the most recent row from the database
