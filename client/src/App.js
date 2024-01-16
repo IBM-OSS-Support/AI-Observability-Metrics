@@ -9,7 +9,7 @@
  * of its trade secrets, irrespective of what has been deposited with
  * the U.S. Copyright Office.
  ****************************************************************************** */
-import React from 'react';
+import React, { useEffect } from 'react';
 import {
   Routes,
   Route
@@ -24,6 +24,7 @@ import Dashboard from './components/Dashboard';
 import Traces from './components/Traces';
 import Metrics from './components/Metrics';
 import TraceAnalysis from './components/TraceAnalysis';
+import { fetchAppData } from './appData';
 
 const ROUTES = [
   { path: '/', component: () => <Dashboard /> },
@@ -33,6 +34,10 @@ const ROUTES = [
 ];
 
 function App() {
+  useEffect(() => {
+    fetchAppData();
+  }, []);
+
   return (
     <div className="App">
       <Navigation />
