@@ -112,8 +112,8 @@ def upload():
         current_timestamp = datetime.datetime.now()
 
         # SQL command to insert the JSON data along with 'application-name', 'tag', and timestamp
-        insert_metric_sql = "INSERT INTO signals (metrics, application_name, timestamp, tag) VALUES (%s, %s, %s, %s, %s) ON CONFLICT ON CONSTRAINT unique_tag_application_name DO UPDATE SET metrics = %s, timestamp = %s"
-        insert_span_sql = "INSERT INTO signals (span, application_name, timestamp, tag) VALUES (%s, %s, %s, %s, %s) ON CONFLICT ON CONSTRAINT unique_tag_application_name DO UPDATE SET span = %s, timestamp = %s"
+        insert_metric_sql = "INSERT INTO signals (metrics, application_name, timestamp, tag) VALUES (%s, %s, %s, %s) ON CONFLICT ON CONSTRAINT unique_tag_application_name DO UPDATE SET metrics = %s, timestamp = %s"
+        insert_span_sql = "INSERT INTO signals (span, application_name, timestamp, tag) VALUES (%s, %s, %s, %s) ON CONFLICT ON CONSTRAINT unique_tag_application_name DO UPDATE SET span = %s, timestamp = %s"
 
 
         if 'metrics' in signal_dict:
