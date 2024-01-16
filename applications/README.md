@@ -43,3 +43,5 @@ cd application/
 python3 app_square_root.py
 python3 app_calculate_raised.py
 ```
+
+Make sure to replace the application name with your own unique name.
