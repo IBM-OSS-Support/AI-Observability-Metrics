@@ -18,30 +18,31 @@ import { Download, Time } from "@carbon/icons-react";
 
 import data from "../../../constants/sessions.json";
 
+const defaultHeaders = [
+  {
+    key: "session",
+    header: "Session",
+    checked: true,
+  },
+  {
+    key: "transactions",
+    header: "Transactions",
+    checked: true,
+  },
+  {
+    key: "deployment",
+    header: "Deployment",
+    checked: true,
+  },
+  {
+    key: "user",
+    header: "User",
+    checked: true,
+  },
+];
+
 function AllSessions() {
   const navigate = useNavigate();
-  const defaultHeaders = [
-    {
-      key: "session",
-      header: "Session",
-      checked: true,
-    },
-    {
-      key: "transactions",
-      header: "Transactions",
-      checked: true,
-    },
-    {
-      key: "deployment",
-      header: "Deployment",
-      checked: true,
-    },
-    {
-      key: "user",
-      header: "User",
-      checked: true,
-    },
-  ];
 
   const [headers, setHeaders] = useState(
     defaultHeaders.map((h) => Object.assign({}, h))
@@ -77,7 +78,7 @@ function AllSessions() {
     })
   }
   return (
-    <div>
+    <div className="session-sections">
       <CustomDataTable
         headers={headers.filter((h) => h.checked || h.key === "actions")}
         rows={formatData(rows)}
@@ -146,8 +147,7 @@ function AllSessions() {
           !rows.length && {
             type: false ? "NotFound" : "NoData",
             title: "No sessions yet.",
-            noDataSubtitle:
-              "All sessions are listed here.",
+            noDataSubtitle: "All sessions are listed here.",
           }
         }
         sortRowHandler={() => {}}

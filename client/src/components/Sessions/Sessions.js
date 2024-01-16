@@ -9,13 +9,11 @@
  * of its trade secrets, irrespective of what has been deposited with
  * the U.S. Copyright Office.
  ****************************************************************************** */
-import React from "react";
+import React, { useState } from "react";
 
 import {
   Tab,
   TabList,
-  TabPanel,
-  TabPanels,
   Tabs,
 } from "@carbon/react";
 import PageContainer from "../common/PageContainer";
@@ -25,32 +23,45 @@ import Errors from "./Errors";
 import AllSessions from "./AllSessions";
 
 function Sessions() {
+  const [tab, setTab] = useState(0);
+
+  let content;
+  switch (tab) {
+    case 0:
+      content = <AllSessions />;
+      break;
+    case 1:
+      content = <Errors />;
+      break;
+    case 2:
+      content = <Anomalies />;
+      break;
+    default: break;
+  }
+
   return (
     <PageContainer
       className="sessions-container"
       header={{
         title: "Sessions",
         subtitle: "All sessions details here",
+        navigation: (
+          <Tabs
+            selectedIndex={tab}
+            onChange={({ selectedIndex }) => {
+              setTab(selectedIndex);
+            }}
+          >
+            <TabList aria-label="List of tabs">
+              <Tab>All</Tab>
+              <Tab>Errors</Tab>
+              <Tab>Anomalies</Tab>
+            </TabList>
+          </Tabs>
+        )
       }}
     >
-      <Tabs>
-        <TabList aria-label="List of tabs">
-          <Tab>All</Tab>
-          <Tab disabled>Errors</Tab>
-          <Tab disabled>Anomalies</Tab>
-        </TabList>
-        <TabPanels>
-          <TabPanel>
-            <AllSessions />
-          </TabPanel>
-          <TabPanel>
-            <Errors />
-          </TabPanel>
-          <TabPanel>
-            <Anomalies />
-          </TabPanel>
-        </TabPanels>
-      </Tabs>
+      {content}
     </PageContainer>
   );
 }
