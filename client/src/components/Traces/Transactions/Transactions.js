@@ -78,29 +78,18 @@ function Transactions() {
   const navigate = useNavigate();
   const defaultHeaders = [
     {
-      key: "label",
-      header: "Label",
+      key: "deployment",
+      header: "Application name",
       checked: true,
-      required: true,
     },
     {
       key: "trace",
-      header: "Trace",
-      checked: true,
-    },
-    {
-      key: "generations",
-      header: "Generations",
+      header: "Timestamp",
       checked: true,
     },
     {
       key: "latency",
       header: "Latency",
-      checked: true,
-    },
-    {
-      key: "deployment",
-      header: "Deployment",
       checked: true,
     },
     {
@@ -116,11 +105,6 @@ function Transactions() {
     {
       key: "hostname",
       header: "Hostname",
-      checked: true,
-    },
-    {
-      key: "user",
-      header: "User",
       checked: true,
     },
   ];
@@ -146,7 +130,7 @@ function Transactions() {
       return defaultHeaders.reduce(
         (r, h) => {
           switch (h.key) {
-            case "trace":
+            case "deployment":
               r[h.key] = {
                 displayType: "link",
                 data: row[h.key],

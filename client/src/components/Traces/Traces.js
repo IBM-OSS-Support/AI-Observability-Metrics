@@ -47,8 +47,8 @@ function Traces() {
     <PageContainer
       className="traces-container"
       header={{
-        title: "Traces",
-        subtitle: "Traces for your data.",
+        title: "AI applications",
+        subtitle: "Traces information from your AI applications.",
         navigation: (
           <Tabs
             selectedIndex={tab}

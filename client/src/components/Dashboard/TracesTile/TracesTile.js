@@ -20,7 +20,7 @@ const TracesTile = () => {
     <Tile className="infrastructure-components">
       <div className="infrastructure-components-content">
         <h5>
-          Traces <span className="count">(5)</span>
+          AI applications <span className="count">(5)</span>
         </h5>
         <div className="types">
           <Button
@@ -69,12 +69,8 @@ const TracesTile = () => {
           </Button>
         </div>
       </div>
-      <Button
-        kind="ghost"
-        className="bottom-link"
-        href="#/traces"
-      >
-        <span>Go to traces</span>
+      <Button kind="ghost" className="bottom-link" href="#/traces">
+        <span>Go to AI applications</span>
       </Button>
     </Tile>
   );
