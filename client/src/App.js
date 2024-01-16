@@ -32,7 +32,7 @@ const ROUTES = [
   { path: '/traces', component: () => <Traces /> },
   { path: '/sessions', component: () => <Sessions /> },
   { path: '/metrics', component: () => <Metrics /> },
-  { path: '/trace-analysis/:id', component: () => <TraceAnalysis /> },
+  { path: '/trace-analysis/:appName', component: () => <TraceAnalysis /> },
 ];
 
 function App() {

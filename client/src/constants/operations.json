@@ -1,707 +1,1516 @@
 {
-  "id": "1",
-  "label": "root",
-  "trace": "2024-01-11 18:06:56",
-  "generations": "",
-  "latency": 5.4,
-  "delay": 0,
-  "deployment": "my-app-prod",
-  "component": "Agent",
-  "operation": "langchain.agents.agent.AgentExecutor",
-  "hostname": "Abdullas-MacBook-Pro.local",
-  "user": "user3",
-  "parameters": [],
-  "data": [
+  "spans": [
     {
-      "name": "inputs",
-      "data": [
-        [
-          {
-            "content": "Answer the following questions as best you can. You have access to the following tools:\n\nCalculator: Useful for when you need to answer questions about math.\n\nUse the following format:\n\nQuestion: the input question you must answer\nThought: you should always think about what to do\nAction: the action to take, should be one of [Calculator]\nAction Input: the input to the action\nObservation: the result of the action\n... (this Thought/Action/Action Input/Observation can repeat N times)\nThought: I now know the final answer\nFinal Answer: the final answer to the original input question\n\nBegin!\n\nQuestion: What is 38 raised to .123243 power?\nThought:I need to calculate the value of 38 raised to the power of 0.123243.\nAction: Calculator\nAction Input: 38 ^ 0.123243\nObservation: Answer: 1.5656593279445363\nThought:",
-            "additional_kwargs": {},
-            "type": "human",
-            "example": false
-          }
-        ]
-      ]
-    },
-    {
-      "name": "actions",
-      "data": [
-        [
-          {
-            "content": "Answer the following questions as best you can. You have access to the following tools:\n\nCalculator: Useful for when you need to answer questions about math.\n\nUse the following format:\n\nQuestion: the input question you must answer\nThought: you should always think about what to do\nAction: the action to take, should be one of [Calculator]\nAction Input: the input to the action\nObservation: the result of the action\n... (this Thought/Action/Action Input/Observation can repeat N times)\nThought: I now know the final answer\nFinal Answer: the final answer to the original input question\n\nBegin!\n\nQuestion: What is 38 raised to .123243 power?\nThought:I need to calculate the value of 38 raised to the power of 0.123243.\nAction: Calculator\nAction Input: 38 ^ 0.123243\nObservation: Answer: 1.5656593279445363\nThought:",
-            "additional_kwargs": {},
-            "type": "human",
-            "example": false
-          }
-        ]
-      ]
-    },
-    {
-      "name": "outputs",
-      "data": [
-        [
-          {
-            "content": "Answer the following questions as best you can. You have access to the following tools:\n\nCalculator: Useful for when you need to answer questions about math.\n\nUse the following format:\n\nQuestion: the input question you must answer\nThought: you should always think about what to do\nAction: the action to take, should be one of [Calculator]\nAction Input: the input to the action\nObservation: the result of the action\n... (this Thought/Action/Action Input/Observation can repeat N times)\nThought: I now know the final answer\nFinal Answer: the final answer to the original input question\n\nBegin!\n\nQuestion: What is 38 raised to .123243 power?\nThought:I need to calculate the value of 38 raised to the power of 0.123243.\nAction: Calculator\nAction Input: 38 ^ 0.123243\nObservation: Answer: 1.5656593279445363\nThought:",
-            "additional_kwargs": {},
-            "type": "human",
-            "example": false
-          }
-        ]
-      ]
-    }
-  ],
-  "libraries": [
-    {
-      "id": "1L1",
-      "library": "LangChain",
-      "version": "0.1"
-    },
-    {
-      "id": "1L2",
-      "library": "OpenAI Python Library",
-      "version": "1.7.1"
-    }
-  ],
-  "process": [
-    {
-      "id": "1P1",
-      "pid": "93138",
-      "started": "2024-01-11 18:06:44",
-      "peakMemory": "111 MB",
-      "runtime": "Python 3.9.6",
-      "runtimeImplementation": "CPython",
-      "graphSignalVersion": "0.13.44"
-    }
-  ],
-  "node": [
-    {
-      "id": "1N1",
-      "hostname": "Abdullas-MacBook-Pro.local",
-      "platform": "darwin",
-      "machine": "arm64",
-      "os": "Darwin 23.2.0"
-    }
-  ],
-  "traces": [
-    {
-      "id": "11",
-      "label": "langchain.agents.agent.AgentExecutor",
-      "trace": "2024-01-11 18:06:56",
-      "generations": "",
-      "latency": 2.3,
-      "delay": 0,
-      "deployment": "my-app-prod",
-      "component": "Agent",
-      "operation": "langchain.chains.llm.LLMChain",
-      "hostname": "Abdullas-MacBook-Pro.local",
-      "user": "user3",
-      "parameters": [],
-      "data": [
+      "startUs": "1702017193090926",
+      "endUs": "1702017195060829",
+      "nodeUsage": {
+        "hostname": "langchain1.fyre.ibm.com",
+        "platform": "linux",
+        "machine": "x86_64",
+        "osName": "Linux",
+        "osVersion": "5.15.0-89-generic",
+        "ipAddress": "10.51.6.43",
+        "memUsed": "1667260000",
+        "memTotal": "16372256000"
+      },
+      "processUsage": {
+        "maxRss": "108660000",
+        "currentRss": "108660000",
+        "vmSize": "452984000",
+        "runtime": "PYTHON",
+        "runtimeVersion": {
+          "major": 3,
+          "minor": 10,
+          "patch": 12
+        },
+        "runtimeImpl": "CPython",
+        "startMs": "1702017192159",
+        "pid": "12882"
+      },
+      "tracerInfo": {
+        "tracerType": "PYTHON_TRACER",
+        "version": {
+          "minor": 13,
+          "patch": 44
+        }
+      },
+      "libraries": [
         {
-          "name": "inputs",
-          "data": [
-            [
-              {
-                "content": "Answer the following questions as best you can. You have access to the following tools:\n\nCalculator: Useful for when you need to answer questions about math.\n\nUse the following format:\n\nQuestion: the input question you must answer\nThought: you should always think about what to do\nAction: the action to take, should be one of [Calculator]\nAction Input: the input to the action\nObservation: the result of the action\n... (this Thought/Action/Action Input/Observation can repeat N times)\nThought: I now know the final answer\nFinal Answer: the final answer to the original input question\n\nBegin!\n\nQuestion: What is 38 raised to .123243 power?\nThought:I need to calculate the value of 38 raised to the power of 0.123243.\nAction: Calculator\nAction Input: 38 ^ 0.123243\nObservation: Answer: 1.5656593279445363\nThought:",
-                "additional_kwargs": {},
-                "type": "human",
-                "example": false
-              }
-            ]
+          "version": {
+            "patch": 346
+          },
+          "name": "LangChain"
+        },
+        {
+          "version": {
+            "major": 1,
+            "minor": 3,
+            "patch": 7
+          },
+          "name": "OpenAI Python Library"
+        }
+      ],
+      "tags": [
+        {
+          "key": "deployment",
+          "value": "langchain-demo"
+        },
+        {
+          "key": "operation",
+          "value": "openai.chat.completions.create"
+        },
+        {
+          "key": "hostname",
+          "value": "langchain1.fyre.ibm.com"
+        },
+        {
+          "key": "user",
+          "value": "user7"
+        },
+        {
+          "key": "component",
+          "value": "LLM"
+        },
+        {
+          "key": "endpoint",
+          "value": "https://api.openai.com/v1/chat/completions"
+        },
+        {
+          "key": "model",
+          "value": "gpt-3.5-turbo"
+        }
+      ],
+      "spanId": "b8619133bc83",
+      "dataProfile": [
+        {
+          "dataName": "messages",
+          "dataType": "list",
+          "counts": [
+            {
+              "name": "element_count",
+              "count": "1"
+            },
+            {
+              "name": "token_count",
+              "count": "149"
+            }
           ]
         },
         {
-          "name": "actions",
-          "data": [
-            [
-              {
-                "content": "Answer the following questions as best you can. You have access to the following tools:\n\nCalculator: Useful for when you need to answer questions about math.\n\nUse the following format:\n\nQuestion: the input question you must answer\nThought: you should always think about what to do\nAction: the action to take, should be one of [Calculator]\nAction Input: the input to the action\nObservation: the result of the action\n... (this Thought/Action/Action Input/Observation can repeat N times)\nThought: I now know the final answer\nFinal Answer: the final answer to the original input question\n\nBegin!\n\nQuestion: What is 38 raised to .123243 power?\nThought:I need to calculate the value of 38 raised to the power of 0.123243.\nAction: Calculator\nAction Input: 38 ^ 0.123243\nObservation: Answer: 1.5656593279445363\nThought:",
-                "additional_kwargs": {},
-                "type": "human",
-                "example": false
-              }
-            ]
-          ]
-        },
-        {
-          "name": "outputs",
-          "data": [
-            [
-              {
-                "content": "Answer the following questions as best you can. You have access to the following tools:\n\nCalculator: Useful for when you need to answer questions about math.\n\nUse the following format:\n\nQuestion: the input question you must answer\nThought: you should always think about what to do\nAction: the action to take, should be one of [Calculator]\nAction Input: the input to the action\nObservation: the result of the action\n... (this Thought/Action/Action Input/Observation can repeat N times)\nThought: I now know the final answer\nFinal Answer: the final answer to the original input question\n\nBegin!\n\nQuestion: What is 38 raised to .123243 power?\nThought:I need to calculate the value of 38 raised to the power of 0.123243.\nAction: Calculator\nAction Input: 38 ^ 0.123243\nObservation: Answer: 1.5656593279445363\nThought:",
-                "additional_kwargs": {},
-                "type": "human",
-                "example": false
-              }
-            ]
+          "dataName": "completion",
+          "dataType": "dict",
+          "counts": [
+            {
+              "name": "finish_reason_stop",
+              "count": "1"
+            },
+            {
+              "name": "token_count",
+              "count": "35"
+            }
           ]
         }
       ],
-      "traces": [
+      "params": [
         {
-          "id": "111",
-          "label": "langchain.chains.llm.LLMChain",
-          "trace": "2024-01-11 18:06:56",
-          "generations": "",
-          "latency": 2.3,
-          "delay": 0,
-          "deployment": "my-app-prod",
-          "component": "Agent",
-          "operation": "langchain.chat_models.openai.ChatOpenAI",
-          "hostname": "Abdullas-MacBook-Pro.local",
-          "user": "user3",
-          "parameters": [],
-          "data": [
-            {
-              "name": "inputs",
-              "data": [
-                [
-                  {
-                    "content": "Answer the following questions as best you can. You have access to the following tools:\n\nCalculator: Useful for when you need to answer questions about math.\n\nUse the following format:\n\nQuestion: the input question you must answer\nThought: you should always think about what to do\nAction: the action to take, should be one of [Calculator]\nAction Input: the input to the action\nObservation: the result of the action\n... (this Thought/Action/Action Input/Observation can repeat N times)\nThought: I now know the final answer\nFinal Answer: the final answer to the original input question\n\nBegin!\n\nQuestion: What is 38 raised to .123243 power?\nThought:I need to calculate the value of 38 raised to the power of 0.123243.\nAction: Calculator\nAction Input: 38 ^ 0.123243\nObservation: Answer: 1.5656593279445363\nThought:",
-                    "additional_kwargs": {},
-                    "type": "human",
-                    "example": false
-                  }
-                ]
-              ]
-            },
-            {
-              "name": "actions",
-              "data": [
-                [
-                  {
-                    "content": "Answer the following questions as best you can. You have access to the following tools:\n\nCalculator: Useful for when you need to answer questions about math.\n\nUse the following format:\n\nQuestion: the input question you must answer\nThought: you should always think about what to do\nAction: the action to take, should be one of [Calculator]\nAction Input: the input to the action\nObservation: the result of the action\n... (this Thought/Action/Action Input/Observation can repeat N times)\nThought: I now know the final answer\nFinal Answer: the final answer to the original input question\n\nBegin!\n\nQuestion: What is 38 raised to .123243 power?\nThought:I need to calculate the value of 38 raised to the power of 0.123243.\nAction: Calculator\nAction Input: 38 ^ 0.123243\nObservation: Answer: 1.5656593279445363\nThought:",
-                    "additional_kwargs": {},
-                    "type": "human",
-                    "example": false
-                  }
-                ]
-              ]
-            },
-            {
-              "name": "outputs",
-              "data": [
-                [
-                  {
-                    "content": "Answer the following questions as best you can. You have access to the following tools:\n\nCalculator: Useful for when you need to answer questions about math.\n\nUse the following format:\n\nQuestion: the input question you must answer\nThought: you should always think about what to do\nAction: the action to take, should be one of [Calculator]\nAction Input: the input to the action\nObservation: the result of the action\n... (this Thought/Action/Action Input/Observation can repeat N times)\nThought: I now know the final answer\nFinal Answer: the final answer to the original input question\n\nBegin!\n\nQuestion: What is 38 raised to .123243 power?\nThought:I need to calculate the value of 38 raised to the power of 0.123243.\nAction: Calculator\nAction Input: 38 ^ 0.123243\nObservation: Answer: 1.5656593279445363\nThought:",
-                    "additional_kwargs": {},
-                    "type": "human",
-                    "example": false
-                  }
-                ]
-              ]
-            }
-          ],
-          "traces": [
-            {
-              "id": "1111",
-              "label": "langchain.chat_models.openai.ChatOpenAI",
-              "trace": "2024-01-11 18:06:56",
-              "generations": "",
-              "latency": 2.3,
-              "delay": 0,
-              "deployment": "my-app-prod",
-              "component": "Agent",
-              "operation": "openai.chat.completions.create",
-              "hostname": "Abdullas-MacBook-Pro.local",
-              "user": "user3",
-              "parameters": [
-                "model=gpt-3.5-turbo",
-                "temperature=0.0",
-                "n=1",
-                "stream=False",
-                "stop=['\nObservation:', '\n\tObservation:']"
-              ],
-              "data": [
-                {
-                  "name": "inputs",
-                  "data": [
-                    [
-                      {
-                        "content": "Answer the following questions as best you can. You have access to the following tools:\n\nCalculator: Useful for when you need to answer questions about math.\n\nUse the following format:\n\nQuestion: the input question you must answer\nThought: you should always think about what to do\nAction: the action to take, should be one of [Calculator]\nAction Input: the input to the action\nObservation: the result of the action\n... (this Thought/Action/Action Input/Observation can repeat N times)\nThought: I now know the final answer\nFinal Answer: the final answer to the original input question\n\nBegin!\n\nQuestion: What is 38 raised to .123243 power?\nThought:I need to calculate the value of 38 raised to the power of 0.123243.\nAction: Calculator\nAction Input: 38 ^ 0.123243\nObservation: Answer: 1.5656593279445363\nThought:",
-                        "additional_kwargs": {},
-                        "type": "human",
-                        "example": false
-                      }
-                    ]
-                  ]
-                },
-                {
-                  "name": "actions",
-                  "data": [
-                    [
-                      {
-                        "content": "Answer the following questions as best you can. You have access to the following tools:\n\nCalculator: Useful for when you need to answer questions about math.\n\nUse the following format:\n\nQuestion: the input question you must answer\nThought: you should always think about what to do\nAction: the action to take, should be one of [Calculator]\nAction Input: the input to the action\nObservation: the result of the action\n... (this Thought/Action/Action Input/Observation can repeat N times)\nThought: I now know the final answer\nFinal Answer: the final answer to the original input question\n\nBegin!\n\nQuestion: What is 38 raised to .123243 power?\nThought:I need to calculate the value of 38 raised to the power of 0.123243.\nAction: Calculator\nAction Input: 38 ^ 0.123243\nObservation: Answer: 1.5656593279445363\nThought:",
-                        "additional_kwargs": {},
-                        "type": "human",
-                        "example": false
-                      }
-                    ]
-                  ]
-                },
-                {
-                  "name": "outputs",
-                  "data": [
-                    [
-                      {
-                        "content": "Answer the following questions as best you can. You have access to the following tools:\n\nCalculator: Useful for when you need to answer questions about math.\n\nUse the following format:\n\nQuestion: the input question you must answer\nThought: you should always think about what to do\nAction: the action to take, should be one of [Calculator]\nAction Input: the input to the action\nObservation: the result of the action\n... (this Thought/Action/Action Input/Observation can repeat N times)\nThought: I now know the final answer\nFinal Answer: the final answer to the original input question\n\nBegin!\n\nQuestion: What is 38 raised to .123243 power?\nThought:I need to calculate the value of 38 raised to the power of 0.123243.\nAction: Calculator\nAction Input: 38 ^ 0.123243\nObservation: Answer: 1.5656593279445363\nThought:",
-                        "additional_kwargs": {},
-                        "type": "human",
-                        "example": false
-                      }
-                    ]
-                  ]
-                }
-              ]
-            }
-          ]
+          "name": "model",
+          "value": "gpt-3.5-turbo"
+        },
+        {
+          "name": "temperature",
+          "value": "0.0"
+        },
+        {
+          "name": "n",
+          "value": "1"
+        },
+        {
+          "name": "stream",
+          "value": "False"
+        },
+        {
+          "name": "stop",
+          "value": "['\nObservation:', '\n\tObservation:']"
         }
-      ]
+      ],
+      "context": {
+        "startNs": "179341079469989",
+        "endNs": "179343049372324",
+        "rootSpanId": "e6c358881ba9",
+        "parentSpanId": "42e71415e901"
+      },
+      "dataSamples": [
+        {
+          "dataName": "messages",
+          "contentType": "application/json",
+          "contentBytes": "W3sicm9sZSI6ICJ1c2VyIiwgImNvbnRlbnQiOiAiQW5zd2VyIHRoZSBmb2xsb3dpbmcgcXVlc3Rpb25zIGFzIGJlc3QgeW91IGNhbi4gWW91IGhhdmUgYWNjZXNzIHRvIHRoZSBmb2xsb3dpbmcgdG9vbHM6XG5cbkNhbGN1bGF0b3I6IFVzZWZ1bCBmb3Igd2hlbiB5b3UgbmVlZCB0byBhbnN3ZXIgcXVlc3Rpb25zIGFib3V0IG1hdGguXG5cblVzZSB0aGUgZm9sbG93aW5nIGZvcm1hdDpcblxuUXVlc3Rpb246IHRoZSBpbnB1dCBxdWVzdGlvbiB5b3UgbXVzdCBhbnN3ZXJcblRob3VnaHQ6IHlvdSBzaG91bGQgYWx3YXlzIHRoaW5rIGFib3V0IHdoYXQgdG8gZG9cbkFjdGlvbjogdGhlIGFjdGlvbiB0byB0YWtlLCBzaG91bGQgYmUgb25lIG9mIFtDYWxjdWxhdG9yXVxuQWN0aW9uIElucHV0OiB0aGUgaW5wdXQgdG8gdGhlIGFjdGlvblxuT2JzZXJ2YXRpb246IHRoZSByZXN1bHQgb2YgdGhlIGFjdGlvblxuLi4uICh0aGlzIFRob3VnaHQvQWN0aW9uL0FjdGlvbiBJbnB1dC9PYnNlcnZhdGlvbiBjYW4gcmVwZWF0IE4gdGltZXMpXG5UaG91Z2h0OiBJIG5vdyBrbm93IHRoZSBmaW5hbCBhbnN3ZXJcbkZpbmFsIEFuc3dlcjogdGhlIGZpbmFsIGFuc3dlciB0byB0aGUgb3JpZ2luYWwgaW5wdXQgcXVlc3Rpb25cblxuQmVnaW4hXG5cblF1ZXN0aW9uOiBXaGF0IGlzIDM4IHJhaXNlZCB0byAuMTIzMjQzIHBvd2VyP1xuVGhvdWdodDoifV0="
+        },
+        {
+          "dataName": "completion",
+          "contentType": "application/json",
+          "contentBytes": "eyJpZCI6ICJjaGF0Y21wbC04VE9pOTBZZzZBMnJqTkpub0p4MXdHajhRck9KVCIsICJjaG9pY2VzIjogW3siZmluaXNoX3JlYXNvbiI6ICJzdG9wIiwgImluZGV4IjogMCwgIm1lc3NhZ2UiOiB7ImNvbnRlbnQiOiAiSSBuZWVkIHRvIGNhbGN1bGF0ZSB0aGUgdmFsdWUgb2YgMzggcmFpc2VkIHRvIHRoZSBwb3dlciBvZiAwLjEyMzI0My5cbkFjdGlvbjogQ2FsY3VsYXRvclxuQWN0aW9uIElucHV0OiAzOCBeIDAuMTIzMjQzIiwgInJvbGUiOiAiYXNzaXN0YW50IiwgImZ1bmN0aW9uX2NhbGwiOiBudWxsLCAidG9vbF9jYWxscyI6IG51bGx9fV0sICJjcmVhdGVkIjogMTcwMjAxNzE5MywgIm1vZGVsIjogImdwdC0zLjUtdHVyYm8tMDYxMyIsICJvYmplY3QiOiAiY2hhdC5jb21wbGV0aW9uIiwgInN5c3RlbV9maW5nZXJwcmludCI6IG51bGwsICJ1c2FnZSI6IHsiY29tcGxldGlvbl90b2tlbnMiOiAzNSwgInByb21wdF90b2tlbnMiOiAxNDksICJ0b3RhbF90b2tlbnMiOiAxODR9fQ=="
+        }
+      ],
+      "samplingType": "PARENT_SAMPLING"
     },
     {
-      "id": "12",
-      "label": "langchain.agents.agent.AgentExecutor",
-      "trace": "2024-01-11 18:06:56",
-      "generations": "",
-      "latency": 1.8,
-      "delay": 2.3,
-      "deployment": "my-app-prod",
-      "component": "Agent",
-      "operation": "langchain.agents.tools.Calculator",
-      "hostname": "Abdullas-MacBook-Pro.local",
-      "user": "user3",
-      "parameters": [],
-      "data": [
+      "startUs": "1702017193085865",
+      "endUs": "1702017195063555",
+      "nodeUsage": {
+        "hostname": "langchain1.fyre.ibm.com",
+        "platform": "linux",
+        "machine": "x86_64",
+        "osName": "Linux",
+        "osVersion": "5.15.0-89-generic",
+        "ipAddress": "10.51.6.43",
+        "memUsed": "1667260000",
+        "memTotal": "16372256000"
+      },
+      "processUsage": {
+        "maxRss": "108660000",
+        "currentRss": "108660000",
+        "vmSize": "452984000",
+        "runtime": "PYTHON",
+        "runtimeVersion": {
+          "major": 3,
+          "minor": 10,
+          "patch": 12
+        },
+        "runtimeImpl": "CPython",
+        "startMs": "1702017192159",
+        "pid": "12882"
+      },
+      "tracerInfo": {
+        "tracerType": "PYTHON_TRACER",
+        "version": {
+          "minor": 13,
+          "patch": 44
+        }
+      },
+      "libraries": [
         {
-          "name": "inputs",
-          "data": [
-            [
-              {
-                "content": "Answer the following questions as best you can. You have access to the following tools:\n\nCalculator: Useful for when you need to answer questions about math.\n\nUse the following format:\n\nQuestion: the input question you must answer\nThought: you should always think about what to do\nAction: the action to take, should be one of [Calculator]\nAction Input: the input to the action\nObservation: the result of the action\n... (this Thought/Action/Action Input/Observation can repeat N times)\nThought: I now know the final answer\nFinal Answer: the final answer to the original input question\n\nBegin!\n\nQuestion: What is 38 raised to .123243 power?\nThought:I need to calculate the value of 38 raised to the power of 0.123243.\nAction: Calculator\nAction Input: 38 ^ 0.123243\nObservation: Answer: 1.5656593279445363\nThought:",
-                "additional_kwargs": {},
-                "type": "human",
-                "example": false
-              }
-            ]
+          "version": {
+            "patch": 346
+          },
+          "name": "LangChain"
+        },
+        {
+          "version": {
+            "major": 1,
+            "minor": 3,
+            "patch": 7
+          },
+          "name": "OpenAI Python Library"
+        }
+      ],
+      "tags": [
+        {
+          "key": "deployment",
+          "value": "langchain-demo"
+        },
+        {
+          "key": "operation",
+          "value": "langchain.chat_models.openai.ChatOpenAI"
+        },
+        {
+          "key": "hostname",
+          "value": "langchain1.fyre.ibm.com"
+        },
+        {
+          "key": "user",
+          "value": "user7"
+        },
+        {
+          "key": "component",
+          "value": "LLM"
+        }
+      ],
+      "spanId": "42e71415e901",
+      "dataProfile": [
+        {
+          "dataName": "messages",
+          "dataType": "list",
+          "shape": [
+            "1",
+            "1"
+          ],
+          "counts": [
+            {
+              "name": "element_count",
+              "count": "1"
+            }
           ]
         },
         {
-          "name": "outputs",
-          "data": [
-            [
-              {
-                "content": "Answer the following questions as best you can. You have access to the following tools:\n\nCalculator: Useful for when you need to answer questions about math.\n\nUse the following format:\n\nQuestion: the input question you must answer\nThought: you should always think about what to do\nAction: the action to take, should be one of [Calculator]\nAction Input: the input to the action\nObservation: the result of the action\n... (this Thought/Action/Action Input/Observation can repeat N times)\nThought: I now know the final answer\nFinal Answer: the final answer to the original input question\n\nBegin!\n\nQuestion: What is 38 raised to .123243 power?\nThought:I need to calculate the value of 38 raised to the power of 0.123243.\nAction: Calculator\nAction Input: 38 ^ 0.123243\nObservation: Answer: 1.5656593279445363\nThought:",
-                "additional_kwargs": {},
-                "type": "human",
-                "example": false
-              }
-            ]
+          "dataName": "output",
+          "dataType": "dict"
+        },
+        {
+          "dataName": "generations",
+          "dataType": "list",
+          "shape": [
+            "1",
+            "1"
+          ],
+          "counts": [
+            {
+              "name": "element_count",
+              "count": "1"
+            }
           ]
         }
       ],
-      "traces": [
+      "context": {
+        "startNs": "179341074569115",
+        "endNs": "179343052259088",
+        "rootSpanId": "e6c358881ba9",
+        "parentSpanId": "ce00030b9dc6"
+      },
+      "dataSamples": [
         {
-          "id": "121",
-          "label": "langchain.agents.tools.Calculator",
-          "trace": "2024-01-11 18:06:56",
-          "generations": "",
-          "latency": 1.8,
-          "delay": 2.3,
-          "deployment": "my-app-prod",
-          "component": "Agent",
-          "operation": "langchain.chains.llm_math.base.LLMMathChain",
-          "hostname": "Abdullas-MacBook-Pro.local",
-          "user": "user3",
-          "parameters": [],
-          "data": [
-            {
-              "name": "inputs",
-              "data": [
-                [
-                  {
-                    "content": "Answer the following questions as best you can. You have access to the following tools:\n\nCalculator: Useful for when you need to answer questions about math.\n\nUse the following format:\n\nQuestion: the input question you must answer\nThought: you should always think about what to do\nAction: the action to take, should be one of [Calculator]\nAction Input: the input to the action\nObservation: the result of the action\n... (this Thought/Action/Action Input/Observation can repeat N times)\nThought: I now know the final answer\nFinal Answer: the final answer to the original input question\n\nBegin!\n\nQuestion: What is 38 raised to .123243 power?\nThought:I need to calculate the value of 38 raised to the power of 0.123243.\nAction: Calculator\nAction Input: 38 ^ 0.123243\nObservation: Answer: 1.5656593279445363\nThought:",
-                    "additional_kwargs": {},
-                    "type": "human",
-                    "example": false
-                  }
-                ]
-              ]
-            },
-            {
-              "name": "outputs",
-              "data": [
-                [
-                  {
-                    "content": "Answer the following questions as best you can. You have access to the following tools:\n\nCalculator: Useful for when you need to answer questions about math.\n\nUse the following format:\n\nQuestion: the input question you must answer\nThought: you should always think about what to do\nAction: the action to take, should be one of [Calculator]\nAction Input: the input to the action\nObservation: the result of the action\n... (this Thought/Action/Action Input/Observation can repeat N times)\nThought: I now know the final answer\nFinal Answer: the final answer to the original input question\n\nBegin!\n\nQuestion: What is 38 raised to .123243 power?\nThought:I need to calculate the value of 38 raised to the power of 0.123243.\nAction: Calculator\nAction Input: 38 ^ 0.123243\nObservation: Answer: 1.5656593279445363\nThought:",
-                    "additional_kwargs": {},
-                    "type": "human",
-                    "example": false
-                  }
-                ]
-              ]
-            }
-          ],
-          "traces": [
-            {
-              "id": "1211",
-              "label": "langchain.chains.llm_math.base.LLMMathChain",
-              "trace": "2024-01-11 18:06:56",
-              "generations": "",
-              "latency": 1.8,
-              "delay": 2.3,
-              "deployment": "my-app-prod",
-              "component": "Agent",
-              "operation": "langchain.chains.llm.LLMChain",
-              "hostname": "Abdullas-MacBook-Pro.local",
-              "user": "user3",
-              "parameters": [],
-              "data": [
-                {
-                  "name": "inputs",
-                  "data": [
-                    [
-                      {
-                        "content": "Answer the following questions as best you can. You have access to the following tools:\n\nCalculator: Useful for when you need to answer questions about math.\n\nUse the following format:\n\nQuestion: the input question you must answer\nThought: you should always think about what to do\nAction: the action to take, should be one of [Calculator]\nAction Input: the input to the action\nObservation: the result of the action\n... (this Thought/Action/Action Input/Observation can repeat N times)\nThought: I now know the final answer\nFinal Answer: the final answer to the original input question\n\nBegin!\n\nQuestion: What is 38 raised to .123243 power?\nThought:I need to calculate the value of 38 raised to the power of 0.123243.\nAction: Calculator\nAction Input: 38 ^ 0.123243\nObservation: Answer: 1.5656593279445363\nThought:",
-                        "additional_kwargs": {},
-                        "type": "human",
-                        "example": false
-                      }
-                    ]
-                  ]
-                },
-                {
-                  "name": "outputs",
-                  "data": [
-                    [
-                      {
-                        "content": "Answer the following questions as best you can. You have access to the following tools:\n\nCalculator: Useful for when you need to answer questions about math.\n\nUse the following format:\n\nQuestion: the input question you must answer\nThought: you should always think about what to do\nAction: the action to take, should be one of [Calculator]\nAction Input: the input to the action\nObservation: the result of the action\n... (this Thought/Action/Action Input/Observation can repeat N times)\nThought: I now know the final answer\nFinal Answer: the final answer to the original input question\n\nBegin!\n\nQuestion: What is 38 raised to .123243 power?\nThought:I need to calculate the value of 38 raised to the power of 0.123243.\nAction: Calculator\nAction Input: 38 ^ 0.123243\nObservation: Answer: 1.5656593279445363\nThought:",
-                        "additional_kwargs": {},
-                        "type": "human",
-                        "example": false
-                      }
-                    ]
-                  ]
-                }
-              ],
-              "traces": [
-                {
-                  "id": "12111",
-                  "label": "langchain.chains.llm.LLMChain",
-                  "trace": "2024-01-11 18:06:56",
-                  "generations": "",
-                  "latency": 1.8,
-                  "delay": 2.3,
-                  "deployment": "my-app-prod",
-                  "component": "Agent",
-                  "operation": "langchain.chat_models.openai.ChatOpenAI",
-                  "hostname": "Abdullas-MacBook-Pro.local",
-                  "user": "user3",
-                  "parameters": [],
-                  "data": [
-                    {
-                      "name": "inputs",
-                      "data": [
-                        [
-                          {
-                            "content": "Answer the following questions as best you can. You have access to the following tools:\n\nCalculator: Useful for when you need to answer questions about math.\n\nUse the following format:\n\nQuestion: the input question you must answer\nThought: you should always think about what to do\nAction: the action to take, should be one of [Calculator]\nAction Input: the input to the action\nObservation: the result of the action\n... (this Thought/Action/Action Input/Observation can repeat N times)\nThought: I now know the final answer\nFinal Answer: the final answer to the original input question\n\nBegin!\n\nQuestion: What is 38 raised to .123243 power?\nThought:I need to calculate the value of 38 raised to the power of 0.123243.\nAction: Calculator\nAction Input: 38 ^ 0.123243\nObservation: Answer: 1.5656593279445363\nThought:",
-                            "additional_kwargs": {},
-                            "type": "human",
-                            "example": false
-                          }
-                        ]
-                      ]
-                    },
-                    {
-                      "name": "outputs",
-                      "data": [
-                        [
-                          {
-                            "content": "Answer the following questions as best you can. You have access to the following tools:\n\nCalculator: Useful for when you need to answer questions about math.\n\nUse the following format:\n\nQuestion: the input question you must answer\nThought: you should always think about what to do\nAction: the action to take, should be one of [Calculator]\nAction Input: the input to the action\nObservation: the result of the action\n... (this Thought/Action/Action Input/Observation can repeat N times)\nThought: I now know the final answer\nFinal Answer: the final answer to the original input question\n\nBegin!\n\nQuestion: What is 38 raised to .123243 power?\nThought:I need to calculate the value of 38 raised to the power of 0.123243.\nAction: Calculator\nAction Input: 38 ^ 0.123243\nObservation: Answer: 1.5656593279445363\nThought:",
-                            "additional_kwargs": {},
-                            "type": "human",
-                            "example": false
-                          }
-                        ]
-                      ]
-                    }
-                  ],
-                  "traces": [
-                    {
-                      "id": "121111",
-                      "label": "langchain.chat_models.openai.ChatOpenAI",
-                      "trace": "2024-01-11 18:06:56",
-                      "generations": "",
-                      "latency": 1.8,
-                      "delay": 2.3,
-                      "deployment": "my-app-prod",
-                      "component": "Agent",
-                      "operation": "openai.chat.completions.create",
-                      "hostname": "Abdullas-MacBook-Pro.local",
-                      "user": "user3",
-                      "parameters": [],
-                      "data": [
-                        {
-                          "name": "inputs",
-                          "data": [
-                            [
-                              {
-                                "content": "Answer the following questions as best you can. You have access to the following tools:\n\nCalculator: Useful for when you need to answer questions about math.\n\nUse the following format:\n\nQuestion: the input question you must answer\nThought: you should always think about what to do\nAction: the action to take, should be one of [Calculator]\nAction Input: the input to the action\nObservation: the result of the action\n... (this Thought/Action/Action Input/Observation can repeat N times)\nThought: I now know the final answer\nFinal Answer: the final answer to the original input question\n\nBegin!\n\nQuestion: What is 38 raised to .123243 power?\nThought:I need to calculate the value of 38 raised to the power of 0.123243.\nAction: Calculator\nAction Input: 38 ^ 0.123243\nObservation: Answer: 1.5656593279445363\nThought:",
-                                "additional_kwargs": {},
-                                "type": "human",
-                                "example": false
-                              }
-                            ]
-                          ]
-                        },
-                        {
-                          "name": "outputs",
-                          "data": [
-                            [
-                              {
-                                "content": "Answer the following questions as best you can. You have access to the following tools:\n\nCalculator: Useful for when you need to answer questions about math.\n\nUse the following format:\n\nQuestion: the input question you must answer\nThought: you should always think about what to do\nAction: the action to take, should be one of [Calculator]\nAction Input: the input to the action\nObservation: the result of the action\n... (this Thought/Action/Action Input/Observation can repeat N times)\nThought: I now know the final answer\nFinal Answer: the final answer to the original input question\n\nBegin!\n\nQuestion: What is 38 raised to .123243 power?\nThought:I need to calculate the value of 38 raised to the power of 0.123243.\nAction: Calculator\nAction Input: 38 ^ 0.123243\nObservation: Answer: 1.5656593279445363\nThought:",
-                                "additional_kwargs": {},
-                                "type": "human",
-                                "example": false
-                              }
-                            ]
-                          ]
-                        }
-                      ],
-                      "traces": [
-                        {
-                          "id": "121111",
-                          "label": "openai.chat.completions.create",
-                          "trace": "2024-01-11 18:06:56",
-                          "generations": "",
-                          "latency": 1.8,
-                          "delay": 2.3,
-                          "deployment": "my-app-prod",
-                          "component": "Agent",
-                          "operation": "openai.chat.completions.create",
-                          "hostname": "Abdullas-MacBook-Pro.local",
-                          "user": "user3",
-                          "parameters": [
-                            "model=gpt-3.5-turbo",
-                            "temperature=0.0",
-                            "n=1",
-                            "stream=False",
-                            "stop=['\nObservation:', '\n\tObservation:']"
-                          ],
-                          "data": [
-                            {
-                              "name": "inputs",
-                              "data": [
-                                [
-                                  {
-                                    "content": "Answer the following questions as best you can. You have access to the following tools:\n\nCalculator: Useful for when you need to answer questions about math.\n\nUse the following format:\n\nQuestion: the input question you must answer\nThought: you should always think about what to do\nAction: the action to take, should be one of [Calculator]\nAction Input: the input to the action\nObservation: the result of the action\n... (this Thought/Action/Action Input/Observation can repeat N times)\nThought: I now know the final answer\nFinal Answer: the final answer to the original input question\n\nBegin!\n\nQuestion: What is 38 raised to .123243 power?\nThought:I need to calculate the value of 38 raised to the power of 0.123243.\nAction: Calculator\nAction Input: 38 ^ 0.123243\nObservation: Answer: 1.5656593279445363\nThought:",
-                                    "additional_kwargs": {},
-                                    "type": "human",
-                                    "example": false
-                                  }
-                                ]
-                              ]
-                            },
-                            {
-                              "name": "outputs",
-                              "data": [
-                                [
-                                  {
-                                    "content": "Answer the following questions as best you can. You have access to the following tools:\n\nCalculator: Useful for when you need to answer questions about math.\n\nUse the following format:\n\nQuestion: the input question you must answer\nThought: you should always think about what to do\nAction: the action to take, should be one of [Calculator]\nAction Input: the input to the action\nObservation: the result of the action\n... (this Thought/Action/Action Input/Observation can repeat N times)\nThought: I now know the final answer\nFinal Answer: the final answer to the original input question\n\nBegin!\n\nQuestion: What is 38 raised to .123243 power?\nThought:I need to calculate the value of 38 raised to the power of 0.123243.\nAction: Calculator\nAction Input: 38 ^ 0.123243\nObservation: Answer: 1.5656593279445363\nThought:",
-                                    "additional_kwargs": {},
-                                    "type": "human",
-                                    "example": false
-                                  }
-                                ]
-                              ]
-                            }
-                          ]
-                        }
-                      ]
-                    }
-                  ]
-                }
-              ]
-            }
-          ]
+          "dataName": "messages",
+          "contentType": "application/json",
+          "contentBytes": "W1t7ImNvbnRlbnQiOiAiQW5zd2VyIHRoZSBmb2xsb3dpbmcgcXVlc3Rpb25zIGFzIGJlc3QgeW91IGNhbi4gWW91IGhhdmUgYWNjZXNzIHRvIHRoZSBmb2xsb3dpbmcgdG9vbHM6XG5cbkNhbGN1bGF0b3I6IFVzZWZ1bCBmb3Igd2hlbiB5b3UgbmVlZCB0byBhbnN3ZXIgcXVlc3Rpb25zIGFib3V0IG1hdGguXG5cblVzZSB0aGUgZm9sbG93aW5nIGZvcm1hdDpcblxuUXVlc3Rpb246IHRoZSBpbnB1dCBxdWVzdGlvbiB5b3UgbXVzdCBhbnN3ZXJcblRob3VnaHQ6IHlvdSBzaG91bGQgYWx3YXlzIHRoaW5rIGFib3V0IHdoYXQgdG8gZG9cbkFjdGlvbjogdGhlIGFjdGlvbiB0byB0YWtlLCBzaG91bGQgYmUgb25lIG9mIFtDYWxjdWxhdG9yXVxuQWN0aW9uIElucHV0OiB0aGUgaW5wdXQgdG8gdGhlIGFjdGlvblxuT2JzZXJ2YXRpb246IHRoZSByZXN1bHQgb2YgdGhlIGFjdGlvblxuLi4uICh0aGlzIFRob3VnaHQvQWN0aW9uL0FjdGlvbiBJbnB1dC9PYnNlcnZhdGlvbiBjYW4gcmVwZWF0IE4gdGltZXMpXG5UaG91Z2h0OiBJIG5vdyBrbm93IHRoZSBmaW5hbCBhbnN3ZXJcbkZpbmFsIEFuc3dlcjogdGhlIGZpbmFsIGFuc3dlciB0byB0aGUgb3JpZ2luYWwgaW5wdXQgcXVlc3Rpb25cblxuQmVnaW4hXG5cblF1ZXN0aW9uOiBXaGF0IGlzIDM4IHJhaXNlZCB0byAuMTIzMjQzIHBvd2VyP1xuVGhvdWdodDoiLCAiYWRkaXRpb25hbF9rd2FyZ3MiOiB7fSwgInR5cGUiOiAiaHVtYW4iLCAiZXhhbXBsZSI6IGZhbHNlfV1d"
+        },
+        {
+          "dataName": "output",
+          "contentType": "application/json",
+          "contentBytes": "eyJ0b2tlbl91c2FnZSI6IHsiY29tcGxldGlvbl90b2tlbnMiOiAzNSwgInByb21wdF90b2tlbnMiOiAxNDksICJ0b3RhbF90b2tlbnMiOiAxODR9LCAibW9kZWxfbmFtZSI6ICJncHQtMy41LXR1cmJvIiwgInN5c3RlbV9maW5nZXJwcmludCI6IG51bGx9"
+        },
+        {
+          "dataName": "generations",
+          "contentType": "application/json",
+          "contentBytes": "W1t7InRleHQiOiAiSSBuZWVkIHRvIGNhbGN1bGF0ZSB0aGUgdmFsdWUgb2YgMzggcmFpc2VkIHRvIHRoZSBwb3dlciBvZiAwLjEyMzI0My5cbkFjdGlvbjogQ2FsY3VsYXRvclxuQWN0aW9uIElucHV0OiAzOCBeIDAuMTIzMjQzIiwgImdlbmVyYXRpb25faW5mbyI6IHsiZmluaXNoX3JlYXNvbiI6ICJzdG9wIn0sICJ0eXBlIjogIkNoYXRHZW5lcmF0aW9uIiwgIm1lc3NhZ2UiOiB7ImNvbnRlbnQiOiAiSSBuZWVkIHRvIGNhbGN1bGF0ZSB0aGUgdmFsdWUgb2YgMzggcmFpc2VkIHRvIHRoZSBwb3dlciBvZiAwLjEyMzI0My5cbkFjdGlvbjogQ2FsY3VsYXRvclxuQWN0aW9uIElucHV0OiAzOCBeIDAuMTIzMjQzIiwgImFkZGl0aW9uYWxfa3dhcmdzIjoge30sICJ0eXBlIjogImFpIiwgImV4YW1wbGUiOiBmYWxzZX19XV0="
         }
-      ]
+      ],
+      "samplingType": "PARENT_SAMPLING"
     },
     {
-      "id": "13",
-      "label": "langchain.agents.agent.AgentExecutor",
-      "trace": "2024-01-11 18:06:56",
-      "generations": "",
-      "latency": 1.3,
-      "delay": 4.1,
-      "deployment": "my-app-prod",
-      "component": "Agent",
-      "operation": "langchain.chains.llm.LLMChain",
-      "hostname": "Abdullas-MacBook-Pro.local",
-      "user": "user3",
-      "parameters": [],
-      "data": [
+      "startUs": "1702017193085136",
+      "endUs": "1702017195064375",
+      "nodeUsage": {
+        "hostname": "langchain1.fyre.ibm.com",
+        "platform": "linux",
+        "machine": "x86_64",
+        "osName": "Linux",
+        "osVersion": "5.15.0-89-generic",
+        "ipAddress": "10.51.6.43",
+        "memUsed": "1667260000",
+        "memTotal": "16372256000"
+      },
+      "processUsage": {
+        "maxRss": "108660000",
+        "currentRss": "108660000",
+        "vmSize": "452984000",
+        "runtime": "PYTHON",
+        "runtimeVersion": {
+          "major": 3,
+          "minor": 10,
+          "patch": 12
+        },
+        "runtimeImpl": "CPython",
+        "startMs": "1702017192159",
+        "pid": "12882"
+      },
+      "tracerInfo": {
+        "tracerType": "PYTHON_TRACER",
+        "version": {
+          "minor": 13,
+          "patch": 44
+        }
+      },
+      "libraries": [
         {
-          "name": "inputs",
-          "data": [
-            [
-              {
-                "content": "Answer the following questions as best you can. You have access to the following tools:\n\nCalculator: Useful for when you need to answer questions about math.\n\nUse the following format:\n\nQuestion: the input question you must answer\nThought: you should always think about what to do\nAction: the action to take, should be one of [Calculator]\nAction Input: the input to the action\nObservation: the result of the action\n... (this Thought/Action/Action Input/Observation can repeat N times)\nThought: I now know the final answer\nFinal Answer: the final answer to the original input question\n\nBegin!\n\nQuestion: What is 38 raised to .123243 power?\nThought:I need to calculate the value of 38 raised to the power of 0.123243.\nAction: Calculator\nAction Input: 38 ^ 0.123243\nObservation: Answer: 1.5656593279445363\nThought:",
-                "additional_kwargs": {},
-                "type": "human",
-                "example": false
-              }
-            ]
+          "version": {
+            "patch": 346
+          },
+          "name": "LangChain"
+        },
+        {
+          "version": {
+            "major": 1,
+            "minor": 3,
+            "patch": 7
+          },
+          "name": "OpenAI Python Library"
+        }
+      ],
+      "tags": [
+        {
+          "key": "deployment",
+          "value": "langchain-demo"
+        },
+        {
+          "key": "operation",
+          "value": "langchain.chains.llm.LLMChain"
+        },
+        {
+          "key": "hostname",
+          "value": "langchain1.fyre.ibm.com"
+        },
+        {
+          "key": "user",
+          "value": "user7"
+        },
+        {
+          "key": "component",
+          "value": "Agent"
+        }
+      ],
+      "spanId": "ce00030b9dc6",
+      "dataProfile": [
+        {
+          "dataName": "inputs",
+          "dataType": "dict"
+        },
+        {
+          "dataName": "outputs",
+          "dataType": "dict"
+        }
+      ],
+      "context": {
+        "startNs": "179341073840448",
+        "endNs": "179343053079126",
+        "rootSpanId": "e6c358881ba9",
+        "parentSpanId": "e6c358881ba9"
+      },
+      "dataSamples": [
+        {
+          "dataName": "inputs",
+          "contentType": "application/json",
+          "contentBytes": "eyJpbnB1dCI6ICJXaGF0IGlzIDM4IHJhaXNlZCB0byAuMTIzMjQzIHBvd2VyPyIsICJhZ2VudF9zY3JhdGNocGFkIjogIiIsICJzdG9wIjogWyJcbk9ic2VydmF0aW9uOiIsICJcblx0T2JzZXJ2YXRpb246Il19"
+        },
+        {
+          "dataName": "outputs",
+          "contentType": "application/json",
+          "contentBytes": "eyJ0ZXh0IjogIkkgbmVlZCB0byBjYWxjdWxhdGUgdGhlIHZhbHVlIG9mIDM4IHJhaXNlZCB0byB0aGUgcG93ZXIgb2YgMC4xMjMyNDMuXG5BY3Rpb246IENhbGN1bGF0b3JcbkFjdGlvbiBJbnB1dDogMzggXiAwLjEyMzI0MyJ9"
+        }
+      ],
+      "samplingType": "PARENT_SAMPLING"
+    },
+    {
+      "startUs": "1702017195075478",
+      "endUs": "1702017197259074",
+      "nodeUsage": {
+        "hostname": "langchain1.fyre.ibm.com",
+        "platform": "linux",
+        "machine": "x86_64",
+        "osName": "Linux",
+        "osVersion": "5.15.0-89-generic",
+        "ipAddress": "10.51.6.43",
+        "memUsed": "1679856000",
+        "memTotal": "16372256000"
+      },
+      "processUsage": {
+        "cpuUsagePercent": 4.105488099255525,
+        "maxRss": "121660000",
+        "currentRss": "122164000",
+        "vmSize": "605316000",
+        "runtime": "PYTHON",
+        "runtimeVersion": {
+          "major": 3,
+          "minor": 10,
+          "patch": 12
+        },
+        "runtimeImpl": "CPython",
+        "startMs": "1702017192159",
+        "pid": "12882"
+      },
+      "tracerInfo": {
+        "tracerType": "PYTHON_TRACER",
+        "version": {
+          "minor": 13,
+          "patch": 44
+        }
+      },
+      "libraries": [
+        {
+          "version": {
+            "patch": 346
+          },
+          "name": "LangChain"
+        },
+        {
+          "version": {
+            "major": 1,
+            "minor": 3,
+            "patch": 7
+          },
+          "name": "OpenAI Python Library"
+        }
+      ],
+      "tags": [
+        {
+          "key": "deployment",
+          "value": "langchain-demo"
+        },
+        {
+          "key": "operation",
+          "value": "openai.chat.completions.create"
+        },
+        {
+          "key": "hostname",
+          "value": "langchain1.fyre.ibm.com"
+        },
+        {
+          "key": "user",
+          "value": "user7"
+        },
+        {
+          "key": "component",
+          "value": "LLM"
+        },
+        {
+          "key": "endpoint",
+          "value": "https://api.openai.com/v1/chat/completions"
+        },
+        {
+          "key": "model",
+          "value": "gpt-3.5-turbo"
+        }
+      ],
+      "spanId": "0babadc67ee8",
+      "dataProfile": [
+        {
+          "dataName": "messages",
+          "dataType": "list",
+          "counts": [
+            {
+              "name": "element_count",
+              "count": "1"
+            },
+            {
+              "name": "token_count",
+              "count": "207"
+            }
           ]
         },
         {
-          "name": "actions",
-          "data": [
-            [
-              {
-                "content": "Answer the following questions as best you can. You have access to the following tools:\n\nCalculator: Useful for when you need to answer questions about math.\n\nUse the following format:\n\nQuestion: the input question you must answer\nThought: you should always think about what to do\nAction: the action to take, should be one of [Calculator]\nAction Input: the input to the action\nObservation: the result of the action\n... (this Thought/Action/Action Input/Observation can repeat N times)\nThought: I now know the final answer\nFinal Answer: the final answer to the original input question\n\nBegin!\n\nQuestion: What is 38 raised to .123243 power?\nThought:I need to calculate the value of 38 raised to the power of 0.123243.\nAction: Calculator\nAction Input: 38 ^ 0.123243\nObservation: Answer: 1.5656593279445363\nThought:",
-                "additional_kwargs": {},
-                "type": "human",
-                "example": false
-              }
-            ]
-          ]
-        },
-        {
-          "name": "outputs",
-          "data": [
-            [
-              {
-                "content": "Answer the following questions as best you can. You have access to the following tools:\n\nCalculator: Useful for when you need to answer questions about math.\n\nUse the following format:\n\nQuestion: the input question you must answer\nThought: you should always think about what to do\nAction: the action to take, should be one of [Calculator]\nAction Input: the input to the action\nObservation: the result of the action\n... (this Thought/Action/Action Input/Observation can repeat N times)\nThought: I now know the final answer\nFinal Answer: the final answer to the original input question\n\nBegin!\n\nQuestion: What is 38 raised to .123243 power?\nThought:I need to calculate the value of 38 raised to the power of 0.123243.\nAction: Calculator\nAction Input: 38 ^ 0.123243\nObservation: Answer: 1.5656593279445363\nThought:",
-                "additional_kwargs": {},
-                "type": "human",
-                "example": false
-              }
-            ]
+          "dataName": "completion",
+          "dataType": "dict",
+          "counts": [
+            {
+              "name": "finish_reason_stop",
+              "count": "1"
+            },
+            {
+              "name": "token_count",
+              "count": "27"
+            }
           ]
         }
       ],
-      "traces": [
+      "params": [
         {
-          "id": "131",
-          "label": "langchain.chains.llm.LLMChain",
-          "trace": "2024-01-11 18:06:56",
-          "generations": "",
-          "latency": 1.3,
-          "delay": 4.1,
-          "deployment": "my-app-prod",
-          "component": "Agent",
-          "operation": "langchain.chat_models.openai.ChatOpenAI",
-          "hostname": "Abdullas-MacBook-Pro.local",
-          "user": "user3",
-          "parameters": [],
-          "data": [
-            {
-              "name": "inputs",
-              "data": [
-                [
-                  {
-                    "content": "Answer the following questions as best you can. You have access to the following tools:\n\nCalculator: Useful for when you need to answer questions about math.\n\nUse the following format:\n\nQuestion: the input question you must answer\nThought: you should always think about what to do\nAction: the action to take, should be one of [Calculator]\nAction Input: the input to the action\nObservation: the result of the action\n... (this Thought/Action/Action Input/Observation can repeat N times)\nThought: I now know the final answer\nFinal Answer: the final answer to the original input question\n\nBegin!\n\nQuestion: What is 38 raised to .123243 power?\nThought:I need to calculate the value of 38 raised to the power of 0.123243.\nAction: Calculator\nAction Input: 38 ^ 0.123243\nObservation: Answer: 1.5656593279445363\nThought:",
-                    "additional_kwargs": {},
-                    "type": "human",
-                    "example": false
-                  }
-                ]
-              ]
-            },
-            {
-              "name": "actions",
-              "data": [
-                [
-                  {
-                    "content": "Answer the following questions as best you can. You have access to the following tools:\n\nCalculator: Useful for when you need to answer questions about math.\n\nUse the following format:\n\nQuestion: the input question you must answer\nThought: you should always think about what to do\nAction: the action to take, should be one of [Calculator]\nAction Input: the input to the action\nObservation: the result of the action\n... (this Thought/Action/Action Input/Observation can repeat N times)\nThought: I now know the final answer\nFinal Answer: the final answer to the original input question\n\nBegin!\n\nQuestion: What is 38 raised to .123243 power?\nThought:I need to calculate the value of 38 raised to the power of 0.123243.\nAction: Calculator\nAction Input: 38 ^ 0.123243\nObservation: Answer: 1.5656593279445363\nThought:",
-                    "additional_kwargs": {},
-                    "type": "human",
-                    "example": false
-                  }
-                ]
-              ]
-            },
-            {
-              "name": "outputs",
-              "data": [
-                [
-                  {
-                    "content": "Answer the following questions as best you can. You have access to the following tools:\n\nCalculator: Useful for when you need to answer questions about math.\n\nUse the following format:\n\nQuestion: the input question you must answer\nThought: you should always think about what to do\nAction: the action to take, should be one of [Calculator]\nAction Input: the input to the action\nObservation: the result of the action\n... (this Thought/Action/Action Input/Observation can repeat N times)\nThought: I now know the final answer\nFinal Answer: the final answer to the original input question\n\nBegin!\n\nQuestion: What is 38 raised to .123243 power?\nThought:I need to calculate the value of 38 raised to the power of 0.123243.\nAction: Calculator\nAction Input: 38 ^ 0.123243\nObservation: Answer: 1.5656593279445363\nThought:",
-                    "additional_kwargs": {},
-                    "type": "human",
-                    "example": false
-                  }
-                ]
-              ]
-            }
+          "name": "model",
+          "value": "gpt-3.5-turbo"
+        },
+        {
+          "name": "temperature",
+          "value": "0.0"
+        },
+        {
+          "name": "n",
+          "value": "1"
+        },
+        {
+          "name": "stream",
+          "value": "False"
+        },
+        {
+          "name": "stop",
+          "value": "['```output']"
+        }
+      ],
+      "context": {
+        "startNs": "179343064048725",
+        "endNs": "179345247644720",
+        "rootSpanId": "e6c358881ba9",
+        "parentSpanId": "bbe0776eb309"
+      },
+      "dataSamples": [
+        {
+          "dataName": "messages",
+          "contentType": "application/json",
+          "contentBytes": "W3sicm9sZSI6ICJ1c2VyIiwgImNvbnRlbnQiOiAiVHJhbnNsYXRlIGEgbWF0aCBwcm9ibGVtIGludG8gYSBleHByZXNzaW9uIHRoYXQgY2FuIGJlIGV4ZWN1dGVkIHVzaW5nIFB5dGhvbidzIG51bWV4cHIgbGlicmFyeS4gVXNlIHRoZSBvdXRwdXQgb2YgcnVubmluZyB0aGlzIGNvZGUgdG8gYW5zd2VyIHRoZSBxdWVzdGlvbi5cblxuUXVlc3Rpb246ICR7UXVlc3Rpb24gd2l0aCBtYXRoIHByb2JsZW0ufVxuYGBgdGV4dFxuJHtzaW5nbGUgbGluZSBtYXRoZW1hdGljYWwgZXhwcmVzc2lvbiB0aGF0IHNvbHZlcyB0aGUgcHJvYmxlbX1cbmBgYFxuLi4ubnVtZXhwci5ldmFsdWF0ZSh0ZXh0KS4uLlxuYGBgb3V0cHV0XG4ke091dHB1dCBvZiBydW5uaW5nIHRoZSBjb2RlfVxuYGBgXG5BbnN3ZXI6ICR7QW5zd2VyfVxuXG5CZWdpbi5cblxuUXVlc3Rpb246IFdoYXQgaXMgMzc1OTMgKiA2Nz9cbmBgYHRleHRcbjM3NTkzICogNjdcbmBgYFxuLi4ubnVtZXhwci5ldmFsdWF0ZShcIjM3NTkzICogNjdcIikuLi5cbmBgYG91dHB1dFxuMjUxODczMVxuYGBgXG5BbnN3ZXI6IDI1MTg3MzFcblxuUXVlc3Rpb246IDM3NTkzXigxLzUpXG5gYGB0ZXh0XG4zNzU5MyoqKDEvNSlcbmBgYFxuLi4ubnVtZXhwci5ldmFsdWF0ZShcIjM3NTkzKiooMS81KVwiKS4uLlxuYGBgb3V0cHV0XG44LjIyMjgzMTYxNDIzNzcxOFxuYGBgXG5BbnN3ZXI6IDguMjIyODMxNjE0MjM3NzE4XG5cblF1ZXN0aW9uOiAzOCBeIDAuMTIzMjQzXG4ifV0="
+        },
+        {
+          "dataName": "completion",
+          "contentType": "application/json",
+          "contentBytes": "eyJpZCI6ICJjaGF0Y21wbC04VE9pQllWTGlLMXdSUjl5dVVFZm5oOUdGbXdDVCIsICJjaG9pY2VzIjogW3siZmluaXNoX3JlYXNvbiI6ICJzdG9wIiwgImluZGV4IjogMCwgIm1lc3NhZ2UiOiB7ImNvbnRlbnQiOiAiYGBgdGV4dFxuMzggKiogMC4xMjMyNDNcbmBgYFxuLi4ubnVtZXhwci5ldmFsdWF0ZShcIjM4ICoqIDAuMTIzMjQzXCIpLi4uXG4iLCAicm9sZSI6ICJhc3Npc3RhbnQiLCAiZnVuY3Rpb25fY2FsbCI6IG51bGwsICJ0b29sX2NhbGxzIjogbnVsbH19XSwgImNyZWF0ZWQiOiAxNzAyMDE3MTk1LCAibW9kZWwiOiAiZ3B0LTMuNS10dXJiby0wNjEzIiwgIm9iamVjdCI6ICJjaGF0LmNvbXBsZXRpb24iLCAic3lzdGVtX2ZpbmdlcnByaW50IjogbnVsbCwgInVzYWdlIjogeyJjb21wbGV0aW9uX3Rva2VucyI6IDI3LCAicHJvbXB0X3Rva2VucyI6IDIwNywgInRvdGFsX3Rva2VucyI6IDIzNH19"
+        }
+      ],
+      "samplingType": "PARENT_SAMPLING"
+    },
+    {
+      "startUs": "1702017195069942",
+      "endUs": "1702017197260252",
+      "nodeUsage": {
+        "hostname": "langchain1.fyre.ibm.com",
+        "platform": "linux",
+        "machine": "x86_64",
+        "osName": "Linux",
+        "osVersion": "5.15.0-89-generic",
+        "ipAddress": "10.51.6.43",
+        "memUsed": "1679856000",
+        "memTotal": "16372256000"
+      },
+      "processUsage": {
+        "cpuUsagePercent": 4.105488099255525,
+        "maxRss": "121660000",
+        "currentRss": "122164000",
+        "vmSize": "605316000",
+        "runtime": "PYTHON",
+        "runtimeVersion": {
+          "major": 3,
+          "minor": 10,
+          "patch": 12
+        },
+        "runtimeImpl": "CPython",
+        "startMs": "1702017192159",
+        "pid": "12882"
+      },
+      "tracerInfo": {
+        "tracerType": "PYTHON_TRACER",
+        "version": {
+          "minor": 13,
+          "patch": 44
+        }
+      },
+      "libraries": [
+        {
+          "version": {
+            "patch": 346
+          },
+          "name": "LangChain"
+        },
+        {
+          "version": {
+            "major": 1,
+            "minor": 3,
+            "patch": 7
+          },
+          "name": "OpenAI Python Library"
+        }
+      ],
+      "tags": [
+        {
+          "key": "deployment",
+          "value": "langchain-demo"
+        },
+        {
+          "key": "operation",
+          "value": "langchain.chat_models.openai.ChatOpenAI"
+        },
+        {
+          "key": "hostname",
+          "value": "langchain1.fyre.ibm.com"
+        },
+        {
+          "key": "user",
+          "value": "user7"
+        },
+        {
+          "key": "component",
+          "value": "LLM"
+        }
+      ],
+      "spanId": "bbe0776eb309",
+      "dataProfile": [
+        {
+          "dataName": "messages",
+          "dataType": "list",
+          "shape": [
+            "1",
+            "1"
           ],
-          "traces": [
+          "counts": [
             {
-              "id": "1311",
-              "label": "langchain.chat_models.openai.ChatOpenAI",
-              "trace": "2024-01-11 18:06:56",
-              "generations": "",
-              "latency": 1.3,
-              "delay": 4.1,
-              "deployment": "my-app-prod",
-              "component": "Agent",
-              "operation": "openai.chat.completions.create",
-              "hostname": "Abdullas-MacBook-Pro.local",
-              "user": "user3",
-              "parameters": [
-                "model=gpt-3.5-turbo",
-                "temperature=0.0",
-                "n=1",
-                "stream=False",
-                "stop=['\nObservation:', '\n\tObservation:']"
-              ],
-              "data": [
-                {
-                  "name": "inputs",
-                  "data": [
-                    [
-                      {
-                        "content": "Answer the following questions as best you can. You have access to the following tools:\n\nCalculator: Useful for when you need to answer questions about math.\n\nUse the following format:\n\nQuestion: the input question you must answer\nThought: you should always think about what to do\nAction: the action to take, should be one of [Calculator]\nAction Input: the input to the action\nObservation: the result of the action\n... (this Thought/Action/Action Input/Observation can repeat N times)\nThought: I now know the final answer\nFinal Answer: the final answer to the original input question\n\nBegin!\n\nQuestion: What is 38 raised to .123243 power?\nThought:I need to calculate the value of 38 raised to the power of 0.123243.\nAction: Calculator\nAction Input: 38 ^ 0.123243\nObservation: Answer: 1.5656593279445363\nThought:",
-                        "additional_kwargs": {},
-                        "type": "human",
-                        "example": false
-                      }
-                    ]
-                  ]
-                },
-                {
-                  "name": "actions",
-                  "data": [
-                    [
-                      {
-                        "content": "Answer the following questions as best you can. You have access to the following tools:\n\nCalculator: Useful for when you need to answer questions about math.\n\nUse the following format:\n\nQuestion: the input question you must answer\nThought: you should always think about what to do\nAction: the action to take, should be one of [Calculator]\nAction Input: the input to the action\nObservation: the result of the action\n... (this Thought/Action/Action Input/Observation can repeat N times)\nThought: I now know the final answer\nFinal Answer: the final answer to the original input question\n\nBegin!\n\nQuestion: What is 38 raised to .123243 power?\nThought:I need to calculate the value of 38 raised to the power of 0.123243.\nAction: Calculator\nAction Input: 38 ^ 0.123243\nObservation: Answer: 1.5656593279445363\nThought:",
-                        "additional_kwargs": {},
-                        "type": "human",
-                        "example": false
-                      }
-                    ]
-                  ]
-                },
-                {
-                  "name": "outputs",
-                  "data": [
-                    [
-                      {
-                        "content": "Answer the following questions as best you can. You have access to the following tools:\n\nCalculator: Useful for when you need to answer questions about math.\n\nUse the following format:\n\nQuestion: the input question you must answer\nThought: you should always think about what to do\nAction: the action to take, should be one of [Calculator]\nAction Input: the input to the action\nObservation: the result of the action\n... (this Thought/Action/Action Input/Observation can repeat N times)\nThought: I now know the final answer\nFinal Answer: the final answer to the original input question\n\nBegin!\n\nQuestion: What is 38 raised to .123243 power?\nThought:I need to calculate the value of 38 raised to the power of 0.123243.\nAction: Calculator\nAction Input: 38 ^ 0.123243\nObservation: Answer: 1.5656593279445363\nThought:",
-                        "additional_kwargs": {},
-                        "type": "human",
-                        "example": false
-                      }
-                    ]
-                  ]
-                }
-              ]
+              "name": "element_count",
+              "count": "1"
+            }
+          ]
+        },
+        {
+          "dataName": "output",
+          "dataType": "dict"
+        },
+        {
+          "dataName": "generations",
+          "dataType": "list",
+          "shape": [
+            "1",
+            "1"
+          ],
+          "counts": [
+            {
+              "name": "element_count",
+              "count": "1"
             }
           ]
         }
-      ]
+      ],
+      "context": {
+        "startNs": "179343058646009",
+        "endNs": "179345248956125",
+        "rootSpanId": "e6c358881ba9",
+        "parentSpanId": "9dfb0c819fd4"
+      },
+      "dataSamples": [
+        {
+          "dataName": "messages",
+          "contentType": "application/json",
+          "contentBytes": "W1t7ImNvbnRlbnQiOiAiVHJhbnNsYXRlIGEgbWF0aCBwcm9ibGVtIGludG8gYSBleHByZXNzaW9uIHRoYXQgY2FuIGJlIGV4ZWN1dGVkIHVzaW5nIFB5dGhvbidzIG51bWV4cHIgbGlicmFyeS4gVXNlIHRoZSBvdXRwdXQgb2YgcnVubmluZyB0aGlzIGNvZGUgdG8gYW5zd2VyIHRoZSBxdWVzdGlvbi5cblxuUXVlc3Rpb246ICR7UXVlc3Rpb24gd2l0aCBtYXRoIHByb2JsZW0ufVxuYGBgdGV4dFxuJHtzaW5nbGUgbGluZSBtYXRoZW1hdGljYWwgZXhwcmVzc2lvbiB0aGF0IHNvbHZlcyB0aGUgcHJvYmxlbX1cbmBgYFxuLi4ubnVtZXhwci5ldmFsdWF0ZSh0ZXh0KS4uLlxuYGBgb3V0cHV0XG4ke091dHB1dCBvZiBydW5uaW5nIHRoZSBjb2RlfVxuYGBgXG5BbnN3ZXI6ICR7QW5zd2VyfVxuXG5CZWdpbi5cblxuUXVlc3Rpb246IFdoYXQgaXMgMzc1OTMgKiA2Nz9cbmBgYHRleHRcbjM3NTkzICogNjdcbmBgYFxuLi4ubnVtZXhwci5ldmFsdWF0ZShcIjM3NTkzICogNjdcIikuLi5cbmBgYG91dHB1dFxuMjUxODczMVxuYGBgXG5BbnN3ZXI6IDI1MTg3MzFcblxuUXVlc3Rpb246IDM3NTkzXigxLzUpXG5gYGB0ZXh0XG4zNzU5MyoqKDEvNSlcbmBgYFxuLi4ubnVtZXhwci5ldmFsdWF0ZShcIjM3NTkzKiooMS81KVwiKS4uLlxuYGBgb3V0cHV0XG44LjIyMjgzMTYxNDIzNzcxOFxuYGBgXG5BbnN3ZXI6IDguMjIyODMxNjE0MjM3NzE4XG5cblF1ZXN0aW9uOiAzOCBeIDAuMTIzMjQzXG4iLCAiYWRkaXRpb25hbF9rd2FyZ3MiOiB7fSwgInR5cGUiOiAiaHVtYW4iLCAiZXhhbXBsZSI6IGZhbHNlfV1d"
+        },
+        {
+          "dataName": "output",
+          "contentType": "application/json",
+          "contentBytes": "eyJ0b2tlbl91c2FnZSI6IHsiY29tcGxldGlvbl90b2tlbnMiOiAyNywgInByb21wdF90b2tlbnMiOiAyMDcsICJ0b3RhbF90b2tlbnMiOiAyMzR9LCAibW9kZWxfbmFtZSI6ICJncHQtMy41LXR1cmJvIiwgInN5c3RlbV9maW5nZXJwcmludCI6IG51bGx9"
+        },
+        {
+          "dataName": "generations",
+          "contentType": "application/json",
+          "contentBytes": "W1t7InRleHQiOiAiYGBgdGV4dFxuMzggKiogMC4xMjMyNDNcbmBgYFxuLi4ubnVtZXhwci5ldmFsdWF0ZShcIjM4ICoqIDAuMTIzMjQzXCIpLi4uXG4iLCAiZ2VuZXJhdGlvbl9pbmZvIjogeyJmaW5pc2hfcmVhc29uIjogInN0b3AifSwgInR5cGUiOiAiQ2hhdEdlbmVyYXRpb24iLCAibWVzc2FnZSI6IHsiY29udGVudCI6ICJgYGB0ZXh0XG4zOCAqKiAwLjEyMzI0M1xuYGBgXG4uLi5udW1leHByLmV2YWx1YXRlKFwiMzggKiogMC4xMjMyNDNcIikuLi5cbiIsICJhZGRpdGlvbmFsX2t3YXJncyI6IHt9LCAidHlwZSI6ICJhaSIsICJleGFtcGxlIjogZmFsc2V9fV1d"
+        }
+      ],
+      "samplingType": "PARENT_SAMPLING"
+    },
+    {
+      "startUs": "1702017195069388",
+      "endUs": "1702017197260875",
+      "nodeUsage": {
+        "hostname": "langchain1.fyre.ibm.com",
+        "platform": "linux",
+        "machine": "x86_64",
+        "osName": "Linux",
+        "osVersion": "5.15.0-89-generic",
+        "ipAddress": "10.51.6.43",
+        "memUsed": "1679856000",
+        "memTotal": "16372256000"
+      },
+      "processUsage": {
+        "cpuUsagePercent": 4.105488099255525,
+        "maxRss": "121660000",
+        "currentRss": "122164000",
+        "vmSize": "605316000",
+        "runtime": "PYTHON",
+        "runtimeVersion": {
+          "major": 3,
+          "minor": 10,
+          "patch": 12
+        },
+        "runtimeImpl": "CPython",
+        "startMs": "1702017192159",
+        "pid": "12882"
+      },
+      "tracerInfo": {
+        "tracerType": "PYTHON_TRACER",
+        "version": {
+          "minor": 13,
+          "patch": 44
+        }
+      },
+      "libraries": [
+        {
+          "version": {
+            "patch": 346
+          },
+          "name": "LangChain"
+        },
+        {
+          "version": {
+            "major": 1,
+            "minor": 3,
+            "patch": 7
+          },
+          "name": "OpenAI Python Library"
+        }
+      ],
+      "tags": [
+        {
+          "key": "deployment",
+          "value": "langchain-demo"
+        },
+        {
+          "key": "operation",
+          "value": "langchain.chains.llm.LLMChain"
+        },
+        {
+          "key": "hostname",
+          "value": "langchain1.fyre.ibm.com"
+        },
+        {
+          "key": "user",
+          "value": "user7"
+        },
+        {
+          "key": "component",
+          "value": "Agent"
+        }
+      ],
+      "spanId": "9dfb0c819fd4",
+      "dataProfile": [
+        {
+          "dataName": "inputs",
+          "dataType": "dict"
+        },
+        {
+          "dataName": "outputs",
+          "dataType": "dict"
+        }
+      ],
+      "context": {
+        "startNs": "179343058092660",
+        "endNs": "179345249579750",
+        "rootSpanId": "e6c358881ba9",
+        "parentSpanId": "19709f6c08f5"
+      },
+      "dataSamples": [
+        {
+          "dataName": "inputs",
+          "contentType": "application/json",
+          "contentBytes": "eyJxdWVzdGlvbiI6ICIzOCBeIDAuMTIzMjQzIiwgInN0b3AiOiBbImBgYG91dHB1dCJdfQ=="
+        },
+        {
+          "dataName": "outputs",
+          "contentType": "application/json",
+          "contentBytes": "eyJ0ZXh0IjogImBgYHRleHRcbjM4ICoqIDAuMTIzMjQzXG5gYGBcbi4uLm51bWV4cHIuZXZhbHVhdGUoXCIzOCAqKiAwLjEyMzI0M1wiKS4uLlxuIn0="
+        }
+      ],
+      "samplingType": "PARENT_SAMPLING"
+    },
+    {
+      "startUs": "1702017195068677",
+      "endUs": "1702017197262637",
+      "nodeUsage": {
+        "hostname": "langchain1.fyre.ibm.com",
+        "platform": "linux",
+        "machine": "x86_64",
+        "osName": "Linux",
+        "osVersion": "5.15.0-89-generic",
+        "ipAddress": "10.51.6.43",
+        "memUsed": "1679856000",
+        "memTotal": "16372256000"
+      },
+      "processUsage": {
+        "cpuUsagePercent": 4.105488099255525,
+        "maxRss": "121660000",
+        "currentRss": "122164000",
+        "vmSize": "605316000",
+        "runtime": "PYTHON",
+        "runtimeVersion": {
+          "major": 3,
+          "minor": 10,
+          "patch": 12
+        },
+        "runtimeImpl": "CPython",
+        "startMs": "1702017192159",
+        "pid": "12882"
+      },
+      "tracerInfo": {
+        "tracerType": "PYTHON_TRACER",
+        "version": {
+          "minor": 13,
+          "patch": 44
+        }
+      },
+      "libraries": [
+        {
+          "version": {
+            "patch": 346
+          },
+          "name": "LangChain"
+        },
+        {
+          "version": {
+            "major": 1,
+            "minor": 3,
+            "patch": 7
+          },
+          "name": "OpenAI Python Library"
+        }
+      ],
+      "tags": [
+        {
+          "key": "deployment",
+          "value": "langchain-demo"
+        },
+        {
+          "key": "operation",
+          "value": "langchain.chains.llm_math.base.LLMMathChain"
+        },
+        {
+          "key": "hostname",
+          "value": "langchain1.fyre.ibm.com"
+        },
+        {
+          "key": "user",
+          "value": "user7"
+        },
+        {
+          "key": "component",
+          "value": "Agent"
+        }
+      ],
+      "spanId": "19709f6c08f5",
+      "dataProfile": [
+        {
+          "dataName": "inputs",
+          "dataType": "dict"
+        },
+        {
+          "dataName": "outputs",
+          "dataType": "dict"
+        }
+      ],
+      "context": {
+        "startNs": "179343057382051",
+        "endNs": "179345251341643",
+        "rootSpanId": "e6c358881ba9",
+        "parentSpanId": "e0f6a761fef0"
+      },
+      "dataSamples": [
+        {
+          "dataName": "inputs",
+          "contentType": "application/json",
+          "contentBytes": "eyJxdWVzdGlvbiI6ICIzOCBeIDAuMTIzMjQzIn0="
+        },
+        {
+          "dataName": "outputs",
+          "contentType": "application/json",
+          "contentBytes": "eyJhbnN3ZXIiOiAiQW5zd2VyOiAxLjU2NTY1OTMyNzk0NDUzNjMifQ=="
+        }
+      ],
+      "samplingType": "PARENT_SAMPLING"
+    },
+    {
+      "startUs": "1702017195066326",
+      "endUs": "1702017197263017",
+      "nodeUsage": {
+        "hostname": "langchain1.fyre.ibm.com",
+        "platform": "linux",
+        "machine": "x86_64",
+        "osName": "Linux",
+        "osVersion": "5.15.0-89-generic",
+        "ipAddress": "10.51.6.43",
+        "memUsed": "1679856000",
+        "memTotal": "16372256000"
+      },
+      "processUsage": {
+        "cpuUsagePercent": 4.105488099255525,
+        "maxRss": "121660000",
+        "currentRss": "122164000",
+        "vmSize": "605316000",
+        "runtime": "PYTHON",
+        "runtimeVersion": {
+          "major": 3,
+          "minor": 10,
+          "patch": 12
+        },
+        "runtimeImpl": "CPython",
+        "startMs": "1702017192159",
+        "pid": "12882"
+      },
+      "tracerInfo": {
+        "tracerType": "PYTHON_TRACER",
+        "version": {
+          "minor": 13,
+          "patch": 44
+        }
+      },
+      "libraries": [
+        {
+          "version": {
+            "patch": 346
+          },
+          "name": "LangChain"
+        },
+        {
+          "version": {
+            "major": 1,
+            "minor": 3,
+            "patch": 7
+          },
+          "name": "OpenAI Python Library"
+        }
+      ],
+      "tags": [
+        {
+          "key": "deployment",
+          "value": "langchain-demo"
+        },
+        {
+          "key": "operation",
+          "value": "langchain.agents.tools.Calculator"
+        },
+        {
+          "key": "hostname",
+          "value": "langchain1.fyre.ibm.com"
+        },
+        {
+          "key": "user",
+          "value": "user7"
+        },
+        {
+          "key": "component",
+          "value": "Tool"
+        }
+      ],
+      "spanId": "e0f6a761fef0",
+      "dataProfile": [
+        {
+          "dataName": "input",
+          "dataType": "str",
+          "counts": [
+            {
+              "name": "char_count",
+              "count": "13"
+            }
+          ]
+        },
+        {
+          "dataName": "output",
+          "dataType": "str",
+          "counts": [
+            {
+              "name": "char_count",
+              "count": "26"
+            }
+          ]
+        }
+      ],
+      "context": {
+        "startNs": "179343055030961",
+        "endNs": "179345251721671",
+        "rootSpanId": "e6c358881ba9",
+        "parentSpanId": "e6c358881ba9"
+      },
+      "dataSamples": [
+        {
+          "dataName": "input",
+          "contentType": "application/json",
+          "contentBytes": "IjM4IF4gMC4xMjMyNDMi"
+        },
+        {
+          "dataName": "output",
+          "contentType": "application/json",
+          "contentBytes": "IkFuc3dlcjogMS41NjU2NTkzMjc5NDQ1MzYzIg=="
+        }
+      ],
+      "samplingType": "PARENT_SAMPLING"
+    },
+    {
+      "startUs": "1702017197269633",
+      "endUs": "1702017198512819",
+      "nodeUsage": {
+        "hostname": "langchain1.fyre.ibm.com",
+        "platform": "linux",
+        "machine": "x86_64",
+        "osName": "Linux",
+        "osVersion": "5.15.0-89-generic",
+        "ipAddress": "10.51.6.43",
+        "memUsed": "1679856000",
+        "memTotal": "16372256000"
+      },
+      "processUsage": {
+        "cpuUsagePercent": 4.105488099255525,
+        "maxRss": "121660000",
+        "currentRss": "122164000",
+        "vmSize": "605316000",
+        "runtime": "PYTHON",
+        "runtimeVersion": {
+          "major": 3,
+          "minor": 10,
+          "patch": 12
+        },
+        "runtimeImpl": "CPython",
+        "startMs": "1702017192159",
+        "pid": "12882"
+      },
+      "tracerInfo": {
+        "tracerType": "PYTHON_TRACER",
+        "version": {
+          "minor": 13,
+          "patch": 44
+        }
+      },
+      "libraries": [
+        {
+          "version": {
+            "patch": 346
+          },
+          "name": "LangChain"
+        },
+        {
+          "version": {
+            "major": 1,
+            "minor": 3,
+            "patch": 7
+          },
+          "name": "OpenAI Python Library"
+        }
+      ],
+      "tags": [
+        {
+          "key": "deployment",
+          "value": "langchain-demo"
+        },
+        {
+          "key": "operation",
+          "value": "openai.chat.completions.create"
+        },
+        {
+          "key": "hostname",
+          "value": "langchain1.fyre.ibm.com"
+        },
+        {
+          "key": "user",
+          "value": "user7"
+        },
+        {
+          "key": "component",
+          "value": "LLM"
+        },
+        {
+          "key": "endpoint",
+          "value": "https://api.openai.com/v1/chat/completions"
+        },
+        {
+          "key": "model",
+          "value": "gpt-3.5-turbo"
+        }
+      ],
+      "spanId": "477826766270",
+      "dataProfile": [
+        {
+          "dataName": "messages",
+          "dataType": "list",
+          "counts": [
+            {
+              "name": "element_count",
+              "count": "1"
+            },
+            {
+              "name": "token_count",
+              "count": "201"
+            }
+          ]
+        },
+        {
+          "dataName": "completion",
+          "dataType": "dict",
+          "counts": [
+            {
+              "name": "finish_reason_stop",
+              "count": "1"
+            },
+            {
+              "name": "token_count",
+              "count": "19"
+            }
+          ]
+        }
+      ],
+      "params": [
+        {
+          "name": "model",
+          "value": "gpt-3.5-turbo"
+        },
+        {
+          "name": "temperature",
+          "value": "0.0"
+        },
+        {
+          "name": "n",
+          "value": "1"
+        },
+        {
+          "name": "stream",
+          "value": "False"
+        },
+        {
+          "name": "stop",
+          "value": "['\nObservation:', '\n\tObservation:']"
+        }
+      ],
+      "context": {
+        "startNs": "179345258226158",
+        "endNs": "179346501411549",
+        "rootSpanId": "e6c358881ba9",
+        "parentSpanId": "99df3eef7a88"
+      },
+      "dataSamples": [
+        {
+          "dataName": "messages",
+          "contentType": "application/json",
+          "contentBytes": "W3sicm9sZSI6ICJ1c2VyIiwgImNvbnRlbnQiOiAiQW5zd2VyIHRoZSBmb2xsb3dpbmcgcXVlc3Rpb25zIGFzIGJlc3QgeW91IGNhbi4gWW91IGhhdmUgYWNjZXNzIHRvIHRoZSBmb2xsb3dpbmcgdG9vbHM6XG5cbkNhbGN1bGF0b3I6IFVzZWZ1bCBmb3Igd2hlbiB5b3UgbmVlZCB0byBhbnN3ZXIgcXVlc3Rpb25zIGFib3V0IG1hdGguXG5cblVzZSB0aGUgZm9sbG93aW5nIGZvcm1hdDpcblxuUXVlc3Rpb246IHRoZSBpbnB1dCBxdWVzdGlvbiB5b3UgbXVzdCBhbnN3ZXJcblRob3VnaHQ6IHlvdSBzaG91bGQgYWx3YXlzIHRoaW5rIGFib3V0IHdoYXQgdG8gZG9cbkFjdGlvbjogdGhlIGFjdGlvbiB0byB0YWtlLCBzaG91bGQgYmUgb25lIG9mIFtDYWxjdWxhdG9yXVxuQWN0aW9uIElucHV0OiB0aGUgaW5wdXQgdG8gdGhlIGFjdGlvblxuT2JzZXJ2YXRpb246IHRoZSByZXN1bHQgb2YgdGhlIGFjdGlvblxuLi4uICh0aGlzIFRob3VnaHQvQWN0aW9uL0FjdGlvbiBJbnB1dC9PYnNlcnZhdGlvbiBjYW4gcmVwZWF0IE4gdGltZXMpXG5UaG91Z2h0OiBJIG5vdyBrbm93IHRoZSBmaW5hbCBhbnN3ZXJcbkZpbmFsIEFuc3dlcjogdGhlIGZpbmFsIGFuc3dlciB0byB0aGUgb3JpZ2luYWwgaW5wdXQgcXVlc3Rpb25cblxuQmVnaW4hXG5cblF1ZXN0aW9uOiBXaGF0IGlzIDM4IHJhaXNlZCB0byAuMTIzMjQzIHBvd2VyP1xuVGhvdWdodDpJIG5lZWQgdG8gY2FsY3VsYXRlIHRoZSB2YWx1ZSBvZiAzOCByYWlzZWQgdG8gdGhlIHBvd2VyIG9mIDAuMTIzMjQzLlxuQWN0aW9uOiBDYWxjdWxhdG9yXG5BY3Rpb24gSW5wdXQ6IDM4IF4gMC4xMjMyNDNcbk9ic2VydmF0aW9uOiBBbnN3ZXI6IDEuNTY1NjU5MzI3OTQ0NTM2M1xuVGhvdWdodDoifV0="
+        },
+        {
+          "dataName": "completion",
+          "contentType": "application/json",
+          "contentBytes": "eyJpZCI6ICJjaGF0Y21wbC04VE9pRDF5MnZZZHhiUEpqbnVYc0Q0d04yQU1GUSIsICJjaG9pY2VzIjogW3siZmluaXNoX3JlYXNvbiI6ICJzdG9wIiwgImluZGV4IjogMCwgIm1lc3NhZ2UiOiB7ImNvbnRlbnQiOiAiSSBub3cga25vdyB0aGUgZmluYWwgYW5zd2VyXG5GaW5hbCBBbnN3ZXI6IDEuNTY1NjU5MzI3OTQ0NTM2MyIsICJyb2xlIjogImFzc2lzdGFudCIsICJmdW5jdGlvbl9jYWxsIjogbnVsbCwgInRvb2xfY2FsbHMiOiBudWxsfX1dLCAiY3JlYXRlZCI6IDE3MDIwMTcxOTcsICJtb2RlbCI6ICJncHQtMy41LXR1cmJvLTA2MTMiLCAib2JqZWN0IjogImNoYXQuY29tcGxldGlvbiIsICJzeXN0ZW1fZmluZ2VycHJpbnQiOiBudWxsLCAidXNhZ2UiOiB7ImNvbXBsZXRpb25fdG9rZW5zIjogMTksICJwcm9tcHRfdG9rZW5zIjogMjAxLCAidG90YWxfdG9rZW5zIjogMjIwfX0="
+        }
+      ],
+      "samplingType": "PARENT_SAMPLING"
+    },
+    {
+      "startUs": "1702017197265379",
+      "endUs": "1702017198513949",
+      "nodeUsage": {
+        "hostname": "langchain1.fyre.ibm.com",
+        "platform": "linux",
+        "machine": "x86_64",
+        "osName": "Linux",
+        "osVersion": "5.15.0-89-generic",
+        "ipAddress": "10.51.6.43",
+        "memUsed": "1679856000",
+        "memTotal": "16372256000"
+      },
+      "processUsage": {
+        "cpuUsagePercent": 4.105488099255525,
+        "maxRss": "121660000",
+        "currentRss": "122164000",
+        "vmSize": "605316000",
+        "runtime": "PYTHON",
+        "runtimeVersion": {
+          "major": 3,
+          "minor": 10,
+          "patch": 12
+        },
+        "runtimeImpl": "CPython",
+        "startMs": "1702017192159",
+        "pid": "12882"
+      },
+      "tracerInfo": {
+        "tracerType": "PYTHON_TRACER",
+        "version": {
+          "minor": 13,
+          "patch": 44
+        }
+      },
+      "libraries": [
+        {
+          "version": {
+            "patch": 346
+          },
+          "name": "LangChain"
+        },
+        {
+          "version": {
+            "major": 1,
+            "minor": 3,
+            "patch": 7
+          },
+          "name": "OpenAI Python Library"
+        }
+      ],
+      "tags": [
+        {
+          "key": "deployment",
+          "value": "langchain-demo"
+        },
+        {
+          "key": "operation",
+          "value": "langchain.chat_models.openai.ChatOpenAI"
+        },
+        {
+          "key": "hostname",
+          "value": "langchain1.fyre.ibm.com"
+        },
+        {
+          "key": "user",
+          "value": "user7"
+        },
+        {
+          "key": "component",
+          "value": "LLM"
+        }
+      ],
+      "spanId": "99df3eef7a88",
+      "dataProfile": [
+        {
+          "dataName": "messages",
+          "dataType": "list",
+          "shape": [
+            "1",
+            "1"
+          ],
+          "counts": [
+            {
+              "name": "element_count",
+              "count": "1"
+            }
+          ]
+        },
+        {
+          "dataName": "output",
+          "dataType": "dict"
+        },
+        {
+          "dataName": "generations",
+          "dataType": "list",
+          "shape": [
+            "1",
+            "1"
+          ],
+          "counts": [
+            {
+              "name": "element_count",
+              "count": "1"
+            }
+          ]
+        }
+      ],
+      "context": {
+        "startNs": "179345254083490",
+        "endNs": "179346502653585",
+        "rootSpanId": "e6c358881ba9",
+        "parentSpanId": "6c4c528d1a07"
+      },
+      "dataSamples": [
+        {
+          "dataName": "messages",
+          "contentType": "application/json",
+          "contentBytes": "W1t7ImNvbnRlbnQiOiAiQW5zd2VyIHRoZSBmb2xsb3dpbmcgcXVlc3Rpb25zIGFzIGJlc3QgeW91IGNhbi4gWW91IGhhdmUgYWNjZXNzIHRvIHRoZSBmb2xsb3dpbmcgdG9vbHM6XG5cbkNhbGN1bGF0b3I6IFVzZWZ1bCBmb3Igd2hlbiB5b3UgbmVlZCB0byBhbnN3ZXIgcXVlc3Rpb25zIGFib3V0IG1hdGguXG5cblVzZSB0aGUgZm9sbG93aW5nIGZvcm1hdDpcblxuUXVlc3Rpb246IHRoZSBpbnB1dCBxdWVzdGlvbiB5b3UgbXVzdCBhbnN3ZXJcblRob3VnaHQ6IHlvdSBzaG91bGQgYWx3YXlzIHRoaW5rIGFib3V0IHdoYXQgdG8gZG9cbkFjdGlvbjogdGhlIGFjdGlvbiB0byB0YWtlLCBzaG91bGQgYmUgb25lIG9mIFtDYWxjdWxhdG9yXVxuQWN0aW9uIElucHV0OiB0aGUgaW5wdXQgdG8gdGhlIGFjdGlvblxuT2JzZXJ2YXRpb246IHRoZSByZXN1bHQgb2YgdGhlIGFjdGlvblxuLi4uICh0aGlzIFRob3VnaHQvQWN0aW9uL0FjdGlvbiBJbnB1dC9PYnNlcnZhdGlvbiBjYW4gcmVwZWF0IE4gdGltZXMpXG5UaG91Z2h0OiBJIG5vdyBrbm93IHRoZSBmaW5hbCBhbnN3ZXJcbkZpbmFsIEFuc3dlcjogdGhlIGZpbmFsIGFuc3dlciB0byB0aGUgb3JpZ2luYWwgaW5wdXQgcXVlc3Rpb25cblxuQmVnaW4hXG5cblF1ZXN0aW9uOiBXaGF0IGlzIDM4IHJhaXNlZCB0byAuMTIzMjQzIHBvd2VyP1xuVGhvdWdodDpJIG5lZWQgdG8gY2FsY3VsYXRlIHRoZSB2YWx1ZSBvZiAzOCByYWlzZWQgdG8gdGhlIHBvd2VyIG9mIDAuMTIzMjQzLlxuQWN0aW9uOiBDYWxjdWxhdG9yXG5BY3Rpb24gSW5wdXQ6IDM4IF4gMC4xMjMyNDNcbk9ic2VydmF0aW9uOiBBbnN3ZXI6IDEuNTY1NjU5MzI3OTQ0NTM2M1xuVGhvdWdodDoiLCAiYWRkaXRpb25hbF9rd2FyZ3MiOiB7fSwgInR5cGUiOiAiaHVtYW4iLCAiZXhhbXBsZSI6IGZhbHNlfV1d"
+        },
+        {
+          "dataName": "output",
+          "contentType": "application/json",
+          "contentBytes": "eyJ0b2tlbl91c2FnZSI6IHsiY29tcGxldGlvbl90b2tlbnMiOiAxOSwgInByb21wdF90b2tlbnMiOiAyMDEsICJ0b3RhbF90b2tlbnMiOiAyMjB9LCAibW9kZWxfbmFtZSI6ICJncHQtMy41LXR1cmJvIiwgInN5c3RlbV9maW5nZXJwcmludCI6IG51bGx9"
+        },
+        {
+          "dataName": "generations",
+          "contentType": "application/json",
+          "contentBytes": "W1t7InRleHQiOiAiSSBub3cga25vdyB0aGUgZmluYWwgYW5zd2VyXG5GaW5hbCBBbnN3ZXI6IDEuNTY1NjU5MzI3OTQ0NTM2MyIsICJnZW5lcmF0aW9uX2luZm8iOiB7ImZpbmlzaF9yZWFzb24iOiAic3RvcCJ9LCAidHlwZSI6ICJDaGF0R2VuZXJhdGlvbiIsICJtZXNzYWdlIjogeyJjb250ZW50IjogIkkgbm93IGtub3cgdGhlIGZpbmFsIGFuc3dlclxuRmluYWwgQW5zd2VyOiAxLjU2NTY1OTMyNzk0NDUzNjMiLCAiYWRkaXRpb25hbF9rd2FyZ3MiOiB7fSwgInR5cGUiOiAiYWkiLCAiZXhhbXBsZSI6IGZhbHNlfX1dXQ=="
+        }
+      ],
+      "samplingType": "PARENT_SAMPLING"
+    },
+    {
+      "startUs": "1702017197264687",
+      "endUs": "1702017198514691",
+      "nodeUsage": {
+        "hostname": "langchain1.fyre.ibm.com",
+        "platform": "linux",
+        "machine": "x86_64",
+        "osName": "Linux",
+        "osVersion": "5.15.0-89-generic",
+        "ipAddress": "10.51.6.43",
+        "memUsed": "1679856000",
+        "memTotal": "16372256000"
+      },
+      "processUsage": {
+        "cpuUsagePercent": 4.105488099255525,
+        "maxRss": "121660000",
+        "currentRss": "122164000",
+        "vmSize": "605316000",
+        "runtime": "PYTHON",
+        "runtimeVersion": {
+          "major": 3,
+          "minor": 10,
+          "patch": 12
+        },
+        "runtimeImpl": "CPython",
+        "startMs": "1702017192159",
+        "pid": "12882"
+      },
+      "tracerInfo": {
+        "tracerType": "PYTHON_TRACER",
+        "version": {
+          "minor": 13,
+          "patch": 44
+        }
+      },
+      "libraries": [
+        {
+          "version": {
+            "patch": 346
+          },
+          "name": "LangChain"
+        },
+        {
+          "version": {
+            "major": 1,
+            "minor": 3,
+            "patch": 7
+          },
+          "name": "OpenAI Python Library"
+        }
+      ],
+      "tags": [
+        {
+          "key": "deployment",
+          "value": "langchain-demo"
+        },
+        {
+          "key": "operation",
+          "value": "langchain.chains.llm.LLMChain"
+        },
+        {
+          "key": "hostname",
+          "value": "langchain1.fyre.ibm.com"
+        },
+        {
+          "key": "user",
+          "value": "user7"
+        },
+        {
+          "key": "component",
+          "value": "Agent"
+        }
+      ],
+      "spanId": "6c4c528d1a07",
+      "dataProfile": [
+        {
+          "dataName": "inputs",
+          "dataType": "dict"
+        },
+        {
+          "dataName": "outputs",
+          "dataType": "dict"
+        }
+      ],
+      "context": {
+        "startNs": "179345253392532",
+        "endNs": "179346503395998",
+        "rootSpanId": "e6c358881ba9",
+        "parentSpanId": "e6c358881ba9"
+      },
+      "dataSamples": [
+        {
+          "dataName": "inputs",
+          "contentType": "application/json",
+          "contentBytes": "eyJpbnB1dCI6ICJXaGF0IGlzIDM4IHJhaXNlZCB0byAuMTIzMjQzIHBvd2VyPyIsICJhZ2VudF9zY3JhdGNocGFkIjogIkkgbmVlZCB0byBjYWxjdWxhdGUgdGhlIHZhbHVlIG9mIDM4IHJhaXNlZCB0byB0aGUgcG93ZXIgb2YgMC4xMjMyNDMuXG5BY3Rpb246IENhbGN1bGF0b3JcbkFjdGlvbiBJbnB1dDogMzggXiAwLjEyMzI0M1xuT2JzZXJ2YXRpb246IEFuc3dlcjogMS41NjU2NTkzMjc5NDQ1MzYzXG5UaG91Z2h0OiIsICJzdG9wIjogWyJcbk9ic2VydmF0aW9uOiIsICJcblx0T2JzZXJ2YXRpb246Il19"
+        },
+        {
+          "dataName": "outputs",
+          "contentType": "application/json",
+          "contentBytes": "eyJ0ZXh0IjogIkkgbm93IGtub3cgdGhlIGZpbmFsIGFuc3dlclxuRmluYWwgQW5zd2VyOiAxLjU2NTY1OTMyNzk0NDUzNjMifQ=="
+        }
+      ],
+      "samplingType": "PARENT_SAMPLING"
+    },
+    {
+      "startUs": "1702017193084221",
+      "endUs": "1702017198515460",
+      "nodeUsage": {
+        "hostname": "langchain1.fyre.ibm.com",
+        "platform": "linux",
+        "machine": "x86_64",
+        "osName": "Linux",
+        "osVersion": "5.15.0-89-generic",
+        "ipAddress": "10.51.6.43",
+        "memUsed": "1679856000",
+        "memTotal": "16372256000"
+      },
+      "processUsage": {
+        "cpuUsagePercent": 4.105488099255525,
+        "maxRss": "121660000",
+        "currentRss": "122164000",
+        "vmSize": "605316000",
+        "runtime": "PYTHON",
+        "runtimeVersion": {
+          "major": 3,
+          "minor": 10,
+          "patch": 12
+        },
+        "runtimeImpl": "CPython",
+        "startMs": "1702017192159",
+        "pid": "12882"
+      },
+      "tracerInfo": {
+        "tracerType": "PYTHON_TRACER",
+        "version": {
+          "minor": 13,
+          "patch": 44
+        }
+      },
+      "libraries": [
+        {
+          "version": {
+            "patch": 346
+          },
+          "name": "LangChain"
+        },
+        {
+          "version": {
+            "major": 1,
+            "minor": 3,
+            "patch": 7
+          },
+          "name": "OpenAI Python Library"
+        }
+      ],
+      "tags": [
+        {
+          "key": "deployment",
+          "value": "langchain-demo"
+        },
+        {
+          "key": "operation",
+          "value": "langchain.agents.agent.AgentExecutor"
+        },
+        {
+          "key": "hostname",
+          "value": "langchain1.fyre.ibm.com"
+        },
+        {
+          "key": "user",
+          "value": "user7"
+        },
+        {
+          "key": "component",
+          "value": "Agent"
+        }
+      ],
+      "spanId": "e6c358881ba9",
+      "dataProfile": [
+        {
+          "dataName": "inputs",
+          "dataType": "dict"
+        },
+        {
+          "dataName": "actions",
+          "dataType": "list",
+          "counts": [
+            {
+              "name": "element_count",
+              "count": "1"
+            }
+          ]
+        },
+        {
+          "dataName": "outputs",
+          "dataType": "dict"
+        }
+      ],
+      "context": {
+        "startNs": "179341072925081",
+        "endNs": "179346504163601",
+        "rootSpanId": "e6c358881ba9"
+      },
+      "dataSamples": [
+        {
+          "dataName": "inputs",
+          "contentType": "application/json",
+          "contentBytes": "eyJpbnB1dCI6ICJXaGF0IGlzIDM4IHJhaXNlZCB0byAuMTIzMjQzIHBvd2VyPyJ9"
+        },
+        {
+          "dataName": "actions",
+          "contentType": "application/json",
+          "contentBytes": "W3sidG9vbCI6ICJDYWxjdWxhdG9yIiwgInRvb2xfaW5wdXQiOiAiMzggXiAwLjEyMzI0MyIsICJsb2ciOiAiSSBuZWVkIHRvIGNhbGN1bGF0ZSB0aGUgdmFsdWUgb2YgMzggcmFpc2VkIHRvIHRoZSBwb3dlciBvZiAwLjEyMzI0My5cbkFjdGlvbjogQ2FsY3VsYXRvclxuQWN0aW9uIElucHV0OiAzOCBeIDAuMTIzMjQzIiwgInR5cGUiOiAiQWdlbnRBY3Rpb24ifV0="
+        },
+        {
+          "dataName": "outputs",
+          "contentType": "application/json",
+          "contentBytes": "eyJvdXRwdXQiOiAiMS41NjU2NTkzMjc5NDQ1MzYzIn0="
+        }
+      ],
+      "labels": [
+        "root"
+      ],
+      "samplingType": "RANDOM_SAMPLING"
     }
-  ]
+  ],
+  "uploadMs": "1702017203517"
 }
