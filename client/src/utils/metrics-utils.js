@@ -20,6 +20,25 @@ const convertTagsArrToObj = (tags) => {
   }, {});
 }
 
+const getLatencyValues = (histogram) => {
+  if (!histogram || !histogram.bins) {
+    return {};
+  }
+
+  const totalTime = histogram.bins.reduce((acc, time) => {
+    return acc + Number(time);
+  }, 0);
+  
+  const totalCount = histogram.counts.reduce((acc, count) => {
+    return acc + Number(count);
+  }, 0);
+  
+  return {
+    latency: totalTime / 1000000000,
+    count: totalCount
+  }
+}
+
 const formatMetrics = (metrics = []) => {
   let obj = {};
   for (const item of metrics) {
@@ -35,6 +54,19 @@ const formatMetrics = (metrics = []) => {
         obj[item.name] = [ callCountObj ];
       }
     }
+
+    if (item.name === 'latency') {
+      const latencyObj = {
+        ...getLatencyValues(item.histogram),
+        tags: convertTagsArrToObj(item.tags)
+      }
+
+      if (obj[item.name]) {
+        obj[item.name].push(latencyObj);
+      } else {
+        obj[item.name] = [ latencyObj ];
+      }
+    }
   }
 
   return obj;
@@ -43,9 +75,19 @@ const formatMetrics = (metrics = []) => {
 export const getMetricsData = () => {
   const appData = getAppData();
   const data = {};
+  let startTime, endTime;
   
   for (const app of appData) {
     const metricsObj = formatMetrics(app.data.metrics);
+    
+    if (!startTime || moment(app.timestamp).isBefore(moment(startTime))) {
+      startTime = moment(app.timestamp).valueOf();
+    }
+
+    if (!endTime || moment(app.timestamp).isAfter(moment(endTime))) {
+      endTime = moment(app.timestamp).valueOf();
+    }
+
     data[app.id] = {
       id: app.id,
       name: app.application_name,
@@ -54,5 +96,9 @@ export const getMetricsData = () => {
     }
   }
 
-  return data;
+  return {
+    startTime,
+    endTime,
+    apps: data
+  };
 }

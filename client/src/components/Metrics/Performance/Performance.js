@@ -13,16 +13,14 @@ import React, { useState } from "react";
 
 import { SimpleBarChart } from "@carbon/charts-react";
 
-import CustomLineChart from "../../common/CustomLineChart";
 import {
   filterValues,
-  latencyData,
   latencyDistData,
   latencyDistOptions,
-  latencyOptions
 } from "./constants";
 import Filters from "../Filters";
 import CallCountGraph from "./CallCountGraph";
+import LatencyGraph from "./LatencyGraph";
 
 function Metrics() {
   const [filters, setFilters] = useState(filterValues);
@@ -47,10 +45,7 @@ function Metrics() {
       </div>
 
       <div className="line-chart-section">
-        <CustomLineChart
-          data={latencyData}
-          options={latencyOptions}
-        />
+        <LatencyGraph />
       </div>
 
       <div className="line-chart-section">
