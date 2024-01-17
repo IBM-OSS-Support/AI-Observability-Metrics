@@ -115,9 +115,15 @@ def upload():
         logging.debug("JSON metric, span, 'application-name', and timestamp written to PostgreSQL")
 
         logging.debug("Processed request successfully")
+        # Create a response object
+        response = make_response(gzipped_protobuf_data)
 
-        # You can now use the parsed JSON data as needed
-        return 'Signal received successfully'
+        # Add headers to the response
+        response.headers['Content-Disposition'] = f'attachment; filename={file_name}'
+        response.headers['Content-Type'] = 'application/zip'
+        response.headers['Content-Encoding'] = 'gzip'
+
+        return response
 
     except Exception as e:
         logging.error(f'Error processing request: {str(e)}')
