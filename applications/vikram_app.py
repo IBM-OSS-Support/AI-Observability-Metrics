@@ -39,7 +39,7 @@ id = random.randint(0, 10)
 num = 38
 
 try:
-    solve(f'{USER}', f"What is the square root of 38?")
+    solve(f'{USER}', f"What is the cos of 38?")
     logger.debug('Task solved')
 except:
     logger.error("Error while solving task", exc_info=True)

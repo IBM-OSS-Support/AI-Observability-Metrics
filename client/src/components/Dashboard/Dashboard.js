@@ -21,6 +21,7 @@ import CpuUsage from "./CpuUsage/CpuUsage";
 import CallCountGraph from "../Metrics/Performance/CallCountGraph";
 import LatencyGraph from "../Metrics/Performance/LatencyGraph";
 import TokenCountGraph from "../Metrics/Data/TokenCountGraph";
+import MemoryTile from "./MemoryTile/MemoryTile";
 
 function Dashboard() {
   return (
@@ -62,7 +63,7 @@ function Dashboard() {
               sm={4}
               className="content-tile"
             >
-              <SessionsTile />
+              <MemoryTile />
             </Column>
             <Column
               max={4}
