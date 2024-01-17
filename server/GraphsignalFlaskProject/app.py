@@ -18,8 +18,10 @@ import subprocess
 import time
 from io import BytesIO
 import datetime
+from flask_cors import CORS
 
 app = Flask(__name__)
+CORS(app)
 
  # Database credentials
 dbname = "roja_postgres"

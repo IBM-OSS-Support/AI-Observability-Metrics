@@ -18,9 +18,11 @@ load_dotenv(find_dotenv())
 API_URL = "http://9.30.147.134:3001"
 GRAPHSIGNAL_API_KEY = "162b87ea6903abade57d45c2379e2974"
 OPENAI_API_KEY = "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"
-APPLICATION_NAME = "james_application"
+APPLICATION_NAME = "dinesh_application"
+USER = "Dinesh"
 
 graphsignal.configure(api_url=API_URL,api_key=GRAPHSIGNAL_API_KEY, deployment=APPLICATION_NAME) # to send to flask app
+graphsignal.set_context_tag('user', USER)
 
 # graphsignal.configure(api_key=GRAPHSIGNAL_API_KEY, deployment=DEPLOYMENT) # to send to graphsignal dashboard
 
@@ -40,7 +42,7 @@ id = random.randint(0, 10)
 num = 38
 
 try:
-    solve(f'user{id}', f"What is {num} raised to .122231 power?")
+    solve(f'{USER}', f"What is {num} raised to .122231 power?")
     logger.debug('Task solved')
 except:
     logger.error("Error while solving task", exc_info=True)
