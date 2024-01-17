@@ -109,7 +109,7 @@ function Transactions() {
               };
               break;
             case 'latency': 
-              r[h.key] = `${moment.duration(row[h.key]).asSeconds().toFixed(1)}s`;
+              r[h.key] = `${moment.duration(row[h.key]).asSeconds().toFixed(1)} s`;
               break;
             default:
               r[h.key] = row[h.key];

@@ -229,7 +229,7 @@ function TraceAnalysis() {
             break;
           }
           case 'latency': {
-            o[h.key] = `${moment.duration(r.latency).asSeconds().toFixed(1)}s`;
+            o[h.key] = `${moment.duration(r.latency).asSeconds().toFixed(1)} s`;
             break;
           }
           case 'timeline': {

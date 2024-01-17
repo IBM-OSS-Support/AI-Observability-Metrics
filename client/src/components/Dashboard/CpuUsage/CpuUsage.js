@@ -22,8 +22,8 @@ const options = {
   theme: "g90",
   title: '',
   resizable: true,
-  height: '182px',
-  width: '230px',
+  height: '100%',
+  width: '100%',
   gauge: {
     alignment: 'center',
     type: 'semi',
@@ -43,25 +43,22 @@ const options = {
   }
 }
 
+const defaultData = [
+  {
+    group: 'value',
+    value: 0
+  }
+];
+
 const CpuUsage = () => {
 
-  const [data, setData] = useState([
-    {
-      group: 'value',
-      value: 0
-    }
-  ]);
+  const [data, setData] = useState(defaultData);
   const [avg, setAvg] = useState(0);
 
   const { state } = useStoreContext();
 
   useEffect(() => {
-    let newData = [
-      {
-        group: 'value',
-        value: 0
-      }
-    ];
+    let newData = defaultData;
     let newAvg = 0;
     if(state.status === 'success') {
       const appData = getAppData();
