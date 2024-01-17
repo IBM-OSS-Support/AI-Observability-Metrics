@@ -65,7 +65,7 @@ const options = {
   height: "240px",
   color: {
     scale: {
-      Dataset1: "#4589ff"
+      Dataset1: "#5281d8"
     },
   },
 };
