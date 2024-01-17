@@ -45,14 +45,14 @@ const TracesTile = () => {
             </div>
             <h2>3</h2>
           </Button>
-          {/* <Button
+          <Button
             className="type"
             kind="ghost"
             // href={getPath("#/infrastructure-manager", "?type=Catalogs")}
           >
             <div className="title">
               <div className="indicator catalogs" />
-              <span>Components</span>
+              <span>Total operations</span>
             </div>
             <h2>5</h2>
           </Button>
@@ -63,10 +63,10 @@ const TracesTile = () => {
           >
             <div className="title">
               <div className="indicator databases" />
-              <span>Deployments</span>
+              <span>Models used </span>
             </div>
             <h2>6</h2>
-          </Button> */}
+          </Button>
         </div>
       </div>
       <Button kind="ghost" className="bottom-link" href="#/traces">
