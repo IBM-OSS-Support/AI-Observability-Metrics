@@ -23,24 +23,24 @@ import { getAppData } from "../../../appData";
 
 const chartData = [
   {
-    group: "Qty",
-    value: 65000,
+    group: "16:30:00",
+    value: 0,
   },
   {
-    group: "More",
-    value: 29123,
+    group: "16:43:00",
+    value: 1,
   },
   {
-    group: "Sold",
-    value: 35213,
+    group: "16:56:00",
+    value: 0,
   },
   {
-    group: "Restocking",
-    value: 51213,
+    group: "17:09:00",
+    value: 0,
   },
   {
-    group: "Misc",
-    value: 16932,
+    group: "17:22:00",
+    value: 4,
   },
 ];
 
@@ -66,11 +66,11 @@ const chartOptions = {
   width: "100%",
   color: {
     scale: {
-      Qty: "#4589ff",
-      More: "#4589ff",
-      Sold: "#4589ff",
-      Restocking: "#4589ff",
-      Misc: "#4589ff",
+      "16:30:00": "#4589ff",
+      "16:43:00": "#4589ff",
+      "16:56:00": "#4589ff",
+      "17:09:00": "#4589ff",
+      "17:22:00": "#4589ff",
     },
   },
 };
