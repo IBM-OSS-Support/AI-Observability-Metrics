@@ -17,7 +17,6 @@ import { Tile } from "@carbon/react";
 import { GaugeChart } from "@carbon/charts-react";
 import { getAppData } from "../../../appData";
 import { useStoreContext } from "../../../store";
-import Loader from "../../common/Loader";
 
 const options = {
   theme: "g90",
@@ -53,7 +52,6 @@ const CpuUsage = () => {
     }
   ]);
   const [avg, setAvg] = useState(0);
-  const [loading, setLoading] = useState(true);
 
   const { state } = useStoreContext();
 
@@ -89,7 +87,6 @@ const CpuUsage = () => {
 
     setData(newData);
     setAvg(newAvg);
-    setLoading(state.status !== 'success')
   }, [state.status]);
 
   // Render
@@ -106,9 +103,6 @@ const CpuUsage = () => {
           <div className="label">Average CPU usage for last 7 days</div>
           <h3 className="data">{avg} %</h3>
         </div>
-        {
-          loading && <Loader />
-        }
     </Tile>
   );
 };
