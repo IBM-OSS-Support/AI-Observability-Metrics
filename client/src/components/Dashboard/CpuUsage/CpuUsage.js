@@ -18,7 +18,7 @@ import { GaugeChart } from "@carbon/charts-react";
 const data = [
   {
     group: 'value',
-    value: 42
+    value: 1.02
   }
 ]
 
@@ -51,7 +51,7 @@ const CpuUsage = () => {
   // Render
   return (
     <Tile className="infrastructure-components cpu-usage">
-      <h5>Process CPU usage</h5>
+      <h5>Latest CPU usage</h5>
       <div className="cpu-usage-chart">
         <GaugeChart
           data={data}
@@ -60,7 +60,7 @@ const CpuUsage = () => {
       </div>
       <div className="cpu-usage-data">
         <div className="label">Average CPU usage for last 7 days</div>
-        <h3 className="data">31%</h3>
+        <h3 className="data">0.79 %</h3>
       </div>
     </Tile>
   );

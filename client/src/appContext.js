@@ -9,16 +9,6 @@
  * of its trade secrets, irrespective of what has been deposited with
  * the U.S. Copyright Office.
  ****************************************************************************** */
- .sessions-container {
+import {createContext} from 'react';
 
-  .body {
-    margin: 1rem;
-    background-color: transparent;
-  }
-}
-
-.session-sections {
-  // padding: 1rem;
-  margin-bottom: 1rem;
-  background-color: $layer-01;
-}
+export const AppContext = createContext({status: 'idle', data: []})

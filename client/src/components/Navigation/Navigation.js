@@ -59,11 +59,11 @@ const Navigation = () => {
           subpath: '/traces',
           icon: ChartBullet
         },
-        {
-          name: 'Sessions',
-          subpath: '/sessions',
-          icon: Time
-        },
+        // {
+        //   name: 'Sessions',
+        //   subpath: '/sessions',
+        //   icon: Time
+        // },
         {
           name: 'Metrics',
           subpath: '/metrics',

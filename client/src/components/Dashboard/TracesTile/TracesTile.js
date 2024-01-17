@@ -37,22 +37,22 @@ const TracesTile = () => {
           <Button
             className="type"
             kind="ghost"
-            // href={getPath("#/infrastructure-manager", "?type=Catalogs")}
-          >
-            <div className="title">
-              <div className="indicator catalogs" />
-              <span>Components</span>
-            </div>
-            <h2>5</h2>
-          </Button>
-          <Button
-            className="type"
-            kind="ghost"
             // href={getPath("#/infrastructure-manager", "?type=Buckets")}
           >
             <div className="title">
               <div className="indicator buckets" />
               <span>Users</span>
+            </div>
+            <h2>3</h2>
+          </Button>
+          {/* <Button
+            className="type"
+            kind="ghost"
+            // href={getPath("#/infrastructure-manager", "?type=Catalogs")}
+          >
+            <div className="title">
+              <div className="indicator catalogs" />
+              <span>Components</span>
             </div>
             <h2>5</h2>
           </Button>
@@ -66,7 +66,7 @@ const TracesTile = () => {
               <span>Deployments</span>
             </div>
             <h2>6</h2>
-          </Button>
+          </Button> */}
         </div>
       </div>
       <Button kind="ghost" className="bottom-link" href="#/traces">

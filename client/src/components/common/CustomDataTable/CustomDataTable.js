@@ -557,7 +557,6 @@ const CustomDataTable = ({
                                 style={{ marginLeft:`${ value?.level * 1}rem` }}
                                 href={value.href || null}
                                 onClick={() => !value.href && value.onClick ? value.onClick() : null}
-                                renderIcon={value.renderIcon}
                                 className="truncate"
                               >
                                 <Movement></Movement>&nbsp;&nbsp;
@@ -581,8 +580,8 @@ const CustomDataTable = ({
                               <div className="timeline-column">
                                <Slider
                                   labelText=""
-                                  value={value?.delay / value?.total}
-                                  unstable_valueUpper={(value?.delay + value?.latency) / value?.total}
+                                  value={value?.start}
+                                  unstable_valueUpper={value?.end}
                                   min={0}
                                   max={1}
                                   hideTextInput

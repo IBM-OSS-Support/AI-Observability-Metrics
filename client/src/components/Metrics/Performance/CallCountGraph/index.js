@@ -9,16 +9,5 @@
  * of its trade secrets, irrespective of what has been deposited with
  * the U.S. Copyright Office.
  ****************************************************************************** */
- .sessions-container {
-
-  .body {
-    margin: 1rem;
-    background-color: transparent;
-  }
-}
-
-.session-sections {
-  // padding: 1rem;
-  margin-bottom: 1rem;
-  background-color: $layer-01;
-}
+import CallCountGraph from './CallCountGraph';
+export default CallCountGraph;

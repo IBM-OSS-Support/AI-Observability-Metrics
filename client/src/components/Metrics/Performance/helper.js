@@ -9,16 +9,22 @@
  * of its trade secrets, irrespective of what has been deposited with
  * the U.S. Copyright Office.
  ****************************************************************************** */
- .sessions-container {
 
-  .body {
-    margin: 1rem;
-    background-color: transparent;
+export const getCallCountData = (metricsData) => {
+  let arr = [];
+
+  for (const appId in metricsData) {
+    const app = metricsData[appId];
+    const count = app.call_count.reduce((acc, { count }) => {
+      return acc + count;
+    }, 0)
+
+    arr.push({
+      group: 'Dataset1',
+      key: app.time,
+      value: count
+    })
   }
-}
 
-.session-sections {
-  // padding: 1rem;
-  margin-bottom: 1rem;
-  background-color: $layer-01;
+  return arr;
 }

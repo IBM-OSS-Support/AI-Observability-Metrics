@@ -14,10 +14,13 @@
       margin: 1rem;
       background-color: transparent;
     }
-  }
   
-  .trace-sections {
-    padding: 1rem;
-    margin-bottom: 1rem;
-    background-color: $layer-01;
+    .trace-sections {
+      margin-bottom: 1rem;
+      background-color: $layer-01;
+    }
+  
+    .cds--accordion__wrapper {
+      padding: 1rem;
+    }
   }

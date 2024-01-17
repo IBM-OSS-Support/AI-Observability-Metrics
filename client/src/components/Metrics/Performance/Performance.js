@@ -15,8 +15,6 @@ import { SimpleBarChart } from "@carbon/charts-react";
 
 import CustomLineChart from "../../common/CustomLineChart";
 import {
-  callCountData,
-  callCountOptions,
   filterValues,
   latencyData,
   latencyDistData,
@@ -24,6 +22,7 @@ import {
   latencyOptions
 } from "./constants";
 import Filters from "../Filters";
+import CallCountGraph from "./CallCountGraph";
 
 function Metrics() {
   const [filters, setFilters] = useState(filterValues);
@@ -44,10 +43,7 @@ function Metrics() {
       />
 
       <div className="line-chart-section">
-        <CustomLineChart
-          data={callCountData}
-          options={callCountOptions}
-        />
+        <CallCountGraph />
       </div>
 
       <div className="line-chart-section">

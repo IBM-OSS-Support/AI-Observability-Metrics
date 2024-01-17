@@ -10,18 +10,20 @@
  * the U.S. Copyright Office.
  ****************************************************************************** */
 import React, { Fragment, useEffect, useState } from "react";
+import moment from 'moment';
 
 import CustomDataTable from "../common/CustomDataTable";
 import PageContainer from "../common/PageContainer";
 
-import data from "../../constants/operations.json";
 import { Accordion, AccordionItem } from "@carbon/react";
 import DataModal from "./DataModal";
+import { useParams } from "react-router-dom";
+import { useStoreContext } from "../../store";
+import { getAppData } from "../../appData";
 
 const MODALS = [
   { component: DataModal, string: 'DataModal' },
 ];
-
 
 const defaultHeaders = [
   {
@@ -77,21 +79,15 @@ const defaultProcessHeaders = [
     required: true,
   },
   {
-    key: "runtimeImplementation",
+    key: "runtime_impl",
     header: "Runtime Implementation",
     checked: true,
     required: true,
-  },
-  {
-    key: "graphSignalVersion",
-    header: "Graph Signal Version",
-    checked: true,
-    required: true,
-  },
+  }
 ];
 const defaultLibraryHeaders = [
   {
-    key: "library",
+    key: "name",
     header: "Library",
     checked: true,
     required: true,
@@ -123,54 +119,90 @@ const defaultNodeHeaders = [
     required: true,
   },
   {
-    key: "os",
+    key: "os_name",
     header: "OS",
     checked: true,
     required: true,
   },
 ];
 
+
+function formatData(span, spans, level, rootStartUs, rootEndUs) {
+  // const span = spans.find(span => span.spanId === span.spanId)
+  const startUs = Number(span.start_us) / 1000;
+  const endUs = Number(span.end_us) / 1000;
+  span.level = level;
+  span.operation = span.tags?.find(tag => tag.key === 'operation')?.value;
+  span.latency = endUs - startUs
+  span.start_perc = (startUs - rootStartUs) / (rootEndUs - rootStartUs);
+  span.latency_perc = (span.latency / (rootEndUs - rootStartUs));
+  return [span]
+    .concat(spans.filter(_span => _span.context.parent_span_id === span.span_id)
+      .map(_span => formatData(_span, spans, level + 1, rootStartUs, rootEndUs))
+      .flat()
+    );
+}
+
 function TraceAnalysis() {
 
+  const { appName } = useParams();
+
   const [searchText, setSearchText] = useState("");
+  const [trace, setTrace] = useState({});
   const [pagination, setPagination] = useState({ offset: 0, first: 10 });
-  const [rows, setRows] = useState([data]);
+  const [rows, setRows] = useState([]);
   const [modal, setModal] = useState(false);
+  const { state } = useStoreContext();
 
   useEffect(() => {
-    setRows([data].filter(d => d.operation.includes(searchText)));
-  }, [searchText])
+    if (state.status === 'success'){
+      const data = getAppData();
+      const app = data.find(({ data }) => data['application-name'] === appName).data;
+      const rootSpanId = app.spans?.[0]?.context?.root_span_id
+      const root = app.spans.find(span => span.span_id === rootSpanId);
+      const operations = formatData(root, app.spans, 0, root.start_us / 1000, root.end_us / 1000);
+      if (!!searchText.trim()) {
+        setRows(operations.filter(op => op.operation.includes(searchText)));
+      } else
+        setRows(operations);
+      setTrace(root);
+    } else {
+      setRows([]);
+      setTrace({});
+    }
+  }, [appName, state.status, searchText])
 
-  function formatRowData(rowData, totalLatency, level) {
+  function formatRowData(rowData = [], headers) {
     return rowData.reduce((arr, r, i) => {
-      const {traces, ...rest} = r;
-      const row = defaultHeaders.reduce((o, h) => {
+      const row = headers.reduce((o, h) => {
         switch (h.key) {
           case 'operation': {
             o[h.key] = {
               displayType: h.key,
-              href: `#/traces/?operation=${rest[h.key]}`,
-              level,
-              operation: rest.operation
+              href: `#/traces/?operation=${r.operation}`,
+              level: r.level,
+              operation: r.operation,
+              spanId: r.span_id
             }
             break;
           }
           case 'toggletip': {
-            if (rest.parameters[0])
+            if (r.params && r.params.length) {
+              const params = r.params.map(p => `${p.name}=${p.value}`);
               o[h.key] = {
                 displayType: h.key,
-                data: rest.parameters[0],
-                content: rest.parameters.length > 1 && <>
-                  {rest.parameters.map((param, i) => <span key={i}>
+                data: params[0],
+                content: params.length > 1 && <>
+                  {params.map((param, i) => <span key={i}>
                       {param}
                     </span>)
                   }
                 </>
               }
-            else {
+            } else {
               o[h.key] = {
                 displayType: h.key,
-                data: "",
+                data: '',
               }
             }
             break;
@@ -178,16 +210,16 @@ function TraceAnalysis() {
           case 'data': {
             o[h.key] = {
               displayType: h.key,
-              items: rest.data.map(d => ({
-               id: d.name,
-               name: d.name,
+              items: (r.data_samples || []).map(d => ({
+               id: d.data_name,
+               name: d.data_name,
                onClick: () => setModal({
                  name: 'DataModal',
                  props: {
-                   name: d.name,
-                   modalLabel: d.name,
-                   modalHeading: d.name,
-                   data: d.data,
+                   name: d.data_name,
+                   modalLabel: d.data_name,
+                   modalHeading: d.data_name,
+                   data: JSON.parse(atob(d.content_bytes)),
                    primaryButtonText: 'Close',
                    onRequestSubmit: closeModal,
                  }
@@ -196,17 +228,40 @@ function TraceAnalysis() {
             }
             break;
           }
-          default: 
+          case 'latency': {
+            o[h.key] = `${moment.duration(r.latency).asSeconds().toFixed(1)}s`;
+            break;
+          }
+          case 'timeline': {
             o[h.key] = {
               displayType: h.key,
-              level,
-              total: totalLatency || rest.latency,
-              ...rest
+              start: r.start_perc,
+              end: r.start_perc + r.latency_perc,
             }
+            break;
+          }
+          case 'version': {
+            o[h.key] = `${r.version.major || 0}.${r.version.minor || 0}.${r.version.patch || 0}`;
+            break;
+          }
+          case 'runtime': {
+            o[h.key] = `${r.runtime} ${r.runtime_version.major || 0}.${r.runtime_version.minor || 0}.${r.runtime_version.patch || 0}`;
+            break;
+          }
+          case 'started': {
+            o[h.key] = moment(Number(r.start_ms)).format('YYYY-MM-DD HH:mm:ss');
+            break;
+          }
+          case 'peakMemory': {
+            o[h.key] = `${Math.round(r.max_rss / Math.pow(1000, 2))} MB`;
+            break;
+          }
+          default: 
+            o[h.key] = r[h.key] || r.name || ''
         }
         return o
-      }, {id: `${level}_row_${rest.id}`})
-      return arr.concat([row]).concat(formatRowData(traces || [], totalLatency || rest.latency, level + 1))
+      }, {id: `row_${i}`})
+      return arr.concat([row]);
     }, []);
   }
 
@@ -229,16 +284,15 @@ function TraceAnalysis() {
       <PageContainer
         className="trace-analysis-container"
         header={{
-          title: `Trace : ${data.trace}`,
-          subtitle: "Trace analysis for your data.",
+          title: `Application trace : ${appName}`,
+          subtitle: "Trace analysis for your application.",
         }}
       >
         <div className="trace-analysis-section">
           <CustomDataTable
             headers={defaultHeaders}
-            rows={formatRowData(rows, 0, 0)}
-            loading={false}
-            // useStaticWidth={true}
+            rows={formatRowData(rows, defaultHeaders)}
+            loading={state.status === 'loading'}
             search={{
               searchText: searchText,
               persistent: true,
@@ -272,8 +326,8 @@ function TraceAnalysis() {
             <AccordionItem title="Libraries" open>
               <CustomDataTable
                 headers={defaultLibraryHeaders}
-                rows={rows[0].libraries}
-                loading={false}
+                rows={formatRowData(trace.libraries, defaultLibraryHeaders)}
+                loading={state.status === 'loading'}
                 emptyState={
                   !rows.length && {
                     type: false ? "NotFound" : "NoData",
@@ -293,8 +347,8 @@ function TraceAnalysis() {
             <AccordionItem title="Process" open>
               <CustomDataTable
                 headers={defaultProcessHeaders}
-                rows={rows[0].process}
-                loading={false}
+                rows={!trace.process_usage ? [] : formatRowData([trace.process_usage], defaultProcessHeaders)}
+                loading={state.status === 'loading'}
                 emptyState={
                   !rows.length && {
                     type: false ? "NotFound" : "NoData",
@@ -314,8 +368,8 @@ function TraceAnalysis() {
             <AccordionItem title="Node" open>
               <CustomDataTable
                 headers={defaultNodeHeaders}
-                rows={rows[0].node}
-                loading={false}
+                rows={!trace.node_usage ? []: formatRowData([trace.node_usage], defaultNodeHeaders)}
+                loading={state.status === 'loading'}
                 emptyState={
                   !rows.length && {
                     type: false ? "NotFound" : "NoData",

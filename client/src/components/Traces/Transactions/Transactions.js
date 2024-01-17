@@ -9,7 +9,8 @@
  * of its trade secrets, irrespective of what has been deposited with
  * the U.S. Copyright Office.
  ****************************************************************************** */
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useState } from "react";
+import moment from 'moment';
 import { useNavigate, useSearchParams } from "react-router-dom";
 
 import { SimpleBarChart } from "@carbon/charts-react";
@@ -17,29 +18,29 @@ import { SimpleBarChart } from "@carbon/charts-react";
 import CustomDataTable from "../../common/CustomDataTable";
 import { Download, Maximize } from "@carbon/icons-react";
 import { Accordion, AccordionItem } from "@carbon/react";
-
-import data from "../../../constants/transactions.json";
+import { useStoreContext } from "../../../store";
+import { getAppData } from "../../../appData";
 
 const chartData = [
   {
-    group: "Qty",
-    value: 65000,
+    group: "16:30:00",
+    value: 0,
   },
   {
-    group: "More",
-    value: 29123,
+    group: "16:43:00",
+    value: 1,
   },
   {
-    group: "Sold",
-    value: 35213,
+    group: "16:56:00",
+    value: 0,
   },
   {
-    group: "Restocking",
-    value: 51213,
+    group: "17:09:00",
+    value: 0,
   },
   {
-    group: "Misc",
-    value: 16932,
+    group: "17:22:00",
+    value: 4,
   },
 ];
 
@@ -65,11 +66,11 @@ const chartOptions = {
   width: "100%",
   color: {
     scale: {
-      Qty: "#4589ff",
-      More: "#4589ff",
-      Sold: "#4589ff",
-      Restocking: "#4589ff",
-      Misc: "#4589ff",
+      "16:30:00": "#4589ff",
+      "16:43:00": "#4589ff",
+      "16:56:00": "#4589ff",
+      "17:09:00": "#4589ff",
+      "17:22:00": "#4589ff",
     },
   },
 };
@@ -83,18 +84,18 @@ function Transactions() {
       checked: true,
     },
     {
-      key: "trace",
-      header: "Timestamp",
-      checked: true,
-    },
-    {
       key: "latency",
       header: "Latency",
       checked: true,
     },
     {
-      key: "component",
-      header: "Component",
+      key: "user",
+      header: "User",
+      checked: true,
+    },
+    {
+      key: "hostname",
+      header: "Hostname",
       checked: true,
     },
     {
@@ -103,8 +104,8 @@ function Transactions() {
       checked: true,
     },
     {
-      key: "hostname",
-      header: "Hostname",
+      key: "trace",
+      header: "Timestamp",
       checked: true,
     },
   ];
@@ -123,7 +124,32 @@ function Transactions() {
   const [modal, setModal] = useState(false);
   const [startDate, setStartDate] = useState(undefined);
   const [endDate, setEndDate] = useState(undefined);
-  const [rows, setRows] = useState(data);
+  const [rows, setRows] = useState([]);
+  const { state } = useStoreContext();
+
+  useEffect(() => {
+    if(state.status === 'success') {
+      const data = getAppData();
+      const rowData = data.map(({ data }) => {
+        const rootSpanId = data.spans?.[0]?.context?.root_span_id
+        const root = data.spans.find(s => s.span_id === rootSpanId)
+        
+        return root.tags.reduce((res, tag) =>  {
+          res[tag.key] = tag.value
+          return res
+        }, {
+          deployment: data['application-name'],
+          trace: moment(Number(data.upload_ms)).format('YYYY-MM-DD HH:mm:ss'),
+          latency: (Number(root.end_us) - Number(root.start_us)) / 1000,
+          start_us: root.start_us,
+          end_us: root.end_us,
+        })
+      })
+      setRows(rowData)
+    } else {
+      setRows([])
+    }
+  }, [state.status])
 
   function formatData(rowData) {
     return rowData.map((row, i) => {
@@ -136,6 +162,9 @@ function Transactions() {
                 data: row[h.key],
                 href: `#/trace-analysis/${row[h.key]}`,
               };
+              break;
+            case 'latency': 
+              r[h.key] = `${moment.duration(row[h.key]).asSeconds().toFixed(1)}s`;
               break;
             default:
               r[h.key] = row[h.key];
@@ -163,7 +192,7 @@ function Transactions() {
         <CustomDataTable
           headers={headers.filter((h) => h.checked || h.key === "actions")}
           rows={formatData(rows)}
-          loading={false}
+          loading={state.status === 'loading'}
           search={{
             searchText: searchText,
             persistent: true,
