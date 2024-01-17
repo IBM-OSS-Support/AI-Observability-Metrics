@@ -14,7 +14,7 @@ import axios from 'axios';
 import appData from './constants/appdata.json'
 
 let data = [];
-const API_BASE_URL = process.env.NODE_ENV === 'development' ? '' : 'http://9.30.147.134:3001';
+const API_BASE_URL = 'http://9.30.147.134:3001';
 
 export const getAppData = () => {
   return data;

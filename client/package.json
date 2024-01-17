@@ -43,6 +43,5 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  },
-  "proxy": "http://9.30.147.134:3001/"
+  }
 }
