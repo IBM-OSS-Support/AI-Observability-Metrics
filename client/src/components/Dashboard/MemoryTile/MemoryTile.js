@@ -9,34 +9,15 @@
  * of its trade secrets, irrespective of what has been deposited with
  * the U.S. Copyright Office.
  ****************************************************************************** */
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 // Components ----------------------------------------------------------------->
 import { Tile } from "@carbon/react";
 import { StackedBarChart } from "@carbon/charts-react";
+import { useStoreContext } from "../../../store";
+import { getAppData } from "../../../appData";
+import { formatMemorySize } from "../../../utils/data-utils";
 
-const data = [
-  {
-    group: "Virtual",
-    key: "dinesh_application",
-    value: 65000,
-  },
-  {
-    group: "Virtual",
-    key: "vikram_application",
-    value: 29123,
-  },
-  {
-    group: "Process",
-    key: "dinesh_application",
-    value: 32432,
-  },
-  {
-    group: "Process",
-    key: "vikram_application",
-    value: 21312,
-  },
-];
 const options = {
   theme: "g90",
   title: "",
@@ -44,6 +25,9 @@ const options = {
     left: {
       mapsTo: "value",
       stacked: true,
+      ticks: {
+        formatter: (tick) => formatMemorySize(tick)
+      }
     },
     bottom: {
       mapsTo: "key",
@@ -62,10 +46,57 @@ const options = {
   },
   legend: {
     position: 'top'
+  },
+  tooltip: {
+    valueFormatter: (value, label) => {
+      switch (label) {
+        case 'y-value': 
+          return `${formatMemorySize(value)}`;
+          default:
+        return value;
+      }
+    },
+    groupLabel: 'memory'
   }
 };
 
+const defaultData = [];
+
 const MemoryTile = () => {
+
+  const [ data, setData ] = useState(defaultData);
+  const { state } = useStoreContext();
+
+  useEffect(() => {
+    let newData = defaultData;
+    if(state.status === 'success') {
+      const appData = getAppData();
+
+      newData = appData
+        .map(d =>  d.data.metrics.reduce((_d, { name, gauge }) => {
+            switch (name) {
+              case 'process_memory': 
+                return _d.concat({
+                  group: 'Process',
+                  key: d.data['application-name'],
+                  value: gauge || 0
+                });
+              case 'virtual_memory': 
+                return _d.concat({
+                  group: 'Virtual',
+                  key: d.data['application-name'],
+                  value: gauge || 0
+                });
+              default: return _d;
+            }
+          }, [])
+        )
+        .flat();
+    }
+
+    setData(newData);
+  }, [state.status]);
+
   // Render
   return (
     <Tile

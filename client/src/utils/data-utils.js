@@ -11,16 +11,29 @@
  ****************************************************************************** */
 
 export function formatCount(count) {
-    if (count > 10000000) {
-      return `${(count / 100000000).toFixed(1)} B`;
-    }
-    if (count > 100000) {
-      return `${(count / 1000000).toFixed(1)} M`;
-    }
-    if (count > 1000) {
-      return `${(count / 1000).toFixed(1)} K`;
-    } else {
-      return count
-    }
+  if (count > 10000000) {
+    return `${(count / 100000000).toFixed(1)} B`;
   }
+  if (count > 100000) {
+    return `${(count / 1000000).toFixed(1)} M`;
+  }
+  if (count > 1000) {
+    return `${(count / 1000).toFixed(1)} K`;
+  } else {
+    return count
+  }
+}
+  
+export function formatMemorySize(size) {
+  const units = ['B', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB'];
+  let pow = units.length - 1;
+  do {
+    const min = Math.pow(1024, pow);
+    if (size >= min) {
+      return `${(size / min).toFixed(0)} ${units[pow]}`;
+    }
+  } while(pow--);
+
+  return `${size || 0}`;
+}
   

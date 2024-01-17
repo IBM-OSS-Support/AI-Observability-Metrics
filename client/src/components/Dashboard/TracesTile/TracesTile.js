@@ -42,7 +42,6 @@ const TracesTile = () => {
         const startUs = Number(root.start_us) / 1000;
         const endUs = Number(root.end_us) / 1000;
         const latency = endUs - startUs;
-        // const latency = moment.duration(endUs - startUs).asSeconds();
         const users = app.spans.map(({tags}) => {
             return tags.find(tag => tag.key === 'user').value
           });
