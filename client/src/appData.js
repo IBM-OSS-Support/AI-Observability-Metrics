@@ -24,11 +24,11 @@ export const fetchAppData = async (setStore) => {
   try {
     setStore('status', 'loading');
     const { data: apiData } = await axios.get(`${API_BASE_URL}/roja-metrics`);
-    data = apiData;
+    data = apiData.sort((a, b) => b.data.upload_ms - a.data.upload_ms);
     setStore('status', 'success');
   } catch (err) {
     setStore('status', 'success');
     console.log('fetch app data error: ', err);
-    data = appData;
+    data = appData.sort((a, b) => b.data.upload_ms - a.data.upload_ms);
   }
 }
