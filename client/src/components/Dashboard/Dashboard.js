@@ -15,12 +15,9 @@ import { ClickableTile, Column, Content, Grid } from "@carbon/react";
 import { SimpleBarChart } from "@carbon/charts-react";
 
 // Globals -------------------------------------------------------------------->
-import { DARK_THEME_ILLUSTRATION } from "./media/dark-theme-illustration";
 import CustomLineChart from "../common/CustomLineChart";
 
 import {
-  callCountData,
-  callCountOptions,
   latencyData,
   latencyDistData,
   latencyDistOptions,
@@ -31,6 +28,7 @@ import SessionsTile from "./SessionsTile/SessionsTile";
 import MetricsTile from "./MetricsTile/MetricsTile";
 import RojaChat from "../common/RojaChat";
 import CpuUsage from "./CpuUsage/CpuUsage";
+import CallCountGraph from "../Metrics/Performance/CallCountGraph";
 
 function Dashboard() {
   return (
@@ -140,10 +138,7 @@ function Dashboard() {
                 href={"#/"}
                 onKeyDown={(event) => {}}
               >
-                <CustomLineChart
-                  data={callCountData}
-                  options={callCountOptions}
-                />
+                <CallCountGraph />
               </ClickableTile>
             </Column>
             <Column

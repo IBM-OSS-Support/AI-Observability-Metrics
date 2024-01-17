@@ -9,7 +9,7 @@
  * of its trade secrets, irrespective of what has been deposited with
  * the U.S. Copyright Office.
  ****************************************************************************** */
-import React, { Fragment, useContext, useEffect, useState } from "react";
+import React, { Fragment, useEffect, useState } from "react";
 import moment from 'moment';
 
 import CustomDataTable from "../common/CustomDataTable";
@@ -18,7 +18,8 @@ import PageContainer from "../common/PageContainer";
 import { Accordion, AccordionItem } from "@carbon/react";
 import DataModal from "./DataModal";
 import { useParams } from "react-router-dom";
-import { AppContext } from "../../appContext";
+import { useStoreContext } from "../../store";
+import { getAppData } from "../../appData";
 
 const MODALS = [
   { component: DataModal, string: 'DataModal' },
@@ -151,11 +152,12 @@ function TraceAnalysis() {
   const [pagination, setPagination] = useState({ offset: 0, first: 10 });
   const [rows, setRows] = useState([]);
   const [modal, setModal] = useState(false);
-  const {status, data} = useContext(AppContext);
+  const { state } = useStoreContext();
 
   useEffect(() => {
-    if (status === 'success'){
-      const app = data.find(data => data['application-name'] === appName);
+    if (state.status === 'success'){
+      const data = getAppData();
+      const app = data.find(({ data }) => data['application-name'] === appName).data;
       const rootSpanId = app.spans?.[0]?.context?.root_span_id
       const root = app.spans.find(span => span.span_id === rootSpanId);
       const operations = formatData(root, app.spans, 0, root.start_us / 1000, root.end_us / 1000);
@@ -168,7 +170,7 @@ function TraceAnalysis() {
       setRows([]);
       setTrace({});
     }
-  }, [appName, status, data, searchText])
+  }, [appName, state.status, searchText])
 
   function formatRowData(rowData = [], headers) {
     return rowData.reduce((arr, r, i) => {
@@ -290,7 +292,7 @@ function TraceAnalysis() {
           <CustomDataTable
             headers={defaultHeaders}
             rows={formatRowData(rows, defaultHeaders)}
-            loading={status === 'loading'}
+            loading={state.status === 'loading'}
             search={{
               searchText: searchText,
               persistent: true,
@@ -325,7 +327,7 @@ function TraceAnalysis() {
               <CustomDataTable
                 headers={defaultLibraryHeaders}
                 rows={formatRowData(trace.libraries, defaultLibraryHeaders)}
-                loading={status === 'loading'}
+                loading={state.status === 'loading'}
                 emptyState={
                   !rows.length && {
                     type: false ? "NotFound" : "NoData",
@@ -346,7 +348,7 @@ function TraceAnalysis() {
               <CustomDataTable
                 headers={defaultProcessHeaders}
                 rows={!trace.process_usage ? [] : formatRowData([trace.process_usage], defaultProcessHeaders)}
-                loading={status === 'loading'}
+                loading={state.status === 'loading'}
                 emptyState={
                   !rows.length && {
                     type: false ? "NotFound" : "NoData",
@@ -367,7 +369,7 @@ function TraceAnalysis() {
               <CustomDataTable
                 headers={defaultNodeHeaders}
                 rows={!trace.node_usage ? []: formatRowData([trace.node_usage], defaultNodeHeaders)}
-                loading={status === 'loading'}
+                loading={state.status === 'loading'}
                 emptyState={
                   !rows.length && {
                     type: false ? "NotFound" : "NoData",

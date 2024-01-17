@@ -9,7 +9,7 @@
  * of its trade secrets, irrespective of what has been deposited with
  * the U.S. Copyright Office.
  ****************************************************************************** */
-import React, { useContext, useEffect, useMemo, useState } from "react";
+import React, { useEffect, useState } from "react";
 import moment from 'moment';
 import { useNavigate, useSearchParams } from "react-router-dom";
 
@@ -18,8 +18,8 @@ import { SimpleBarChart } from "@carbon/charts-react";
 import CustomDataTable from "../../common/CustomDataTable";
 import { Download, Maximize } from "@carbon/icons-react";
 import { Accordion, AccordionItem } from "@carbon/react";
-
-import { AppContext } from "../../../appContext";
+import { useStoreContext } from "../../../store";
+import { getAppData } from "../../../appData";
 
 const chartData = [
   {
@@ -125,11 +125,12 @@ function Transactions() {
   const [startDate, setStartDate] = useState(undefined);
   const [endDate, setEndDate] = useState(undefined);
   const [rows, setRows] = useState([]);
-  const {status, data} = useContext(AppContext);
+  const { state } = useStoreContext();
 
   useEffect(() => {
-    if(status === 'success'){
-      const rowData = data.map(data => {
+    if(state.status === 'success') {
+      const data = getAppData();
+      const rowData = data.map(({ data }) => {
         const rootSpanId = data.spans?.[0]?.context?.root_span_id
         const root = data.spans.find(s => s.span_id === rootSpanId)
         
@@ -148,7 +149,7 @@ function Transactions() {
     } else {
       setRows([])
     }
-  }, [data, status])
+  }, [state.status])
 
   function formatData(rowData) {
     return rowData.map((row, i) => {
@@ -191,7 +192,7 @@ function Transactions() {
         <CustomDataTable
           headers={headers.filter((h) => h.checked || h.key === "actions")}
           rows={formatData(rows)}
-          loading={status === 'loading'}
+          loading={state.status === 'loading'}
           search={{
             searchText: searchText,
             persistent: true,

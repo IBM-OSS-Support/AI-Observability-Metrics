@@ -26,7 +26,8 @@ import Metrics from './components/Metrics';
 import TraceAnalysis from './components/TraceAnalysis';
 import Sessions from './components/Sessions';
 import { fetchAppData } from './appData';
-import { AppContext } from './appContext';
+import { useStoreContext } from './store';
+import { getMetricsData } from './utils/metrics-utils';
 
 const ROUTES = [
   { path: '/', component: () => <Dashboard /> },
@@ -37,36 +38,34 @@ const ROUTES = [
 ];
 
 function App() {
-  const [status, setStatus] = useState('')
-  const [appData, setAppData] = useState([])
+  const { state, setStore } = useStoreContext();
+
   useEffect(() => {
-    setStatus('loading')
-    fetchAppData()
-      .then(data => {
-        setStatus('success');
-        setAppData(data);
-      })
-      .catch(err => {
-        setStatus('error');
-        setAppData([]);
-      });
+    fetchAppData(setStore);
   }, []);
 
+  useEffect(() => {
+    if (state.loaded) {
+      const metricsData = getMetricsData();
+      console.log('metricsData', metricsData);
+
+      setStore('metrics', metricsData);
+    }
+  }, [state.loaded])
+
   return (
-    <AppContext.Provider value={{status, data: appData}}>
-      <div className="App">
-        <Navigation />
-        <Routes>
-          {ROUTES.map(({ path, component: Component }) =>
-            <Route
-              key={path}
-              path={path}
-              element={<Component />}
-            />
-          )}
-        </Routes>
-      </div>
-    </AppContext.Provider>
+    <div className="App">
+      <Navigation />
+      <Routes>
+        {ROUTES.map(({ path, component: Component }) =>
+          <Route
+            key={path}
+            path={path}
+            element={<Component />}
+          />
+        )}
+      </Routes>
+    </div>
   );
 }
 

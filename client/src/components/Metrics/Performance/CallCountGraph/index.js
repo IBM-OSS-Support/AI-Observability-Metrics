@@ -9,5 +9,5 @@
  * of its trade secrets, irrespective of what has been deposited with
  * the U.S. Copyright Office.
  ****************************************************************************** */
-import CallCountGraph from './Performance';
+import CallCountGraph from './CallCountGraph';
 export default CallCountGraph;

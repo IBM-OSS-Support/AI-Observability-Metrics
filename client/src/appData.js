@@ -9,6 +9,7 @@
  * of its trade secrets, irrespective of what has been deposited with
  * the U.S. Copyright Office.
  ****************************************************************************** */
+
 import axios from 'axios';
 import appData from './constants/appdata.json'
 
@@ -19,32 +20,17 @@ export const getAppData = () => {
   return data;
 }
 
-// const formatMetricData = (metrics) => {
-//   let performance = {};
-//   for (const item of metrics) {
-//     if (item.scope === 'performance' && item.name === 'call_count') {
-//       performance[item.updateTs] = {
-//         count: Number(performance[item.updateTs]?.count || 0) + Number(item.counter || 0)
-//       }
-//     }
-//   };
-
-//   console.log(performance);
-// }
-
-
-export const fetchAppData = async () => {
+export const fetchAppData = async (setStore) => {
   try {
-    // await axios.post(`${API_BASE_URL}/run-roja-script`);
+    setStore('loaded', false);
     const { data: apiData } = await axios.get(`${API_BASE_URL}/roja-metrics`);
-    const metricsData = apiData.map(({ data }) => data);
-    // const response = require('./response.json');
-    // formatMetricData(response.metrics);
-    console.log(metricsData);
-    data = metricsData;
-    return data;
+    data = apiData;
+    setStore('loaded', true);
+    setStore('status', 'success');
   } catch (err) {
+    setStore('status', 'success');
+    setStore('loaded', true);
     console.log('fetch app data error: ', err);
-    return appData.map(({data}) => data);
+    data = appData;
   }
 }
