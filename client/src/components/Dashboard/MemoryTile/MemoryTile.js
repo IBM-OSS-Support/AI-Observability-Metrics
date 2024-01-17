@@ -50,10 +50,11 @@ const options = {
       scaleType: "labels",
     },
   },
-  height: "19rem",
+  height: "100%",
   color: {
     scale: {
-      value: "#136e6d",
+      Virtual: '#099694',
+      Process: '#773bcc'
     },
   },
   toolbar: {
@@ -68,16 +69,11 @@ const MemoryTile = () => {
   // Render
   return (
     <Tile
-      className="memory-usage"
-      style={{
-        padding: "1rem",
-      }}
+      className="memory-usage infrastructure-components"
     >
+      <h5>Memory usage</h5>
       <div className="memory-usage-content">
-        <h5>Memory usage</h5>
-        <div className="types">
-          <StackedBarChart data={data} options={options}></StackedBarChart>
-        </div>
+        <StackedBarChart data={data} options={options}></StackedBarChart>
       </div>
     </Tile>
   );
