@@ -22,6 +22,7 @@ export const getAppData = () => {
 
 export const fetchAppData = async (setStore) => {
   try {
+    setStore('status', 'loading');
     const { data: apiData } = await axios.get(`${API_BASE_URL}/roja-metrics`);
     data = apiData;
     setStore('status', 'success');
