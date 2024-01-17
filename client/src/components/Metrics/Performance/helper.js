@@ -107,3 +107,37 @@ export const getLatencyData = ({ apps, startTime, endTime }) => {
     }
   });
 }
+
+export const getTokenCountData = ({ apps, startTime, endTime }) => {
+  let obj = {};
+
+  const intervals = getIntervals(startTime, endTime, 10);
+
+  for (const i in intervals) {
+    let { start, end } = intervals[i];
+    start = moment(start);
+    end = moment(end);
+
+    for (const appId in apps) {
+      const app = apps[appId];
+      const count = app.token_count.reduce((acc, { count }) => {
+        return acc + count;
+      }, 0);
+
+      const appTime = moment(app.time);
+      if (appTime.isSameOrAfter(start) && appTime.isSameOrBefore(end)) {
+        if (obj[i]) {
+          obj[i].value = obj[i].value + count;
+        } else {
+          obj[i] = {
+            group: 'Dataset1',
+            key: app.time,
+            value: count
+          }
+        }
+      }
+    }
+  }
+
+  return Object.values(obj);
+}

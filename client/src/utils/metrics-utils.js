@@ -42,30 +42,38 @@ const getLatencyValues = (histogram) => {
 const formatMetrics = (metrics = []) => {
   let obj = {};
   for (const item of metrics) {
-    if (item.name === 'call_count') {
-      const callCountObj = {
-        count: Number(item.counter),
-        tags: convertTagsArrToObj(item.tags)
-      };
+    switch (item.name) {
+      case 'token_count':
+      case 'call_count': {
+        const countObj = {
+          count: Number(item.counter),
+          tags: convertTagsArrToObj(item.tags)
+        };
 
-      if (obj[item.name]) {
-        obj[item.name].push(callCountObj);
-      } else {
-        obj[item.name] = [ callCountObj ];
-      }
-    }
+        if (obj[item.name]) {
+          obj[item.name].push(countObj);
+        } else {
+          obj[item.name] = [ countObj ];
+        }
 
-    if (item.name === 'latency') {
-      const latencyObj = {
-        ...getLatencyValues(item.histogram),
-        tags: convertTagsArrToObj(item.tags)
+        break;
       }
 
-      if (obj[item.name]) {
-        obj[item.name].push(latencyObj);
-      } else {
-        obj[item.name] = [ latencyObj ];
+      case 'latency': {
+        const latencyObj = {
+          ...getLatencyValues(item.histogram),
+          tags: convertTagsArrToObj(item.tags)
+        }
+
+        if (obj[item.name]) {
+          obj[item.name].push(latencyObj);
+        } else {
+          obj[item.name] = [ latencyObj ];
+        }
+
+        break;
       }
+      default: break;
     }
   }
 

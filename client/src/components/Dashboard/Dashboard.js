@@ -12,13 +12,7 @@
 import React from "react";
 import { ClickableTile, Column, Content, Grid } from "@carbon/react";
 
-import { SimpleBarChart } from "@carbon/charts-react";
-
 // Globals -------------------------------------------------------------------->
-import {
-  latencyDistData,
-  latencyDistOptions,
-} from "../Metrics/Performance/constants";
 import TracesTile from "./TracesTile/TracesTile";
 import SessionsTile from "./SessionsTile/SessionsTile";
 import MetricsTile from "./MetricsTile/MetricsTile";
@@ -26,6 +20,7 @@ import RojaChat from "../common/RojaChat";
 import CpuUsage from "./CpuUsage/CpuUsage";
 import CallCountGraph from "../Metrics/Performance/CallCountGraph";
 import LatencyGraph from "../Metrics/Performance/LatencyGraph";
+import TokenCountGraph from "../Metrics/Data/TokenCountGraph";
 
 function Dashboard() {
   return (
@@ -150,10 +145,7 @@ function Dashboard() {
                 href={"#/"}
                 onKeyDown={(event) => {}}
               >
-                <SimpleBarChart
-                  data={latencyDistData}
-                  options={latencyDistOptions}
-                />
+                <TokenCountGraph />
               </ClickableTile>
             </Column>
           </Grid>
