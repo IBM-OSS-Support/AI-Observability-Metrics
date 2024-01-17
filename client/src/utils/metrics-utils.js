@@ -99,7 +99,7 @@ export const getMetricsData = () => {
     data[app.id] = {
       id: app.id,
       name: app.application_name,
-      time: moment(app.timestamp).toDate(),
+      time: moment(app.timestamp).format(),
       ...metricsObj
     }
   }

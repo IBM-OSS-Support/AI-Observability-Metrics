@@ -12,7 +12,7 @@
 
 import moment from "moment";
 
-const getIntervals = (start, end, number) => {
+export const getIntervals = (start, end, number) => {
   const interval = end - start;
   const step = Math.round(interval / number);
   const intervals = {};

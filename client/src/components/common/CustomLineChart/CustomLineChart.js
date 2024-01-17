@@ -29,7 +29,7 @@ const defaultOptions = {
       scaleType: "time",
       ticks: {
         number: 4,
-        formatter: (tick => moment(tick).format('hh:MM A'))
+        formatter: (tick => moment(tick).format('hh:mm A'))
       }
     }
   },

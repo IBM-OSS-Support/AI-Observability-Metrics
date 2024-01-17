@@ -16,7 +16,7 @@ import { SimpleBarChart } from "@carbon/charts-react";
 import { Maximize } from "@carbon/icons-react";
 
 import { useStoreContext } from "../../../../store";
-import { getTokenCountData } from "../../Performance/helper";
+import { getTimelineChartData } from "./helper";
 
 const options = {
   theme: "g100",
@@ -24,6 +24,9 @@ const options = {
   axes: {
     left: {
       mapsTo: "value",
+      ticks: {
+        formatter: (tick) => Number.isInteger(tick) ? tick : ''
+      }
     },
     bottom: {
       mapsTo: "key",
@@ -69,23 +72,25 @@ const options = {
   },
 };
 
-function TokenCountGraph() {
+function TimelineGraph() {
   const { state } = useStoreContext();
 
-  const callCountData = useMemo(() => {
+  const timelinetData = useMemo(() => {
     if (state.metrics) {
-      return getTokenCountData(state.metrics);
+      return getTimelineChartData(state.metrics);
     }
 
     return [];
   }, [state.metrics]);
 
+  console.log('timelinetData', timelinetData);
+
   return (
     <SimpleBarChart
-      data={callCountData}
+      data={timelinetData}
       options={options}
     />
   );
 }
 
-export default TokenCountGraph;
+export default TimelineGraph;
