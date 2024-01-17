@@ -34,34 +34,24 @@ function Dashboard() {
   return (
     <Content className="page-container home-container">
       <Grid fullWidth className="page-content">
-        <Column max={12} xlg={12} lg={12} md={8} sm={4} className="left-container">
+        <Column
+          max={12}
+          xlg={12}
+          lg={12}
+          md={8}
+          sm={4}
+          className="left-container"
+        >
           <Grid fullWidth narrow id="header" className="page-header">
             <Column max={12} xlg={12} lg={12} md={8} sm={4}>
               <div className="left">
                 <div className="title">
-                  <h3>
-                    AI Ops Observability & Monitoring
-                  </h3>
+                  <h3>AI Observability & Monitoring</h3>
                 </div>
               </div>
             </Column>
           </Grid>
-          <Grid
-            fullWidth
-            narrow
-            id="body"
-            className="body"
-          >
-            <Column
-              max={4}
-              xlg={4}
-              lg={4}
-              md={4}
-              sm={4}
-              className="content-tile"
-            >
-              <CpuUsage />
-            </Column>
+          <Grid fullWidth narrow id="body" className="body">
             <Column
               max={4}
               xlg={4}
@@ -82,9 +72,17 @@ function Dashboard() {
             >
               <SessionsTile />
             </Column>
-
-
             <Column
+              max={4}
+              xlg={4}
+              lg={4}
+              md={4}
+              sm={4}
+              className="content-tile"
+            >
+              <CpuUsage />
+            </Column>
+            {/* <Column
               max={8}
               xlg={8}
               lg={8}
@@ -95,9 +93,9 @@ function Dashboard() {
               <div className="metrics-panel">
                 <h3>Visualize graphically</h3>
               </div>
-            </Column>
+            </Column> */}
 
-            <Column
+            {/* <Column
               max={4}
               xlg={4}
               lg={4}
@@ -106,7 +104,7 @@ function Dashboard() {
               className="content-tile space-5"
             >
               <MetricsTile />
-            </Column>
+            </Column> */}
             <Column
               max={6}
               xlg={6}

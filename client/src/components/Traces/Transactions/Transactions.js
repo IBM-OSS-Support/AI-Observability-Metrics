@@ -84,18 +84,18 @@ function Transactions() {
       checked: true,
     },
     {
-      key: "trace",
-      header: "Timestamp",
-      checked: true,
-    },
-    {
       key: "latency",
       header: "Latency",
       checked: true,
     },
     {
-      key: "component",
-      header: "Component",
+      key: "user",
+      header: "User",
+      checked: true,
+    },
+    {
+      key: "hostname",
+      header: "Hostname",
       checked: true,
     },
     {
@@ -104,8 +104,8 @@ function Transactions() {
       checked: true,
     },
     {
-      key: "hostname",
-      header: "Hostname",
+      key: "trace",
+      header: "Timestamp",
       checked: true,
     },
   ];
