@@ -45,13 +45,13 @@ function App() {
   }, []);
 
   useEffect(() => {
-    if (state.loaded) {
+    if (state.status === 'success') {
       const metricsData = getMetricsData();
       console.log('metricsData', metricsData);
 
       setStore('metrics', metricsData);
     }
-  }, [state.loaded])
+  }, [state.status])
 
   return (
     <div className="App">
