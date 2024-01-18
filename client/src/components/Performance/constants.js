@@ -44,7 +44,7 @@ export const latencyData = [
 ];
 
 export const latencyOptions = {
-  title: 'Latency',
+  title: 'Latency'
 }
 
 export const latencyDistData = [
@@ -96,7 +96,7 @@ export const latencyDistOptions = {
     },
     shouldBeDisabled: false
   },
-  height: "100%",
+  height: "240px",
   color: {
     scale: {
       Qty: "#4589ff",

@@ -9,8 +9,8 @@
  * of its trade secrets, irrespective of what has been deposited with
  * the U.S. Copyright Office.
  ****************************************************************************** */
-import React, { useEffect, useState } from "react";
-import moment from 'moment';
+import React, { useEffect, useState, useMemo } from "react";
+import moment from "moment";
 import { useNavigate, useSearchParams } from "react-router-dom";
 
 import CustomDataTable from "../../common/CustomDataTable";
@@ -20,40 +20,81 @@ import { useStoreContext } from "../../../store";
 import { getAppData } from "../../../appData";
 import TimelineGraph from "./TimelineGraph";
 
-function Transactions() {
+const Transactions = ({ component }) => {
+  console.log(component);
   const navigate = useNavigate();
-  const defaultHeaders = [
-    {
-      key: "deployment",
-      header: "Application name",
-      checked: true,
-    },
-    {
-      key: "latency",
-      header: "Latency",
-      checked: true,
-    },
-    {
-      key: "user",
-      header: "User",
-      checked: true,
-    },
-    {
-      key: "hostname",
-      header: "Hostname",
-      checked: true,
-    },
-    {
-      key: "operation",
-      header: "Operation",
-      checked: true,
-    },
-    {
-      key: "trace",
-      header: "Timestamp",
-      checked: true,
-    },
-  ];
+
+  const defaultHeaders = useMemo(() => {
+    if (component === "audit") {
+      return [
+        {
+          key: "deployment",
+          header: "Application name",
+          checked: true,
+        },
+        {
+          key: "user",
+          header: "User",
+          checked: true,
+        },
+        {
+          key: "hostname",
+          header: "Hostname",
+          checked: true,
+        },
+        {
+          key: "trace",
+          header: "Timestamp",
+          checked: true,
+        },
+      ];
+    } else if (component === "monitor") {
+      return [
+        {
+          key: "deployment",
+          header: "Application name",
+          checked: true,
+        },
+        {
+          key: "user",
+          header: "User",
+          checked: true,
+        },
+        {
+          key: "operation",
+          header: "Operation",
+          checked: true,
+        },
+      ];
+    }
+    return [
+      {
+        key: "deployment",
+        header: "Application name",
+        checked: true,
+      },
+      {
+        key: "user",
+        header: "User",
+        checked: true,
+      },
+      {
+        key: "hostname",
+        header: "Hostname",
+        checked: true,
+      },
+      {
+        key: "operation",
+        header: "Operation",
+        checked: true,
+      },
+      {
+        key: "trace",
+        header: "Timestamp",
+        checked: true,
+      },
+    ];
+  }, [component]);
 
   const [headers, setHeaders] = useState(
     defaultHeaders.map((h) => Object.assign({}, h))
@@ -73,28 +114,31 @@ function Transactions() {
   const { state } = useStoreContext();
 
   useEffect(() => {
-    if(state.status === 'success') {
+    if (state.status === "success") {
       const data = getAppData();
       const rowData = data.map(({ data }) => {
-        const rootSpanId = data.spans?.[0]?.context?.root_span_id
-        const root = data.spans.find(s => s.span_id === rootSpanId)
-        
-        return root.tags.reduce((res, tag) =>  {
-          res[tag.key] = tag.value
-          return res
-        }, {
-          deployment: data['application-name'],
-          trace: moment(Number(data.upload_ms)).format('YYYY-MM-DD HH:mm:ss'),
-          latency: (Number(root.end_us) - Number(root.start_us)) / 1000,
-          start_us: root.start_us,
-          end_us: root.end_us,
-        })
-      })
-      setRows(rowData)
+        const rootSpanId = data.spans?.[0]?.context?.root_span_id;
+        const root = data.spans.find((s) => s.span_id === rootSpanId);
+
+        return root.tags.reduce(
+          (res, tag) => {
+            res[tag.key] = tag.value;
+            return res;
+          },
+          {
+            deployment: data["application-name"],
+            trace: moment(Number(data.upload_ms)).format("YYYY-MM-DD HH:mm:ss"),
+            latency: (Number(root.end_us) - Number(root.start_us)) / 1000,
+            start_us: root.start_us,
+            end_us: root.end_us,
+          }
+        );
+      });
+      setRows(rowData);
     } else {
-      setRows([])
+      setRows([]);
     }
-  }, [state.status])
+  }, [state.status]);
 
   function formatData(rowData) {
     return rowData.map((row, i) => {
@@ -108,8 +152,11 @@ function Transactions() {
                 href: `#/trace-analysis/${row[h.key]}`,
               };
               break;
-            case 'latency': 
-              r[h.key] = `${moment.duration(row[h.key]).asSeconds().toFixed(1)} s`;
+            case "latency":
+              r[h.key] = `${moment
+                .duration(row[h.key])
+                .asSeconds()
+                .toFixed(1)} s`;
               break;
             default:
               r[h.key] = row[h.key];
@@ -121,11 +168,13 @@ function Transactions() {
     });
   }
   return (
-    <>
+    <div className="traces-container">
       <div className="trace-sections">
         <Accordion align="start">
           <AccordionItem title="Timeline chart" open={true}>
-            <TimelineGraph />
+            <div className="timeline-chart-wrapper">
+              <TimelineGraph />
+            </div>
           </AccordionItem>
         </Accordion>
       </div>
@@ -134,7 +183,7 @@ function Transactions() {
         <CustomDataTable
           headers={headers.filter((h) => h.checked || h.key === "actions")}
           rows={formatData(rows)}
-          loading={state.status === 'loading'}
+          loading={state.status === "loading"}
           search={{
             searchText: searchText,
             persistent: true,
@@ -214,8 +263,8 @@ function Transactions() {
           tableHeaderClickHandler={() => {}}
         />
       </div>
-    </>
+    </div>
   );
-}
+};
 
 export default Transactions;

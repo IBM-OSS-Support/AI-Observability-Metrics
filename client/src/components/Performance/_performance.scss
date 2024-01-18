@@ -3,35 +3,32 @@
  *
  * OCO Source Materials
  *
- *  Copyright IBM Corp. 2023  All Rights Reserved.
+ *  Copyright IBM Corp. 2024  All Rights Reserved.
  *
  * The source code for this program is not published or otherwise divested
  * of its trade secrets, irrespective of what has been deposited with
  * the U.S. Copyright Office.
  ****************************************************************************** */
-.monitoring-container, .auditing-container {
+
+.performance-page {
   .body {
     margin: 1rem;
     background-color: transparent;
   }
-}
- 
- .traces-container {
-    .body {
-      margin: 1rem;
-      background-color: transparent;
-    }
-  
-    .trace-sections {
-      margin-bottom: 1rem;
-      background-color: $layer-01;
-    }
-  
-    .cds--accordion__wrapper {
-      padding: 1rem;
-    }
-  }
 
-  .timeline-chart-wrapper {
-    padding-right: 1rem;
+  .memory-usage {
+    &-content {
+      height: 100%;
+      padding: 1rem 0 0.5rem;
+    }
   }
+}
+
+.chart-tile {
+  height: 100%;
+  padding-top: 0.5rem;
+}
+
+.content-tile {
+  height: 20rem;
+}

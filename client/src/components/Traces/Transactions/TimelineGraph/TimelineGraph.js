@@ -20,7 +20,7 @@ import { getTimelineChartData } from "./helper";
 
 const options = {
   theme: "g100",
-  title: "Token count",
+  title: "",
   axes: {
     left: {
       mapsTo: "value",
@@ -41,7 +41,7 @@ const options = {
     enabled: false,
   },
   toolbar: {
-    enabled: true,
+    enabled: false,
     controls:[{
       type: "Make fullscreen"
     }],

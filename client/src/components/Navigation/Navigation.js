@@ -39,7 +39,19 @@ import {
   Time,
   Activity,
   Home,
-  ChartBullet
+  ChartBullet,
+  Meter,
+  CloudAuditing,
+  MeterAlt,
+  DevicesApps,
+  StarHalf,
+  StarReview,
+  VehicleServices,
+  Security,
+  CertificateCheck,
+  WhitePaper,
+  CloudMonitoring,
+  AudioConsole
 } from '@carbon/react/icons';
 
 // Utils ---------------------------------------------------------------------->
@@ -55,9 +67,49 @@ const Navigation = () => {
           icon: Home
         },
         {
-          name: 'Traces',
-          subpath: '/traces',
+          name: 'Performance',
+          subpath: '/performance',
+          icon: Meter
+        },
+        {
+          name: 'Auditing',
+          subpath: '/auditing',
+          icon: CloudAuditing
+        },
+        {
+          name: 'Metering',
+          subpath: '/metering',
+          icon: MeterAlt
+        },
+        {
+          name: 'Monitoring',
+          subpath: '/monitoring',
+          icon: CloudMonitoring // DevicesApps
+        },
+        {
+          name: 'Rate limiting',
+          subpath: '/rate-limiting',
+          icon: StarReview //  StarHalf
+        },
+        {
+          name: 'Maintenance',
+          subpath: '/maintenance',
+          icon: AudioConsole // VehicleServices
+        },
+        {
+          name: 'Security',
+          subpath: '/security',
+          icon: Security
+        },
+        {
+          name: 'Traceability',
+          subpath: '/traceability',
           icon: ChartBullet
+        },
+        {
+          name: 'Compliance',
+          subpath: '/compliance',
+          icon: WhitePaper
         },
         // {
         //   name: 'Sessions',

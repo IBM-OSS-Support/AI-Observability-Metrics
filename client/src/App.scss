@@ -40,8 +40,10 @@
 @import './components/TraceAnalysis/trace_analysis';
 @import './components/Dashboard/dashboard';
 @import './components/Dashboard/TracesTile/traces-tile';
-@import './components/Dashboard/CpuUsage/cpu-usage';
+@import './components/Performance/CpuUsage/cpu-usage';
 @import './components/Sessions/sessions';
+@import './components/Performance/performance';
+
 
 // Theming
 :root {

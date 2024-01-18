@@ -3,22 +3,11 @@
  *
  * OCO Source Materials
  *
- *  Copyright IBM Corp. 2023  All Rights Reserved.
+ *  Copyright IBM Corp. 2024  All Rights Reserved.
  *
  * The source code for this program is not published or otherwise divested
  * of its trade secrets, irrespective of what has been deposited with
  * the U.S. Copyright Office.
  ****************************************************************************** */
-.metrics-container {
-  .body {
-    margin: 1rem;
-    background-color: transparent;
-  }
-}
-
-.line-chart-section {
-  padding: 1rem 1.5rem 1.5rem;
-  margin-bottom: 1rem;
-  background-color: $layer-01;
-  height: 20rem;
-}
+import Auditing from "./Auditing";
+export default Auditing;
