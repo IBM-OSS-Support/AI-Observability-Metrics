@@ -50,7 +50,8 @@ import {
   Security,
   CertificateCheck,
   WhitePaper,
-  CloudMonitoring
+  CloudMonitoring,
+  AudioConsole
 } from '@carbon/react/icons';
 
 // Utils ---------------------------------------------------------------------->
@@ -93,7 +94,7 @@ const Navigation = () => {
         {
           name: 'Maintenance',
           subpath: '/maintenance',
-          icon: VehicleServices
+          icon: AudioConsole // VehicleServices
         },
         {
           name: 'Security',
