@@ -10,13 +10,12 @@
  * the U.S. Copyright Office.
  ****************************************************************************** */
 import React, { useMemo } from "react";
-import moment from "moment";
 
-import { SimpleBarChart } from "@carbon/charts-react";
+import { StackedBarChart } from "@carbon/charts-react";
 import { Maximize } from "@carbon/icons-react";
 
 import { useStoreContext } from "../../../store";
-import { getTokenCountData } from "../helper";
+import { getAppData } from "../../../appData";
 
 const options = {
   theme: "g100",
@@ -24,14 +23,11 @@ const options = {
   axes: {
     left: {
       mapsTo: "value",
+      stacked: true
     },
     bottom: {
       mapsTo: "key",
-      scaleType: "time",
-      ticks: {
-        number: 4,
-        formatter: (tick => moment(tick).format('hh:mm A'))
-      }
+      scaleType: "labels",
     }
   },
   legend: {
@@ -52,14 +48,7 @@ const options = {
     truncation: {
       numCharacter: 20
     },
-    valueFormatter: (value, label) => {
-      switch (label) {
-        case 'y-value': return value;
-        case 'x-value': return moment(value).format('DD-MMM-YY hh:mm A');
-        case 'Group': return 'Token count';
-        default: return ''
-      }
-    }
+    groupLabel: 'count of',
   },
   height: "100%",
   color: {
@@ -74,14 +63,47 @@ function TokenCountGraph() {
 
   const callCountData = useMemo(() => {
     if (state.metrics) {
-      return getTokenCountData(state.metrics);
+      const appData = getAppData();
+
+      return appData
+        .map(d => d.data.spans.reduce((_counts, { data_profile }) => {
+          if (data_profile && !!data_profile.length) {
+            data_profile.forEach(({data_name, counts}) => {
+  
+              switch (data_name) {
+                case 'messages':
+                  _counts.inputs += +counts.find(count => count.name === 'token_count')?.count || 0;
+                  break;
+                case 'completion':
+                  _counts.outputs += +counts.find(count => count.name === 'token_count')?.count || 0;
+                  break;
+                default: ;
+              }
+            }, _counts);
+          }
+          return _counts;
+          }, {inputs: 0, outputs: 0, appName: d.data['application-name']})
+        )
+        .map(count => [
+          {
+            group: 'Inputs',
+            key: count.appName,
+            value: count.inputs
+          },
+          {
+            group: 'Outputs',
+            key: count.appName,
+            value: count.outputs
+          }
+        ])
+        .flat();
     }
 
     return [];
   }, [state.metrics]);
 
   return (
-    <SimpleBarChart
+    <StackedBarChart
       data={callCountData}
       options={options}
     />
