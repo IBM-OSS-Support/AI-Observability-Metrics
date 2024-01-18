@@ -38,7 +38,7 @@ function Dashboard() {
         >
           <Grid fullWidth narrow id="header" className="page-header">
             <Column max={8} xlg={8} lg={8} md={6} sm={4}>
-              <h3>GenAI Apps - AI Observability & Monitoring</h3>
+              <h3>GenAI Apps - Observability & Monitoring</h3>
             </Column>
             <Column max={8} xlg={8} lg={8} md={6} sm={4}>
               <h4>Quick Navigations</h4>

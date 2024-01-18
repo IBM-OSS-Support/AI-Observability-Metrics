@@ -128,7 +128,7 @@ const TracesTile = () => {
         </div>
       </div>
       <Button kind="ghost" className="bottom-link" href="#/traces">
-        <span>Go to AI applications</span>
+        <span>Go to application tracing</span>
       </Button>
     </Tile>
   );
