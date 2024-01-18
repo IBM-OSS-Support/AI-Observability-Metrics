@@ -9,6 +9,13 @@
  * of its trade secrets, irrespective of what has been deposited with
  * the U.S. Copyright Office.
  ****************************************************************************** */
+.monitoring-container, .auditing-container {
+  .body {
+    margin: 1rem;
+    background-color: transparent;
+  }
+}
+ 
  .traces-container {
     .body {
       margin: 1rem;

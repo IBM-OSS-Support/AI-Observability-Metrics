@@ -96,7 +96,7 @@ export const latencyDistOptions = {
     },
     shouldBeDisabled: false
   },
-  height: "240px",
+  height: "100%",
   color: {
     scale: {
       Qty: "#4589ff",
