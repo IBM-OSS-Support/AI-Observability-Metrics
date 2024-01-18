@@ -116,11 +116,11 @@ const Navigation = () => {
         //   subpath: '/sessions',
         //   icon: Time
         // },
-        {
-          name: 'Metrics',
-          subpath: '/metrics',
-          icon: Activity
-        }
+        // {
+        //   name: 'Metrics',
+        //   subpath: '/metrics',
+        //   icon: Activity
+        // }
       ]
     }
   ];
