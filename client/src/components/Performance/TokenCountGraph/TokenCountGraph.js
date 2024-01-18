@@ -61,7 +61,7 @@ const options = {
       }
     }
   },
-  height: "240px",
+  height: "100%",
   color: {
     scale: {
       Dataset1: "#5281d8"

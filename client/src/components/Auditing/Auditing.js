@@ -20,7 +20,7 @@ const Auditing = () => {
     <PageContainer
       className="auditing-container"
       header={{
-        title: "GenAI app - Auditing",
+        title: "Auditing",
         subtitle: "Auditing",
       }}
     >

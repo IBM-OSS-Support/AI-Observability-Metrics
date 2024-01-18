@@ -45,7 +45,6 @@ export const latencyData = [
 
 export const latencyOptions = {
   title: 'Latency',
-  height: '19rem' //Need for homepage
 }
 
 export const latencyDistData = [

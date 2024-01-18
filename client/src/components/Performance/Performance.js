@@ -23,9 +23,9 @@ import PageContainer from '../common/PageContainer/PageContainer';
 const Performance = () => {
   return (
     <PageContainer
-      className="page-container"
+      className="page-container performance-page"
       header={{
-        title: "GenAI app - Performance",
+        title: "Performance",
         subtitle: "Performance graphs",
       }}
     >
@@ -42,16 +42,6 @@ const Performance = () => {
 					<CpuUsage />
 				</Column>
 				<Column
-					max={8}
-					xlg={8}
-					lg={8}
-					md={4}
-					sm={4}
-					className="content-tile"
-				>
-					<LatencyGraph />
-				</Column>
-				<Column
 						max={8}
 						xlg={8}
 						lg={8}
@@ -61,6 +51,18 @@ const Performance = () => {
 				>
 					<MemoryTile />
 				</Column>
+        <Column
+					max={8}
+					xlg={8}
+					lg={8}
+					md={4}
+					sm={4}
+					className="content-tile"
+				>
+          <Tile className="chart-tile">
+            <LatencyGraph />
+          </Tile>
+				</Column>
 				<Column
 					max={8}
 					xlg={8}
@@ -69,7 +71,9 @@ const Performance = () => {
 					sm={4}
 					className="content-tile"
 				>
-					<CallCountGraph />
+          <Tile className="chart-tile">
+            <CallCountGraph />
+          </Tile>
 				</Column>
 				<Column
 					max={16}
@@ -79,7 +83,9 @@ const Performance = () => {
 					sm={4}
 					className="content-tile"
 				>
-					<TokenCountGraph />
+          <Tile className="chart-tile">
+            <TokenCountGraph />
+          </Tile>
 				</Column>
 			</Grid>
 			</div>

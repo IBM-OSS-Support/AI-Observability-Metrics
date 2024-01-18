@@ -106,7 +106,7 @@ function Dashboard() {
               sm={7}
               className="content-tile"
             >
-              <Tile className="infrastructure-components">
+              <Tile className="chart-tile">
                 <LatencyGraph />
               </Tile>
             </Column>

@@ -68,7 +68,7 @@ const defaultOptions = {
       'Dataset1': '#893ffc'
     }
   },
-  height: "240px"
+  height: "100%"
 }
 
 function Metrics(props) {

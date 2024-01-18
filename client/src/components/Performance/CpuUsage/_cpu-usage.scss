@@ -12,8 +12,10 @@
  .cpu-usage {
     &-chart {
       height: 100%;
-      padding-top: 3rem;
+      padding-top: 1rem;
       margin: 0 auto;
+      display: flex;
+      align-items: center;
     }
 
     &-data {
@@ -27,6 +29,7 @@
         padding: 1rem;
         display: flex;
         align-items: center;
+        flex: 1;
       }
 
       .data {
