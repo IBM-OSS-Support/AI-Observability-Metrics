@@ -10,7 +10,7 @@
  * the U.S. Copyright Office.
  ****************************************************************************** */
 import React from "react";
-import { ClickableTile, Column, Content, Grid } from "@carbon/react";
+import { ClickableTile, Column, Content, Grid, Tile } from "@carbon/react";
 
 // Globals -------------------------------------------------------------------->
 import TracesTile from "./TracesTile/TracesTile";
@@ -39,7 +39,7 @@ function Dashboard() {
             <Column max={12} xlg={12} lg={12} md={8} sm={4}>
               <div className="left">
                 <div className="title">
-                  <h3>GenAI App - AI Observability & Monitoring</h3>
+                  <h3>GenAI Apps - AI Observability & Monitoring</h3>
                 </div>
               </div>
             </Column>
@@ -106,14 +106,9 @@ function Dashboard() {
               sm={7}
               className="content-tile"
             >
-              <ClickableTile
-                className="chart-tile"
-                style={{}}
-                href={"#/"}
-                onKeyDown={(event) => {}}
-              >
+              <Tile className="infrastructure-components">
                 <LatencyGraph />
-              </ClickableTile>
+              </Tile>
             </Column>
             {/* <Column
               max={6}
