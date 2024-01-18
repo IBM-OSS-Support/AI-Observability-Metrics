@@ -171,7 +171,7 @@ const Transactions = ({ component }) => {
     <div className="traces-container">
       <div className="trace-sections">
         <Accordion align="start">
-          <AccordionItem title="Timeline chart" open={true}>
+          <AccordionItem title="Timeline chart (Applications)" open={true}>
             <div className="timeline-chart-wrapper">
               <TimelineGraph />
             </div>

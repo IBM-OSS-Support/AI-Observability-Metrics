@@ -46,7 +46,7 @@ function Dashboard() {
             <Column max={12} xlg={12} lg={12} md={8} sm={4}>
               <Button className="quick-link-button" kind="tertiary" href="#/performance">Performance</Button>
               <Button className="quick-link-button" kind="tertiary" href="#/auditing">Auditing</Button>
-              <Button className="quick-link-button" kind="tertiary" href="#/monitoring">Monitoring</Button>
+              <Button className="quick-link-button" kind="tertiary" href="#/traceability">Traceability</Button>
               <Button className="quick-link-button" kind="tertiary" href="#/metrics">Metrics</Button>
             </Column>
           </Grid>

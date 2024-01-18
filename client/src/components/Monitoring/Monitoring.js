@@ -20,8 +20,8 @@ const Monitoring = () => {
     <PageContainer
       className="monitoring-container"
       header={{
-        title: "Monitoring",
-        subtitle: "Monitoring data",
+        title: "Traceability",
+        subtitle: "Traceability data",
       }}
     >
       <Transactions

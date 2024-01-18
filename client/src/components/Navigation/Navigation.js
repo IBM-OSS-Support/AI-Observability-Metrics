@@ -77,6 +77,11 @@ const Navigation = () => {
           icon: CloudAuditing
         },
         {
+          name: 'Traceability',
+          subpath: '/traceability',
+          icon: ChartBullet
+        },
+        {
           name: 'Metering',
           subpath: '/metering',
           icon: MeterAlt
@@ -100,11 +105,6 @@ const Navigation = () => {
           name: 'Security',
           subpath: '/security',
           icon: Security
-        },
-        {
-          name: 'Traceability',
-          subpath: '/traceability',
-          icon: ChartBullet
         },
         {
           name: 'Compliance',
