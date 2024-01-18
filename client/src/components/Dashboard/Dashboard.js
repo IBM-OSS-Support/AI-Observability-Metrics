@@ -39,23 +39,23 @@ function Dashboard() {
             <Column max={12} xlg={12} lg={12} md={8} sm={4}>
               <div className="left">
                 <div className="title">
-                  <h3>AI Observability & Monitoring</h3>
+                  <h3>GenAI App - AI Observability & Monitoring</h3>
                 </div>
               </div>
             </Column>
           </Grid>
           <Grid fullWidth narrow id="body" className="body">
             <Column
-              max={4}
-              xlg={4}
-              lg={4}
-              md={4}
-              sm={4}
+              max={5}
+              xlg={5}
+              lg={5}
+              md={5}
+              sm={5}
               className="content-tile"
             >
               <TracesTile />
             </Column>
-            <Column
+            {/* <Column
               max={4}
               xlg={4}
               lg={4}
@@ -64,8 +64,8 @@ function Dashboard() {
               className="content-tile"
             >
               <MemoryTile />
-            </Column>
-            <Column
+            </Column> */}
+            {/* <Column
               max={4}
               xlg={4}
               lg={4}
@@ -74,7 +74,7 @@ function Dashboard() {
               className="content-tile"
             >
               <CpuUsage />
-            </Column>
+            </Column> */}
             {/* <Column
               max={8}
               xlg={8}
@@ -99,11 +99,11 @@ function Dashboard() {
               <MetricsTile />
             </Column> */}
             <Column
-              max={6}
-              xlg={6}
-              lg={6}
-              md={6}
-              sm={6}
+              max={7}
+              xlg={7}
+              lg={7}
+              md={7}
+              sm={7}
               className="content-tile"
             >
               <ClickableTile
@@ -115,7 +115,7 @@ function Dashboard() {
                 <LatencyGraph />
               </ClickableTile>
             </Column>
-            <Column
+            {/* <Column
               max={6}
               xlg={6}
               lg={6}
@@ -131,8 +131,8 @@ function Dashboard() {
               >
                 <CallCountGraph />
               </ClickableTile>
-            </Column>
-            <Column
+            </Column> */}
+            {/* <Column
               max={16}
               xlg={16}
               lg={16}
@@ -148,7 +148,7 @@ function Dashboard() {
               >
                 <TokenCountGraph />
               </ClickableTile>
-            </Column>
+            </Column> */}
           </Grid>
         </Column>
         <Column max={4} xlg={4} lg={4} md={0} sm={0}>

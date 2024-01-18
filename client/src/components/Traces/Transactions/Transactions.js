@@ -9,7 +9,7 @@
  * of its trade secrets, irrespective of what has been deposited with
  * the U.S. Copyright Office.
  ****************************************************************************** */
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import moment from 'moment';
 import { useNavigate, useSearchParams } from "react-router-dom";
 
@@ -20,17 +20,55 @@ import { useStoreContext } from "../../../store";
 import { getAppData } from "../../../appData";
 import TimelineGraph from "./TimelineGraph";
 
-function Transactions() {
+const Transactions = ({
+  component
+}) => {
+  console.log(component);
   const navigate = useNavigate();
-  const defaultHeaders = [
-    {
+
+  const defaultHeaders = useMemo(() => {
+    if (component === 'audit') {
+      return ([{
+        key: "deployment",
+        header: "Application name",
+        checked: true,
+      },
+      {
+        key: "user",
+        header: "User",
+        checked: true,
+      },
+      {
+        key: "hostname",
+        header: "Hostname",
+        checked: true,
+      },
+      {
+        key: "trace",
+        header: "Timestamp",
+        checked: true,
+      }]);
+    }
+    else if (component === 'monitor') {
+      return ([{
+        key: "deployment",
+        header: "Application name",
+        checked: true,
+      },
+      {
+        key: "user",
+        header: "User",
+        checked: true,
+      },
+      {
+        key: "operation",
+        header: "Operation",
+        checked: true,
+      }]);
+    }
+    return ([{
       key: "deployment",
       header: "Application name",
-      checked: true,
-    },
-    {
-      key: "latency",
-      header: "Latency",
       checked: true,
     },
     {
@@ -52,8 +90,8 @@ function Transactions() {
       key: "trace",
       header: "Timestamp",
       checked: true,
-    },
-  ];
+    }]);
+  }, [component]);
 
   const [headers, setHeaders] = useState(
     defaultHeaders.map((h) => Object.assign({}, h))

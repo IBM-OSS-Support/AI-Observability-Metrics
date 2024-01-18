@@ -55,8 +55,38 @@ const Navigation = () => {
           icon: Home
         },
         {
-          name: 'Traces',
-          subpath: '/traces',
+          name: 'Performance',
+          subpath: '/performance',
+          icon: ChartBullet
+        },
+        {
+          name: 'Auditing',
+          subpath: '/auditing',
+          icon: Home
+        },
+        {
+          name: 'Metering',
+          subpath: '/metering',
+          icon: Home
+        },
+        {
+          name: 'Monitoring',
+          subpath: '/monitoring',
+          icon: Home
+        },
+        {
+          name: 'Rate limiting',
+          subpath: '/rate-limiting',
+          icon: ChartBullet
+        },
+        {
+          name: 'Maintenance',
+          subpath: '/maintenance',
+          icon: ChartBullet
+        },
+        {
+          name: 'Security',
+          subpath: '/security',
           icon: ChartBullet
         },
         // {

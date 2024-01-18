@@ -15,26 +15,35 @@ import {
   Route
 } from 'react-router-dom';
 
-import Navigation from './components/Navigation';
-
 // Styles --------------------------------------------------------------------->
 import '@carbon/ibm-products/css/index.min.css';
 import './App.scss';
+
+// Components ----------------------------------------------------------------->
+import Auditing from './components/Auditing';
 import Dashboard from './components/Dashboard';
-import Traces from './components/Traces';
 import Metrics from './components/Metrics';
-import TraceAnalysis from './components/TraceAnalysis';
+import Monitoring from './components/Monitoring';
+import Navigation from './components/Navigation';
+import Performance from './components/Performance';
 import Sessions from './components/Sessions';
+import TraceAnalysis from './components/TraceAnalysis';
+import Traces from './components/Traces';
+
+// Utils ----------------------------------------------------------------------->
 import { fetchAppData } from './appData';
-import { useStoreContext } from './store';
 import { getMetricsData } from './utils/metrics-utils';
+import { useStoreContext } from './store';
 
 const ROUTES = [
   { path: '/', component: () => <Dashboard /> },
-  { path: '/traces', component: () => <Traces /> },
-  { path: '/sessions', component: () => <Sessions /> },
+  { path: '/auditing', component: () => <Auditing /> },
   { path: '/metrics', component: () => <Metrics /> },
+  { path: '/monitoring', component: () => <Monitoring /> },
+  { path: '/performance', component: () => <Performance /> },
+  { path: '/sessions', component: () => <Sessions /> },
   { path: '/trace-analysis/:appName', component: () => <TraceAnalysis /> },
+  { path: '/traces', component: () => <Traces /> }
 ];
 
 function App() {
