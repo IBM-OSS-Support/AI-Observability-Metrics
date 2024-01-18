@@ -13,67 +13,12 @@ import React, { useEffect, useState } from "react";
 import moment from 'moment';
 import { useNavigate, useSearchParams } from "react-router-dom";
 
-import { SimpleBarChart } from "@carbon/charts-react";
-
 import CustomDataTable from "../../common/CustomDataTable";
 import { Download, Maximize } from "@carbon/icons-react";
 import { Accordion, AccordionItem } from "@carbon/react";
 import { useStoreContext } from "../../../store";
 import { getAppData } from "../../../appData";
-
-const chartData = [
-  {
-    group: "16:30:00",
-    value: 0,
-  },
-  {
-    group: "16:43:00",
-    value: 1,
-  },
-  {
-    group: "16:56:00",
-    value: 0,
-  },
-  {
-    group: "17:09:00",
-    value: 0,
-  },
-  {
-    group: "17:22:00",
-    value: 4,
-  },
-];
-
-const chartOptions = {
-  theme: "g100",
-  title: "",
-  axes: {
-    left: {
-      mapsTo: "value",
-    },
-    bottom: {
-      mapsTo: "group",
-      scaleType: "labels",
-    },
-  },
-  legend: {
-    enabled: false,
-  },
-  toolbar: {
-    enabled: false,
-  },
-  height: "180px",
-  width: "100%",
-  color: {
-    scale: {
-      "16:30:00": "#4589ff",
-      "16:43:00": "#4589ff",
-      "16:56:00": "#4589ff",
-      "17:09:00": "#4589ff",
-      "17:22:00": "#4589ff",
-    },
-  },
-};
+import TimelineGraph from "./TimelineGraph";
 
 function Transactions() {
   const navigate = useNavigate();
@@ -164,7 +109,7 @@ function Transactions() {
               };
               break;
             case 'latency': 
-              r[h.key] = `${moment.duration(row[h.key]).asSeconds().toFixed(1)}s`;
+              r[h.key] = `${moment.duration(row[h.key]).asSeconds().toFixed(1)} s`;
               break;
             default:
               r[h.key] = row[h.key];
@@ -180,10 +125,7 @@ function Transactions() {
       <div className="trace-sections">
         <Accordion align="start">
           <AccordionItem title="Timeline chart" open={true}>
-            <SimpleBarChart
-              data={chartData}
-              options={chartOptions}
-            ></SimpleBarChart>
+            <TimelineGraph />
           </AccordionItem>
         </Accordion>
       </div>

@@ -10,19 +10,20 @@
  * the U.S. Copyright Office.
  ****************************************************************************** */
 import React, { useMemo } from "react";
-
-import { LineChart } from '@carbon/charts-react';
-import { Maximize } from '@carbon/icons-react';
 import moment from "moment";
 
-const defaultOptions = {
+import { SimpleBarChart } from "@carbon/charts-react";
+import { Maximize } from "@carbon/icons-react";
+
+import { useStoreContext } from "../../../../store";
+import { getTokenCountData } from "../../Performance/helper";
+
+const options = {
   theme: "g100",
+  title: "Token count",
   axes: {
     left: {
       mapsTo: "value",
-      ticks: {
-        number: 3
-      }
     },
     bottom: {
       mapsTo: "key",
@@ -32,22 +33,6 @@ const defaultOptions = {
         formatter: (tick => moment(tick).format('hh:mm A'))
       }
     }
-  },
-  grid: {
-    x: {
-      alignWithAxisTicks: true,
-    },
-    y: {
-      numberOfTicks: 3
-    }
-  },
-  points: {
-    fillOpacity: 1,
-    filled: true,
-    radius: 4
-  },
-  timeScale: {
-    addSpaceOnEdges: 0.1
   },
   legend: {
     enabled: false,
@@ -63,28 +48,44 @@ const defaultOptions = {
     },
     shouldBeDisabled: false
   },
-  color: {
-    scale: {
-      'Dataset1': '#893ffc'
+  tooltip: {
+    truncation: {
+      numCharacter: 20
+    },
+    valueFormatter: (value, label) => {
+      switch (label) {
+        case 'y-value': return value;
+        case 'x-value': return moment(value).format('DD-MMM-YY hh:mm A');
+        case 'Group': return 'Token count';
+        default: return ''
+      }
     }
   },
-  height: "240px"
-}
+  height: "240px",
+  color: {
+    scale: {
+      Dataset1: "#5281d8"
+    },
+  },
+};
 
-function Metrics(props) {
-  const options = useMemo(() => {
-    return {
-      ...defaultOptions,
-      ...props.options
+function TokenCountGraph() {
+  const { state } = useStoreContext();
+
+  const callCountData = useMemo(() => {
+    if (state.metrics) {
+      return getTokenCountData(state.metrics);
     }
-  }, [props.options]);
+
+    return [];
+  }, [state.metrics]);
 
   return (
-    <LineChart
-      data={props.data}
+    <SimpleBarChart
+      data={callCountData}
       options={options}
-    ></ LineChart>
+    />
   );
 }
 
-export default Metrics;
+export default TokenCountGraph;

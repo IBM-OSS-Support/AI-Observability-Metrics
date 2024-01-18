@@ -58,10 +58,10 @@ function Traces() {
           >
             <TabList aria-label="List of tabs">
               <Tab>Transactions</Tab>
-              <Tab>Generations</Tab>
-              <Tab>Operations</Tab>
-              <Tab>Errors</Tab>
-              <Tab>Anomalies</Tab>
+              <Tab disabled>Generations</Tab>
+              <Tab disabled>Operations</Tab>
+              <Tab disabled>Errors</Tab>
+              <Tab disabled>Anomalies</Tab>
             </TabList>
           </Tabs>
         ),

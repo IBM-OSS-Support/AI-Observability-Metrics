@@ -10,18 +10,22 @@
  * the U.S. Copyright Office.
  ****************************************************************************** */
 import React, { useMemo } from "react";
-
-import { LineChart } from '@carbon/charts-react';
-import { Maximize } from '@carbon/icons-react';
 import moment from "moment";
 
-const defaultOptions = {
+import { SimpleBarChart } from "@carbon/charts-react";
+import { Maximize } from "@carbon/icons-react";
+
+import { useStoreContext } from "../../../../store";
+import { getTimelineChartData } from "./helper";
+
+const options = {
   theme: "g100",
+  title: "Token count",
   axes: {
     left: {
       mapsTo: "value",
       ticks: {
-        number: 3
+        formatter: (tick) => Number.isInteger(tick) ? tick : ''
       }
     },
     bottom: {
@@ -32,22 +36,6 @@ const defaultOptions = {
         formatter: (tick => moment(tick).format('hh:mm A'))
       }
     }
-  },
-  grid: {
-    x: {
-      alignWithAxisTicks: true,
-    },
-    y: {
-      numberOfTicks: 3
-    }
-  },
-  points: {
-    fillOpacity: 1,
-    filled: true,
-    radius: 4
-  },
-  timeScale: {
-    addSpaceOnEdges: 0.1
   },
   legend: {
     enabled: false,
@@ -63,28 +51,46 @@ const defaultOptions = {
     },
     shouldBeDisabled: false
   },
-  color: {
-    scale: {
-      'Dataset1': '#893ffc'
+  tooltip: {
+    truncation: {
+      numCharacter: 20
+    },
+    valueFormatter: (value, label) => {
+      switch (label) {
+        case 'y-value': return value;
+        case 'x-value': return moment(value).format('DD-MMM-YY hh:mm A');
+        case 'Group': return 'Token count';
+        default: return ''
+      }
     }
   },
-  height: "240px"
-}
+  height: "240px",
+  color: {
+    scale: {
+      Dataset1: "#5281d8"
+    },
+  },
+};
 
-function Metrics(props) {
-  const options = useMemo(() => {
-    return {
-      ...defaultOptions,
-      ...props.options
+function TimelineGraph() {
+  const { state } = useStoreContext();
+
+  const timelinetData = useMemo(() => {
+    if (state.metrics) {
+      return getTimelineChartData(state.metrics);
     }
-  }, [props.options]);
+
+    return [];
+  }, [state.metrics]);
+
+  console.log('timelinetData', timelinetData);
 
   return (
-    <LineChart
-      data={props.data}
+    <SimpleBarChart
+      data={timelinetData}
       options={options}
-    ></ LineChart>
+    />
   );
 }
 
-export default Metrics;
+export default TimelineGraph;

@@ -44,9 +44,9 @@ function Metrics() {
           >
             <TabList aria-label="List of tabs">
               <Tab>Performance</Tab>
-              <Tab>Data</Tab>
-              <Tab>System</Tab>
-              <Tab>Cost</Tab>
+              <Tab disabled>Data</Tab>
+              <Tab disabled>System</Tab>
+              <Tab disabled>Cost</Tab>
             </TabList>
           </Tabs>
         )
