@@ -1,4 +1,5 @@
 import logging
+import random
 from dotenv import load_dotenv, find_dotenv
 from ibmroja import solve, inject_roja_instrumentation
 
@@ -13,8 +14,11 @@ USER = "Vikram"
 
 inject_roja_instrumentation(APPLICATION_NAME, USER)
 
+id = random.randint(0, 10)
+num = 38
+
 try:
-    solve(f'{USER}', f"Can you generate a writings on AI technology?")
+    solve(f'{USER}', f"What is the cos of 38?")
     logger.debug('Task solved')
 except:
     logger.error("Error while solving task", exc_info=True)
