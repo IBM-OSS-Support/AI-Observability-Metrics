@@ -31,7 +31,7 @@ const options = {
     }
   },
   legend: {
-    enabled: false,
+    position: 'top'
   },
   toolbar: {
     enabled: true,
