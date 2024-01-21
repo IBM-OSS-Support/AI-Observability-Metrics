@@ -6,8 +6,6 @@ USER = "Vikram"
 
 inject_roja_instrumentation(APPLICATION_NAME, USER)
 
-num = 38
-
 solve(f'{USER}', f"What is the cos of 38?")
 
 print("Done")
