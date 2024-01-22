@@ -36,19 +36,13 @@ import {
   SidePanelOpen,
   SidePanelClose,
   UserAvatar,
-  Time,
-  Activity,
   Home,
   ChartBullet,
   Meter,
   CloudAuditing,
   MeterAlt,
-  DevicesApps,
-  StarHalf,
   StarReview,
-  VehicleServices,
   Security,
-  CertificateCheck,
   WhitePaper,
   CloudMonitoring,
   AudioConsole
@@ -82,7 +76,7 @@ const Navigation = () => {
           icon: ChartBullet
         },
         {
-          name: 'Metering',
+          name: 'Metering & Billing',
           subpath: '/metering',
           icon: MeterAlt
         },
