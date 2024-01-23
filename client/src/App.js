@@ -29,6 +29,7 @@ import Performance from './components/Performance';
 import Sessions from './components/Sessions';
 import TraceAnalysis from './components/TraceAnalysis';
 import Traces from './components/Traces';
+import Metering from './components/Metering';
 
 // Utils ----------------------------------------------------------------------->
 import { fetchAppData } from './appData';
@@ -41,6 +42,7 @@ const ROUTES = [
   { path: '/metrics', component: () => <Metrics /> },
   { path: '/traceability', component: () => <Monitoring /> },
   { path: '/performance', component: () => <Performance /> },
+  { path: '/metering', component: () => <Metering /> },
   { path: '/sessions', component: () => <Sessions /> },
   { path: '/trace-analysis/:appName', component: () => <TraceAnalysis /> },
   { path: '/traces', component: () => <Traces /> }
