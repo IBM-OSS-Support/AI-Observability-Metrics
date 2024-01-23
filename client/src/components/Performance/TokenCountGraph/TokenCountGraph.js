@@ -66,7 +66,7 @@ function TokenCountGraph() {
       const appData = getAppData();
 
       return appData
-        .map(d => d.data.spans.reduce((_counts, { data_profile }) => {
+        .map(d => (d.data.spans || []).reduce((_counts, { data_profile }) => {
           if (data_profile && !!data_profile.length) {
             data_profile.forEach(({data_name, counts}) => {
   

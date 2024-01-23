@@ -36,16 +36,28 @@ const TracesTile = () => {
       const appData = getAppData();
       const _data = appData.map(({ data: app }) => {
         const appName = app['application-name'];
-        const operations = app.spans.length;
-        const rootSpanId = app.spans?.[0]?.context?.root_span_id;
-        const root = app.spans.find(span => span.span_id === rootSpanId);
+        const spans =  app.spans || [];
+        const operations = spans.length;
+        const rootSpanId = spans?.[0]?.context?.root_span_id;
+        const root = spans.find(span => span.span_id === rootSpanId);
+
+        if (!root) {
+          return {
+            operations,
+            latency: 0,
+            appName,
+            models: [],
+            users: []
+          }
+        }
+
         const startUs = Number(root.start_us) / 1000;
         const endUs = Number(root.end_us) / 1000;
         const latency = endUs - startUs;
-        const users = app.spans.map(({tags}) => {
+        const users = spans.map(({tags}) => {
             return tags.find(tag => tag.key === 'user').value
           });
-        const models = app.spans.filter(({params}) => !!params && params.length && params.some(p => p.name === 'model'))
+        const models = spans.filter(({params}) => !!params && params.length && params.some(p => p.name === 'model'))
           .map(({params}) => {
             return params.find(param => param.name === 'model').value
           });
