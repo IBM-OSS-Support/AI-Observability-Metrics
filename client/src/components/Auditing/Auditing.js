@@ -13,17 +13,18 @@ import React from "react";
 import PageContainer from "../common/PageContainer";
 
 import Transactions from "../Traces/Transactions/Transactions";
+import Policies from "./Policies/Policies";
 
 const Auditing = () => {
-	console.log('here');
 	return(
     <PageContainer
       className="auditing-container"
       header={{
         title: "Auditing",
-        subtitle: "Auditing",
+        subtitle: "Policies",
       }}
     >
+      <Policies/>
       <Transactions
         showColors
         component='audit'
