@@ -128,7 +128,9 @@ const CustomDataTable = ({
 
   // customHandlers
   sortRowHandler = undefined,
-  tableHeaderClickHandler = undefined
+  tableHeaderClickHandler = undefined,
+  onRowMouseEnter,
+  onRowMouseLeave
 }) => {
   // Render
   const hasSelectedFilters = !!Object.values((filter?.selectedFilters || {})).flat().length || (filter?.hasDateRange && filter?.startDate && filter?.endDate);
@@ -345,8 +347,12 @@ const CustomDataTable = ({
                 </TableHead>
                 <TableBody>
                   {rows.map((row, i) => (
-                    <TableRow key={row.id} {...getRowProps({ row })}
-                     className={ showColors ? i === 0 ? 'row-red' : i === 1 ? 'row-yellow' : '' : ''}>
+                    <TableRow
+                      key={row.id} {...getRowProps({ row })}
+                      className={ showColors ? i === 0 ? 'row-red' : i === 1 ? 'row-yellow' : '' : ''}
+                      onMouseEnter={() => onRowMouseEnter ? onRowMouseEnter(row) : null}
+                      onMouseLeave={() => onRowMouseLeave ? onRowMouseLeave(row) : null}
+                    >
                       {!!getBatchActions &&
                         <TableSelectRow
                           {...getSelectionProps({ row })}
