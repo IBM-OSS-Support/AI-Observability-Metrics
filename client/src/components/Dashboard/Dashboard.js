@@ -47,6 +47,7 @@ function Dashboard() {
               <Button className="quick-link-button" kind="tertiary" href="#/performance">Performance</Button>
               <Button className="quick-link-button" kind="tertiary" href="#/auditing">Auditing</Button>
               <Button className="quick-link-button" kind="tertiary" href="#/traceability">Traceability</Button>
+              <Button className="quick-link-button" kind="tertiary" href="#/metering">Metering & Billing</Button>
             </Column>
           </Grid>
           <Grid fullWidth narrow id="body" className="body">

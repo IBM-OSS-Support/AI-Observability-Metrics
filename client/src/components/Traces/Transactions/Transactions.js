@@ -20,7 +20,7 @@ import { useStoreContext } from "../../../store";
 import { getAppData } from "../../../appData";
 import TimelineGraph from "./TimelineGraph";
 
-const Transactions = ({ component }) => {
+const Transactions = ({ component, showColors }) => {
   console.log(component);
   const navigate = useNavigate();
 
@@ -181,6 +181,7 @@ const Transactions = ({ component }) => {
 
       <div className="trace-sections">
         <CustomDataTable
+          showColors={showColors}
           headers={headers.filter((h) => h.checked || h.key === "actions")}
           rows={formatData(rows)}
           loading={state.status === "loading"}

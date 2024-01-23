@@ -62,7 +62,7 @@
       .quick-link-button {
         margin-right: $spacing-04;
         margin-bottom: $spacing-04;
-        width: 10rem;
+        min-width: 10rem;
         
         &:hover {
           background-color: $layer-01;

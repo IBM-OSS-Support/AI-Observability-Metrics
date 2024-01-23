@@ -95,6 +95,7 @@ const sortRow = (cellA, cellB, { sortDirection, sortStates }) => {
 const CustomDataTable = ({
   id,
   className,
+  showColors,
 
   // config
   size = 'lg',
@@ -343,8 +344,9 @@ const CustomDataTable = ({
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {rows.map(row => (
-                    <TableRow key={row.id} {...getRowProps({ row })}>
+                  {rows.map((row, i) => (
+                    <TableRow key={row.id} {...getRowProps({ row })}
+                     className={ showColors ? i === 0 ? 'row-red' : i === 1 ? 'row-yellow' : '' : ''}>
                       {!!getBatchActions &&
                         <TableSelectRow
                           {...getSelectionProps({ row })}
