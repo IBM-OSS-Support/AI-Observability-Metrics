@@ -75,9 +75,11 @@ def upload():
         signal_dict['application-name'] = extract_application_name(signal_dict[tag])
         
         # Extract token count and calculate cost
-        token_count = sum(metric['counter'] for metric in signal_dict.get('metrics', []) if metric['name'] == 'token_count')
+        token_count = sum(int(metric['counter']) for metric in signal_dict.get('metrics', []) if metric['name'] == 'token_count')
+
         signal_dict['token-cost'] = calculate_openai_cost(token_count)
 
+        logging.debug(signal_dict['token-cost'])
         logging.debug(signal_dict['upload_ms'])
         logging.debug(signal_dict['application-name'])
 
