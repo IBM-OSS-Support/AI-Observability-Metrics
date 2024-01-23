@@ -17,6 +17,13 @@
     @include pulseAnimation(2s, 0ms);
   }
 
+  &.highlight .node {
+    &, &:hover, &:focus {
+      background-color: #136e6d;
+      border: .0625rem solid #136e6d;
+    }
+  }
+
   .node {
     cursor: pointer;
     display: flex;

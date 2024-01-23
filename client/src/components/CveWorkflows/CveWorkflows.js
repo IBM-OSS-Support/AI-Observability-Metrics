@@ -9,91 +9,18 @@
  * of its trade secrets, irrespective of what has been deposited with
  * the U.S. Copyright Office.
  ****************************************************************************** */
-import React, { useEffect, useState, useMemo } from "react";
-import moment from "moment";
+import React, { useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 
 import { Download } from "@carbon/icons-react";
 import { useStoreContext } from "../../store";
-import { getAppData } from "../../appData";
 import Flow from "./Flow";
 import CustomDataTable from "../common/CustomDataTable";
 import PageContainer from "../common/PageContainer";
+import { CVE_DUMMY_DATA, defaultHeaders, statusMap } from "./constants";
 
-const CveWorkflows = ({ component, showColors }) => {
+const CveWorkflows = () => {
   const navigate = useNavigate();
-
-  const defaultHeaders = useMemo(() => {
-    if (component === "audit") {
-      return [
-        {
-          key: "deployment",
-          header: "Application name",
-          checked: true,
-        },
-        {
-          key: "user",
-          header: "User",
-          checked: true,
-        },
-        {
-          key: "hostname",
-          header: "Hostname",
-          checked: true,
-        },
-        {
-          key: "trace",
-          header: "Timestamp",
-          checked: true,
-        },
-      ];
-    } else if (component === "monitor") {
-      return [
-        {
-          key: "deployment",
-          header: "Application name",
-          checked: true,
-        },
-        {
-          key: "user",
-          header: "User",
-          checked: true,
-        },
-        {
-          key: "operation",
-          header: "Operation",
-          checked: true,
-        },
-      ];
-    }
-    return [
-      {
-        key: "deployment",
-        header: "Application name",
-        checked: true,
-      },
-      {
-        key: "user",
-        header: "User",
-        checked: true,
-      },
-      {
-        key: "hostname",
-        header: "Hostname",
-        checked: true,
-      },
-      {
-        key: "operation",
-        header: "Operation",
-        checked: true,
-      },
-      {
-        key: "trace",
-        header: "Timestamp",
-        checked: true,
-      },
-    ];
-  }, [component]);
 
   const [headers, setHeaders] = useState(
     defaultHeaders.map((h) => Object.assign({}, h))
@@ -108,54 +35,21 @@ const CveWorkflows = ({ component, showColors }) => {
   const [pagination, setPagination] = useState({ offset: 0, first: 10 });
   const [startDate, setStartDate] = useState(undefined);
   const [endDate, setEndDate] = useState(undefined);
-  const [rows, setRows] = useState([]);
+  const [rows, setRows] = useState(CVE_DUMMY_DATA);
+  const [hoveredNode, setHoveredNode] = useState('');
   const { state } = useStoreContext();
-
-  useEffect(() => {
-    if (state.status === "success") {
-      const data = getAppData();
-      const rowData = data.map(({ data }) => {
-        data.spans = data.spans || [];
-        const rootSpanId = data.spans?.[0]?.context?.root_span_id;
-        const root = data.spans?.find((s) => s.span_id === rootSpanId);
-
-        return root?.tags.reduce(
-          (res, tag) => {
-            res[tag.key] = tag.value;
-            return res;
-          },
-          {
-            deployment: data["application-name"],
-            trace: moment(Number(data.upload_ms)).format("YYYY-MM-DD HH:mm:ss"),
-            latency: (Number(root.end_us) - Number(root.start_us)) / 1000,
-            start_us: root.start_us,
-            end_us: root.end_us,
-          }
-        );
-      });
-      setRows(rowData);
-    } else {
-      setRows([]);
-    }
-  }, [state.status]);
 
   function formatData(rowData = []) {
     return rowData.map((row = {}, i) => {
       return defaultHeaders.reduce(
         (r, h) => {
           switch (h.key) {
-            case "deployment":
+            case "cveId":
               r[h.key] = {
-                displayType: "link",
+                displayType: "button-link",
                 data: row[h.key],
-                href: `#/trace-analysis/${row[h.key]}`,
+                onClick: () => {},
               };
-              break;
-            case "latency":
-              r[h.key] = `${moment
-                .duration(row[h.key])
-                .asSeconds()
-                .toFixed(1)} s`;
               break;
             default:
               r[h.key] = row[h.key];
@@ -166,6 +60,7 @@ const CveWorkflows = ({ component, showColors }) => {
       );
     });
   }
+
   return (
     <PageContainer
       className="traces-container"
@@ -175,23 +70,22 @@ const CveWorkflows = ({ component, showColors }) => {
       }}
     >
         <div className="flow-diag-section">
-          <Flow />
+          <Flow hoveredNode={hoveredNode}/>
         </div>
 
         <div className="trace-sections">
           <CustomDataTable
-            showColors={showColors}
             headers={headers.filter((h) => h.checked || h.key === "actions")}
             rows={formatData(rows)}
             loading={state.status === "loading"}
             search={{
               searchText: searchText,
               persistent: true,
-              placeholder: "Search for queries",
+              placeholder: "Search for cve",
               onChange: setSearchText,
             }}
             filter={{
-              id: "query-history-filter",
+              id: "cve-filter",
               buttonOverrides: { align: "bottom" },
               filters,
               selectedFilters,
@@ -261,6 +155,14 @@ const CveWorkflows = ({ component, showColors }) => {
             }
             sortRowHandler={() => {}}
             tableHeaderClickHandler={() => {}}
+            onRowMouseEnter={(row) => {
+              const statusCol = row.cells.find(({ info: { header } }) => {
+                return header === 'status';
+              });
+              setHoveredNode(statusMap[statusCol.value]);
+            }
+            }
+            onRowMouseLeave={() => setHoveredNode('')}
           />
         </div>
     </PageContainer>

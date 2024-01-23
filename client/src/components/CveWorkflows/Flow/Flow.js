@@ -9,7 +9,7 @@
  * of its trade secrets, irrespective of what has been deposited with
  * the U.S. Copyright Office.
  ****************************************************************************** */
-import React from 'react';
+import React, { useEffect } from 'react';
 
 import ReactFlow, {
   Background,
@@ -27,9 +27,33 @@ const NODE_TYPES = {
   component: ComponentNode
 };
 
-const Flow = () => {
+const Flow = (props) => {
   const [nodes, setNodes, onNodesChange] = useNodesState(CVE_NODES);
   const [edges, setEdges, onEdgesChange] = useEdgesState(CVE_EDGES);
+
+  useEffect(() => {
+    const newNodes = nodes.map(n => {
+      const className = n.id === props.hoveredNode ? 'highlight' : '';
+    
+      return {
+        ...n,
+        data: {
+          ...n.data,
+          className
+        }
+      };
+    });
+
+    const newEdges = edges.map(e => {
+      return {
+        ...e,
+        animated: props.hoveredNode ? e.id.includes(`${props.hoveredNode}-`) : false
+      };
+    });
+
+    setNodes(newNodes);
+    setEdges(newEdges);
+  }, [props.hoveredNode]);
 
   return (
     <div className="cve-flow">
