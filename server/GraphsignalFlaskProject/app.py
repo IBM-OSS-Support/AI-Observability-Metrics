@@ -33,6 +33,12 @@ port: '5432'
 # Set up basic logging
 logging.basicConfig(level=logging.DEBUG)
 
+def calculate_openai_cost(token_count, rate_per_1000_tokens=0.002):
+    """
+    Calculate the cost for using a language model based on token usage.
+    """
+    return token_count / 1000 * rate_per_1000_tokens
+
 @app.route('/signals', methods=['POST'])
 def upload():
     try:
@@ -67,6 +73,10 @@ def upload():
 
         # Extract application name from the JSON
         signal_dict['application-name'] = extract_application_name(signal_dict[tag])
+        
+        # Extract token count and calculate cost
+        token_count = sum(metric['counter'] for metric in signal_dict.get('metrics', []) if metric['name'] == 'token_count')
+        signal_dict['token-cost'] = calculate_openai_cost(token_count)
 
         logging.debug(signal_dict['upload_ms'])
         logging.debug(signal_dict['application-name'])
