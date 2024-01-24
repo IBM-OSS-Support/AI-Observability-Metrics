@@ -34,13 +34,18 @@ const Flow = (props) => {
   useEffect(() => {
     const newNodes = nodes.map(n => {
       const isHovered = !!props.hoveredNode;
-      const className = n.id === props.hoveredNode ? 'highlight' : '';
+      let className = n.id === props.hoveredNode ? 'highlight' : '';
+
+      if (props.selectedNode === n.id) {
+        className = `${className} selected`;
+      }
     
       return {
         ...n,
         data: {
           ...n.data,
-          className
+          className,
+          onClick: props.onNodeClick
         },
         style: {
           ...n.style,
@@ -64,7 +69,7 @@ const Flow = (props) => {
 
     setNodes(newNodes);
     setEdges(newEdges);
-  }, [props.hoveredNode]);
+  }, [props.hoveredNode, props.selectedNode]);
 
   return (
     <div className="cve-flow">
