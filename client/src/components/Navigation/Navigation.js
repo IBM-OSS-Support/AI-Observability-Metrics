@@ -45,7 +45,8 @@ import {
   Security,
   WhitePaper,
   CloudMonitoring,
-  AudioConsole
+  AudioConsole,
+  WarningAlt
 } from '@carbon/react/icons';
 
 // Utils ---------------------------------------------------------------------->
@@ -104,6 +105,11 @@ const Navigation = () => {
           name: 'Compliance',
           subpath: '/compliance',
           icon: WhitePaper
+        },
+        {
+          name: 'CVE Workflow',
+          subpath: '/cve',
+          icon: WarningAlt
         },
         // {
         //   name: 'Sessions',

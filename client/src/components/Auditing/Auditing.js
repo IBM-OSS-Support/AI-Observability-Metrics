@@ -25,6 +25,7 @@ const Auditing = () => {
       }}
     >
       <Transactions
+        showColors
         component='audit'
 			/>
     </PageContainer>

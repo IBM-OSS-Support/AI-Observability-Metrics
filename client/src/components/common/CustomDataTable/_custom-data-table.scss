@@ -195,6 +195,38 @@
     }
   }
 
+  .row-red {
+    background-color: $red-50; // $support-error;
+    
+    &:hover {
+      background-color: $red-40 !important; // $support-error;
+      td,
+      .cds--link {
+        color: $text-inverse;
+      }
+    }
+    td,
+    .cds--link {
+      color: $text-on-color;
+    }
+  }
+
+  .row-yellow {
+    background-color: $yellow-30; // $support-warning;
+
+    &:hover {
+      background-color: $yellow-20 !important; // $support-error;
+      td,
+      .cds--link {
+        color: $text-inverse;
+      }
+
+    }
+    td,
+    .cds--link {
+      color: $text-inverse
+    }
+  }
   // .cds--select {
   //   @include monospace();
   //   padding-left: 1rem;

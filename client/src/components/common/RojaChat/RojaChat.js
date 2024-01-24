@@ -28,7 +28,7 @@ const RojaChat = () => {
         <h5 className="title">Talk to Roja</h5>
         <div className="input-container">
 
-          <TextInput placeholder="What do you want to ask?"></TextInput>
+          <TextInput id="chatInput" placeholder="What do you want to ask?"></TextInput>
           <div className="button-wrapper">
 
             <Button className="button-go" size="sm" hasIconOnly renderIcon={Send} kind="ghost" />

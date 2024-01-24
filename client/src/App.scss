@@ -44,7 +44,8 @@
 @import './components/Sessions/sessions';
 @import './components/Performance/performance';
 @import './components/Metering/metering';
-
+@import './components/CveWorkflows/Flow/flow';
+@import './components/CveWorkflows/ComponentNode/component-node';
 
 // Theming
 :root {

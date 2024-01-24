@@ -78,10 +78,10 @@ export const getLatencyData = ({ apps, startTime, endTime }) => {
 
     for (const appId in apps) {
       const app = apps[appId];
-      let latency = app.latency.reduce((acc, { latency }) => {
+      let latency = (app.latency || []).reduce((acc, { latency }) => {
         return acc + latency;
       }, 0);
-      latency = latency / app.latency.length;
+      latency = latency > 0 ? latency / (app.latency || []).length : 0;
 
       const appTime = moment(app.time);
       if (appTime.isSameOrAfter(start) && appTime.isSameOrBefore(end)) {

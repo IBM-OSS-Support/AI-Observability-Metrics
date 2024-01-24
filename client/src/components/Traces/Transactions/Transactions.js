@@ -20,7 +20,7 @@ import { useStoreContext } from "../../../store";
 import { getAppData } from "../../../appData";
 import TimelineGraph from "./TimelineGraph";
 
-const Transactions = ({ component }) => {
+const Transactions = ({ component, showColors }) => {
   console.log(component);
   const navigate = useNavigate();
 
@@ -118,8 +118,16 @@ const Transactions = ({ component }) => {
       const data = getAppData();
       const rowData = data.map(({ data }) => {
         const rootSpanId = data.spans?.[0]?.context?.root_span_id;
-        const root = data.spans.find((s) => s.span_id === rootSpanId);
-
+        const root = (data.spans || []).find((s) => s.span_id === rootSpanId);
+        if (!root) {
+          return {
+            deployment: data["application-name"],
+            trace: moment(Number(data.upload_ms)).format("YYYY-MM-DD HH:mm:ss"),
+            latency: 0,
+            start_us: 0,
+            end_us: 0,
+          }
+        }
         return root.tags.reduce(
           (res, tag) => {
             res[tag.key] = tag.value;
@@ -181,6 +189,7 @@ const Transactions = ({ component }) => {
 
       <div className="trace-sections">
         <CustomDataTable
+          showColors={showColors}
           headers={headers.filter((h) => h.checked || h.key === "actions")}
           rows={formatData(rows)}
           loading={state.status === "loading"}

@@ -128,7 +128,9 @@ const defaultNodeHeaders = [
 
 
 function formatData(span, spans, level, rootStartUs, rootEndUs) {
-  // const span = spans.find(span => span.spanId === span.spanId)
+  if (!span || !spans) {
+    return []
+  }
   const startUs = Number(span.start_us) / 1000;
   const endUs = Number(span.end_us) / 1000;
   span.level = level;
@@ -159,8 +161,8 @@ function TraceAnalysis() {
       const data = getAppData();
       const app = data.find(({ data }) => data['application-name'] === appName).data;
       const rootSpanId = app.spans?.[0]?.context?.root_span_id
-      const root = app.spans.find(span => span.span_id === rootSpanId);
-      const operations = formatData(root, app.spans, 0, root.start_us / 1000, root.end_us / 1000);
+      const root = app.spans?.find(span => span.span_id === rootSpanId);
+      const operations = !root ? [] : formatData(root, app.spans, 0, root.start_us / 1000, root.end_us / 1000);
       if (!!searchText.trim()) {
         setRows(operations.filter(op => op.operation.includes(searchText)));
       } else
@@ -312,9 +314,8 @@ function TraceAnalysis() {
             emptyState={
               !rows.length && {
                 type: false ? "NotFound" : "NoData",
-                title: "No queries yet.",
-                noDataSubtitle:
-                  "Any queries run on your existing engines may be monitored here after submission.",
+                title: "No operations yet.",
+                noDataSubtitle: "",
               }
             }
             sortRowHandler={() => { }}
@@ -326,14 +327,13 @@ function TraceAnalysis() {
             <AccordionItem title="Libraries" open>
               <CustomDataTable
                 headers={defaultLibraryHeaders}
-                rows={formatRowData(trace.libraries, defaultLibraryHeaders)}
+                rows={!trace?.libraries ? [] : formatRowData(trace.libraries, defaultLibraryHeaders)}
                 loading={state.status === 'loading'}
                 emptyState={
                   !rows.length && {
                     type: false ? "NotFound" : "NoData",
-                    title: "No queries yet.",
-                    noDataSubtitle:
-                      "Any queries run on your existing engines may be monitored here after submission.",
+                    title: "No data found.",
+                    noDataSubtitle: "",
                   }
                 }
                 sortRowHandler={() => { }}
@@ -347,14 +347,13 @@ function TraceAnalysis() {
             <AccordionItem title="Process" open>
               <CustomDataTable
                 headers={defaultProcessHeaders}
-                rows={!trace.process_usage ? [] : formatRowData([trace.process_usage], defaultProcessHeaders)}
+                rows={!trace?.process_usage ? [] : formatRowData([trace.process_usage], defaultProcessHeaders)}
                 loading={state.status === 'loading'}
                 emptyState={
                   !rows.length && {
                     type: false ? "NotFound" : "NoData",
-                    title: "No queries yet.",
-                    noDataSubtitle:
-                      "Any queries run on your existing engines may be monitored here after submission.",
+                    title: "No data found.",
+                    noDataSubtitle: "",
                   }
                 }
                 sortRowHandler={() => { }}
@@ -368,14 +367,13 @@ function TraceAnalysis() {
             <AccordionItem title="Node" open>
               <CustomDataTable
                 headers={defaultNodeHeaders}
-                rows={!trace.node_usage ? []: formatRowData([trace.node_usage], defaultNodeHeaders)}
+                rows={!trace?.node_usage ? []: formatRowData([trace.node_usage], defaultNodeHeaders)}
                 loading={state.status === 'loading'}
                 emptyState={
                   !rows.length && {
                     type: false ? "NotFound" : "NoData",
-                    title: "No queries yet.",
-                    noDataSubtitle:
-                      "Any queries run on your existing engines may be monitored here after submission.",
+                    title: "No data found.",
+                    noDataSubtitle: "",
                   }
                 }
                 sortRowHandler={() => { }}

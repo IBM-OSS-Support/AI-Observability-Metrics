@@ -30,6 +30,7 @@ import Sessions from './components/Sessions';
 import TraceAnalysis from './components/TraceAnalysis';
 import Traces from './components/Traces';
 import Metering from './components/Metering';
+import CveWorkflows from './components/CveWorkflows';
 
 // Utils ----------------------------------------------------------------------->
 import { fetchAppData } from './appData';
@@ -45,7 +46,8 @@ const ROUTES = [
   { path: '/metering', component: () => <Metering /> },
   { path: '/sessions', component: () => <Sessions /> },
   { path: '/trace-analysis/:appName', component: () => <TraceAnalysis /> },
-  { path: '/traces', component: () => <Traces /> }
+  { path: '/traces', component: () => <Traces /> },
+  { path: '/cve', component: () => <CveWorkflows /> }
 ];
 
 function App() {

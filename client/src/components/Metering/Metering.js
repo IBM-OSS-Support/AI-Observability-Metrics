@@ -16,6 +16,7 @@ import { Column, Grid, Tile } from "@carbon/react";
 import PageContainer from '../common/PageContainer/PageContainer';
 import CallCountGraph from "../Performance/CallCountGraph/CallCountGraph";
 import TokenCountGraph from "../Performance/TokenCountGraph/TokenCountGraph";
+import CostGraph from "./CostGraph/CostGraph";
 
 const Performance = () => {
   return (
@@ -28,6 +29,18 @@ const Performance = () => {
     >
       <div className="home-container">
         <Grid fullWidth narrow id="body" className="page-content body">
+          <Column
+            max={16}
+            xlg={16}
+            lg={16}
+            md={8}
+            sm={4}
+            className="content-tile"
+          >
+            <Tile className="chart-tile">
+              <CostGraph />
+            </Tile>
+          </Column>
           <Column
             max={16}
             xlg={16}
@@ -52,19 +65,6 @@ const Performance = () => {
               <TokenCountGraph />
             </Tile>
           </Column>
-          {/*
-          <Column
-            max={16}
-            xlg={16}
-            lg={16}
-            md={8}
-            sm={4}
-            className="content-tile"
-          >
-            <Tile className="chart-tile">
-            </Tile>
-          </Column>
-          */}
         </Grid>
       </div>
     </PageContainer>
