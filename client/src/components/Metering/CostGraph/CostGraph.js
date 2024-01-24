@@ -47,6 +47,10 @@ const options = {
     truncation: {
       numCharacter: 20
     },
+    valueFormatter: ((value, label) => {
+      return label !== 'Group' ? value :
+      value.includes('openAI') ? 'openAI' : value.includes('Granite') ? 'Granite' : value;
+    })
   },
   height: "100%",
   color: {
@@ -66,12 +70,12 @@ function CostGraph() {
       return appData
         .map(({data: app}) => [
           {
-            group: 'openAI',
+            group: 'openAI (.002$)',
             key: app['application-name'],
             value: app['token-cost']
           },
           {
-            group: 'Granite',
+            group: 'Granite (.0018$)',
             key: app['application-name'],
             value: app['token-cost'] * .8
           },
