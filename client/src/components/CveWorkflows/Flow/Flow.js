@@ -74,8 +74,7 @@ const Flow = (props) => {
   return (
     <div className="cve-flow">
       <ReactFlow
-        panOnScroll
-        panOnScrollMode="free"
+        zoomOnScroll={false}
         nodeTypes={NODE_TYPES}
         nodes={nodes}
         onNodesChange={onNodesChange}
