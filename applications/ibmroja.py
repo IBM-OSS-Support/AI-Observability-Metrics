@@ -6,7 +6,12 @@ import graphsignal
 from dotenv import load_dotenv, find_dotenv
 import random
 from langchain.prompts import ChatPromptTemplate
-from langchain.schema import StrOutputParser
+from langchain.vectorstores import Chroma
+from langchain.embeddings import OpenAIEmbeddings
+from langchain.text_splitter import RecursiveCharacterTextSplitter
+from langchain.llms import OpenAI
+from langchain.chains import RetrievalQA
+from langchain.document_loaders import TextLoader
 
 logging.basicConfig()
 logger = logging.getLogger()
@@ -44,13 +49,13 @@ def solve(user_id, task):
 
 def run_chat_model(user_id, question):
     try:
-        model = ChatOpenAI(temperature=0)
+        llm = ChatOpenAI(temperature=0)
         graphsignal.set_context_tag('user', user_id)
-        
         prompt = ChatPromptTemplate.from_messages([
-            ("human", question)
+        ("system", "You're a very knowledgeable historian who provides accurate and eloquent answers to historical questions."),
+        ("human", "{question}")
         ])
-        runnable = prompt | model
+        runnable = prompt | llm
 
         with graphsignal.start_trace('predict', options=graphsignal.TraceOptions(record_samples= True, record_metrics=True, enable_profiling=True)):
             for chunk in runnable.stream({"question": question}):
@@ -59,5 +64,25 @@ def run_chat_model(user_id, question):
     except Exception as e:
         logger.error("An error occurred: ", exc_info=e)
     
+def answer_questions(user_id, questions):
+    try:
+        loader = TextLoader('data.txt')
+        documents = loader.load()
 
+        text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=0)
+        texts = text_splitter.split_documents(documents)
+
+        embeddings = OpenAIEmbeddings()
+        vectordb = Chroma.from_documents(texts, embeddings)
+        # Initialize the ChatOpenAI model
+        llm = ChatOpenAI(temperature=0)
+        graphsignal.set_context_tag('user', user_id)
+
+        for question in questions:
+            qa = RetrievalQA.from_chain_type(llm=OpenAI(), chain_type="stuff", retriever=vectordb.as_retriever())
+            qa.run(question)
+    except Exception as e:
+        # Handle any exceptions that occur
+        # Assuming logger is properly set up
+        logger.error("An error occurred while processing the questions", exc_info=True)
 
