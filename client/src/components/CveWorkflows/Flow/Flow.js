@@ -33,6 +33,7 @@ const Flow = (props) => {
 
   useEffect(() => {
     const newNodes = nodes.map(n => {
+      const isHovered = !!props.hoveredNode;
       const className = n.id === props.hoveredNode ? 'highlight' : '';
     
       return {
@@ -40,14 +41,24 @@ const Flow = (props) => {
         data: {
           ...n.data,
           className
+        },
+        style: {
+          ...n.style,
+          opacity: className || !isHovered ? 1 : 0.5
         }
       };
     });
 
     const newEdges = edges.map(e => {
+      const isHovered = !!props.hoveredNode;
+      const isHighlighted = props.hoveredNode ? e.id.includes(`${props.hoveredNode}-`) : false;
       return {
         ...e,
-        animated: props.hoveredNode ? e.id.includes(`${props.hoveredNode}-`) : false
+        animated: isHighlighted,
+        style: {
+          ...e.style,
+          opacity: isHighlighted || !isHovered ? 1 : 0.5
+        }
       };
     });
 
