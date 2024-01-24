@@ -61,13 +61,13 @@ export const policyData = [
       {
         name: 'Medium',
         operator: '<=',
-        value: 25,
+        value: 5,
         color: yellow30
       },
       {
         name: 'High',
         operator: '>',
-        value: 60,
+        value: 10,
         color: red50
       }
     ]
@@ -88,13 +88,13 @@ export const policyData = [
       {
         name: 'Medium',
         operator: '<=',
-        value: 300,
+        value: 600,
         color: orange30
       },
       {
         name: 'High',
         operator: '>',
-        value: 500,
+        value: 850,
         color: red50
       }
     ]

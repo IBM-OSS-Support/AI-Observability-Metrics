@@ -37,7 +37,7 @@ const Auditing = () => {
       return appData
         .map(({data: app}) => {
         const cpu = app.metrics.filter(m => m.name === 'process_cpu_usage').reduce((sum, u) => sum + (u.gauge || 0), 0);
-        const memory = app.metrics.filter(m => m.name === 'process_memory').reduce((sum, u) => sum + (u.gauge || 0), 0) / Math.pow(1024, 2);
+        const memory = app.metrics.filter(m => m.name === 'process_memory' || m.name === 'virtual_memory').reduce((sum, u) => sum + (u.gauge || 0), 0) / Math.pow(1024, 2);
         const token = app.metrics.filter(m => m.name === 'token_count').reduce((sum, u) => sum + Number(u.counter || 0), 0);
         return {
           name: app['application-name'],
