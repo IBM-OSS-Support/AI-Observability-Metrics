@@ -177,15 +177,17 @@ const Transactions = ({ component, showColors }) => {
   }
   return (
     <div className="traces-container">
-      <div className="trace-sections">
-        <Accordion align="start">
-          <AccordionItem title="Timeline chart (Applications)" open={true}>
-            <div className="timeline-chart-wrapper">
-              <TimelineGraph />
-            </div>
-          </AccordionItem>
-        </Accordion>
-      </div>
+      {component !== "audit" &&
+        <div className="trace-sections">
+          <Accordion align="start">
+            <AccordionItem title="Timeline chart (Applications)" open={true}>
+              <div className="timeline-chart-wrapper">
+                <TimelineGraph />
+              </div>
+            </AccordionItem>
+          </Accordion>
+        </div>
+      }
 
       <div className="trace-sections">
         <CustomDataTable

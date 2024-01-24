@@ -627,6 +627,7 @@ const CustomDataTable = ({
                             break;
                           default:
                             formattedCell = (
+                              React.isValidElement(value) ? value:
                               <div
                                 className="truncate"
                                 title={typeof value === 'object' ? JSON.stringify(value) : value}
