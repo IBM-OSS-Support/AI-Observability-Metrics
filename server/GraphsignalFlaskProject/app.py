@@ -1,43 +1,23 @@
-from flask import Flask, request, send_file, make_response, jsonify
+from flask import Flask, request, make_response, jsonify
 import os
-import gzip
-import random
-import shutil
-import requests
 import json
-from google.protobuf import message
-import graphsignal
 from graphsignal.proto import signals_pb2
-from graphsignal.proto.signals_pb2 import UploadRequest
 from google.protobuf.json_format import MessageToDict
 import logging
 import psycopg2
-from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
-from psycopg2.extras import Json
-import subprocess
-import time
-from io import BytesIO
 import datetime
 from flask_cors import CORS
+from dotenv import load_dotenv
+from db_manager import create_db_connection
+from utils import _gunzip_data, calculate_openai_cost
+
+load_dotenv()
 
 app = Flask(__name__)
 CORS(app)
 
- # Database credentials
-dbname = "roja_postgres"
-user = "postgres"
-password = "postgres"
-host = "9.30.147.134"
-port: '5432'
-
 # Set up basic logging
 logging.basicConfig(level=logging.DEBUG)
-
-def calculate_openai_cost(token_count, rate_per_1000_tokens=0.002):
-    """
-    Calculate the cost for using a language model based on token usage.
-    """
-    return token_count / 1000 * rate_per_1000_tokens
 
 @app.route('/signals', methods=['POST'])
 def upload():
@@ -75,7 +55,7 @@ def upload():
         signal_dict['application-name'] = extract_application_name(signal_dict[tag])
         
         # Extract token count and calculate cost
-        token_count = sum(int(metric['counter']) for metric in signal_dict.get('metrics', []) if metric['name'] == 'token_count')
+        token_count = sum(int(metric.get('counter', 0)) for metric in signal_dict.get('metrics', []) if metric['name'] == 'token_count')
 
         signal_dict['token-cost'] = calculate_openai_cost(token_count)
 
@@ -97,7 +77,7 @@ def upload():
             file.write(json_data)
 
         # Connect to the database
-        conn = psycopg2.connect(dbname=dbname, user=user, password=password, host=host)
+        conn = create_db_connection()
         cursor = conn.cursor()
 
         # Create a table if it does not exist
@@ -148,7 +128,7 @@ def get_latest_data():
     try:
         # Connect to the database
         logging.debug("Attempting database connection...")
-        conn = psycopg2.connect(dbname=dbname, user=user, password=password, host=host)
+        conn = conn = create_db_connection()
         cursor = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
 
         # SQL command to fetch the most recent data
@@ -174,26 +154,6 @@ def get_latest_data():
         # Log the error
         logging.error("Error occurred: %s", e)
         return jsonify({"error": "Unable to fetch data from the database"}), 500
-
-def _gunzip_data(data):
-    return gzip.GzipFile('', 'r', 0, BytesIO(data)).read()
-
-@app.route('/run-roja-script', methods=['POST'])
-def run_script():
-    try:
-        # Execute the sample.py script
-        result = subprocess.run(['python', 'sample.py'], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
-
-        # Check if the script ran successfully
-        if result.returncode == 0:
-            return jsonify({"message": "Script executed successfully", "output": result.stdout})
-        else:
-            return jsonify({"error": "Script execution failed", "output": result.stderr}), 500
-
-    except Exception as e:
-        # In case of any exception, return a failure message
-        print(e)
-        return jsonify({"error": "An error occurred while executing the script"}), 500
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=3001)

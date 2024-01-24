@@ -5,6 +5,8 @@ from langchain.chat_models import ChatOpenAI
 import graphsignal
 from dotenv import load_dotenv, find_dotenv
 import random
+from langchain.prompts import ChatPromptTemplate
+from langchain.schema import StrOutputParser
 
 logging.basicConfig()
 logger = logging.getLogger()
@@ -28,8 +30,6 @@ def inject_roja_instrumentation(APPLICATION_NAME, USER):
 
 def solve(user_id, task):
     try:
-        logger.error("Error while solving task", exc_info=True)
-
         graphsignal.set_context_tag('user', user_id)
 
         llm = ChatOpenAI(temperature=0)
@@ -41,6 +41,23 @@ def solve(user_id, task):
         logger.debug('Task solved')
     except:
         logger.error("Error while solving task", exc_info=True)    
+
+def run_chat_model(user_id, question):
+    try:
+        model = ChatOpenAI(temperature=0)
+        graphsignal.set_context_tag('user', user_id)
+        
+        prompt = ChatPromptTemplate.from_messages([
+            ("human", question)
+        ])
+        runnable = prompt | model
+
+        with graphsignal.start_trace('predict', options=graphsignal.TraceOptions(record_samples= True, record_metrics=True, enable_profiling=True)):
+            for chunk in runnable.stream({"question": question}):
+                print(chunk, end="", flush=True)
+
+    except Exception as e:
+        logger.error("An error occurred: ", exc_info=e)
     
 
 
