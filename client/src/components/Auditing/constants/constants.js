@@ -13,9 +13,6 @@ import {
   cyan60,
   yellow30,
   red50,
-  teal30,
-  teal50,
-  teal70,
   green30,
   orange30,
 } from '@carbon/colors';

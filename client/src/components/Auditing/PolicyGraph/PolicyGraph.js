@@ -10,9 +10,8 @@
  * the U.S. Copyright Office.
  ****************************************************************************** */
 import React, { useMemo } from "react";
-import { Column, Grid, Tag, Tile } from "@carbon/react";
+import { Column, Tile } from "@carbon/react";
 import { DonutChart } from "@carbon/charts-react";
-import { __apps } from "../constants/constants";
 
 const defaultOptions = {
   theme: 'g90',
@@ -35,7 +34,7 @@ const defaultOptions = {
   height: '320px'
 }
 
-const PolicyGraph = ({ policy }) => {
+const PolicyGraph = ({ policy, apps }) => {
 
   const {data, options} = useMemo(() => {
     const policies = [...policy.policy].sort((a, b) => b.value - a.value);
@@ -50,7 +49,7 @@ const PolicyGraph = ({ policy }) => {
       },
     }
     
-    const counts = __apps.reduce((d, app) => {
+    const counts = apps.reduce((d, app) => {
       const name = policies.find(p => app[policy.policyOn] >= p.value)?.name || '';
       return {
         ...d,
@@ -63,7 +62,7 @@ const PolicyGraph = ({ policy }) => {
       value: counts[key]
     }));
     return {options, data}
-  }, [policy]);
+  }, [policy, apps]);
 
   return (
     <Column max={4} xlg={4} lg={4} md={2} sm={2} span={4} >

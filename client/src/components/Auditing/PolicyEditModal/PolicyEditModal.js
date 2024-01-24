@@ -117,44 +117,6 @@ const PolicyEditModal = (props) => {
           name: e.target.value
         }))}
       />
-      {/* {
-        policy?.policy?.map(criteria =>
-          <div key={criteria.name} className="criteria-row">
-            <label className="criteria-name">{criteria.name}</label>
-            <NumberInput
-              id={criteria.name}
-              title={criteria.name}
-              disableWheel
-              hideSteppers
-              labelText={criteria.name}
-              value={criteria.value}
-              className="criteria-value"
-              onChange={(e) => setPolicy(prev => ({
-                ...prev,
-                policy: prev.policy.map(p => p.name === criteria.name ? {...p, value: Number(e.target.value)} : p)
-              }))}
-            />
-            <Dropdown
-              id={`inline-${criteria.name}`}
-              titleText="Select Color"
-              initialSelectedItem={criteria.color}
-              hideLabel
-              label="Select Color"
-              type="inline"
-              items={colorOptions}
-              renderSelectedItem={item =>
-                <div className="option-color" style={{ backgroundColor: item.value || item }}></div>
-              }
-              itemToElement={item => 
-                <div className="option-color" style={{ backgroundColor: item.value }}></div>
-              }
-              onChange={({selectedItem}) => setPolicy(prev => ({
-                ...prev,
-                policy: prev.policy.map(p => p.name === criteria.name ? {...p, color: selectedItem.value} : p)
-              }))}
-            />
-          </div>)
-      } */}
       <Layer className="criteria-list">
         <label className="cds--label">
           Criteria list

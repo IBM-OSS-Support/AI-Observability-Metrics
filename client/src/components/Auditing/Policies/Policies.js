@@ -10,7 +10,7 @@
  * the U.S. Copyright Office.
  ****************************************************************************** */
 import React, { useState } from "react";
-import { Button, Column, Grid, Tile } from "@carbon/react";
+import { Button, Column, Grid } from "@carbon/react";
 import CustomDataTable from "../../common/CustomDataTable";
 import { Add, Edit } from "@carbon/icons-react";
 import { policyData } from "../constants/constants";
@@ -21,11 +21,6 @@ const headers = [
     header: "Policy name",
     checked: true,
   },
-  // {
-  //   key: "description",
-  //   header: "Description",
-  //   checked: true,
-  // },
   {
     key: "policy",
     header: "Policy criteria",
