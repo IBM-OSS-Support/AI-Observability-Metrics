@@ -33,33 +33,48 @@ const Flow = (props) => {
 
   useEffect(() => {
     const newNodes = nodes.map(n => {
-      const className = n.id === props.hoveredNode ? 'highlight' : '';
+      const isHovered = !!props.hoveredNode;
+      let className = n.id === props.hoveredNode ? 'highlight' : '';
+
+      if (props.selectedNode === n.id) {
+        className = `${className} selected`;
+      }
     
       return {
         ...n,
         data: {
           ...n.data,
-          className
+          className,
+          onClick: props.onNodeClick
+        },
+        style: {
+          ...n.style,
+          opacity: className || !isHovered ? 1 : 0.5
         }
       };
     });
 
     const newEdges = edges.map(e => {
+      const isHovered = !!props.hoveredNode;
+      const isHighlighted = props.hoveredNode ? e.id.includes(`${props.hoveredNode}-`) : false;
       return {
         ...e,
-        animated: props.hoveredNode ? e.id.includes(`${props.hoveredNode}-`) : false
+        animated: isHighlighted,
+        style: {
+          ...e.style,
+          opacity: isHighlighted || !isHovered ? 1 : 0.5
+        }
       };
     });
 
     setNodes(newNodes);
     setEdges(newEdges);
-  }, [props.hoveredNode]);
+  }, [props.hoveredNode, props.selectedNode]);
 
   return (
     <div className="cve-flow">
       <ReactFlow
-        panOnScroll
-        panOnScrollMode="free"
+        zoomOnScroll={false}
         nodeTypes={NODE_TYPES}
         nodes={nodes}
         onNodesChange={onNodesChange}

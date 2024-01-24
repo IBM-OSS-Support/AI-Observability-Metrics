@@ -19,6 +19,8 @@ import CustomDataTable from "../common/CustomDataTable";
 import PageContainer from "../common/PageContainer";
 import { CVE_DUMMY_DATA, defaultHeaders, statusMap } from "./constants";
 
+let fullRows = CVE_DUMMY_DATA;
+
 const CveWorkflows = () => {
   const navigate = useNavigate();
 
@@ -35,8 +37,9 @@ const CveWorkflows = () => {
   const [pagination, setPagination] = useState({ offset: 0, first: 10 });
   const [startDate, setStartDate] = useState(undefined);
   const [endDate, setEndDate] = useState(undefined);
-  const [rows, setRows] = useState(CVE_DUMMY_DATA);
+  const [rows, setRows] = useState(fullRows);
   const [hoveredNode, setHoveredNode] = useState('');
+  const [selectedNode, setSelectedNode] = useState('');
   const { state } = useStoreContext();
 
   function formatData(rowData = []) {
@@ -61,6 +64,28 @@ const CveWorkflows = () => {
     });
   }
 
+  function onNodeClick(nodeId) {
+    if (selectedNode === nodeId) {
+      setSelectedNode('');
+      setRows(fullRows);
+      return;
+    }
+
+    const statusMapPair = Object.entries(statusMap).find(([ key, value ]) => {
+      return value === nodeId;
+    });
+
+    if (!statusMapPair) {
+      return;
+    }
+
+    setSelectedNode(nodeId);
+    const selectedStatus = statusMapPair[0];
+    setRows(fullRows.filter(({ status }) => {
+      return status === selectedStatus;
+    }));
+  }
+
   return (
     <PageContainer
       className="traces-container"
@@ -70,7 +95,11 @@ const CveWorkflows = () => {
       }}
     >
         <div className="flow-diag-section">
-          <Flow hoveredNode={hoveredNode}/>
+          <Flow
+            hoveredNode={hoveredNode}
+            selectedNode={selectedNode}
+            onNodeClick={onNodeClick}
+          />
         </div>
 
         <div className="trace-sections">
@@ -149,8 +178,8 @@ const CveWorkflows = () => {
             emptyState={
               !rows.length && {
                 type: false ? "NotFound" : "NoData",
-                title: "No traces yet.",
-                noDataSubtitle: "All traces from your data are listed here.",
+                title: "No cve's found.",
+                noDataSubtitle: "All cve's are listed here.",
               }
             }
             sortRowHandler={() => {}}

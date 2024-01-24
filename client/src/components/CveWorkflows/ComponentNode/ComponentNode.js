@@ -55,7 +55,7 @@ const ComponentNode = ({
         className="node"
         onClick={event => {
           document?.activeElement?.blur();
-          // onClick();
+          onClick(component.id);
         }}
       >
         <div className="content">
