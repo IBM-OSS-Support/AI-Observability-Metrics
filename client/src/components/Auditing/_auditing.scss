@@ -31,13 +31,23 @@
 
       }
       table tr td .policy-item {
-        margin-right: 1rem;
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+
+        > span {
+          margin: 0 .25rem;
+          display: inline-block;
+        }
+
+        .policy-operator {
+          opacity: .7;
+        }
 
         .policy-item-color {
-          display: inline-block;
-          width: .5rem;
-          height: .5rem;
-          margin: 0 .25rem;
+          width: 1.5rem;
+          height: .75rem;
+          margin: 0;
         }
       }
     }

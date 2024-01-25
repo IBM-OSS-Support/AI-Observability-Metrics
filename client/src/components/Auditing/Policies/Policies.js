@@ -9,7 +9,7 @@
  * of its trade secrets, irrespective of what has been deposited with
  * the U.S. Copyright Office.
  ****************************************************************************** */
-import React, { useState } from "react";
+import React, { Fragment, useState } from "react";
 import { Button, Column, Grid } from "@carbon/react";
 import CustomDataTable from "../../common/CustomDataTable";
 import { Add, Edit } from "@carbon/icons-react";
@@ -17,8 +17,13 @@ import { policyData } from "../constants/constants";
 
 const headers = [
   {
-    key: "name",
+    key: "policyName",
     header: "Policy name",
+    checked: true,
+  },
+  {
+    key: "policyOn",
+    header: "Based on",
     checked: true,
   },
   {
@@ -41,16 +46,20 @@ const Policies = ({policies, onEditPolicy}) => {
     return policies.map((p, i) => {
       return {
         id: `${i}_${p.name}`,
-        name: p.name,
+        policyName: p.name,
         description: p.description,
-        policy: <>
+        policyOn: `${p.policyOn}${p.unit ? ` (${p.unit})` : ''}`,
+        policy: <div className="policy-item">
           {
-            p.policy.map((plc, k) => <span className="policy-item" key={`key_${k}`}>
+            p.policy.map((plc, k, arr) => <Fragment key={`key_${k}`}>
+              <span className="policy-value">{plc.value}</span>
+              <span className="policy-operator">{'<--'}</span>
               <span className="policy-item-color" style={{backgroundColor: plc.color}}></span>
-              {p.policyOn} {'>'} {plc.value} {p.unit || ''}
-            </span>)
+              <span className="policy-operator">{'-->'}</span>
+            </Fragment>)
+            
           }
-        </>,
+        </div>,
         edit: <Button size="sm" renderIcon={Edit} iconDescription="Edit" kind="ghost" hasIconOnly title="Edit" onClick={() => onEditPolicy(p)}/>
       };
     })

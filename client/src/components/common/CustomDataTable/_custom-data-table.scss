@@ -146,6 +146,18 @@
     width: 10%;
   }
 
+  th.policyName,
+  td.policyName {
+    max-width: 23%;
+    width: 23%;
+  }
+
+  th.policyOn,
+  td.policyOn {
+    max-width: 15%;
+    width: 15%;
+  }
+
   th.generations,
   td.generations {
     max-width: 10%;

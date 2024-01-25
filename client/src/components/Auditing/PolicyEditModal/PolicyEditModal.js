@@ -89,7 +89,10 @@ const PolicyEditModal = (props) => {
   }, [props.policy]);
 
   function save() {
-    props.onSave(policy);
+    props.onSave({
+      ...policy,
+      policy: policy.policy.sort((a,b) => a.value - b.value)
+    });
   }
 
   return (
@@ -106,6 +109,7 @@ const PolicyEditModal = (props) => {
       primaryButtonText="Save"
       onRequestSubmit={save}
       selectorPrimaryFocus="#add-column-name"
+      primaryButtonDisabled={!policy.name || policy.policy.filter(p => !p.value).length > 1}
     >
       <TextInput
         id="Name"
@@ -114,7 +118,7 @@ const PolicyEditModal = (props) => {
         value={policy?.name || ''}
         onChange={(e) => setPolicy(prev => ({
           ...prev,
-          name: e.target.value
+          name: e.target.value.trim()
         }))}
       />
       <Layer className="criteria-list">
@@ -140,12 +144,11 @@ const PolicyEditModal = (props) => {
                       title={criteria.name}
                       disableWheel
                       hideSteppers
-                      // labelText={criteria.name}
-                      value={criteria.value}
+                      value={criteria.value || 0}
                       className="criteria-value"
                       onChange={(e) => setPolicy(prev => ({
                         ...prev,
-                        policy: prev.policy.map(p => p.name === criteria.name ? {...p, value: Number(e.target.value)} : p)
+                        policy: prev.policy.map(p => p.name === criteria.name ? {...p, value: Number(e.target.value.trim())} : p)
                       }))}
                     />
                   </TableCell>

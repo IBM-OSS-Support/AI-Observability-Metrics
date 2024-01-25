@@ -23,7 +23,7 @@ export const policyData = [
     name: 'High token consumption',
     type: 'color',
     policyOn: 'token',
-    unit: '',
+    unit: 'numbers',
     policy: [
       {
         name: 'Low',

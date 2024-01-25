@@ -9,7 +9,7 @@
  * of its trade secrets, irrespective of what has been deposited with
  * the U.S. Copyright Office.
  ****************************************************************************** */
-import React, { Fragment, useMemo, useState } from "react";
+import React, { Fragment, useEffect, useMemo, useState } from "react";
 import PageContainer from "../common/PageContainer";
 
 import Transactions from "../Traces/Transactions/Transactions";
@@ -20,6 +20,7 @@ import PolicyGraph from "./PolicyGraph/PolicyGraph";
 import PolicyEditModal from "./PolicyEditModal/PolicyEditModal";
 import { useStoreContext } from "../../store";
 import { getAppData } from "../../appData";
+import DataClient, { dataClient } from "../../dataClient/dataClient";
 
 const MODALS = [
   { component: PolicyEditModal, string: 'PolicyEditModal' },
@@ -27,8 +28,16 @@ const MODALS = [
 
 const Auditing = () => {
   const [modal, setModal] = useState(false);
-  const [policies, setPolicies] = useState(policyData);
+  const [policies, setPolicies] = useState([]);
   const { state } = useStoreContext()
+
+  useEffect(() => {
+    let newData = dataClient.fetchAppData(DataClient.params.AuditPolicy);
+    if (!newData) {
+      newData = policyData
+    }
+    setPolicies(newData);
+  }, []);
 
   const apps = useMemo(() => {
     if (state.status === 'success') {
@@ -66,6 +75,15 @@ const Auditing = () => {
     , 300);
   };
 
+  function savePolicy(newPolicy) {
+    setPolicies(prev => {
+      const newPolicies = prev.map(p => p.id === newPolicy.id ? newPolicy : p);
+      dataClient.saveAppData(newPolicies, DataClient.params.AuditPolicy)
+     return newPolicies;
+    });
+    closeModal();
+  }
+
 	return (
     <>
       <PageContainer
@@ -81,10 +99,7 @@ const Auditing = () => {
                   name: 'PolicyEditModal',
                   props: {
                     policy,
-                    onSave: (newPolicy) => {
-                      setPolicies(prev => prev.map(p => p.id === newPolicy.id ? newPolicy : p))
-                      closeModal()
-                    },
+                    onSave: savePolicy,
                   }
                 })}/>
         <div className="policies-section">
