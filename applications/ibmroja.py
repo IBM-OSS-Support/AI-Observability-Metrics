@@ -12,15 +12,16 @@ from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain.llms import OpenAI
 from langchain.chains import RetrievalQA
 from langchain.document_loaders import TextLoader
+from metrics import safety_score, log_app
 
 logging.basicConfig()
 logger = logging.getLogger()
-logger.setLevel(logging.DEBUG)
+logger.setLevel(logging.CRITICAL)
 load_dotenv(find_dotenv())
 
 logging.basicConfig()
 logger = logging.getLogger()
-logger.setLevel(logging.DEBUG)
+logger.setLevel(logging.CRITICAL)
 load_dotenv(find_dotenv())
 
 # Load environment variables
@@ -85,4 +86,10 @@ def answer_questions(user_id, questions):
         # Handle any exceptions that occur
         # Assuming logger is properly set up
         logger.error("An error occurred while processing the questions", exc_info=True)
+
+def gather_metrics(user, app_name, question):
+    json_obj = []
+    json_obj.append(safety_score.calculate_safety_score(user, app_name, question))
+    json_obj.append(log_app.log_prompt_info(user, app_name, question))
+    return json_obj
 

@@ -1,0 +1,7 @@
+{
+    "kafka_topic": "maintenance",
+    "OperatingSystem": "macOS-14.4-arm64-arm-64bit",
+    "MachineArchitecture": "arm64",
+    "PythonVersion": "3.11.4 (main, Jul 25 2023, 17:36:13) [Clang 14.0.3 (clang-1403.0.22.14.1)]",
+    "OpenAIVersion": "1.13.3"
+}
