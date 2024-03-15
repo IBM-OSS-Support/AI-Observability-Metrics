@@ -19,19 +19,20 @@ APPLICATION_METRIC = "log_history"
 
 # Then to run a prompt:
 
+@graphsignal.trace_function
 def log_prompt_info(user, application_name, question):
-    graphsignal.set_context_tag('user', user)
-    with graphsignal.start_trace('predict', options=graphsignal.TraceOptions(record_samples= True, record_metrics=True, enable_profiling=True)):
-        chat_completion = client.chat.completions.create(
+    #graphsignal.set_context_tag('user', user)
+    #with graphsignal.start_trace('log_prompt_info'):
+    chat_completion = client.chat.completions.create(
             messages=[{
                 "role": "user",
                 "content": question,
             }],
             model="gpt-3.5-turbo",
-        )
+    )
 
         # Extract attributes for serialization
-        chat_completion_dict = {
+    chat_completion_dict = {
             "kafka_topic": APPLICATION_METRIC,
             "id": chat_completion.id,
             "created": chat_completion.created,
@@ -44,7 +45,7 @@ def log_prompt_info(user, application_name, question):
                 "total_tokens": chat_completion.usage.total_tokens
             },
             "user":user,
-            "app_name":application_name,
+            "application_name":application_name,
             "prompt":question,
             "choices": [{
                 "message": {
@@ -57,16 +58,16 @@ def log_prompt_info(user, application_name, question):
                 "index": choice.index,
                 "finish_reason": choice.finish_reason,
                 "logprobs":choice.logprobs
-            } for choice in chat_completion.choices]
-        }
+        } for choice in chat_completion.choices]
+    }
 
-        print(chat_completion.choices[0].message.content)
-        print(chat_completion)
+    print(chat_completion.choices[0].message.content)
+    print(chat_completion)
         # Serialize chat_completion to JSON
         #chat_completion_json = chat_completion.to_dict()
 
         # Write JSON to file
-        with open('log_history.json', 'w') as json_file:
-            json.dump(chat_completion_dict, json_file, indent=4)
+    with open('log_history.json', 'w') as json_file:
+        json.dump(chat_completion_dict, json_file, indent=4)
     
     return chat_completion_dict

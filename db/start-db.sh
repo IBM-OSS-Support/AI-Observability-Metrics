@@ -10,6 +10,7 @@ fi
 
 # Start PostgreSQL server using the 'postgres' user
 pg_ctl start -D $PGDATA -l logfile
+echo $PGDATA
 
 # Wait for PostgreSQL to start
 until pg_isready -h localhost -p 5432 -U "$POSTGRES_USER"; do

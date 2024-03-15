@@ -41,23 +41,23 @@ def parse_moderation_response(json_obj):
     
     return json_obj['results'][0]
 
-
+@graphsignal.trace_function
 def calculate_safety_score(user, app_name, question):
-    graphsignal.set_context_tag('user', user)
-    with graphsignal.start_trace('predict', options=graphsignal.TraceOptions(record_samples= True, record_metrics=True, enable_profiling=True)):
+    #graphsignal.set_context_tag('user', user)
+    #with graphsignal.start_trace('calculate_safety_score'):
         # Define the data payload
-        data = {
-            "input": question
-        }
+    data = {
+        "input": question
+    }
 
-        response_json = get_moderation_response(data)
-        result_info = parse_moderation_response(response_json)
-        result_info["kafka_topic"] = APPLICATION_METRIC
-        result_info["user"] = user
-        result_info["application_name"] = app_name
-        # Write the system info to a JSON file
-        with open("auditing.json", "w") as json_file:
-            json.dump(result_info, json_file, indent=4)
+    response_json = get_moderation_response(data)
+    result_info = parse_moderation_response(response_json)
+    result_info["kafka_topic"] = APPLICATION_METRIC
+    result_info["user"] = user
+    result_info["application_name"] = app_name
+    # Write the system info to a JSON file
+    with open("auditing.json", "w") as json_file:
+        json.dump(result_info, json_file, indent=4)
     return result_info
 
     

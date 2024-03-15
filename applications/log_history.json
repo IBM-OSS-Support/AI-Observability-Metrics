@@ -1,17 +1,17 @@
 {
     "kafka_topic": "log_history",
-    "id": "chatcmpl-92heOfLUpGruMMTZG3g3CvJZj01Ni",
-    "created": 1710431476,
+    "id": "chatcmpl-937USbrTfgserwD8gOARztTSDUwzb",
+    "created": 1710530804,
     "model": "gpt-3.5-turbo-0125",
     "object": "chat.completion",
-    "system_fingerprint": "fp_4f0b692a78",
+    "system_fingerprint": "fp_4f2ebda25a",
     "completion_usage": {
-        "completion_tokens": 74,
+        "completion_tokens": 83,
         "prompt_tokens": 17,
-        "total_tokens": 91
+        "total_tokens": 100
     },
     "user": "Bhoomaiah",
-    "app_name": "bhoomaiah_application",
+    "application_name": "bhoomaiah_application",
     "prompt": "What are the seven wonders of the ancient world?",
     "choices": [
         {
@@ -19,7 +19,7 @@
                 "model_config": {
                     "extra": "allow"
                 },
-                "content": "1. Great Pyramid of Giza, Egypt\n2. Hanging Gardens of Babylon, Iraq\n3. Statue of Zeus at Olympia, Greece\n4. Temple of Artemis at Ephesus, Turkey\n5. Mausoleum at Halicarnassus, Turkey\n6. Colossus of Rhodes, Greece\n7. Lighthouse of Alexandria, Egypt",
+                "content": "1. Great Pyramid of Giza (Egypt) \n2. Hanging Gardens of Babylon (Iraq) \n3. Statue of Zeus at Olympia (Greece) \n4. Temple of Artemis at Ephesus (Turkey) \n5. Mausoleum at Halicarnassus (Turkey) \n6. Colossus of Rhodes (Greece) \n7. Lighthouse of Alexandria (Egypt)",
                 "function_call": null,
                 "role": "assistant",
                 "tool_calls": null

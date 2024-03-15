@@ -49,6 +49,7 @@ def solve(user_id, task):
         logger.error("Error while solving task", exc_info=True)    
 
 def run_chat_model(user_id, question):
+    print("tahsin")
     try:
         llm = ChatOpenAI(temperature=0)
         graphsignal.set_context_tag('user', user_id)

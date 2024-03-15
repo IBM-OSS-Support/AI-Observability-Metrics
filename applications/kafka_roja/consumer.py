@@ -5,6 +5,7 @@ import datetime
 import logging
 import os
 import psycopg2
+import json
 
 kafka_server = 'localhost:9092'
 
@@ -25,6 +26,7 @@ def kafka_subscribe(consumer):
 def upload_to_postgres(message):
     print("Inside upload_to_postgres: ", message.topic, ":", message.value)
     json_data = message.value
+    json_object = json.loads(json_data)
     conn = create_db_connection()
     cursor = conn.cursor()
     # Create a table if it does not exist
@@ -34,7 +36,7 @@ def upload_to_postgres(message):
             signal TEXT,
             data JSONB,
             application_name TEXT,
-            user TEXT,
+            app_user TEXT,
             timestamp TIMESTAMP
     )
     """
@@ -43,9 +45,10 @@ def upload_to_postgres(message):
     # Get the current timestamp
     current_timestamp = datetime.datetime.now()
 
+    print(json_object)
     # SQL command to insert the JSON data along with 'application-name', 'tag', and timestamp
-    insert_metric_sql = "INSERT INTO signals (signal, data, application_name, user, timestamp) VALUES (%s, %s, %s, %s, %s)"
-    cursor.execute(insert_metric_sql, (message.topic, json_data, json_data["application_name"], json_data["user"], current_timestamp))
+    insert_metric_sql = "INSERT INTO signals (signal, data, application_name, app_user, timestamp) VALUES (%s, %s, %s, %s, %s)"
+    cursor.execute(insert_metric_sql, (message.topic, json_data, json_object["application_name"], json_object["user"], current_timestamp))
 
     conn.commit()
     cursor.close()
@@ -54,11 +57,18 @@ def upload_to_postgres(message):
 def create_db_connection():
     try:
         # Get database connection parameters from environment variables
-        DB_NAME = os.environ.get("DB_NAME")
-        DB_USER = os.environ.get("DB_USER")
-        DB_PASSWORD = os.environ.get("DB_PASSWORD")
-        DB_HOST = os.environ.get("DB_HOST")
-
+        
+        DB_NAME="roja_postgres"
+# DB_NAME=roja_dev # dev 
+        DB_USER="roja_user"
+        DB_PASSWORD="roja_user"
+        DB_HOST="9.20.196.69"
+        DB_PORT=5432
+        #DB_NAME = os.environ.get("DB_NAME")
+        #DB_USER = os.environ.get("DB_USER")
+        #DB_PASSWORD = os.environ.get("DB_PASSWORD")
+        #DB_HOST = os.environ.get("DB_HOST")
+        print(DB_NAME, DB_USER, DB_PASSWORD, DB_HOST)
         # Establish the database connection
         connection = psycopg2.connect(
             dbname=DB_NAME,

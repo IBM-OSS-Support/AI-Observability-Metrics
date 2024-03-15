@@ -14,17 +14,17 @@
         "violence": false
     },
     "category_scores": {
-        "sexual": 3.743138586287387e-05,
-        "hate": 0.00015166438242886215,
-        "harassment": 3.95032657252159e-05,
-        "self-harm": 5.739999764386994e-08,
-        "sexual/minors": 2.042822598014027e-05,
-        "hate/threatening": 5.142661393620074e-06,
-        "violence/graphic": 5.487100861500949e-05,
-        "self-harm/intent": 2.4400325315809823e-08,
-        "self-harm/instructions": 1.5973617450981692e-07,
-        "harassment/threatening": 1.661308601796918e-06,
-        "violence": 9.92119312286377e-05
+        "sexual": 3.6867008020635694e-05,
+        "hate": 0.0001515189796919003,
+        "harassment": 3.984905197285116e-05,
+        "self-harm": 5.712029604865165e-08,
+        "sexual/minors": 2.0032066458952613e-05,
+        "hate/threatening": 5.0713360906229354e-06,
+        "violence/graphic": 5.376304034143686e-05,
+        "self-harm/intent": 2.3980057051176118e-08,
+        "self-harm/instructions": 1.5337553804783965e-07,
+        "harassment/threatening": 1.6524188595212763e-06,
+        "violence": 9.874614625005051e-05
     },
     "kafka_topic": "auditing",
     "user": "Bhoomaiah",
