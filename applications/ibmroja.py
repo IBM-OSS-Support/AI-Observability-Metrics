@@ -12,7 +12,7 @@ from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain.llms import OpenAI
 from langchain.chains import RetrievalQA
 from langchain.document_loaders import TextLoader
-from metrics import safety_score, log_app
+from metrics import safety_score, log_app, maintenance, session
 
 logging.basicConfig()
 logger = logging.getLogger()
@@ -92,5 +92,7 @@ def gather_metrics(user, app_name, question):
     json_obj = []
     json_obj.append(safety_score.calculate_safety_score(user, app_name, question))
     json_obj.append(log_app.log_prompt_info(user, app_name, question))
+    json_obj.append(maintenance.get_maintenance_info(user,app_name))
+    json_obj.append(session.get_session_info(user,app_name))
     return json_obj
 
