@@ -44,7 +44,7 @@ def log_prompt_info(user, application_name, question):
                 "prompt_tokens": chat_completion.usage.prompt_tokens,
                 "total_tokens": chat_completion.usage.total_tokens
             },
-            "user":user,
+            "app_user":user,
             "application_name":application_name,
             "prompt":question,
             "choices": [{

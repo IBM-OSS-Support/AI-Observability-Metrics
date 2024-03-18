@@ -3,7 +3,7 @@ import requests # call API
 import datetime # parse dates
 from dateutil.relativedelta import relativedelta # date manipulation
 import dateutil.parser as dparser # parse dates from strings
-
+import numpy as np
 import os # get environment vars
 import pandas as pd # you probably wrote this one before I tell
 import time # sleeper to avoid exceeding API limits
@@ -141,6 +141,9 @@ def get_session_info(app_user,application_name):
     df_costs
 
     df_costs['local_timestamp'] = df_costs['local_timestamp'].apply(lambda a: datetime.datetime.strftime(a,"%Y-%m-%d %H:%M:%S"))
+    df_costs.fillna(value="NaN", inplace=True)
+    df_costs.replace(np.inf, "inf", inplace=True)
+    df_costs.replace(-np.inf, "neginf", inplace=True)
 
     sessions = df_costs.to_dict(orient='records')
     json_object = {
@@ -154,3 +157,4 @@ def get_session_info(app_user,application_name):
         json.dump(json_object, f, indent=4)
 
     df_costs.to_excel("openai_costs.xlsx", index=True)  # This will save the DataFrame without the index
+    return json_object

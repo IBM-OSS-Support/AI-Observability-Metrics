@@ -27,6 +27,6 @@
         "violence": 9.874614625005051e-05
     },
     "kafka_topic": "auditing",
-    "user": "Bhoomaiah",
+    "app_user": "Bhoomaiah",
     "application_name": "bhoomaiah_application"
 }
