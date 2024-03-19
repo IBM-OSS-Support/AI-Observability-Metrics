@@ -1,14 +1,14 @@
 {
     "kafka_topic": "log_history",
-    "id": "chatcmpl-938m0S4JqdTNXxKy54kJHQFtKHlrj",
-    "created": 1710535736,
+    "id": "chatcmpl-94EHq76WuZszHy42GTuEYYp8nKgiV",
+    "created": 1710795258,
     "model": "gpt-3.5-turbo-0125",
     "object": "chat.completion",
     "system_fingerprint": "fp_4f2ebda25a",
     "completion_usage": {
-        "completion_tokens": 67,
+        "completion_tokens": 81,
         "prompt_tokens": 17,
-        "total_tokens": 84
+        "total_tokens": 98
     },
     "app_user": "Bhoomaiah",
     "application_name": "bhoomaiah_application",
@@ -19,7 +19,7 @@
                 "model_config": {
                     "extra": "allow"
                 },
-                "content": "1. The Great Pyramid of Giza\n2. The Hanging Gardens of Babylon\n3. The Statue of Zeus at Olympia\n4. The Temple of Artemis at Ephesus\n5. The Mausoleum at Halicarnassus\n6. The Colossus of Rhodes\n7. The Lighthouse of Alexandria",
+                "content": "1. The Great Pyramid of Giza, Egypt\n2. The Hanging Gardens of Babylon, Iraq\n3. The Statue of Zeus at Olympia, Greece\n4. The Temple of Artemis at Ephesus, Turkey\n5. The Mausoleum at Halicarnassus, Turkey\n6. The Colossus of Rhodes, Greece\n7. The Lighthouse of Alexandria, Egypt",
                 "function_call": null,
                 "role": "assistant",
                 "tool_calls": null
