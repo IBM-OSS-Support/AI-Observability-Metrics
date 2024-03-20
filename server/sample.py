@@ -3,10 +3,10 @@ import time
 import os
 import random
 from langchain.agents import initialize_agent, load_tools
-from langchain.chat_models import ChatOpenAI
+#from langchain.chat_models import ChatOpenAI
 import graphsignal
 from dotenv import load_dotenv, find_dotenv
-
+from langchain_community.chat_models import ChatOpenAI
 
 logging.basicConfig()
 logger = logging.getLogger()

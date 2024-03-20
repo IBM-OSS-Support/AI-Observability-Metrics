@@ -11,10 +11,11 @@ load_dotenv()
 def create_db_connection():
     try:
         # Get database connection parameters from environment variables
-        DB_NAME = os.environ.get("DB_NAME")
-        DB_USER = os.environ.get("DB_USER")
-        DB_PASSWORD = os.environ.get("DB_PASSWORD")
-        DB_HOST = os.environ.get("DB_HOST")
+        DB_NAME = "roja_postgres"#os.environ.get("DB_NAME")
+        DB_USER = "roja_user"#os.environ.get("DB_USER")
+        DB_PASSWORD = "roja_user"#os.environ.get("DB_PASSWORD")
+        DB_HOST = "9.20.196.69"#os.environ.get("DB_HOST")
+        DB_PORT=5432
 
         # Establish the database connection
         connection = psycopg2.connect(

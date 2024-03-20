@@ -23,9 +23,9 @@ stop_and_remove_container roja-metric-react-app
 docker run -d -p 9000:80 --name roja-metric-react-app --network ${NETWORK_NAME} roja-metric-react-app
 
 # Build and run roja-metric-backend-db
-docker build -t roja-metric-backend-db db
-stop_and_remove_container roja-metric-backend-db
-docker run -d -p 5432:5432 --name roja-metric-backend-db --network ${NETWORK_NAME} roja-metric-backend-db
+#docker build -t roja-metric-backend-db db
+#stop_and_remove_container roja-metric-backend-db
+#docker run -d -p 5432:5432 --name roja-metric-backend-db --network ${NETWORK_NAME} roja-metric-backend-db
 
 # Build and run roja-metric-backend-app
 docker build -t roja-metric-backend-app server

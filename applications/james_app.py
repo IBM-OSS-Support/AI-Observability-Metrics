@@ -1,7 +1,7 @@
 from ibmroja import answer_questions, inject_roja_instrumentation
 
 # Load runtime variables
-APPLICATION_NAME = "james_application"
+APPLICATION_NAME = "james-app"
 USER = "James"
 
 inject_roja_instrumentation(APPLICATION_NAME, USER)

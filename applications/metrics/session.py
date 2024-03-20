@@ -129,11 +129,12 @@ def get_session_info(app_user,application_name):
     mc = pd.DataFrame(model_costs)
     mc = mc.T.reset_index()
 
-    df_costs=df_costs.merge(mc, left_on='snapshot_id', right_on='index', how='left')
+    '''
+    df_costs=df_costs.merge(mc, how='left')
     df_costs['context_costs']=(df_costs['n_context_tokens_total']/1)*df_costs['context']
     df_costs['generated_costs']=(df_costs['n_generated_tokens_total']/1)*df_costs['generated']
     df_costs['total_costs']=df_costs['context_costs']+df_costs['generated_costs']
-
+    '''
     df_costs.reset_index(drop='level_0', inplace=True)
 
     # ensuring datetime formats
@@ -147,9 +148,9 @@ def get_session_info(app_user,application_name):
 
     sessions = df_costs.to_dict(orient='records')
     json_object = {
-        "kafka_topic": APPLICATION_METRIC,
-        "application_name":application_name,
-        "app_user":app_user,
+        "kafka-topic": APPLICATION_METRIC,
+        "application-name":application_name,
+        "app-user":app_user,
         "sessions": sessions
     }
 

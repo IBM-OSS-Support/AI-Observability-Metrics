@@ -52,9 +52,9 @@ def calculate_safety_score(user, app_name, question):
 
     response_json = get_moderation_response(data)
     result_info = parse_moderation_response(response_json)
-    result_info["kafka_topic"] = APPLICATION_METRIC
-    result_info["app_user"] = user
-    result_info["application_name"] = app_name
+    result_info["kafka-topic"] = APPLICATION_METRIC
+    result_info["app-user"] = user
+    result_info["application-name"] = app_name
     # Write the system info to a JSON file
     with open("auditing.json", "w") as json_file:
         json.dump(result_info, json_file, indent=4)

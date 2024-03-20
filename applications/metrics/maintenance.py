@@ -25,13 +25,13 @@ def get_installed_packages():
 
 def generate_system_info(user, app_name):
     system_info = {
-        "kafka_topic":APPLICATION_METRIC,
+        "kafka-topic":APPLICATION_METRIC,
         "OperatingSystem": get_os_info(),
         "MachineArchitecture": get_machine_architecture(),
         "PythonVersion": get_python_version(),
         "OpenAIVersion": get_openai_version(),
-        "app_user":user,
-        "application_name":app_name
+        "app-user":user,
+        "application-name":app_name
     }
     return system_info
 

@@ -33,7 +33,7 @@ def log_prompt_info(user, application_name, question):
 
         # Extract attributes for serialization
     chat_completion_dict = {
-            "kafka_topic": APPLICATION_METRIC,
+            "kafka-topic": APPLICATION_METRIC,
             "id": chat_completion.id,
             "created": chat_completion.created,
             "model": chat_completion.model,
@@ -44,8 +44,8 @@ def log_prompt_info(user, application_name, question):
                 "prompt_tokens": chat_completion.usage.prompt_tokens,
                 "total_tokens": chat_completion.usage.total_tokens
             },
-            "app_user":user,
-            "application_name":application_name,
+            "app-user":user,
+            "application-name":application_name,
             "prompt":question,
             "choices": [{
                 "message": {

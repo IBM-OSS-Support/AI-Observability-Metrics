@@ -26,7 +26,7 @@
         "harassment/threatening": 1.6524188595212763e-06,
         "violence": 9.874614625005051e-05
     },
-    "kafka_topic": "auditing",
-    "app_user": "Bhoomaiah",
-    "application_name": "bhoomaiah_application"
+    "kafka-topic": "auditing",
+    "app-user": "Bhoomaiah",
+    "application-name": "bhoomaiah_application"
 }

@@ -1,17 +1,19 @@
 import logging
 import os
 from langchain.agents import initialize_agent, load_tools
-from langchain.chat_models import ChatOpenAI
+#from langchain.chat_models import ChatOpenAI
+#from langchain_community.chat_models import ChatOpenAI
+from langchain_openai import ChatOpenAI
 import graphsignal
 from dotenv import load_dotenv, find_dotenv
 import random
 from langchain.prompts import ChatPromptTemplate
-from langchain.vectorstores import Chroma
-from langchain.embeddings import OpenAIEmbeddings
+from langchain_community.vectorstores import Chroma
+from langchain_community.embeddings import OpenAIEmbeddings
 from langchain.text_splitter import RecursiveCharacterTextSplitter
-from langchain.llms import OpenAI
+from langchain_community.llms import OpenAI
 from langchain.chains import RetrievalQA
-from langchain.document_loaders import TextLoader
+from langchain_community.document_loaders import TextLoader
 from metrics import safety_score, log_app, maintenance, session, embeddings
 
 logging.basicConfig()
@@ -21,7 +23,7 @@ load_dotenv(find_dotenv())
 
 logging.basicConfig()
 logger = logging.getLogger()
-logger.setLevel(logging.CRITICAL)
+logger.setLevel(logging.DEBUG)
 load_dotenv(find_dotenv())
 
 # Load environment variables
@@ -30,7 +32,9 @@ GRAPHSIGNAL_API_KEY = os.getenv('GRAPHSIGNAL_API_KEY')
 OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')
 
 def inject_roja_instrumentation(APPLICATION_NAME, USER):
+    print(API_URL,GRAPHSIGNAL_API_KEY,APPLICATION_NAME)
     graphsignal.configure(api_url=API_URL,api_key=GRAPHSIGNAL_API_KEY, deployment=APPLICATION_NAME) # to send to IBM ROJA server
+    #graphsignal.configure(deployment=APPLICATION_NAME)
     graphsignal.set_context_tag('user', USER)
     pass
 
@@ -59,7 +63,9 @@ def run_chat_model(user_id, question):
         ])
         runnable = prompt | llm
 
-        with graphsignal.start_trace('predict', options=graphsignal.TraceOptions(record_samples= True, record_metrics=True, enable_profiling=True)):
+        #with graphsignal.start_trace("predict", {"record_samples": True, "record_metrics":True, "enable_profiling":True}):
+        with graphsignal.trace('tahsn') as span:
+            #span.set_payload('input', input_data, usage=dict(token_count=input_token_count))
             for chunk in runnable.stream({"question": question}):
                 print(chunk, end="", flush=True)
 
@@ -88,12 +94,12 @@ def answer_questions(user_id, questions):
         # Assuming logger is properly set up
         logger.error("An error occurred while processing the questions", exc_info=True)
 
+
 def gather_metrics(user, app_name, question):
     json_obj = []
     json_obj.append(safety_score.calculate_safety_score(user, app_name, question))
     json_obj.append(log_app.log_prompt_info(user, app_name, question))
     json_obj.append(maintenance.get_maintenance_info(user,app_name))
     json_obj.append(session.get_session_info(user,app_name))
-    json_obj.append(embeddings.get_embeddings_score(user,app_name,question,"text-embedding-3-small"))
+    #json_obj.append(embeddings.get_embeddings_score(user,app_name,question,"text-embedding-3-small"))
     return json_obj
-

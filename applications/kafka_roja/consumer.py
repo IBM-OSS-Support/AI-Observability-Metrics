@@ -15,7 +15,7 @@ logging.basicConfig(level=logging.CRITICAL)
 def kafka_subscribe(consumer):
 
     # Subscribe to multiple topics
-    topics = ['auditing', 'log_history', 'maintenance', 'session_info','embedding']
+    topics = ['auditing', 'log_history', 'maintenance', 'session_info','embedding','span','metrics']
     consumer.subscribe(topics)
 
     # Start consuming messages
@@ -50,10 +50,11 @@ def upload_to_postgres(message):
 
     print(json_object)
 
-
+    json_object["application-name"] = "tahsin"
+    json_object["app-user"] = "tahsin"
     # SQL command to insert the JSON data along with 'application-name', 'tag', and timestamp
     insert_metric_sql = "INSERT INTO signals (signal, data, application_name, app_user, timestamp) VALUES (%s, %s, %s, %s, %s)"
-    cursor.execute(insert_metric_sql, (message.topic, json_data, json_object["application_name"], json_object["app_user"], current_timestamp))
+    cursor.execute(insert_metric_sql, (message.topic, json_data, json_object["application-name"], json_object["app-user"], current_timestamp))
 
     conn.commit()
     cursor.close()

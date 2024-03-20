@@ -42,9 +42,9 @@ def get_embeddings_score(user, app_name, input_string, model):
 
     response_json = get_embeddings_response(data)
     #result_info = parse_embeddings_response(response_json)
-    response_json["kafka_topic"] = APPLICATION_METRIC
-    response_json["app_user"] = user
-    response_json["application_name"] = app_name
+    response_json["kafka-topic"] = APPLICATION_METRIC
+    response_json["app-user"] = user
+    response_json["application-name"] = app_name
     response_json["prompt"] = input_string
     # Write the system info to a JSON file
     with open("embeddings.json", "w") as json_file:

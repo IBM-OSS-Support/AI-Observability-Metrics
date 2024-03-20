@@ -1,3 +1,4 @@
+import sys
 from flask import Flask, request, make_response, jsonify
 import os
 import json
@@ -8,8 +9,11 @@ import psycopg2
 import datetime
 from flask_cors import CORS
 from dotenv import load_dotenv
-from db_manager import create_db_connection
 from utils import _gunzip_data, calculate_openai_cost
+
+
+#/root/roja-project/roja-metric-poc/applications/kafka_roja
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from kafka_roja import producer
 
 load_dotenv()
@@ -17,15 +21,47 @@ load_dotenv()
 app = Flask(__name__)
 CORS(app)
 
-# Set up basic logging
-logging.basicConfig(level=logging.DEBUG)
+# Set up basic logginglogging.basicConfig(level=logging.DEBUG)
+logging.basicConfig(level=logging.CRITICAL)
+
+
+def create_db_connection():
+    try:
+        # Get database connection parameters from environment variables
+        
+        DB_NAME="roja_postgres"
+# DB_NAME=roja_dev # dev 
+        DB_USER="roja_user"
+        DB_PASSWORD="roja_user"
+        DB_HOST="9.20.196.69"
+        DB_PORT=5432
+        #DB_NAME = os.environ.get("DB_NAME")
+        #DB_USER = os.environ.get("DB_USER")
+        #DB_PASSWORD = os.environ.get("DB_PASSWORD")
+        #DB_HOST = os.environ.get("DB_HOST")
+        print(DB_NAME, DB_USER, DB_PASSWORD, DB_HOST)
+        # Establish the database connection
+        connection = psycopg2.connect(
+            dbname=DB_NAME,
+            user=DB_USER,
+            password=DB_PASSWORD,
+            host=DB_HOST
+        )
+
+        return connection
+
+    except psycopg2.Error as e:
+        print("Error connecting to the database:", e)
+        return None
 
 @app.route('/additional_metrics', methods=['POST'])
 def upload_additional():
     try:
+        print("tahsin in /addtional_signals")
         logging.debug("Received request: /additional_metrics")
         data = request.get_json()
         producer.kafka_producer(data)
+        jsonify({"message": "JSON received successfully"}), 200
     except Exception as e:
         logging.error(f'Error processing request: {str(e)}')
         return f'Error: {str(e)}', 500
@@ -51,8 +87,10 @@ def upload():
         # Check for the presence of 'metrics' or 'span' keys inside 'data'
         if 'metrics' in signal_dict:
             tag = 'metrics'
-        elif 'span' in signal_dict:
-            tag = 'span'
+        elif 'spans' in signal_dict:
+            print("tahsin got span")
+            tag = 'spans'
+
             
         def extract_application_name(data_obj):
             if isinstance(data_obj, list):
@@ -64,11 +102,15 @@ def upload():
             return None
 
         # Extract application name from the JSON
+        print("tahsin before app")
         signal_dict['application-name'] = "bhoomiah"#extract_application_name(signal_dict[tag])
-        
+        signal_dict['kafka_topic'] = tag
+
+        print("tahsin after")
         # Extract token count and calculate cost
         token_count = sum(int(metric.get('counter', 0)) for metric in signal_dict.get('metrics', []) if metric['name'] == 'token_count')
 
+        print("tahsin after 1")
         signal_dict['token-cost'] = calculate_openai_cost(token_count)
 
         logging.debug(signal_dict['token-cost'])
@@ -89,16 +131,17 @@ def upload():
         # Save the received gzip data to a file on your system
         with open(file_path, 'w') as file:
             file.write(json_data)
+        #json_obj = json.loads(json_data)
+        #json_obj['kafka-topic'] = tag
+        #producer.kafka_producer(json_obj)
         
-        producer.kafka_producer(json_data)
-        '''
         # Connect to the database
         conn = create_db_connection()
         cursor = conn.cursor()
 
         # Create a table if it does not exist
         create_table_sql = """
-        CREATE TABLE IF NOT EXISTS signals (
+        CREATE TABLE IF NOT EXISTS signals_ (
             id SERIAL PRIMARY KEY,
             data JSONB,
             application_name TEXT,
@@ -112,7 +155,7 @@ def upload():
         current_timestamp = datetime.datetime.now()
 
         # SQL command to insert the JSON data along with 'application-name', 'tag', and timestamp
-        insert_metric_sql = "INSERT INTO signals (data, application_name, timestamp) VALUES (%s, %s, %s) ON CONFLICT ON CONSTRAINT unique_tag_application_name DO UPDATE SET data = %s, timestamp = %s"
+        insert_metric_sql = "INSERT INTO signals_ (data, application_name, timestamp) VALUES (%s, %s, %s) ON CONFLICT ON CONSTRAINT unique_tag_application_name DO UPDATE SET data = %s, timestamp = %s"
 
         cursor.execute(insert_metric_sql, (json_data, signal_dict.get('application-name', None), current_timestamp, json_data, current_timestamp))
 
@@ -130,7 +173,7 @@ def upload():
         response.headers['Content-Disposition'] = f'attachment; filename={file_name}'
         response.headers['Content-Type'] = 'application/zip'
         response.headers['Content-Encoding'] = 'gzip'
-        '''
+        
         return jsonify({"message": "JSON received successfully"}), 200
 
     except Exception as e:
