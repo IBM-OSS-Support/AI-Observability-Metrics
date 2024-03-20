@@ -15,7 +15,7 @@ logging.basicConfig(level=logging.CRITICAL)
 def kafka_subscribe(consumer):
 
     # Subscribe to multiple topics
-    topics = ['auditing', 'log_history', 'maintenance', 'session_info','embedding','span','metrics']
+    topics = ['auditing', 'log_history', 'maintenance', 'session_info','embedding','spans','metrics']
     consumer.subscribe(topics)
 
     # Start consuming messages

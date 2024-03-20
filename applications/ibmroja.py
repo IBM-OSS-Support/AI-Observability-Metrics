@@ -101,5 +101,5 @@ def gather_metrics(user, app_name, question):
     json_obj.append(log_app.log_prompt_info(user, app_name, question))
     json_obj.append(maintenance.get_maintenance_info(user,app_name))
     json_obj.append(session.get_session_info(user,app_name))
-    #json_obj.append(embeddings.get_embeddings_score(user,app_name,question,"text-embedding-3-small"))
+    json_obj.append(embeddings.get_embeddings_score(user,app_name,question,"text-embedding-3-small"))
     return json_obj

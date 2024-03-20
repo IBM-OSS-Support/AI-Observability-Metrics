@@ -13,10 +13,10 @@ logger = logging.getLogger()
 def extract_topic(json_data):
     if "kafka-topic" in json_data:
         return json_data["kafka-topic"]
-    elif "span" in json_data:
-        return "span"
-    elif "metrics" in json_data:
-        return "metrics"
+    #elif "spans" in json_data:
+    #    return "spans"
+    #elif "metrics" in json_data:
+    #    return "metrics"
     else:
         logger.error("Unknown topic sent: ", json_data)
         return "None"

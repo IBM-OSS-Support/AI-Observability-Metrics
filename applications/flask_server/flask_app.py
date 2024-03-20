@@ -103,7 +103,7 @@ def upload():
 
         # Extract application name from the JSON
         print("tahsin before app")
-        signal_dict['application-name'] = "bhoomiah"#extract_application_name(signal_dict[tag])
+        signal_dict['application-name'] = extract_application_name(signal_dict[tag])
         signal_dict['kafka_topic'] = tag
 
         print("tahsin after")
@@ -131,10 +131,10 @@ def upload():
         # Save the received gzip data to a file on your system
         with open(file_path, 'w') as file:
             file.write(json_data)
-        #json_obj = json.loads(json_data)
-        #json_obj['kafka-topic'] = tag
-        #producer.kafka_producer(json_obj)
-        
+        json_obj = json.loads(json_data)
+        json_obj['kafka-topic'] = tag
+        producer.kafka_producer(json_obj)
+        '''
         # Connect to the database
         conn = create_db_connection()
         cursor = conn.cursor()
@@ -162,7 +162,7 @@ def upload():
         conn.commit()
         cursor.close()
         conn.close()
-
+        '''
         logging.debug("JSON metric, span, 'application-name', and timestamp written to PostgreSQL")
 
         logging.debug("Processed request successfully")
@@ -174,7 +174,7 @@ def upload():
         response.headers['Content-Type'] = 'application/zip'
         response.headers['Content-Encoding'] = 'gzip'
         
-        return jsonify({"message": "JSON received successfully"}), 200
+        return response
 
     except Exception as e:
         logging.error(f'Error processing request: {str(e)}')
