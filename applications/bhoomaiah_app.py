@@ -1,5 +1,13 @@
 from ibmroja import run_chat_model, inject_roja_instrumentation, gather_metrics
 from flask_server import flask_utils
+import subprocess
+
+# Command to execute
+command = "rm -rf /tmp/response*.json"
+
+# Execute the command
+subprocess.run(command, shell=True)
+
 
 # Load runtime variables
 APPLICATION_NAME = "bhoomaiah_application"
