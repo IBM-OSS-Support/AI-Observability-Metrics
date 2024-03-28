@@ -66,6 +66,46 @@ def upload_additional():
         logging.error(f'Error processing request: {str(e)}')
         return f'Error: {str(e)}', 500
 
+@app.route('/api/v1/scores/', methods=['POST'])
+def upload_through_rest_scores():
+    
+    try:
+        print("tahsin in /api/v1/scores/")
+        logging.debug("Received request: /api/v1/scores/")
+        data = request.get_json()
+        #print(data)
+
+        file_path = '/tmp/scores.json'
+
+        # Open the file in write mode and use json.dump() to write the data
+        with open(file_path, 'w') as file:
+            json.dump(data, file)
+        #producer.kafka_producer(data)
+        return jsonify({"message": "JSON received successfully"}), 200
+    except Exception as e:
+        logging.error(f'Error processing request: {str(e)}')
+        return f'Error: {str(e)}', 500
+
+@app.route('/api/v1/logs/', methods=['POST'])
+def upload_through_rest_logs():
+    
+    try:
+        print("tahsin in /api/v1/logs/")
+        logging.debug("Received request: /api/v1/logs/")
+        data = request.get_json()
+        #print(data)
+
+        file_path = '/tmp/logs.json'
+
+        # Open the file in write mode and use json.dump() to write the data
+        with open(file_path, 'w') as file:
+            json.dump(data, file)
+        #producer.kafka_producer(data)
+        return jsonify({"message": "JSON received successfully"}), 200
+    except Exception as e:
+        logging.error(f'Error processing request: {str(e)}')
+        return f'Error: {str(e)}', 500
+
 @app.route('/api/v1/spans/', methods=['POST'])
 def upload_through_rest_spans():
     
@@ -73,7 +113,7 @@ def upload_through_rest_spans():
         print("tahsin in /api/v1/spans/")
         logging.debug("Received request: /api/v1/spans/")
         data = request.get_json()
-        print(data)
+        #print(data)
 
         file_path = '/tmp/spans.json'
 
@@ -93,7 +133,7 @@ def upload_through_rest_metrics():
         print("tahsin in /api/v1/metrics/")
         logging.debug("Received request: /api/v1/metrics/")
         data = request.get_json()
-        print(data)
+        #print(data)
 
         file_path = '/tmp/metrics.json'
 

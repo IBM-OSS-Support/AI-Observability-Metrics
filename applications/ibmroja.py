@@ -64,7 +64,7 @@ def run_chat_model(user_id, question):
         runnable = prompt | llm
 
         #with graphsignal.start_trace("predict", {"record_samples": True, "record_metrics":True, "enable_profiling":True}):
-        with graphsignal.trace('tahsn') as span:
+        with graphsignal.trace('tahsn') as score:
             #span.set_payload('input', input_data, usage=dict(token_count=input_token_count))
             for chunk in runnable.stream({"question": question}):
                 print(chunk, end="", flush=True)
