@@ -230,7 +230,8 @@ def process_spans(message,conn,json_object):
 
     # SQL command to insert the JSON data along with 'application-name', 'tag', and timestamp
     insert_metric_sql = "INSERT INTO maintenance (config, application_name, app_user, timestamp) VALUES (%s, %s, %s, %s)"
-    cursor.execute(insert_metric_sql, (json.dumps(json_span_first_object["config"]), json_object["application-name"], json_object["app-user"], current_timestamp))
+    #cursor.execute(insert_metric_sql, (json.dumps(json_span_first_object["config"]), json_object["application-name"], json_object["app-user"], current_timestamp))
+    cursor.execute(insert_metric_sql, (json.dumps(json_object["application-name"]), json_object["application-name"], json_object["app-user"], current_timestamp))
 
     conn.commit()
     cursor.close()

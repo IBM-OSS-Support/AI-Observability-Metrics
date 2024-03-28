@@ -2,7 +2,7 @@ import sys
 from flask import Flask, request, make_response, jsonify
 import os
 import json
-from graphsignal.proto import signals_pb2
+#from graphsignal.proto import signals_pb2
 from google.protobuf.json_format import MessageToDict
 import logging
 import psycopg2
@@ -65,6 +65,47 @@ def upload_additional():
     except Exception as e:
         logging.error(f'Error processing request: {str(e)}')
         return f'Error: {str(e)}', 500
+
+@app.route('/api/v1/spans/', methods=['POST'])
+def upload_through_rest_spans():
+    
+    try:
+        print("tahsin in /api/v1/spans/")
+        logging.debug("Received request: /api/v1/spans/")
+        data = request.get_json()
+        print(data)
+
+        file_path = '/tmp/spans.json'
+
+        # Open the file in write mode and use json.dump() to write the data
+        with open(file_path, 'w') as file:
+            json.dump(data, file)
+        #producer.kafka_producer(data)
+        return jsonify({"message": "JSON received successfully"}), 200
+    except Exception as e:
+        logging.error(f'Error processing request: {str(e)}')
+        return f'Error: {str(e)}', 500
+
+@app.route('/api/v1/metrics/', methods=['POST'])
+def upload_through_rest_metrics():
+    
+    try:
+        print("tahsin in /api/v1/metrics/")
+        logging.debug("Received request: /api/v1/metrics/")
+        data = request.get_json()
+        print(data)
+
+        file_path = '/tmp/metrics.json'
+
+        # Open the file in write mode and use json.dump() to write the data
+        with open(file_path, 'w') as file:
+            json.dump(data, file)
+        #producer.kafka_producer(data)
+        return jsonify({"message": "JSON received successfully"}), 200
+    except Exception as e:
+        logging.error(f'Error processing request: {str(e)}')
+        return f'Error: {str(e)}', 500
+
 
 @app.route('/signals', methods=['POST'])
 def upload():
