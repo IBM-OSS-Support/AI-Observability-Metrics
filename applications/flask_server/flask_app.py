@@ -61,7 +61,7 @@ def upload_additional():
         logging.debug("Received request: /additional_metrics")
         data = request.get_json()
         producer.kafka_producer(data)
-        jsonify({"message": "JSON received successfully"}), 200
+        return jsonify({"message": "JSON received successfully"}), 200
     except Exception as e:
         logging.error(f'Error processing request: {str(e)}')
         return f'Error: {str(e)}', 500
@@ -100,11 +100,22 @@ def upload():
                             if tag.get('key') == 'deployment':
                                 return tag.get('value')
             return None
+        
+        def extract_application_user(data_obj):
+            if isinstance(data_obj, list):
+                for item in data_obj:
+                    if 'tags' in item and isinstance(item['tags'], list):
+                        for tag in item['tags']:
+                            if tag.get('key') == 'user':
+                                return tag.get('value')
+            return None
+
 
         # Extract application name from the JSON
         print("tahsin before app")
         signal_dict['application-name'] = extract_application_name(signal_dict[tag])
         signal_dict['kafka_topic'] = tag
+        signal_dict['app-user'] = extract_application_user(signal_dict[tag])
 
         print("tahsin after")
         # Extract token count and calculate cost

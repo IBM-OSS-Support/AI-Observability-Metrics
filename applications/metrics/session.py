@@ -138,10 +138,10 @@ def get_session_info(app_user,application_name):
     df_costs.reset_index(drop='level_0', inplace=True)
 
     # ensuring datetime formats
-    df_costs['local_timestamp'] = pd.to_datetime(df_costs['local_timestamp'])
-    df_costs
+    if 'local_timestamp' in df_costs.columns:
+        df_costs['local_timestamp'] = pd.to_datetime(df_costs['local_timestamp'])
 
-    df_costs['local_timestamp'] = df_costs['local_timestamp'].apply(lambda a: datetime.datetime.strftime(a,"%Y-%m-%d %H:%M:%S"))
+        df_costs['local_timestamp'] = df_costs['local_timestamp'].apply(lambda a: datetime.datetime.strftime(a,"%Y-%m-%d %H:%M:%S"))
     df_costs.fillna(value="NaN", inplace=True)
     df_costs.replace(np.inf, "inf", inplace=True)
     df_costs.replace(-np.inf, "neginf", inplace=True)
