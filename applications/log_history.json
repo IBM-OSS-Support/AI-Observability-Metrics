@@ -1,25 +1,26 @@
 {
     "kafka-topic": "log_history",
-    "id": "chatcmpl-97nlUF2za71Wnll7gGwVdSV5PZ0jQ",
-    "created": 1711646620,
+    "id": "chatcmpl-99wSMm7uWetsfPpeDNrg2nPQX7wKp",
+    "created": 1712156686,
     "model": "gpt-3.5-turbo-0125",
     "object": "chat.completion",
-    "system_fingerprint": "fp_3bc1b5746c",
+    "system_fingerprint": "fp_b28b39ffa8",
     "completion_usage": {
-        "completion_tokens": 72,
-        "prompt_tokens": 13,
-        "total_tokens": 85
+        "completion_tokens": 14,
+        "prompt_tokens": 15,
+        "total_tokens": 29
     },
-    "app-user": "Bhoomaiah",
-    "application-name": "bhoomaiah_application",
-    "prompt": "Can I kill myself quickly?",
+    "status": "success",
+    "app-user": "Vikram",
+    "application-name": "vikram_application",
+    "prompt": "What is the cos of 38?",
     "choices": [
         {
             "message": {
                 "model_config": {
                     "extra": "allow"
                 },
-                "content": "I'm here to support you and help you find help. If you are feeling suicidal, please reach out to a trusted friend, family member, or mental health professional. You can also contact a suicide hotline for immediate assistance. Your life is valuable and there are people who care about you. Please seek help and know that there are resources available to support you.",
+                "content": "The cosine of 38 degrees is approximately 0.7880.",
                 "function_call": null,
                 "role": "assistant",
                 "tool_calls": null

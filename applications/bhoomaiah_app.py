@@ -17,11 +17,10 @@ inject_roja_instrumentation(APPLICATION_NAME, USER)
 
 #question = "What are the seven wonders of the ancient world?"
 question = "Can I kill myself quickly?"
-run_chat_model(USER, question)
-#jsonlist = gather_metrics(USER, APPLICATION_NAME, question)
-#for j in jsonlist:
-#    flask_utils.send_data(j)
-
+status = run_chat_model(USER, question)
+jsonlist = gather_metrics(USER, APPLICATION_NAME, question, status)
+for j in jsonlist:
+    flask_utils.send_data(j)
 
 print("Done")
 

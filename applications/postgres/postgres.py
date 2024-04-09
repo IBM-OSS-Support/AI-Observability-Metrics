@@ -93,6 +93,7 @@ def process_log_history(message,conn,json_object):
     CREATE TABLE IF NOT EXISTS log_history (
             id SERIAL PRIMARY KEY,
             log JSONB,
+            status TEXT,
             application_name TEXT,
             app_user TEXT,
             timestamp TIMESTAMP
@@ -106,8 +107,8 @@ def process_log_history(message,conn,json_object):
     print(json_object)
 
     # SQL command to insert the JSON data along with 'application-name', 'tag', and timestamp
-    insert_metric_sql = "INSERT INTO log_history (log, application_name, app_user, timestamp) VALUES (%s, %s, %s, %s)"
-    cursor.execute(insert_metric_sql, (json.dumps(json_object), json_object["application-name"], json_object["app-user"], current_timestamp))
+    insert_metric_sql = "INSERT INTO log_history (log, status, application_name, app_user, timestamp) VALUES (%s, %s, %s, %s, %s)"
+    cursor.execute(insert_metric_sql, (json.dumps(json_object), json_object["status"], json_object["application-name"], json_object["app-user"], current_timestamp))
 
     conn.commit()
     cursor.close()

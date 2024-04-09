@@ -49,8 +49,10 @@ def solve(user_id, task):
         )
         agent.run(task)
         logger.debug('Task solved')
+        return "success"
     except:
-        logger.error("Error while solving task", exc_info=True)    
+        logger.debug("Error while solving task", exc_info=True)
+        return "failure"
 
 def run_chat_model(user_id, question):
     print("tahsin")
@@ -62,15 +64,20 @@ def run_chat_model(user_id, question):
         ("human", "{question}")
         ])
         runnable = prompt | llm
+        
+        #arra = []
+        #print(arra[1])
 
         #with graphsignal.start_trace("predict", {"record_samples": True, "record_metrics":True, "enable_profiling":True}):
-        with graphsignal.trace('tahsn') as score:
+        #with graphsignal.score('sharifscore') as score1:
+        with graphsignal.trace("tahsin") as tr:
             #span.set_payload('input', input_data, usage=dict(token_count=input_token_count))
             for chunk in runnable.stream({"question": question}):
                 print(chunk, end="", flush=True)
-
+        return "success"
     except Exception as e:
-        logger.error("An error occurred: ", exc_info=e)
+        logger.debug("An error occurred: ", exc_info=e)
+        return "failure"
     
 def answer_questions(user_id, questions):
     try:
@@ -89,16 +96,17 @@ def answer_questions(user_id, questions):
         for question in questions:
             qa = RetrievalQA.from_chain_type(llm=OpenAI(), chain_type="stuff", retriever=vectordb.as_retriever())
             qa.run(question)
+        return "success"
     except Exception as e:
         # Handle any exceptions that occur
         # Assuming logger is properly set up
-        logger.error("An error occurred while processing the questions", exc_info=True)
+        logger.debug("An error occurred while processing the questions", exc_info=True)
+        return "failure"
 
-
-def gather_metrics(user, app_name, question):
+def gather_metrics(user, app_name, question, status):
     json_obj = []
     json_obj.append(safety_score.calculate_safety_score(user, app_name, question))
-    json_obj.append(log_app.log_prompt_info(user, app_name, question))
+    json_obj.append(log_app.log_prompt_info(user, app_name, question, status))
     json_obj.append(maintenance.get_maintenance_info(user,app_name))
     json_obj.append(session.get_session_info(user,app_name))
     json_obj.append(embeddings.get_embeddings_score(user,app_name,question,"text-embedding-3-small"))

@@ -1,41 +1,6 @@
 {
     "kafka-topic": "session_info",
-    "application-name": "bhoomaiah_application",
-    "app-user": "Bhoomaiah",
-    "sessions": [
-        {
-            "organization_id": "org-zvKGqHl0adRlJbe7lpb7n1wX",
-            "organization_name": "Personal",
-            "aggregation_timestamp": 1711645800,
-            "n_requests": 3,
-            "operation": "completion",
-            "snapshot_id": "gpt-3.5-turbo-0125",
-            "n_context_tokens_total": 81,
-            "n_generated_tokens_total": 177,
-            "email": "jamescho@us.ibm.com",
-            "api_key_id": "NaN",
-            "api_key_name": "NaN",
-            "api_key_redacted": "NaN",
-            "local_timestamp": "2024-03-28 10:10:00",
-            "query_date": "2024-03-28",
-            "user": "james_cho"
-        },
-        {
-            "organization_id": "org-zvKGqHl0adRlJbe7lpb7n1wX",
-            "organization_name": "Personal",
-            "aggregation_timestamp": 1711645800,
-            "n_requests": 2,
-            "operation": "completion",
-            "snapshot_id": "text-moderation",
-            "n_context_tokens_total": 16,
-            "n_generated_tokens_total": 0,
-            "email": "jamescho@us.ibm.com",
-            "api_key_id": "NaN",
-            "api_key_name": "NaN",
-            "api_key_redacted": "NaN",
-            "local_timestamp": "2024-03-28 10:10:00",
-            "query_date": "2024-03-28",
-            "user": "james_cho"
-        }
-    ]
+    "application-name": "vikram_application",
+    "app-user": "Vikram",
+    "sessions": []
 }

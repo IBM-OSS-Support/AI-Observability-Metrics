@@ -20,9 +20,7 @@ APPLICATION_METRIC = "log_history"
 # Then to run a prompt:
 
 @graphsignal.trace_function
-def log_prompt_info(user, application_name, question):
-    #graphsignal.set_context_tag('user', user)
-    #with graphsignal.start_trace('log_prompt_info'):
+def log_prompt_info(user, application_name, question, status):
     chat_completion = client.chat.completions.create(
             messages=[{
                 "role": "user",
@@ -44,6 +42,7 @@ def log_prompt_info(user, application_name, question):
                 "prompt_tokens": chat_completion.usage.prompt_tokens,
                 "total_tokens": chat_completion.usage.total_tokens
             },
+            "status":status,
             "app-user":user,
             "application-name":application_name,
             "prompt":question,
@@ -60,6 +59,10 @@ def log_prompt_info(user, application_name, question):
                 "logprobs":choice.logprobs
         } for choice in chat_completion.choices]
     }
+
+
+    with open('log_history1.json', 'w') as json_file:
+        json.dump(chat_completion.choices[0].message.content, json_file, indent=4)
 
     print(chat_completion.choices[0].message.content)
     print(chat_completion)
