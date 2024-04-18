@@ -54,6 +54,24 @@ def create_db_connection():
         print("Error connecting to the database:", e)
         return None
 
+def extract_application_name(data_obj):
+    if isinstance(data_obj, list):
+        for item in data_obj:
+            if 'tags' in item and isinstance(item['tags'], list):
+                for tag in item['tags']:
+                    if tag.get('key') == 'deployment':
+                        return tag.get('value')
+    return None
+        
+def extract_application_user(data_obj):
+    if isinstance(data_obj, list):
+        for item in data_obj:
+            if 'tags' in item and isinstance(item['tags'], list):
+                for tag in item['tags']:
+                    if tag.get('key') == 'user':
+                        return tag.get('value')
+    return None
+
 @app.route('/additional_metrics', methods=['POST'])
 def upload_additional():
     try:
@@ -61,7 +79,7 @@ def upload_additional():
         logging.debug("Received request: /additional_metrics")
         data = request.get_json()
         producer.kafka_producer(data)
-        return jsonify({"message": "JSON received successfully"}), 200
+        return jsonify({"message": "additional metrics JSON received successfully"}), 200
     except Exception as e:
         logging.error(f'Error processing request: {str(e)}')
         return f'Error: {str(e)}', 500
@@ -80,8 +98,8 @@ def upload_through_rest_scores():
         # Open the file in write mode and use json.dump() to write the data
         with open(file_path, 'w') as file:
             json.dump(data, file)
-        #producer.kafka_producer(data)
-        return jsonify({"message": "JSON received successfully"}), 200
+        producer.kafka_producer(data)
+        return jsonify({"message": "scores JSON received successfully"}), 200
     except Exception as e:
         logging.error(f'Error processing request: {str(e)}')
         return f'Error: {str(e)}', 500
@@ -92,16 +110,17 @@ def upload_through_rest_logs():
     try:
         print("tahsin in /api/v1/logs/")
         logging.debug("Received request: /api/v1/logs/")
-        data = request.get_json()
-        #print(data)
-
+        data = {
+            "kafka-topic":"logs",
+            "logs":request.get_json()
+        }
         file_path = '/tmp/logs.json'
 
         # Open the file in write mode and use json.dump() to write the data
         with open(file_path, 'w') as file:
             json.dump(data, file)
-        #producer.kafka_producer(data)
-        return jsonify({"message": "JSON received successfully"}), 200
+        producer.kafka_producer(data)
+        return jsonify({"message": "logs JSON received successfully"}), 200
     except Exception as e:
         logging.error(f'Error processing request: {str(e)}')
         return f'Error: {str(e)}', 500
@@ -112,16 +131,21 @@ def upload_through_rest_spans():
     try:
         print("tahsin in /api/v1/spans/")
         logging.debug("Received request: /api/v1/spans/")
-        data = request.get_json()
-        #print(data)
+        jdata = request.get_json()
+        data = {
+            "kafka-topic":"spans",
+            "app-user":extract_application_user(jdata),
+            "application-name": extract_application_name(jdata),
+            "spans":request.get_json()
+        }
 
         file_path = '/tmp/spans.json'
 
         # Open the file in write mode and use json.dump() to write the data
         with open(file_path, 'w') as file:
             json.dump(data, file)
-        #producer.kafka_producer(data)
-        return jsonify({"message": "JSON received successfully"}), 200
+        producer.kafka_producer(data)
+        return jsonify({"message": "spans JSON received successfully"}), 200
     except Exception as e:
         logging.error(f'Error processing request: {str(e)}')
         return f'Error: {str(e)}', 500
@@ -132,16 +156,23 @@ def upload_through_rest_metrics():
     try:
         print("tahsin in /api/v1/metrics/")
         logging.debug("Received request: /api/v1/metrics/")
-        data = request.get_json()
-        #print(data)
+        jdata = request.get_json()
+        
+        data = {
+            "kafka-topic":"metrics",
+            "app-user":extract_application_user(jdata),
+            "application-name": extract_application_name(jdata),
+            "token-cost":0,
+            "metrics":jdata
+        }
 
         file_path = '/tmp/metrics.json'
 
         # Open the file in write mode and use json.dump() to write the data
         with open(file_path, 'w') as file:
             json.dump(data, file)
-        #producer.kafka_producer(data)
-        return jsonify({"message": "JSON received successfully"}), 200
+        producer.kafka_producer(data)
+        return jsonify({"message": "metrics JSON received successfully"}), 200
     except Exception as e:
         logging.error(f'Error processing request: {str(e)}')
         return f'Error: {str(e)}', 500
@@ -195,7 +226,7 @@ def upload():
         # Extract application name from the JSON
         print("tahsin before app")
         signal_dict['application-name'] = extract_application_name(signal_dict[tag])
-        signal_dict['kafka_topic'] = tag
+        signal_dict['kafka-topic'] = tag
         signal_dict['app-user'] = extract_application_user(signal_dict[tag])
 
         print("tahsin after")

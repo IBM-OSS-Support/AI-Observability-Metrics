@@ -15,6 +15,7 @@ from langchain_community.llms import OpenAI
 from langchain.chains import RetrievalQA
 from langchain_community.document_loaders import TextLoader
 from metrics import safety_score, log_app, maintenance, session, embeddings
+import time
 
 logging.basicConfig()
 logger = logging.getLogger()
@@ -64,7 +65,7 @@ def run_chat_model(user_id, question):
         ("human", "{question}")
         ])
         runnable = prompt | llm
-        
+        time.sleep(10) 
         #arra = []
         #print(arra[1])
 
@@ -75,6 +76,8 @@ def run_chat_model(user_id, question):
             for chunk in runnable.stream({"question": question}):
                 print(chunk, end="", flush=True)
         return "success"
+    except KeyboardInterrupt:
+        return "user_abandoned"
     except Exception as e:
         logger.debug("An error occurred: ", exc_info=e)
         return "failure"
@@ -86,7 +89,7 @@ def answer_questions(user_id, questions):
 
         text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=0)
         texts = text_splitter.split_documents(documents)
-
+        time.sleep(10)
         embeddings = OpenAIEmbeddings()
         vectordb = Chroma.from_documents(texts, embeddings)
         # Initialize the ChatOpenAI model

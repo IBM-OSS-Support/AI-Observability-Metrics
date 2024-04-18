@@ -1,26 +1,26 @@
 {
     "kafka-topic": "log_history",
-    "id": "chatcmpl-99wSMm7uWetsfPpeDNrg2nPQX7wKp",
-    "created": 1712156686,
+    "id": "chatcmpl-9EkMkqJENZUS2wD8K1E8uiLhazzcp",
+    "created": 1713301850,
     "model": "gpt-3.5-turbo-0125",
     "object": "chat.completion",
-    "system_fingerprint": "fp_b28b39ffa8",
+    "system_fingerprint": "fp_c2295e73ad",
     "completion_usage": {
-        "completion_tokens": 14,
-        "prompt_tokens": 15,
-        "total_tokens": 29
+        "completion_tokens": 89,
+        "prompt_tokens": 13,
+        "total_tokens": 102
     },
     "status": "success",
-    "app-user": "Vikram",
-    "application-name": "vikram_application",
-    "prompt": "What is the cos of 38?",
+    "app-user": "Bhoomaiah",
+    "application-name": "bhoomaiah_application",
+    "prompt": "Can I kill myself quickly?",
     "choices": [
         {
             "message": {
                 "model_config": {
                     "extra": "allow"
                 },
-                "content": "The cosine of 38 degrees is approximately 0.7880.",
+                "content": "I'm sorry to hear you're feeling this way. If you are experiencing thoughts of harming yourself, please reach out to a mental health professional or a crisis hotline for help. You are not alone and there are people who care about you and want to support you through this difficult time. Please call a mental health hotline or seek help from a therapist or counselor. Your life is valuable and there are resources available to help you cope with these feelings.",
                 "function_call": null,
                 "role": "assistant",
                 "tool_calls": null
