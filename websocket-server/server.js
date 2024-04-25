@@ -14,22 +14,33 @@ const wss = new WebSocket.Server({ port: 8080 });
 wss.on('connection', (ws) => {
   console.log('Client connected');
 
-  ws.on('message', async (message) => {
-    if (message === 'getData') {
-      try {
-        const client = await pool.connect();
-        const result = await client.query('SELECT * FROM auditing;');
-        ws.send(JSON.stringify(result.rows));
-        client.release();
-      } catch (error) {
-        console.error('Error executing query', error);
-        ws.send(JSON.stringify({ error: 'Error fetching data' }));
-      }
+  // Attempt to establish connection to PostgreSQL
+  pool.connect((err, client, release) => {
+    if (err) {
+      console.error('Error connecting to PostgreSQL:', err);
+      return;
     }
-  });
+    
+    console.log('Connected to PostgreSQL');
+    
+    // Execute a SELECT SQL query
+    client.query('SELECT * FROM auditing', (err, result) => {
+      if (err) {
+        console.error('Error executing SQL query:', err);
+        release();
+        return;
+      }
 
-  ws.on('close', () => {
-    console.log('Client disconnected');
+      console.log('Query result:', result.rows);
+      
+      // Send the query result to the WebSocket client
+      ws.send(JSON.stringify(result.rows));
+
+      // Release the client when the WebSocket connection is closed
+      ws.on('close', () => {
+        release();
+        console.log('Client disconnected');
+      });
+    });
   });
 });
-

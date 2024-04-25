@@ -9,7 +9,8 @@
  * of its trade secrets, irrespective of what has been deposited with
  * the U.S. Copyright Office.
  ****************************************************************************** */
-@use '@carbon/react';
+/*
+ @use '@carbon/react';
 @use '@carbon/react/scss/breakpoint' as *;
 @use '@carbon/react/scss/colors' as *;
 @use '@carbon/react/scss/grid';
@@ -47,15 +48,15 @@
 @import './components/CveWorkflows/Flow/flow';
 @import './components/CveWorkflows/ComponentNode/component-node';
 @import './components/Auditing/auditing';
-
-
+*/
+/*
 // Theming
 :root {
-    @include theme(themes.$g100);
+    @include theme(map-get($themes,$g100));
     @include spread-map($dark-theme-extension);
   
     &[theme='light'] {
-      @include theme(themes.$g10);
+      @include theme(map-get($themes,$g10));
       @include spread-map($light-theme-extension);
   
       // overrides
@@ -80,3 +81,4 @@
     padding-inline-end: 0 !important;
     margin-left: 0 !important;
   }
+  */

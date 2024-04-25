@@ -20,6 +20,7 @@ import '@carbon/ibm-products/css/index.min.css';
 import './App.scss';
 
 // Components ----------------------------------------------------------------->
+/*
 import Auditing from './components/Auditing';
 import Dashboard from './components/Dashboard';
 import Metrics from './components/Metrics';
@@ -31,12 +32,14 @@ import TraceAnalysis from './components/TraceAnalysis';
 import Traces from './components/Traces';
 import Metering from './components/Metering';
 import CveWorkflows from './components/CveWorkflows';
-
+*/
 // Utils ----------------------------------------------------------------------->
+/*
 import { fetchAppData } from './appData';
 import { getMetricsData } from './utils/metrics-utils';
 import { useStoreContext } from './store';
-
+*/
+/*
 const ROUTES = [
   { path: '/', component: () => <Dashboard /> },
   { path: '/auditing', component: () => <Auditing /> },
@@ -49,7 +52,7 @@ const ROUTES = [
   { path: '/traces', component: () => <Traces /> },
   { path: '/cve', component: () => <CveWorkflows /> }
 ];
-
+*/
 function App() {
   const [data, setData] = useState([]);
 
