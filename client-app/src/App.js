@@ -51,6 +51,40 @@ const ROUTES = [
 ];
 
 function App() {
+  const [data, setData] = useState([]);
+
+  useEffect(() => {
+    const socket = new WebSocket('ws://localhost:8080');
+
+    socket.onopen = () => {
+      console.log('Connected to WebSocket server');
+      socket.send('getData');
+    };
+
+    socket.onmessage = (event) => {
+      const newData = JSON.parse(event.data);
+      setData(newData);
+    };
+
+    return () => {
+      socket.close();
+    };
+  }, []);
+
+  return (
+    <div>
+      <h1>Data from PostgreSQL Database</h1>
+      <ul>
+        {data.map((item, index) => (
+          <li key={index}>{JSON.stringify(item)}</li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
+/*
+function App() {
   const { state, setStore } = useStoreContext();
 
   useEffect(() => {
@@ -81,5 +115,5 @@ function App() {
     </div>
   );
 }
-
+*/
 export default App;
