@@ -1,0 +1,189 @@
+/* ******************************************************************************
+ * IBM Confidential
+ *
+ * OCO Source Materials
+ *
+ *  Copyright IBM Corp. 2023  All Rights Reserved.
+ *
+ * The source code for this program is not published or otherwise divested
+ * of its trade secrets, irrespective of what has been deposited with
+ * the U.S. Copyright Office.
+ ****************************************************************************** */
+.cve-flow {
+  margin-bottom: 1rem;
+  width: 100%;
+  height: 22rem;
+
+  .react-flow {
+    &:before,
+    &:after {
+      content: '';
+      position: absolute;
+      top: 0;
+      height: 100%;
+      width: 100%;
+    }
+
+    &:before {
+      @include fadeInAnimation(500ms, 85ms);
+
+      background: linear-gradient(to right,
+        var(--tv-gradient-start),
+        var(--tv-gradient-end)
+      );
+    }
+
+    &:after {
+      background: linear-gradient(to bottom, var(--tv-purple-parent-node-background) 25%, rgba(0, 0, 0, 0));
+    }
+
+    .react-flow__background {
+      @include fadeInAnimation(500ms, 85ms);
+      
+      z-index: 1;
+
+      circle {
+        fill: $gray-50;
+      }
+    }
+
+    .react-flow__connectionline * {
+      stroke: var(--tv-border-color);
+      stroke-dasharray: 4;
+    }
+
+    .react-flow__edge {
+      @include fadeInAnimation(500ms, 330ms);
+    }
+
+    .react-flow__edge-path {
+      stroke: var(--tv-border-color);
+      stroke-width: .0625rem;
+
+      will-change: opacity;
+      transition: opacity 240ms motion(standard, productive);
+    }
+
+    .zoom-buttons {
+      z-index: 10;
+      position: absolute;
+      bottom: 13.25rem;
+      right: 1rem;
+      display: flex;
+      align-items: center;
+
+      background-color: var(--tv-zoom-buttons-background);
+
+      // .cds--btn:not(:hover):not(:active) {
+      //   background-color: $layer-01;
+      // }
+
+      .cds--popover-container:last-of-type {
+        .cds--popover-content {
+          left: -1rem;
+        }
+      }
+    }
+
+    .react-flow__panel {
+      margin: 0 1rem 3.75rem 0;
+    }
+
+    .react-flow__minimap {
+      background: var(--tv-background);
+
+      &:after {
+        content: '';
+        position: absolute;
+        height: .125rem;
+        width: 100%;
+        background-color: var(--tv-minimap-mask);
+        bottom: 0;
+        left: 0;
+      }
+    }
+
+    .react-flow__minimap-mask {
+      fill: var(--tv-minimap-mask);
+    }
+
+    .react-flow__node {
+      opacity: 1;
+      will-change: opacity;
+      transition: opacity 240ms motion(standard, productive);
+    }
+
+    .react-flow__edges {
+      z-index: 0 !important;
+      pointer-events: none !important;
+    }
+
+    // TEMP
+    .react-flow__attribution {
+      display: none !important;
+    }
+  }
+
+  .loading-state,
+  .empty-state {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: calc(100% - 3rem);
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .loading-state {
+    .message {
+      @include type-style('heading-06');
+
+      will-change: color;
+      animation: pulse 2s motion(standard, productive) 110ms infinite both;
+
+      @keyframes pulse {
+        0% {
+          color: $text-disabled;
+        }
+        50% {
+          color: rgba(0, 0, 0, 0);
+        }
+        100% {
+          color: $text-disabled;
+        }
+      }
+    }
+  }
+
+  .empty-state {
+    @include fadeInAnimation(240ms, 110ms);
+
+    .empty-state-content {
+      display: flex;
+      flex-direction: column;
+      max-width: 17.5rem;
+
+      svg {
+        height: 10rem;
+        width: 10rem;
+        max-height: 10rem;
+        max-width: 10rem;
+        margin: 0 0 $spacing-07 $spacing-05;
+      }
+
+      h4 {
+        margin-bottom: $spacing-03;
+      }
+
+      p {
+        font-size: .875rem;
+      }
+
+      h4, p {
+        color: $text-helper;
+      }
+    }
+  }
+}

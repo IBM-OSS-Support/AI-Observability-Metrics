@@ -1,0 +1,128 @@
+/* ******************************************************************************
+ * IBM Confidential
+ *
+ * OCO Source Materials
+ *
+ *  Copyright IBM Corp. 2023  All Rights Reserved.
+ *
+ * The source code for this program is not published or otherwise divested
+ * of its trade secrets, irrespective of what has been deposited with
+ * the U.S. Copyright Office.
+ ****************************************************************************** */
+.component-node {
+  position: relative;
+  border-radius: .5rem;
+
+  .pulse {
+    @include pulseAnimation(2s, 0ms);
+  }
+
+  &.highlight .node, &.selected .node {
+    &, &:hover, &:focus {
+      background-color: #136e6d;
+      border: .0625rem solid #136e6d;
+    }
+  }
+
+  .node {
+    cursor: pointer;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    height: 3.5rem;
+    // width: 10rem;
+    padding: $spacing-03 $spacing-05;
+    border-radius: .5rem;
+
+    background-color: rgba(0, 0, 0, 0);
+    border: .0625rem solid var(--tv-border-color);
+
+    will-change: background-color, border-color;
+    transition: background-color 110ms motion(standard, productive),
+                border-color 110ms motion(standard, productive);
+
+    &:hover {
+      background-color: var(--tv-transparent-node-background);
+
+      .type {
+        transform: scale(1.1);
+      }
+    }
+
+    &:focus {
+      border: .0625rem solid $text-primary !important;
+    }
+
+    .type {
+      margin-right: $spacing-05;
+      z-index: 1; 
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 2rem;
+      width: 2rem;
+
+      will-change: transform;
+      transition: transform 240ms motion(standard, productive);
+
+      > svg {
+        @include fadeAndGrowInAnimation(240ms, 110ms, 0, 0, .9);
+
+        color: $text-primary;
+        height: 2rem;
+        width: 2rem;
+      }
+    }
+
+    .content {
+      position: relative;
+
+      .primary,
+      .secondary {
+        color: $text-primary;
+        max-width: 100%;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+      }
+    }
+  }
+
+  &:hover:not(.connectable):not(.not-connectable),
+  &:focus-within {
+    .actions {
+      opacity: 1;
+      transform: translateY(-100%);
+
+      will-change: opacity, transform;
+      transition: opacity 70ms motion(entrance, productive),
+                  transform 110ms motion(entrance, productive);
+    }
+  }
+
+  .react-flow__handle {
+    z-index: 1;
+    border: none;
+    border-radius: 100%;
+    height: .5rem;
+    width: .5rem;
+    background-color: var(--tv-border-color);
+    transition: all 110ms motion(exit, productive);
+  }
+
+  &:hover,
+  &.connectable {
+    .react-flow__handle {
+      transition: all 110ms motion(entrance, productive);
+    }
+  }
+
+  .react-flow__handle {
+    pointer-events: none !important;
+
+    * {
+      pointer-events: none !important;
+    }
+  }
+}

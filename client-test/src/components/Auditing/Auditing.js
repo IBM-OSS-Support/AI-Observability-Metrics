@@ -30,19 +30,13 @@ const Auditing = () => {
   const sendMessageToServer = () => {
     var start_timestamp = '2024-03-28 10:23:58.072245';
     var end_timestamp = '2024-04-25 12:40:18.875514';
-    var q = 'SELECT COUNT(*) AS total_records, SUM(CASE WHEN your_boolean_column THEN 1 ELSE 0 END) AS true_count, SUM(CASE WHEN NOT your_boolean_column THEN 1 ELSE 0 END) AS false_count, (SUM(CASE WHEN your_boolean_column THEN 1 ELSE 0 END)::NUMERIC / COUNT(*)) * 100 AS true_percentage, (SUM(CASE WHEN NOT your_boolean_column THEN 1 ELSE 0 END)::NUMERIC / COUNT(*)) * 100 AS false_percentage FROM auditing WHERE timestamp BETWEEN ' + start_timestamp + ' AND ' + end_timestamp;
+    var q = 'SELECT COUNT(*) AS total_records, SUM(CASE WHEN flagged THEN 1 ELSE 0 END) AS true_count, SUM(CASE WHEN NOT flagged THEN 1 ELSE 0 END) AS false_count, (SUM(CASE WHEN flagged THEN 1 ELSE 0 END)::NUMERIC / COUNT(*)) * 100 AS true_percentage, (SUM(CASE WHEN NOT flagged THEN 1 ELSE 0 END)::NUMERIC / COUNT(*)) * 100 AS false_percentage FROM auditing WHERE timestamp BETWEEN \'' + start_timestamp + '\' AND \'' + end_timestamp + '\'';
     if (websocket && websocket.readyState === WebSocket.OPEN) {
       const message = {
         tab: 'auditing',
-        action: "query",
-        query: q, // or any other action type
+        action: q
       };
       websocket.send(JSON.stringify(message));
-
-      /*
-      SELECT COUNT(*) AS total_records, SUM(CASE WHEN your_boolean_column THEN 1 ELSE 0 END) AS true_count, SUM(CASE WHEN NOT your_boolean_column THEN 1 ELSE 0 END) AS false_count, (SUM(CASE WHEN your_boolean_column THEN 1 ELSE 0 END)::NUMERIC / COUNT(*)) * 100 AS true_percentage, (SUM(CASE WHEN NOT your_boolean_column THEN 1 ELSE 0 END)::NUMERIC / COUNT(*)) * 100 AS false_percentage FROM auditing WHERE timestamp BETWEEN 'start_timestamp' AND 'end_timestamp';
-
-      */
     }
   };
 

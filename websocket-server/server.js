@@ -11,6 +11,7 @@ const pool = new Pool({
 
 const wss = new WebSocket.Server({ port: 8080 });
 
+/*
 wss.on('connection', (ws) => {
   console.log('Client connected');
 
@@ -24,7 +25,7 @@ wss.on('connection', (ws) => {
     console.log('Connected to PostgreSQL');
     
     // Execute a SELECT SQL query
-    client.query('SELECT * FROM auditing', (err, result) => {
+    client.query('select flagged from auditing order by timestamp limit 1', (err, result) => {
       if (err) {
         console.error('Error executing SQL query:', err);
         release();
@@ -42,5 +43,43 @@ wss.on('connection', (ws) => {
         console.log('Client disconnected');
       });
     });
+  });
+});
+*/
+// Define a function to handle incoming messages
+wss.on('connection', (ws) => {
+  ws.on('message', (message) => {
+    // Parse the incoming message
+    console.log('Received message from client:', message);
+    const data = JSON.parse(message);
+    
+    // Check the content of the message
+    if (data.tab === 'auditing') {
+      // Execute PostgreSQL query for auditing
+      // Assuming you have a PostgreSQL client setup
+      // Replace 'your_query_here' with your actual query
+      console.log(data.action)
+      pool.query(data.action, (err, result) => {
+        if (err) {
+          console.log('Error with Auditing query');
+        } else {
+          // Send query result back to client
+          ws.send(JSON.stringify(result.rows));
+        }
+      });
+    } else if (data.tab === 'performance') {
+      // Execute PostgreSQL query for performance
+      // Assuming you have a PostgreSQL client setup
+      // Replace 'your_query_here' with your actual query
+      console.log(data.action)
+      pool.query(data.action, (err, result) => {
+        if (err) {
+          console.log('Error with Performance query');
+        } else {
+          // Send query result back to client
+          ws.send(JSON.stringify(result.rows));
+        }
+      });
+    }
   });
 });

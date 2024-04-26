@@ -23,16 +23,16 @@ import './App.scss';
 import Performance from './components/Performance';
 
 import Auditing from './components/Auditing';
-import Dashboard from './components/Dashboard';
-import Metrics from './components/Metrics';
-import Monitoring from './components/Monitoring';
+//import Dashboard from './components/Dashboard';
+//import Metrics from './components/Metrics';
+//import Monitoring from './components/Monitoring';
 import Navigation from './components/Navigation';
 
-import Sessions from './components/Sessions';
-import TraceAnalysis from './components/TraceAnalysis';
-import Traces from './components/Traces';
-import Metering from './components/Metering';
-import CveWorkflows from './components/CveWorkflows';
+//import Sessions from './components/Sessions';
+//import TraceAnalysis from './components/TraceAnalysis';
+//import Traces from './components/Traces';
+//import Metering from './components/Metering';
+//import CveWorkflows from './components/CveWorkflows';
 
 // Utils ----------------------------------------------------------------------->
 /*
@@ -42,15 +42,7 @@ import { useStoreContext } from './store';
 */
 
 const ROUTES = [
-  { path: '/', component: () => <Dashboard /> },
   { path: '/auditing', component: () => <Auditing /> },
-  { path: '/metrics', component: () => <Metrics /> },
-  { path: '/traceability', component: () => <Monitoring /> },
-  { path: '/metering', component: () => <Metering /> },
-  { path: '/sessions', component: () => <Sessions /> },
-  { path: '/trace-analysis/:appName', component: () => <TraceAnalysis /> },
-  { path: '/traces', component: () => <Traces /> },
-  { path: '/cve', component: () => <CveWorkflows /> },
   { path: '/performance', component: () => <Performance /> }
 ];
 
