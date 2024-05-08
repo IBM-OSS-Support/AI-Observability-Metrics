@@ -41,12 +41,17 @@
 @import './components/Dashboard/dashboard';
 @import './components/Dashboard/TracesTile/traces-tile';
 @import './components/Performance/CpuUsage/cpu-usage';
+@import './components/Performance/SessionLength/session-length';
+@import './components/Metering/AverageToken/average-token';
+@import './components/Performance/RequestsPerSession/requests-session';
 @import './components/Sessions/sessions';
 @import './components/Performance/performance';
 @import './components/Metering/metering';
 @import './components/CveWorkflows/Flow/flow';
 @import './components/CveWorkflows/ComponentNode/component-node';
 @import './components/Auditing/auditing';
+@import './components/common/HeaderFilter/headerfilter';
+@import './components/Performance/PolicyDiagram/policy-diagram';
 
 
 // Theming

@@ -39,9 +39,9 @@ const getLatencyValues = (histogram) => {
   }
 }
 
-const formatMetrics = (metrics = []) => {
+const formatSpans = (spans = []) => {
   let obj = {};
-  for (const item of metrics) {
+  for (const item of spans) {
     switch (item.name) {
       case 'token_count':
       case 'call_count': {
@@ -80,13 +80,13 @@ const formatMetrics = (metrics = []) => {
   return obj;
 }
 
-export const getMetricsData = () => {
+export const getSpansData = () => {
   const appData = getAppData();
   const data = {};
   let startTime, endTime;
   
   for (const app of appData) {
-    const metricsObj = formatMetrics(app.data.metrics);
+    const spansObj = formatSpans(app.data.spans);
     
     if (!startTime || moment(app.timestamp).isBefore(moment(startTime))) {
       startTime = moment(app.timestamp).valueOf();
@@ -102,7 +102,7 @@ export const getMetricsData = () => {
       id: app.id,
       name: app.application_name,
       time: moment(app.timestamp).format(),
-      ...metricsObj
+      ...spansObj
     }
   }
 

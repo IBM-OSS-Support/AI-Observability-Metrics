@@ -16,6 +16,7 @@ import {
   green30,
   orange30,
 } from '@carbon/colors';
+import moment from 'moment';
 
 export const policyData = [
   {
@@ -99,6 +100,35 @@ export const policyData = [
       }
     ]
   },
+  //safety score starts
+  {
+    id: '4',
+    name: 'Safety Score',
+    type: 'color',
+    policyOn: 'token',
+    unit: 'numbers',
+    policy: [
+      {
+        name: 'Low',
+        operator: '<=',
+        value: 0,
+        color: cyan60
+      },
+      {
+        name: 'Medium',
+        operator: '<=',
+        value: 500,
+        color: yellow30
+      },
+      {
+        name: 'High',
+        operator: '>',
+        value: 800,
+        color: red50
+      }
+    ]
+  },
+  // ends
 ];
 
 export const __apps = [
@@ -222,4 +252,20 @@ export const __apps = [
     token: 350,
     cpu: 15
   },
+];
+export const latencyOptions = {
+  title: 'Latency (in seconds)',
+};
+
+export const latencyData = [
+  {
+    group: 'Dataset1',
+    key: moment(1704976200).toDate(),
+    value: 6.5
+  },
+  {
+    group: 'Dataset1',
+    key: moment(1704970800).toDate(),
+    value: 5.4
+  }
 ];

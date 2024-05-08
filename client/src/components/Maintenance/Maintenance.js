@@ -13,29 +13,21 @@ import React from "react";
 import PageContainer from "../common/PageContainer";
 
 import Transactions from "../Traces/Transactions/Transactions";
-import Filter from "../common/HeaderFilter/HeaderFilter";
-import AssetReusability from "./AssetReusability/AssetReusability";
-import { Tile } from "@carbon/react";
 
-const Monitoring = () => {
-	console.log('here');
+const Maintenance = () => {
 	return(
     <PageContainer
       className="monitoring-container"
       header={{
-        title: "Traceability",
-        subtitle: "Traceability data",
+        title: "Maintenance",
+        subtitle: "Maintenance data",
       }}
     >
-      <Filter />
       <Transactions
-        component='monitor'
+        component='maintenance'
 			/>
-    <Tile className="chart-tile">
-      <AssetReusability />
-    </Tile>
     </PageContainer>
 	);
 }
 
-export default Monitoring;
+export default Maintenance;

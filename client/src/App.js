@@ -31,17 +31,20 @@ import TraceAnalysis from './components/TraceAnalysis';
 import Traces from './components/Traces';
 import Metering from './components/Metering';
 import CveWorkflows from './components/CveWorkflows';
+import Maintenance from './components/Maintenance';
 
 // Utils ----------------------------------------------------------------------->
 import { fetchAppData } from './appData';
 import { getMetricsData } from './utils/metrics-utils';
 import { useStoreContext } from './store';
 
+
 const ROUTES = [
   { path: '/', component: () => <Dashboard /> },
   { path: '/auditing', component: () => <Auditing /> },
   { path: '/metrics', component: () => <Metrics /> },
   { path: '/traceability', component: () => <Monitoring /> },
+  { path: '/maintenance', component: () => <Maintenance /> },
   { path: '/performance', component: () => <Performance /> },
   { path: '/metering', component: () => <Metering /> },
   { path: '/sessions', component: () => <Sessions /> },
