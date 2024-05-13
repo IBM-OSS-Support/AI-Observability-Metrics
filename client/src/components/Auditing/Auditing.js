@@ -200,6 +200,8 @@ import AbandonmentRate from "../Performance/AbandonmentRate/AbandonmentRate";
 import Filter from "../common/HeaderFilter/HeaderFilter";
 import AdoptionRate from "./AdoptionRate/AdoptionRate";
 import Transactions from "../Traces/Transactions";
+import AuditingTable from "./AuditingTable/AuditingTable";
+import SafetyScoreTable from "./SafetyScoreTable/SafetyScoreTable";
 
 const Auditing = () => {
   return (
@@ -235,7 +237,7 @@ const Auditing = () => {
           </Column>
           <Column max={16} xlg={16} lg={16} md={4} sm={4} className="content-tile">
             <Tile className="chart-tile">
-            <Transactions showColors component="safetyscore" />
+            <SafetyScoreTable />
             </Tile>
           </Column>
         </Grid>

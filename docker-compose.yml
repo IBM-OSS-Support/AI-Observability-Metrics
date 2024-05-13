@@ -1,0 +1,19 @@
+version: '3.8'
+
+services:
+  websocket-server:
+    build:
+      context: ./websocket-server
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+
+  client-test:
+    build:
+      context: ./client-test
+      dockerfile: Dockerfile
+    ports:
+      - "3001:80"
+    depends_on:
+      - websocket-server
+
