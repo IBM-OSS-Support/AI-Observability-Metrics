@@ -119,7 +119,7 @@ def upload_through_rest_logs():
         # Open the file in write mode and use json.dump() to write the data
         with open(file_path, 'w') as file:
             json.dump(data, file)
-        producer.kafka_producer(data)
+        #producer.kafka_producer(data)
         return jsonify({"message": "logs JSON received successfully"}), 200
     except Exception as e:
         logging.error(f'Error processing request: {str(e)}')

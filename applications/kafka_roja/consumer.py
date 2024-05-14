@@ -15,7 +15,7 @@ from postgres import postgres
 kafka_server = 'localhost:9092'
 
 # Set up basic logging
-logging.basicConfig(level=logging.CRITICAL)
+logging.basicConfig(level=logging.DEBUG)
 
 def kafka_subscribe(consumer):
 
@@ -25,9 +25,12 @@ def kafka_subscribe(consumer):
     consumer.subscribe(topics)
 
     # Start consuming messages
-    for message in consumer:
-        print("Received message from topic", message.topic, ":", message.value)
-        postgres.upload_to_postgres(message)
+    try:
+        for message in consumer:
+            print("Received message from topic", message.topic, ":", message.value)
+            postgres.upload_to_postgres(message)
+    finally:
+        consumer.close()
 
 def create_kafka_consumer():
     logging.debug("create kafka consumer")
