@@ -48,11 +48,13 @@ const SafetyScoreTable = () => {
         setMessageFromServer(JSON.parse(event.data));
       };
     }
-    sendMessageToServer();
+    sendMessageToServer(messageFromServer);
+    console.log("111websocket: ", messageFromServer);
   }, [websocket]);
 
   useEffect(() => {
-    if (messageFromServer.length >= 0) {
+    if (messageFromServer.length > 0) {
+      console.log("Inside if-messageFromServer: ", messageFromServer);
       const formattedData = messageFromServer;
       setRowData(formattedData[0]);
     }
@@ -130,7 +132,7 @@ const SafetyScoreTable = () => {
   //   console.log('Headers', headers);
   //   console.log('Formatted data', formattedData);
   // };
-
+console.log('safetyscore rowdata :', rowData);
   return (
     <div>
       {/* <table>
@@ -163,7 +165,13 @@ const SafetyScoreTable = () => {
           placeholder: "Search for queries",
           onChange: setSearchText,
         }}
-        
+        filter={{
+          id: "query-history-filter",
+          setSelectedFilters: (newSelectedFilters) => {
+            setSelectedFilters(newSelectedFilters);
+            setPagination((prev) => ({ ...prev, offset: 0 }));
+          },
+        }}
         pagination={{
           totalItems: rowData.length,
           setPagination,

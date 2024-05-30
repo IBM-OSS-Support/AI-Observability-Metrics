@@ -69,6 +69,8 @@ export const getCallCountData = ({ apps, startTime, endTime }) => {
 export const getLatencyData = ({ apps, startTime, endTime }) => {
   let obj = {};
 
+  console.log('latency starttime', startTime);
+
   const intervals = getIntervals(startTime, endTime, 10);
 
   for (const i in intervals) {

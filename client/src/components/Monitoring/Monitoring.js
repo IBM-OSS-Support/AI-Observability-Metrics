@@ -16,6 +16,7 @@ import Transactions from "../Traces/Transactions/Transactions";
 import Filter from "../common/HeaderFilter/HeaderFilter";
 import AssetReusability from "./AssetReusability/AssetReusability";
 import { Tile } from "@carbon/react";
+import LogTable from "./LogTable/LogTable";
 
 const Monitoring = () => {
 	console.log('here');
@@ -31,6 +32,7 @@ const Monitoring = () => {
       <Transactions
         component='monitor'
 			/>
+      <LogTable/>
     <Tile className="chart-tile">
       <AssetReusability />
     </Tile>
