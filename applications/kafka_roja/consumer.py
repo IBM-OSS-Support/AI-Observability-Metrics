@@ -21,7 +21,7 @@ def kafka_subscribe(consumer):
 
     print("running")
     # Subscribe to multiple topics
-    topics = ['auditing','spans','metrics','log_history','session_info','embedding']
+    topics = ['auditing','spans','metrics','log_history','session_info','embedding','user_satisfaction']
     consumer.subscribe(topics)
 
     # Start consuming messages

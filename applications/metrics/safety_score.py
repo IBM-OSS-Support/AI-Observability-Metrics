@@ -41,7 +41,6 @@ def parse_moderation_response(json_obj):
     
     return json_obj['results'][0]
 
-@graphsignal.trace_function
 def calculate_safety_score(user, app_name, question):
     #graphsignal.set_context_tag('user', user)
     #with graphsignal.start_trace('calculate_safety_score'):

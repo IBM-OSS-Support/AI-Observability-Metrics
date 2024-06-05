@@ -19,7 +19,6 @@ APPLICATION_METRIC = "log_history"
 
 # Then to run a prompt:
 
-@graphsignal.trace_function
 def log_prompt_info(user, application_name, question, status):
     chat_completion = client.chat.completions.create(
             messages=[{

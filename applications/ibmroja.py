@@ -14,7 +14,7 @@ from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain_community.llms import OpenAI
 from langchain.chains import RetrievalQA
 from langchain_community.document_loaders import TextLoader
-from metrics import safety_score, log_app, maintenance, session, embeddings
+from metrics import safety_score, log_app, maintenance, session, embeddings, user_satisfaction
 import time
 
 logging.basicConfig()
@@ -71,7 +71,7 @@ def run_chat_model(user_id, question):
 
         #with graphsignal.start_trace("predict", {"record_samples": True, "record_metrics":True, "enable_profiling":True}):
         #with graphsignal.score('sharifscore') as score1:
-        with graphsignal.trace("tahsin") as tr:
+        with graphsignal.trace("run_chat_model") as tr:
             #span.set_payload('input', input_data, usage=dict(token_count=input_token_count))
             for chunk in runnable.stream({"question": question}):
                 print(chunk, end="", flush=True)
@@ -106,11 +106,12 @@ def answer_questions(user_id, questions):
         logger.debug("An error occurred while processing the questions", exc_info=True)
         return "failure"
 
-def gather_metrics(user, app_name, question, status):
+def gather_metrics(user, app_name, question, status, rating, comment):
     json_obj = []
     json_obj.append(safety_score.calculate_safety_score(user, app_name, question))
     json_obj.append(log_app.log_prompt_info(user, app_name, question, status))
     json_obj.append(maintenance.get_maintenance_info(user,app_name))
     json_obj.append(session.get_session_info(user,app_name))
-    json_obj.append(embeddings.get_embeddings_score(user,app_name,question,"text-embedding-3-small"))
+    #json_obj.append(embeddings.get_embeddings_score(user,app_name,question,"text-embedding-3-small"))
+    json_obj.append(user_satisfaction.prepare_user_satisfaction(user,app_name,question,rating,comment))
     return json_obj

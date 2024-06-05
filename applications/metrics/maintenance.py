@@ -35,7 +35,6 @@ def generate_system_info(user, app_name):
     }
     return system_info
 
-@graphsignal.trace_function
 def get_maintenance_info(user, app_name):
     system_info = generate_system_info(user, app_name)
 
