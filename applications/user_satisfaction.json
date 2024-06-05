@@ -1,7 +1,7 @@
 {
     "kafka-topic": "user_satisfaction",
-    "rating": 3,
-    "comment": "Expected a more concise answer",
-    "app-user": "Bhoomaiah",
-    "application-name": "bhoomaiah_application"
+    "rating": 4,
+    "comment": "amazing application returns correct results",
+    "app-user": "Vikram",
+    "application-name": "vikram_application"
 }

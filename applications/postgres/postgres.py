@@ -4,6 +4,7 @@ import os
 import psycopg2
 import json
 import time
+import socket
 
 # Set up basic logging
 logging.basicConfig(level=logging.CRITICAL)
@@ -319,6 +320,7 @@ def process_spans(message,conn,json_object):
             runtime_version TEXT,
             openai_library_version TEXT,
             langchain_library_version TEXT,
+            hostname TEXT, 
             application_name TEXT,
             app_user TEXT,
             timestamp TIMESTAMP
@@ -343,13 +345,9 @@ def process_spans(message,conn,json_object):
     config_dict = extract_config(json_span_first_object["config"])
 
     # SQL command to insert the JSON data along with 'application-name', 'tag', and timestamp
-    insert_metric_sql = "INSERT INTO maintenance (graphsignal_library_version, os_name, os_version, runtime_name, runtime_version, openai_library_version, langchain_library_version, application_name, app_user, timestamp) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
-    cursor.execute(insert_metric_sql, (config_dict["graphsignal.library.version"], config_dict["os.name"], config_dict["os.version"], config_dict["runtime.name"], config_dict["runtime.version"], config_dict["openai.library.version"], config_dict["langchain.library.version"], json_object["application-name"], json_object["app-user"], current_timestamp))
-    #cursor.execute(insert_metric_sql, (json.dumps(json_object["application-name"]), json_object["application-name"], json_object["app-user"], current_timestamp))
-
-    #insert_metric_sql = "INSERT INTO maintenance (config, application_name, app_user, timestamp) VALUES (%s, %s, %s, %s)"
-    #cursor.execute(insert_metric_sql, ('{}', json_object["application-name"], json_object["app-user"], current_timestamp))
-
+    insert_metric_sql = "INSERT INTO maintenance (graphsignal_library_version, os_name, os_version, runtime_name, runtime_version, openai_library_version, langchain_library_version, hostname, application_name, app_user, timestamp) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
+    cursor.execute(insert_metric_sql, (config_dict["graphsignal.library.version"], config_dict["os.name"], config_dict["os.version"], config_dict["runtime.name"], config_dict["runtime.version"], config_dict["openai.library.version"], config_dict["langchain.library.version"], socket.gethostname(), json_object["application-name"], json_object["app-user"], current_timestamp))
+    
     # operations
     create_table_sql = """
     CREATE TABLE IF NOT EXISTS operations (
