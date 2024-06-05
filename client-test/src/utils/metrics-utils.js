@@ -96,6 +96,8 @@ export const getMetricsData = () => {
       endTime = moment(app.timestamp).valueOf();
     }
 
+    console.log("data[app.id]", app.data.spans[0].node_usage.os_name);  // debuglog to check spans OS Name
+
     data[app.id] = {
       id: app.id,
       name: app.application_name,

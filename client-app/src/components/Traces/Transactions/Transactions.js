@@ -21,8 +21,8 @@ import { getAppData } from "../../../appData";
 import TimelineGraph from "./TimelineGraph";
 
 const Transactions = ({ component, showColors }) => {
-  console.log(component);
   const navigate = useNavigate();
+  console.log("2.component", component , "navigate", navigate);
 
   const defaultHeaders = useMemo(() => {
     if (component === "audit") {
@@ -67,6 +67,108 @@ const Transactions = ({ component, showColors }) => {
         },
       ];
     }
+    //safety score starts here
+    else if (component === "safetyscore") {
+      return [
+        {
+          key: "deployment",
+          header: "Application name",
+          checked: true,
+        },
+        {
+          key: "hate",
+          header: "Hate",
+          checked: true,
+        },
+        {
+          key: "user",
+          header: "Sexual",
+          checked: true,
+        },
+        {
+          key: "operation",
+          header: "Violence",
+          checked: true,
+        },
+        {
+          key: "deployment",
+          header: "Self harm",
+          checked: true,
+        },
+        {
+          key: "user",
+          header: "Harassment",
+          checked: true,
+        },
+        {
+          key: "operation",
+          header: "Sexual/Minors",
+          checked: true,
+        },
+        {
+          key: "deployment",
+          header: "Hate/Threatening",
+          checked: true,
+        },
+        {
+          key: "user",
+          header: "Self harm/Intent",
+          checked: true,
+        },
+        {
+          key: "operation",
+          header: "Violence/Graphic",
+          checked: true,
+        },
+        {
+          key: "deployment",
+          header: "Harassment/Threatening",
+          checked: true,
+        },
+        {
+          key: "user",
+          header: "Self harm/Instructions",
+          checked: true,
+        },
+      ];
+    }
+    //end
+    //maintenance starts here
+    else if (component === "maintenance") {
+      return [
+        {
+          key: "hostname",
+          header: "Graphsignal Library",
+          checked: true,
+        },
+        {
+          key: "component",
+          header: "OS Name",
+          checked: true,
+        },
+        {
+          key: "operation",
+          header: "OS Version",
+          checked: true,
+        },
+        {
+          key: "user",
+          header: "Runtime Name",
+          checked: true,
+        },
+        {
+          key: "operation",
+          header: "Runtime Version",
+          checked: true,
+        },
+        {
+          key: "operation",
+          header: "Library Versions",
+          checked: true,
+        },
+      ];
+    }
+    // maintenance ends here
     return [
       {
         key: "deployment",
@@ -93,9 +195,14 @@ const Transactions = ({ component, showColors }) => {
         header: "Timestamp",
         checked: true,
       },
+      {
+        key: "safety",
+        header: "Safety Score",
+        checked: true,
+      },
     ];
   }, [component]);
-
+console.log("defaultHeaders", defaultHeaders);
   const [headers, setHeaders] = useState(
     defaultHeaders.map((h) => Object.assign({}, h))
   );
@@ -116,6 +223,7 @@ const Transactions = ({ component, showColors }) => {
   useEffect(() => {
     if (state.status === "success") {
       const data = getAppData();
+      console.log("useEffect:", data);
       const rowData = data.map(({ data }) => {
         const rootSpanId = data.spans?.[0]?.context?.root_span_id;
         const root = (data.spans || []).find((s) => s.span_id === rootSpanId);
@@ -123,6 +231,8 @@ const Transactions = ({ component, showColors }) => {
           return {
             deployment: data["application-name"],
             trace: moment(Number(data.upload_ms)).format("YYYY-MM-DD HH:mm:ss"),
+            component : data[""],
+            name : data[""],
             latency: 0,
             start_us: 0,
             end_us: 0,
@@ -177,7 +287,20 @@ const Transactions = ({ component, showColors }) => {
   }
   return (
     <div className="traces-container">
-      {component !== "audit" &&
+      { component !== "maintenance" && component !== "safetyscore" && component !== "audit" &&
+        <div className="trace-sections">
+          <Accordion align="start">
+            <AccordionItem title="Timeline chart (Applications)" open={true}>
+              <div className="timeline-chart-wrapper">
+                ASD
+                <TimelineGraph />
+              </div>
+            </AccordionItem>
+          </Accordion>
+        </div>
+      
+      }
+      {/* {component !== "audit" &&
         <div className="trace-sections">
           <Accordion align="start">
             <AccordionItem title="Timeline chart (Applications)" open={true}>
@@ -187,7 +310,7 @@ const Transactions = ({ component, showColors }) => {
             </AccordionItem>
           </Accordion>
         </div>
-      }
+      } */}
 
       <div className="trace-sections">
         <CustomDataTable

@@ -30,6 +30,7 @@
 
 /*@import './components/common/FilterFlyout/filter-flyout';
 @import './components/common/CustomDataTable/custom-data-table';
+@import './components/common/CustomDataTableFWS/custom-data-table-fws';
 @import './components/common/RojaChat/_roja_chat';
 @import './components/common/Loader/loader';
 */
@@ -42,12 +43,17 @@
 @import './components/Dashboard/dashboard';
 @import './components/Dashboard/TracesTile/traces-tile';
 @import './components/Performance/CpuUsage/cpu-usage';
+@import './components/Performance/SessionLength/session-length';
+@import './components/Metering/AverageToken/average-token';
+@import './components/Performance/RequestsPerSession/requests-session';
 @import './components/Sessions/sessions';
 @import './components/Performance/performance';
 @import './components/Metering/metering';
 @import './components/CveWorkflows/Flow/flow';
 @import './components/CveWorkflows/ComponentNode/component-node';*/
 @import './components/Auditing/auditing';
+@import './components/common/HeaderFilter/headerfilter';
+@import './components/Performance/PolicyDiagram/policy-diagram';
 
 /*
 // Theming

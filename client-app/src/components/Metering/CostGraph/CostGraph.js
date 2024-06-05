@@ -66,7 +66,7 @@ function CostGraph() {
   const costData = useMemo(() => {
     if (state.status === 'success') {
       const appData = getAppData();
-
+      console.log("appData", appData);
       return appData
         .map(({data: app}) => [
           {

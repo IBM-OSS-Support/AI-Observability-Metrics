@@ -52,7 +52,7 @@ wss.on('connection', (ws) => {
     // Parse the incoming message
     console.log('Received message from client:', message);
     const data = JSON.parse(message);
-    
+    console.log('data123', data);
     // Check the content of the message
     if (data.tab === 'auditing') {
       // Execute PostgreSQL query for auditing
@@ -61,10 +61,10 @@ wss.on('connection', (ws) => {
       console.log(data.action)
       pool.query(data.action, (err, result) => {
         if (err) {
-          console.log('Error with Auditing query');
+          console.log('Error with Auditing query', err);
         } else {
           // Send query result back to client
-          ws.send(JSON.stringify(result.rows));
+          ws.send(JSON.stringify(result.rows)); console.log('checking error');
         }
       });
     } else if (data.tab === 'performance') {

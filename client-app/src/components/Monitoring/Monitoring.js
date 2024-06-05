@@ -13,6 +13,10 @@ import React from "react";
 import PageContainer from "../common/PageContainer";
 
 import Transactions from "../Traces/Transactions/Transactions";
+import Filter from "../common/HeaderFilter/HeaderFilter";
+import AssetReusability from "./AssetReusability/AssetReusability";
+import { Tile } from "@carbon/react";
+import LogTable from "./LogTable/LogTable";
 
 const Monitoring = () => {
 	console.log('here');
@@ -24,9 +28,14 @@ const Monitoring = () => {
         subtitle: "Traceability data",
       }}
     >
+      <Filter />
       <Transactions
         component='monitor'
 			/>
+      <LogTable/>
+    <Tile className="chart-tile">
+      <AssetReusability />
+    </Tile>
     </PageContainer>
 	);
 }

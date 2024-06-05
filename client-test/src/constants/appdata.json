@@ -48,6 +48,10 @@
             {
               "key": "model",
               "value": "gpt-3.5-turbo"
+            },
+            {
+              "key": "test",
+              "value": "true"
             }
           ],
           "type": "HISTOGRAM_METRIC",
@@ -85,6 +89,10 @@
             {
               "key": "model",
               "value": "gpt-3.5-turbo"
+            },
+            {
+              "key": "test",
+              "value": "false"
             }
           ],
           "type": "COUNTER_METRIC",
@@ -126,6 +134,10 @@
             {
               "key": "data",
               "value": "messages"
+            },
+            {
+              "key": "test",
+              "value": "true"
             }
           ],
           "type": "COUNTER_METRIC",
@@ -167,6 +179,10 @@
             {
               "key": "data",
               "value": "messages"
+            },
+            {
+              "key": "test",
+              "value": "true"
             }
           ],
           "type": "COUNTER_METRIC",
@@ -208,6 +224,10 @@
             {
               "key": "data",
               "value": "completion"
+            },
+            {
+              "key": "test",
+              "value": "false"
             }
           ],
           "type": "COUNTER_METRIC",
@@ -248,6 +268,10 @@
             {
               "key": "data",
               "value": "completion"
+            },
+            {
+              "key": "test",
+              "value": "false"
             }
           ],
           "type": "COUNTER_METRIC",
@@ -288,6 +312,10 @@
             {
               "key": "data",
               "value": "completion"
+            },
+            {
+              "key": "test",
+              "value": "true"
             }
           ],
           "type": "COUNTER_METRIC",
@@ -329,6 +357,10 @@
             {
               "key": "data",
               "value": "completion"
+            },
+            {
+              "key": "test",
+              "value": "true"
             }
           ],
           "type": "COUNTER_METRIC",
@@ -370,6 +402,10 @@
             {
               "key": "component",
               "value": "LLM"
+            },
+            {
+              "key": "test",
+              "value": "true"
             }
           ],
           "type": "HISTOGRAM_METRIC",
@@ -399,6 +435,10 @@
             {
               "key": "component",
               "value": "LLM"
+            },
+            {
+              "key": "test",
+              "value": "true"
             }
           ],
           "type": "COUNTER_METRIC",
@@ -432,6 +472,10 @@
             {
               "key": "data",
               "value": "messages"
+            },
+            {
+              "key": "test",
+              "value": "true"
             }
           ],
           "type": "COUNTER_METRIC",
@@ -465,6 +509,10 @@
             {
               "key": "data",
               "value": "generations"
+            },
+            {
+              "key": "test",
+              "value": "true"
             }
           ],
           "type": "COUNTER_METRIC",
@@ -506,6 +554,10 @@
             {
               "key": "component",
               "value": "Agent"
+            },
+            {
+              "key": "test",
+              "value": "true"
             }
           ],
           "type": "HISTOGRAM_METRIC",
@@ -535,6 +587,10 @@
             {
               "key": "component",
               "value": "Agent"
+            },
+            {
+              "key": "test",
+              "value": "true"
             }
           ],
           "type": "COUNTER_METRIC",
@@ -572,6 +628,10 @@
             {
               "key": "component",
               "value": "Agent"
+            },
+            {
+              "key": "test",
+              "value": "true"
             }
           ],
           "type": "HISTOGRAM_METRIC",
@@ -601,6 +661,10 @@
             {
               "key": "component",
               "value": "Agent"
+            },
+            {
+              "key": "test",
+              "value": "true"
             }
           ],
           "type": "COUNTER_METRIC",
@@ -638,6 +702,10 @@
             {
               "key": "component",
               "value": "Tool"
+            },
+            {
+              "key": "test",
+              "value": "true"
             }
           ],
           "type": "HISTOGRAM_METRIC",
@@ -667,6 +735,10 @@
             {
               "key": "component",
               "value": "Tool"
+            },
+            {
+              "key": "test",
+              "value": "true"
             }
           ],
           "type": "COUNTER_METRIC",
@@ -700,6 +772,10 @@
             {
               "key": "data",
               "value": "input"
+            },
+            {
+              "key": "test",
+              "value": "true"
             }
           ],
           "type": "COUNTER_METRIC",
@@ -733,6 +809,10 @@
             {
               "key": "data",
               "value": "output"
+            },
+            {
+              "key": "test",
+              "value": "true"
             }
           ],
           "type": "COUNTER_METRIC",
@@ -770,6 +850,10 @@
             {
               "key": "component",
               "value": "Agent"
+            },
+            {
+              "key": "test",
+              "value": "true"
             }
           ],
           "type": "HISTOGRAM_METRIC",
@@ -799,6 +883,10 @@
             {
               "key": "component",
               "value": "Agent"
+            },
+            {
+              "key": "test",
+              "value": "true"
             }
           ],
           "type": "COUNTER_METRIC",
@@ -832,6 +920,10 @@
             {
               "key": "data",
               "value": "actions"
+            },
+            {
+              "key": "test",
+              "value": "true"
             }
           ],
           "type": "COUNTER_METRIC",
