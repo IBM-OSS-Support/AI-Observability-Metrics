@@ -7,6 +7,7 @@ from langchain_openai import ChatOpenAI
 import graphsignal
 from dotenv import load_dotenv, find_dotenv
 import random
+import anthropic
 from langchain.prompts import ChatPromptTemplate
 from langchain_community.vectorstores import Chroma
 from langchain_community.embeddings import OpenAIEmbeddings
@@ -31,6 +32,7 @@ load_dotenv(find_dotenv())
 API_URL = os.getenv('API_URL')
 GRAPHSIGNAL_API_KEY = os.getenv('GRAPHSIGNAL_API_KEY')
 OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')
+ANTHROPIC_API_KEY = os.getenv('ANTHROPIC_API_KEY')
 
 def inject_roja_instrumentation(APPLICATION_NAME, USER):
     print(API_URL,GRAPHSIGNAL_API_KEY,APPLICATION_NAME)
@@ -105,6 +107,19 @@ def answer_questions(user_id, questions):
         # Assuming logger is properly set up
         logger.debug("An error occurred while processing the questions", exc_info=True)
         return "failure"
+
+def run_anthropic_model(user, question):
+
+    # api_key = ANTHROPIC_API_KEY
+    client = anthropic.Anthropic(api_key = ANTHROPIC_API_KEY)
+
+    response = client.messages.create(
+        model = "claude-3-opus-20240229",
+        max_tokens = 2000,
+        messages = [
+            {"role": "user", "content": question}]
+    )
+    return response
 
 def gather_metrics(user, app_name, question, status, rating, comment):
     json_obj = []
