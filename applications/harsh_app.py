@@ -16,7 +16,7 @@ response = run_anthropic_model(USER, question)
 
 print("Response: ", response) # TESTING
 print("")
-print("Model Name: ", response.model) # TESTING
+print("Anthropic Model Name: ", response.model) # TESTING
 
 model_name = response.model
 input_count = response.usage.input_tokens
