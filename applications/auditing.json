@@ -1,32 +1,32 @@
 {
-    "flagged": false,
+    "flagged": true,
     "categories": {
         "sexual": false,
         "hate": false,
         "harassment": false,
-        "self-harm": false,
+        "self-harm": true,
         "sexual/minors": false,
         "hate/threatening": false,
         "violence/graphic": false,
-        "self-harm/intent": false,
-        "self-harm/instructions": false,
+        "self-harm/intent": true,
+        "self-harm/instructions": true,
         "harassment/threatening": false,
         "violence": false
     },
     "category_scores": {
-        "sexual": 0.0005627822829410434,
-        "hate": 4.698118209489621e-05,
-        "harassment": 0.00025385827757418156,
-        "self-harm": 2.564655233072699e-06,
-        "sexual/minors": 0.00013670575572177768,
-        "hate/threatening": 9.977577519748593e-08,
-        "violence/graphic": 4.74217313239933e-06,
-        "self-harm/intent": 1.002759745460935e-06,
-        "self-harm/instructions": 8.958394346336718e-07,
-        "harassment/threatening": 7.497472438444674e-07,
-        "violence": 1.4351005120261107e-05
+        "sexual": 2.53134985541692e-05,
+        "hate": 5.876781506231055e-05,
+        "harassment": 0.0009504782501608133,
+        "self-harm": 0.9974139928817749,
+        "sexual/minors": 1.024445373332128e-05,
+        "hate/threatening": 0.0002831055026035756,
+        "violence/graphic": 0.0009551912662573159,
+        "self-harm/intent": 0.9953505992889404,
+        "self-harm/instructions": 0.6795194149017334,
+        "harassment/threatening": 0.0007084705866873264,
+        "violence": 0.010353943333029747
     },
     "kafka-topic": "auditing",
-    "app-user": "Vikram",
-    "application-name": "vikram_application"
+    "app-user": "Bhoomaiah",
+    "application-name": "bhoomaiah_application"
 }

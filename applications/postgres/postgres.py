@@ -33,11 +33,39 @@ def upload_to_postgres(message):
         'log_history': process_log_history,
         'session_info':process_session_info,
         'embedding':process_embedding,
-        'user_satisfaction':process_user_satisfaction
+        'user_satisfaction':process_user_satisfaction,
+        'accuracy':process_accuracy
     }
 
     processing_function = topic_processing_functions[message.topic]
     processing_function(message,conn,json_object)
+
+def process_accuracy(message,conn,json_object):
+    cursor = conn.cursor()
+    # Create a table if it does not exist
+    create_table_sql = """
+    CREATE TABLE IF NOT EXISTS accuracy (
+            id SERIAL PRIMARY KEY,
+            accuracy_score INTEGER,
+            application_name TEXT,
+            app_user TEXT,
+            timestamp TIMESTAMP
+    )
+    """
+    cursor.execute(create_table_sql)
+
+    # Get the current timestamp
+    current_timestamp = datetime.datetime.now()
+
+    print(json_object)
+
+    # SQL command to insert the JSON data along with 'application-name', 'tag', and timestamp
+    insert_metric_sql = "INSERT INTO accuracy (accuracy_score, application_name, app_user, timestamp) VALUES (%s, %s, %s, %s)"
+    cursor.execute(insert_metric_sql, (json.dumps(json_object["accuracy"]), json_object["application-name"], json_object["app-user"], current_timestamp))
+
+    conn.commit()
+    cursor.close()
+    conn.close()
 
 def process_user_satisfaction(message,conn,json_object):
     cursor = conn.cursor()

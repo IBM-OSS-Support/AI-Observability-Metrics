@@ -7,7 +7,7 @@ from langchain_openai import ChatOpenAI
 import graphsignal
 from dotenv import load_dotenv, find_dotenv
 import random
-import anthropic
+#import anthropic
 from langchain.prompts import ChatPromptTemplate
 from langchain_community.vectorstores import Chroma
 from langchain_community.embeddings import OpenAIEmbeddings
@@ -15,7 +15,7 @@ from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain_community.llms import OpenAI
 from langchain.chains import RetrievalQA
 from langchain_community.document_loaders import TextLoader
-from metrics import safety_score, log_app, maintenance, session, embeddings, user_satisfaction
+from metrics import safety_score, log_app, maintenance, session, embeddings, user_satisfaction, accuracy
 import time
 
 logging.basicConfig()
@@ -34,11 +34,11 @@ GRAPHSIGNAL_API_KEY = os.getenv('GRAPHSIGNAL_API_KEY')
 OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')
 ANTHROPIC_API_KEY = os.getenv('ANTHROPIC_API_KEY')
 
-def inject_roja_instrumentation(APPLICATION_NAME, USER):
-    print(API_URL,GRAPHSIGNAL_API_KEY,APPLICATION_NAME)
-    graphsignal.configure(api_url=API_URL,api_key=GRAPHSIGNAL_API_KEY, deployment=APPLICATION_NAME) # to send to IBM ROJA server
+def inject_roja_instrumentation(app_data):
+    print(API_URL,GRAPHSIGNAL_API_KEY,app_data["app_name"])
+    graphsignal.configure(api_url=API_URL,api_key=GRAPHSIGNAL_API_KEY, deployment=app_data["app_name"]) # to send to IBM ROJA server
     #graphsignal.configure(deployment=APPLICATION_NAME)
-    graphsignal.set_context_tag('user', USER)
+    graphsignal.set_context_tag('user', app_data["user"])
     pass
 
 def solve(user_id, task):
@@ -57,11 +57,11 @@ def solve(user_id, task):
         logger.debug("Error while solving task", exc_info=True)
         return "failure"
 
-def run_chat_model(user_id, question):
+def run_chat_model(USER, question):
     print("tahsin")
     try:
         llm = ChatOpenAI(temperature=0)
-        graphsignal.set_context_tag('user', user_id)
+        graphsignal.set_context_tag('user', USER)
         prompt = ChatPromptTemplate.from_messages([
         ("system", "You're a very knowledgeable historian who provides accurate and eloquent answers to historical questions."),
         ("human", "{question}")
@@ -107,7 +107,7 @@ def answer_questions(user_id, questions):
         # Assuming logger is properly set up
         logger.debug("An error occurred while processing the questions", exc_info=True)
         return "failure"
-
+'''
 def run_anthropic_model(user, question):
 
     # api_key = ANTHROPIC_API_KEY
@@ -120,13 +120,14 @@ def run_anthropic_model(user, question):
             {"role": "user", "content": question}]
     )
     return response
-
-def gather_metrics(user, app_name, question, status, rating, comment):
+'''
+def gather_metrics(app_data, question, status):
     json_obj = []
-    json_obj.append(safety_score.calculate_safety_score(user, app_name, question))
-    json_obj.append(log_app.log_prompt_info(user, app_name, question, status))
-    json_obj.append(maintenance.get_maintenance_info(user,app_name))
-    json_obj.append(session.get_session_info(user,app_name))
+    json_obj.append(safety_score.calculate_safety_score(app_data["user"], app_data["app_name"], question))
+    json_obj.append(log_app.log_prompt_info(app_data["user"], app_data["app_name"], question, status))
+    json_obj.append(maintenance.get_maintenance_info(app_data["user"], app_data["app_name"]))
+    json_obj.append(session.get_session_info(app_data["user"], app_data["app_name"]))
     #json_obj.append(embeddings.get_embeddings_score(user,app_name,question,"text-embedding-3-small"))
-    json_obj.append(user_satisfaction.prepare_user_satisfaction(user,app_name,question,rating,comment))
+    json_obj.append(user_satisfaction.prepare_user_satisfaction(app_data["user"], app_data["app_name"],question,app_data["rating"],app_data["comment"]))
+    json_obj.append(accuracy.prepare_accuracy(app_data["user"], app_data["app_name"], app_data["accuracy"]))
     return json_obj
