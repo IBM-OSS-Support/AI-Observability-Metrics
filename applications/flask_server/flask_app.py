@@ -92,6 +92,7 @@ def upload_anthropic():
         logging.debug("Received request: /anthropic_metrics")
         data = request.get_json()
         producer.kafka_producer(data)
+        print("Data which is sent is: ", data)
         return jsonify({"message": "Anthropic metrics JSON received successfully"}), 200
     except Exception as e:
         logging.error(f'Error processing request: {str(e)}')

@@ -21,8 +21,6 @@ def upload_to_postgres(message):
     json_object = json.loads(json_data)
     json_object_sanitized = json.dumps(json_object, default=lambda x: None if isinstance(x, float) and (x == float('inf') or x == float('-inf') or x != x) else x)
     json_object = json.loads(json_object_sanitized)
-
-
     
     conn = create_db_connection()
 
@@ -34,12 +32,39 @@ def upload_to_postgres(message):
         'session_info':process_session_info,
         'embedding':process_embedding,
         'user_satisfaction':process_user_satisfaction,
-        'accuracy':process_accuracy
+        'accuracy':process_accuracy,
+        'anthropic_metrics': process_anthropic_metrics
     }
 
     processing_function = topic_processing_functions[message.topic]
     processing_function(message,conn,json_object)
 
+def process_anthropic_metrics(message, conn, json_object):
+    cursor = conn.cursor()
+    # Create a table if it does not exist
+    create_table_sql = """
+    CREATE TABLE IF NOT EXISTS anthropic_metrics (
+            id SERIAL PRIMARY KEY,
+            application_name TEXT,
+            app_user TEXT,
+            timestamp TIMESTAMP,
+            json_object TEXT
+    )
+    """
+    cursor.execute(create_table_sql)
+
+    # Get the current timestamp
+    current_timestamp = datetime.datetime.now()
+
+    print(json_object)
+
+    # SQL command to insert the JSON data along with 'application-name', 'tag', and timestamp
+    insert_metric_sql = "INSERT INTO anthropic_metrics (application_name, app_user, timestamp, json_object) VALUES (%s, %s, %s, %s)"
+    cursor.execute(insert_metric_sql, (json.dumps(json_object["application-name"], json_object["app-user"], current_timestamp, json_object)))
+
+    conn.commit()
+    cursor.close()
+    conn.close()
 def process_accuracy(message,conn,json_object):
     cursor = conn.cursor()
     # Create a table if it does not exist
