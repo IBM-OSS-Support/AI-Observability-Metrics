@@ -1,0 +1,11 @@
+{
+    "kafka-topic": "anthropic",
+    "app-user": "Harsh",
+    "application-name": "Anthropic_application",
+    "model_name": "claude-3-opus-20240229",
+    "input_count": 19,
+    "output_count": 200,
+    "input_cost": 0.000285,
+    "output_cost": 0.015000000000000001,
+    "total_cost": 0.015285000000000002
+}

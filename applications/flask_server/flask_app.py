@@ -83,6 +83,20 @@ def upload_additional():
     except Exception as e:
         logging.error(f'Error processing request: {str(e)}')
         return f'Error: {str(e)}', 500
+    
+
+@app.route('/anthropic_metrics', methods=['POST'])
+def upload_anthropic():
+    try:
+        print("ANTHROPIC METRICS IN FLASK_APP")
+        logging.debug("Received request: /anthropic_metrics")
+        data = request.get_json()
+        producer.kafka_producer(data)
+        return jsonify({"message": "Anthropic metrics JSON received successfully"}), 200
+    except Exception as e:
+        logging.error(f'Error processing request: {str(e)}')
+        return f'Error: {str(e)}', 500
+
 
 @app.route('/api/v1/scores/', methods=['POST'])
 def upload_through_rest_scores():
