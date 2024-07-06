@@ -45,10 +45,10 @@ def process_anthropic_metrics(message, conn, json_object):
     create_table_sql = """
     CREATE TABLE IF NOT EXISTS anthropic_metrics (
             id SERIAL PRIMARY KEY,
+            json_object TEXT,
             application_name TEXT,
             app_user TEXT,
-            timestamp TIMESTAMP,
-            json_object TEXT
+            timestamp TIMESTAMP
     )
     """
     cursor.execute(create_table_sql)
@@ -59,12 +59,13 @@ def process_anthropic_metrics(message, conn, json_object):
     print(json_object)
 
     # SQL command to insert the JSON data along with 'application-name', 'tag', and timestamp
-    insert_metric_sql = "INSERT INTO anthropic_metrics (application_name, app_user, timestamp, json_object) VALUES (%s, %s, %s, %s)"
-    cursor.execute(insert_metric_sql, (json.dumps(json_object["application-name"], json_object["app-user"], current_timestamp, json_object)))
-
+    insert_metric_sql = "INSERT INTO accuracy (json_object, application_name, app_user, timestamp) VALUES (%s, %s, %s, %s)"
+    cursor.execute(insert_metric_sql, (json.dumps(json_object), json_object["application-name"], json_object["app-user"], current_timestamp))
     conn.commit()
     cursor.close()
     conn.close()
+
+
 def process_accuracy(message,conn,json_object):
     cursor = conn.cursor()
     # Create a table if it does not exist
