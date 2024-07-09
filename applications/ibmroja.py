@@ -7,7 +7,7 @@ from langchain_openai import ChatOpenAI
 import graphsignal
 from dotenv import load_dotenv, find_dotenv
 import random
-#import anthropic
+import anthropic
 from langchain.prompts import ChatPromptTemplate
 from langchain_community.vectorstores import Chroma
 from langchain_community.embeddings import OpenAIEmbeddings
@@ -107,7 +107,7 @@ def answer_questions(user_id, questions):
         # Assuming logger is properly set up
         logger.debug("An error occurred while processing the questions", exc_info=True)
         return "failure"
-'''
+
 def run_anthropic_model(user, question):
 
     # api_key = ANTHROPIC_API_KEY
@@ -115,12 +115,13 @@ def run_anthropic_model(user, question):
 
     response = client.messages.create(
         model = "claude-3-opus-20240229",
-        max_tokens = 2000,
+        max_tokens = 200,
         messages = [
             {"role": "user", "content": question}]
     )
     return response
-'''
+
+
 def gather_metrics(app_data, question, status):
     json_obj = []
     json_obj.append(safety_score.calculate_safety_score(app_data["user"], app_data["app_name"], question))
