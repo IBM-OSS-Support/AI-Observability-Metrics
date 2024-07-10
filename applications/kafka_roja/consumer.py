@@ -21,8 +21,7 @@ def kafka_subscribe(consumer):
 
     print("running")
     if consumer is None:
-        print("Kafka consumer not initialized properly. Return and exit.")
-        return
+        sys.exit("Kafka consumer not initialized properly. Return and exit.")
     # Subscribe to multiple topics
     topics = ['auditing','spans','metrics','log_history','session_info','embedding','user_satisfaction','accuracy', 'anthropic_metrics']
     consumer.subscribe(topics)
