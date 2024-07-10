@@ -18,11 +18,18 @@
 
 }
 
-.chart-tile {
-  height: 100%;
-  padding-top: 0.5rem;
-}
+// .chart-tile {
+//   height: 100%;
+//   padding-top: 0.5rem;
+// }
 
-.content-tile {
+// .content-tile {
+//   height: 20rem;
+// }
+
+.line-chart-section {
+  padding: 1rem 1.5rem 1.5rem;
+  margin-bottom: 1rem;
+  background-color: $layer-01;
   height: 20rem;
 }

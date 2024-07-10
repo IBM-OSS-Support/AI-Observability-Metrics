@@ -17,9 +17,10 @@ import PageContainer from '../common/PageContainer/PageContainer';
 import CallCountGraph from "../Performance/CallCountGraph/CallCountGraph";
 import TokenCountGraph from "../Performance/TokenCountGraph/TokenCountGraph";
 import CostGraph from "./CostGraph/CostGraph";
-import LatencyGraph from "../Metrics/Performance/LatencyGraph";
 import HeaderFilter from "../common/HeaderFilter/HeaderFilter";
 import AverageToken from "./AverageToken/AverageToken";
+import UserSatisfaction from "./UserSatisfaction/UserSatisfaction";
+import LatencyGraph from "../Performance/LatencyGraph/LatencyGraph";
 
 const Performance = () => {
   return (
@@ -34,9 +35,9 @@ const Performance = () => {
         <HeaderFilter />
         <Grid fullWidth narrow id="body" className="page-content body">
           <Column
-            max={8}
-            xlg={8}
-            lg={8}
+            max={16}
+            xlg={16}
+            lg={16}
             md={8}
             sm={4}
             className="content-tile"
@@ -45,8 +46,8 @@ const Performance = () => {
               <CostGraph />
             </Tile>
           </Column>
-          <Column max={8} xlg={8} lg={8} md={8} sm={4} className="content-tile">
-						<AverageToken />
+          {/* <Column max={8} xlg={8} lg={8} md={8} sm={4} className="content-tile">
+						<UserSatisfaction />
 					</Column>
           <Column
             max={8}
@@ -69,10 +70,10 @@ const Performance = () => {
             className="content-tile"
           >
             <Tile className="chart-tile">
-              <TokenCountGraph />
+              <LatencyGraph />
             </Tile>
-          </Column>
-          <Column
+          </Column> */}
+          {/* <Column
             max={16}
             xlg={16}
             lg={16}
@@ -83,7 +84,7 @@ const Performance = () => {
             <Tile className="chart-tile">
               <LatencyGraph />
             </Tile>
-          </Column>
+          </Column> */}
         </Grid>
       </div>
     </PageContainer>

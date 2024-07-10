@@ -312,7 +312,7 @@ console.log("defaultHeaders", defaultHeaders);
         </div>
       } */}
 
-      <div className="trace-sections">
+      {/* <div className="trace-sections">
         <CustomDataTable
           showColors={showColors}
           headers={headers.filter((h) => h.checked || h.key === "actions")}
@@ -396,7 +396,7 @@ console.log("defaultHeaders", defaultHeaders);
           sortRowHandler={() => {}}
           tableHeaderClickHandler={() => {}}
         />
-      </div>
+      </div> */}
     </div>
   );
 };

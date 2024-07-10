@@ -12,12 +12,29 @@
 
 import axios from 'axios';
 import appData from './constants/appdata.json'
+import traceablityData from './constants/traceabilityservices.json'
 
-let data = [];
-const API_BASE_URL = 'http://9.30.147.134:3001';
+let data, traceData = [];
+const API_BASE_URL = 'http://9.20.196.69:3001';//9.20.196.69
 
 export const getAppData = () => {
+  
+  data = appData.sort((a, b) => b.data.upload_ms - a.data.upload_ms);
+    console.log("node_usage.os_name", data[0].data.spans[0].node_usage.os_name);
+
+    
+  console.log("1.data", data, "appData", appData);
   return data;
+}
+
+export const getTraceablityData = () => {
+  
+  traceData = traceablityData.sort((a, b) => b.traceData.upload_ms - a.traceData.upload_ms);
+    console.log("node_usage.os_name", data[0].data.spans[0].node_usage.os_name);
+
+    
+  console.log("1.traceablityData", traceData, "appData", traceablityData);
+  return traceData;
 }
 
 export const fetchAppData = async (setStore) => {
@@ -25,6 +42,7 @@ export const fetchAppData = async (setStore) => {
     setStore('status', 'loading');
     const { data: apiData } = await axios.get(`${API_BASE_URL}/roja-metrics`);
     data = apiData.sort((a, b) => b.data.upload_ms - a.data.upload_ms);
+    console.log("api data", data);
     setStore('status', 'success');
   } catch (err) {
     setStore('status', 'success');

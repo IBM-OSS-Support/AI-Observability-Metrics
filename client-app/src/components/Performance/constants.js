@@ -30,6 +30,63 @@ export const callCountOptions = {
   title: 'Call count'
 }
 
+//Error rate starts here
+export const ErrorRateData = [
+  {
+    group: 'Dataset1',
+    key: moment(1704976200).toDate(),
+    value: 0.1
+  },
+  {
+    group: 'Dataset1',
+    key: moment(1704970800).toDate(),
+    value: 5.4
+  }
+];
+
+export const ErrorRateOptions = {
+  title: 'Error Rate'
+}
+//Error rate ends here
+
+//Analytic aggregation starts here
+export const AnalyticAggregationData = [
+  {
+    group: 'User1',
+    key: moment(1704976200).toDate(),
+    value: 0.107
+  },
+  {
+    group: 'User2',
+    key: moment(1704970800).toDate(),
+    value: -2.9
+  }
+];
+
+export const AnalyticAggregationOptions = {
+  title: 'Analytic Aggregation'
+}
+//Analytic aggregation ends here
+
+//Abandonment rate starts here
+export const AbandonmentRateData = [
+  {
+    group: 'Dataset1',
+    key: moment(1704976200).toDate(),
+    value: 0.1
+  },
+  {
+    group: 'Dataset1',
+    key: moment(1704970800).toDate(),
+    value: 5.4
+  }
+];
+
+export const AbandonmentRateOptions = {
+  title: 'Abandonment Rate'
+}
+//Abandonment rate ends here
+
 export const latencyData = [
   {
     group: 'Dataset1',

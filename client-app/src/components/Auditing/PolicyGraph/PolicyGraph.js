@@ -48,7 +48,8 @@ const PolicyGraph = ({ policy, apps }) => {
         order: policies.map((p) => p.name)
       },
     }
-    
+    console.log("data, options", options);
+    console.log(policy.name);
     const counts = apps.reduce((d, app) => {
       const name = policies.find(p => app[policy.policyOn] >= p.value)?.name || '';
       return {
