@@ -3,7 +3,7 @@ from flask import Flask, request, make_response, jsonify
 import os
 import json
 #from graphsignal.proto import signals_pb2
-from google.protobuf.json_format import MessageToDict
+#from google.protobuf.json_format import MessageToDict
 import logging
 import psycopg2
 import datetime
