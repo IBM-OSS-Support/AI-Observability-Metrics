@@ -285,15 +285,10 @@ def process_metrics(message,conn,json_object):
     def get_usage_objects(data_obj):
         json_new = {"data":[]}
         print("get usage objects")
-        #time.sleep(5)
         if isinstance(data_obj, list):
-            #print("yes is instance")
-            #time.sleep(5)
             for item in data_obj:
                 if "scope" in item and item["scope"] == "usage" and "name" in item:
-                    #print("got one")
                     json_new["data"].append(item)
-                    #time.sleep(5)
         print(json_new)
         return json_new
 
@@ -307,7 +302,6 @@ def process_metrics(message,conn,json_object):
                     total_tokens += item["counter"]
 
         print("total_tokens: ", total_tokens)
-        #time.sleep(5)
         return calculate_openai_cost(total_tokens)
 
     json_usage_objects = get_usage_objects(json_object["metrics"])
