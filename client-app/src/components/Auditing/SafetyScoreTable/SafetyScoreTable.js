@@ -13,7 +13,8 @@ const SafetyScoreTable = () => {
 
   // Connect to WebSocket server on component mount
   useEffect(() => {
-    const ws = new WebSocket("ws://localhost:8080");
+    const apiUrl = process.env.REACT_APP_WEBSOCKET_URL;
+    const ws = new WebSocket(apiUrl);
     setWebsocket(ws);
 
     // Cleanup function to close WebSocket connection on component unmount
