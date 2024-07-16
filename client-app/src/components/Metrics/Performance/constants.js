@@ -45,6 +45,22 @@ export const latencyData = [
 
 export const latencyOptions = {
   title: 'Latency (in seconds)',
+  axes: {
+    left: {
+      mapsTo: "value",
+      ticks: {
+        number: 10
+      }
+    },
+    bottom: {
+      mapsTo: "key",
+      scaleType: "time",
+      ticks: {
+        number: 30,
+        formatter: (tick => moment(tick).format('hh:mm A'))
+      }
+    }
+  }
 }
 
 export const latencyDistData = [

@@ -52,16 +52,16 @@ const defaultData = [
 
 const defaultMessage = [
   {
-    process_cpu_usage : {gauge : 0}
+    percentage_usage : 0
   }
 ];
 
-const CpuUsage = () => {
+const FailureRate = () => {
 
   const [data, setData] = useState(defaultData);
   const [avg, setAvg] = useState(0);
   const [websocket, setWebsocket] = useState(null);
-  const [messageFromServerCPU, setMessageFromServerCPU] = useState(defaultMessage);
+  const [messageFromServerFailure, setMessageFromServerFailure] = useState(defaultMessage);
 
   const { state } = useStoreContext();
 
@@ -76,8 +76,8 @@ const CpuUsage = () => {
   }, []);
 
   // Function to send message to WebSocket server
-  const sendMessageToServerCPU = () => {
-    var q = 'SELECT process_cpu_usage FROM system';
+  const sendMessageToServerFailure = () => {
+    var q = "SELECT COUNT(*) AS total_count, COUNT(*) FILTER (WHERE status = 'user_abandoned') * 100.0 / COUNT(*) AS user_abandoned_percentage, COUNT(*) FILTER (WHERE status = 'success') * 100.0 / COUNT(*) AS success_percentage, COUNT(*) FILTER (WHERE status = 'failure') * 100.0 / COUNT(*) AS failure_percentage FROM log_history ";
     if (websocket && websocket.readyState === WebSocket.OPEN) {
       const message = {
         tab: 'auditing',
@@ -91,49 +91,12 @@ const CpuUsage = () => {
   useEffect(() => {
     if (websocket) {
       websocket.onmessage = (event) => {
-        setMessageFromServerCPU(JSON.parse(event.data));
+        setMessageFromServerFailure(JSON.parse(event.data));
       };
     }
   }, [websocket]);
 
-  // useEffect(() => {
-  //   let newData = defaultData;
-  //   let newAvg = 0;
-  //   if(state.status === 'success') {
-  //     const appData = getAppData();
-
-  //     console.log('CPU app data', appData[0].data);
-      
-
-  //     const cpuUsages = appData
-  //       .filter(d => moment(d.data.upload_ms / 1000).diff(moment(), 'days') <= 7)
-  //       .map(d => {
-  //         const cpuUsage = d.data.metrics.find(m => m.name === 'process_cpu_usage');
-  //         let gauge = 0;
-  //         console.log('CPUUsage', cpuUsage);
-  //         if (cpuUsage) {
-  //           gauge = (cpuUsage.gauge || 0)
-  //         }
-  //         return gauge
-  //       });
-  //       console.log('CPUUsages',cpuUsages);
-  //     newData = [
-  //       {
-  //         group: 'value',
-  //         value: cpuUsages[0] || 0
-  //       }
-  //     ];
-  //     newAvg = (cpuUsages.reduce((s, g) => s + +g, 0) / cpuUsages.length).toFixed(2);
-  //   }
-
-  //   setData(newData);
-  //   setAvg(newAvg);
-  // }, [state.status]);
-  // console.log('CPU messageFromServer', messageFromServerCPU);
-  // if(messageFromServerCPU){
-  //   console.log('CPU messageFromServer.gauge', messageFromServerCPU[0].process_cpu_usage.gauge);
-
-  // }
+  
 
   // start
 
@@ -141,30 +104,22 @@ const CpuUsage = () => {
       let newData = defaultData;
       let newAvg = 0;
       let newAvgValue = 0;
+      let newAvgValueToNumber = 0;
       if(state.status === 'success') {
         const appData = getAppData();
   
-        console.log('CPU app data', appData[0].data);
+        console.log('Failure app data', appData[0].data);
         
-        if (messageFromServerCPU) {
+        if (messageFromServerFailure) {
           
-          const cpuUsages = messageFromServerCPU
-            .map(d => {
-              const cpuUsage = d.process_cpu_usage.gauge;
-              let gauge = 0;
-              console.log('CPUUsage', cpuUsage);
-              if (cpuUsage) {
-                gauge = cpuUsage
-              }
-              return gauge
-            });
-            console.log('CPUUsages',cpuUsages);
-        newAvgValue = cpuUsages.reduce((s, g) => s + +g, 0) / cpuUsages.length;
-        newAvg = newAvgValue.toFixed(2);
+        newAvgValue = messageFromServerFailure[0].failure_percentage; 
+        newAvgValueToNumber = parseFloat(newAvgValue)
+        console.log('Adoption newAvgValue', newAvgValueToNumber);
+        newAvg = newAvgValueToNumber.toFixed(2);
         newData = [
           {
             group: 'value',
-            value: newAvgValue || 0
+            value: newAvgValueToNumber || 0
           }
         ];
         
@@ -172,13 +127,13 @@ const CpuUsage = () => {
   
       setData(newData);
       setAvg(newAvg);
-      console.log('New average', newAvg);
-    }}, messageFromServerCPU);
+      console.log('New average Failure', newAvg);
+    }}, messageFromServerFailure);
 
 
-    console.log('CPU messageFromServer', messageFromServerCPU);
-    if(messageFromServerCPU){
-      console.log('CPU messageFromServer.gauge', messageFromServerCPU[0].process_cpu_usage.gauge);
+    console.log('Failure messageFromServer', messageFromServerFailure);
+    if(messageFromServerFailure){
+      console.log('Failure messageFromServer.gauge', messageFromServerFailure[0].failure_percentage);
   
     }
   //end
@@ -186,8 +141,8 @@ const CpuUsage = () => {
   // Render
   return (
     <Tile className="infrastructure-components cpu-usage" >
-      <h5>Latest CPU usage</h5>
-          <button onClick={sendMessageToServerCPU}>Load graph</button>
+      <h5>Failure Rate</h5>
+          <button onClick={sendMessageToServerFailure}>Load graph</button>
         <div className="cpu-usage-chart">
           <GaugeChart
             data={data}
@@ -195,11 +150,11 @@ const CpuUsage = () => {
           />
         </div>
         <div className="cpu-usage-data">
-          <div className="label">Average CPU usage for last 7 days</div>
+          <div className="label">Failure Rate</div>
           <h3 className="data">{avg} %</h3>
         </div>
     </Tile>
   );
 };
 
-export default CpuUsage;
+export default FailureRate;

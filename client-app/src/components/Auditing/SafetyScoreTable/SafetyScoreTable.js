@@ -154,6 +154,7 @@ console.log('safetyscore rowdata :', rowData);
           </tbody>
         </table> */}
       {console.log("Testing", [rowData])}
+      <button onClick={sendMessageToServer}>Load data</button>
       <CustomDataTable
         headers={headers}
         rows={[rowData]}

@@ -10,7 +10,7 @@
  * the U.S. Copyright Office.
  ****************************************************************************** */
 
-.auditing-container {
+ .auditing-container {
 
   .policies-section {
     margin-right: -1rem;
@@ -52,6 +52,12 @@
       }
     }
   }
+
+  .body {
+    margin: 1rem;
+    background-color: transparent;
+  }
+  
 }
 
 .policy-edit-modal {
@@ -86,4 +92,13 @@
   .cds--number input[type=number] {
     background-color: transparent;
   }
+}
+
+.chart-tile {
+  height: 100%;
+  padding-top: 0.5rem;
+}
+
+.content-tile {
+  height: 20rem;
 }

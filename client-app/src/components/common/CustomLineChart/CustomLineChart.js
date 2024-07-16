@@ -21,14 +21,14 @@ const defaultOptions = {
     left: {
       mapsTo: "value",
       ticks: {
-        number: 3
+        number: 7
       }
     },
     bottom: {
       mapsTo: "key",
       scaleType: "time",
       ticks: {
-        number: 4,
+        number: 45,
         formatter: (tick => moment(tick).format('hh:mm A'))
       }
     }
@@ -38,7 +38,7 @@ const defaultOptions = {
       alignWithAxisTicks: true,
     },
     y: {
-      numberOfTicks: 3
+      numberOfTicks: 7
     }
   },
   points: {

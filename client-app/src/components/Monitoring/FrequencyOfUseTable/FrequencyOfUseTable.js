@@ -13,11 +13,11 @@ import React, { useMemo, useState } from 'react';
 import { useEffect } from 'react';
 import CustomDataTable from '../../common/CustomDataTable';
 
-const LogHistoryTable = () => {
+const FrequencyOfUseTable = () => {
   const [websocket, setWebsocket] = useState(null);
-  const [messageFromServerLog, setMessageFromServerLog] = useState('');
-  const [rowDataLog, setRowDataLog] = useState([]); // Define state for formatted data
-  const [headersLog, setHeadersLog] = useState([]); // Define state for headers
+  const [messageFromServerFreqTable, setMessageFromServerFreqTable] = useState('');
+  const [rowDataFreqTable, setRowDataFreqTable] = useState([]); // Define state for formatted data
+  const [headersFreqTable, setHeadersFreqTable] = useState([]); // Define state for headers
 
   // Connect to WebSocket server on component mount
   useEffect(() => {
@@ -30,8 +30,8 @@ const LogHistoryTable = () => {
   }, []);
 
   // Function to send message to WebSocket server
-  const sendMessageToServerLog = (messageFromServerLog) => {
-    var q = 'SELECT id,application_name,app_user,timestamp FROM maintenance';
+  const sendMessageToServerFreqTable = (messageFromServerFreqTable) => {
+    var q = 'WITH operation_counts AS ( SELECT operation, COUNT(*) AS operation_count FROM operations GROUP BY operation ), total_count AS ( SELECT COUNT(*) AS total FROM operations ) SELECT oc.operation, oc.operation_count, (oc.operation_count * 100.0 / tc.total) AS percentage_usage FROM operation_counts oc, total_count tc ORDER BY percentage_usage DESC;';
     if (websocket && websocket.readyState === WebSocket.OPEN) {
       const message = {
         tab: 'auditing',
@@ -46,7 +46,7 @@ const LogHistoryTable = () => {
     if (websocket) {
       websocket.onmessage = (event) => {
         console.log('log data', event.data);
-        setMessageFromServerLog(JSON.parse(event.data));
+        setMessageFromServerFreqTable(JSON.parse(event.data));
         console.log('log event data[0]',event.data[4]);
         // console.log('setRowDataLog', messageFromServerLog[0]);
         // setRowDataLog(messageFromServerLog);
@@ -54,38 +54,37 @@ const LogHistoryTable = () => {
       //setMessageFromServerLog(messageFromServerLog);
     }
   }, [websocket]);
-console.log('log table messageFromServer', messageFromServerLog[5]);
-console.log('log table row data', rowDataLog);
+console.log('Frequency table messageFromServer', messageFromServerFreqTable[5]);
+console.log('Frequency table row data', rowDataFreqTable);
 // code starts here
 
 useEffect(() => {
-  setHeadersLog([
-    {key: "id", header: "ID"},
-    { key: "application_name", header: "Application Name" },
-    { key: "app_user", header: "User" },
-    { key: "timestamp", header: "Timestamp" },
+  setHeadersFreqTable([
+    { key: "operation", header: "Operation" },
+    { key: "operation_count", header: "Operation Count" },
+    { key: "percentage_usage", header: "Frequency of Use" },
   ]);
 }, []);
 
-  const arrayLog = Array.isArray(messageFromServerLog) ? messageFromServerLog : [messageFromServerLog];
+  const arrayFreqTable = Array.isArray(messageFromServerFreqTable) ? messageFromServerFreqTable : [messageFromServerFreqTable];
 
-  console.log('Array log', arrayLog);
+  console.log('Array log', arrayFreqTable);
 // code ends here
 
   return (
     <div>
-      <button onClick={sendMessageToServerLog}>Load data</button>
+      <button onClick={sendMessageToServerFreqTable}>Load data</button>
       {/* Display message received from server */}
       <div>
         <CustomDataTable
-        headers={headersLog}
-        rows={Array.isArray(messageFromServerLog) ? messageFromServerLog : [messageFromServerLog]}
+        headers={headersFreqTable}
+        rows={arrayFreqTable}
         />
       </div>
     </div>
   );
 };
 
-export default LogHistoryTable;
+export default FrequencyOfUseTable;
 
 

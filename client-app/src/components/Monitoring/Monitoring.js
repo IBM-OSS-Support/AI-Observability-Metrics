@@ -15,8 +15,10 @@ import PageContainer from "../common/PageContainer";
 import Transactions from "../Traces/Transactions/Transactions";
 import Filter from "../common/HeaderFilter/HeaderFilter";
 import AssetReusability from "./AssetReusability/AssetReusability";
-import { Tile } from "@carbon/react";
+import { Column, Grid, Tile } from "@carbon/react";
 import LogTable from "./LogTable/LogTable";
+import FrequencyOfUse from "./FrequencyOfUse/FrequencyOfUse";
+import FrequencyOfUseTable from "./FrequencyOfUseTable/FrequencyOfUseTable";
 
 const Monitoring = () => {
 	console.log('here');
@@ -33,9 +35,23 @@ const Monitoring = () => {
         component='monitor'
 			/>
       <LogTable/>
+      <Grid fullWidth narrow id="body" className="page-content body">
+        <Column max={8} xlg={8} lg={8} md={4} sm={4} className="content-tile">
     <Tile className="chart-tile">
       <AssetReusability />
     </Tile>
+        </Column>
+        <Column max={8} xlg={8} lg={8} md={4} sm={4} className="content-tile">
+    <Tile className="chart-tile">
+      <FrequencyOfUse />
+    </Tile>
+        </Column>
+        {/* <Column max={16} xlg={16} lg={16} md={4} sm={4} className="content-tile">
+    <Tile className="chart-tile">
+      <FrequencyOfUseTable />
+    </Tile>
+        </Column> */}
+      </Grid>
     </PageContainer>
 	);
 }

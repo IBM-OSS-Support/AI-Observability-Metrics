@@ -9,8 +9,7 @@
  * of its trade secrets, irrespective of what has been deposited with
  * the U.S. Copyright Office.
  ****************************************************************************** */
-
- @use '@carbon/react';
+@use '@carbon/react';
 @use '@carbon/react/scss/breakpoint' as *;
 @use '@carbon/react/scss/colors' as *;
 @use '@carbon/react/scss/grid';
@@ -28,12 +27,13 @@
 @import './styles/mixins';
 @import './styles/theme-extensions';
 
-/*@import './components/common/FilterFlyout/filter-flyout';
+@import './components/common/FilterFlyout/filter-flyout';
 @import './components/common/CustomDataTable/custom-data-table';
+@import './components/common/CustomDataTableFWS/custom-data-table-fws';
 @import './components/common/RojaChat/_roja_chat';
 @import './components/common/Loader/loader';
-*/
-/*@import './components/Navigation/navigation';
+
+@import './components/Navigation/navigation';
 @import './components/common/PageContainer/page-container';
 @import './components/Traces/traces';
 @import './components/Metrics/metrics';
@@ -42,21 +42,28 @@
 @import './components/Dashboard/dashboard';
 @import './components/Dashboard/TracesTile/traces-tile';
 @import './components/Performance/CpuUsage/cpu-usage';
+@import './components/Performance/SessionLength/session-length';
+@import './components/Metering/AverageToken/average-token';
+@import './components/Performance/RequestsPerSession/requests-session';
 @import './components/Sessions/sessions';
 @import './components/Performance/performance';
 @import './components/Metering/metering';
 @import './components/CveWorkflows/Flow/flow';
-@import './components/CveWorkflows/ComponentNode/component-node';*/
+@import './components/CveWorkflows/ComponentNode/component-node';
 @import './components/Auditing/auditing';
+@import './components/common/HeaderFilter/headerfilter';
+@import './components/Performance/PolicyDiagram/policy-diagram';
+@import './components/Performance/TokenPerSession/token-session';
+@import './components/Metering/UserSatisfaction/user-satisfaction';
 
-/*
+
 // Theming
 :root {
-    @include theme(map-get($themes,$g100));
+    @include theme(themes.$g100);
     @include spread-map($dark-theme-extension);
   
     &[theme='light'] {
-      @include theme(map-get($themes,$g10));
+      @include theme(themes.$g10);
       @include spread-map($light-theme-extension);
   
       // overrides
@@ -81,4 +88,3 @@
     padding-inline-end: 0 !important;
     margin-left: 0 !important;
   }
-  */

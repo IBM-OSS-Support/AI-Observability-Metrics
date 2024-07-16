@@ -52,22 +52,23 @@ const defaultData = [
 
 const defaultMessage = [
   {
-    process_cpu_usage : {gauge : 0}
+    usage : {counter : 0}
   }
 ];
 
-const CpuUsage = () => {
+const TokenPerSession = () => {
 
   const [data, setData] = useState(defaultData);
   const [avg, setAvg] = useState(0);
   const [websocket, setWebsocket] = useState(null);
-  const [messageFromServerCPU, setMessageFromServerCPU] = useState(defaultMessage);
+  const [messageFromServerToken, setMessageFromServerToken] = useState(defaultMessage);
 
   const { state } = useStoreContext();
 
   // Connect to WebSocket server on component mount
   useEffect(() => {
     const ws = new WebSocket('ws://localhost:8080');
+    console.log('ws', ws);
     setWebsocket(ws);
     // Cleanup function to close WebSocket connection on component unmount
     return () => {
@@ -75,9 +76,11 @@ const CpuUsage = () => {
     };
   }, []);
 
+
+
   // Function to send message to WebSocket server
-  const sendMessageToServerCPU = () => {
-    var q = 'SELECT process_cpu_usage FROM system';
+  const sendMessageToServerToken = () => {
+    var q = 'SELECT usage,application_name,token_cost FROM token_usage WHERE id BETWEEN 9 AND 17';
     if (websocket && websocket.readyState === WebSocket.OPEN) {
       const message = {
         tab: 'auditing',
@@ -91,51 +94,15 @@ const CpuUsage = () => {
   useEffect(() => {
     if (websocket) {
       websocket.onmessage = (event) => {
-        setMessageFromServerCPU(JSON.parse(event.data));
+        setMessageFromServerToken(JSON.parse(event.data));
+        console.log('Token messageFromServer inside useeffect', messageFromServerToken);
       };
     }
   }, [websocket]);
 
-  // useEffect(() => {
-  //   let newData = defaultData;
-  //   let newAvg = 0;
-  //   if(state.status === 'success') {
-  //     const appData = getAppData();
+  
 
-  //     console.log('CPU app data', appData[0].data);
-      
-
-  //     const cpuUsages = appData
-  //       .filter(d => moment(d.data.upload_ms / 1000).diff(moment(), 'days') <= 7)
-  //       .map(d => {
-  //         const cpuUsage = d.data.metrics.find(m => m.name === 'process_cpu_usage');
-  //         let gauge = 0;
-  //         console.log('CPUUsage', cpuUsage);
-  //         if (cpuUsage) {
-  //           gauge = (cpuUsage.gauge || 0)
-  //         }
-  //         return gauge
-  //       });
-  //       console.log('CPUUsages',cpuUsages);
-  //     newData = [
-  //       {
-  //         group: 'value',
-  //         value: cpuUsages[0] || 0
-  //       }
-  //     ];
-  //     newAvg = (cpuUsages.reduce((s, g) => s + +g, 0) / cpuUsages.length).toFixed(2);
-  //   }
-
-  //   setData(newData);
-  //   setAvg(newAvg);
-  // }, [state.status]);
-  // console.log('CPU messageFromServer', messageFromServerCPU);
-  // if(messageFromServerCPU){
-  //   console.log('CPU messageFromServer.gauge', messageFromServerCPU[0].process_cpu_usage.gauge);
-
-  // }
-
-  // start
+  //start
 
     useEffect(() => {
       let newData = defaultData;
@@ -144,22 +111,29 @@ const CpuUsage = () => {
       if(state.status === 'success') {
         const appData = getAppData();
   
-        console.log('CPU app data', appData[0].data);
+        console.log('Token app data', appData[0].data);
         
-        if (messageFromServerCPU) {
-          
-          const cpuUsages = messageFromServerCPU
+        if (messageFromServerToken) {
+
+          const cpuUsages = messageFromServerToken
             .map(d => {
-              const cpuUsage = d.process_cpu_usage.gauge;
-              let gauge = 0;
-              console.log('CPUUsage', cpuUsage);
-              if (cpuUsage) {
-                gauge = cpuUsage
+              if (d.usage.token_count) {
+                
+                const cpuUsage = d.usage.token_count.counter;
+                let gauge = 0;
+                console.log('CPUUsage in Token', cpuUsage);
+                if (cpuUsage) {
+                  gauge = cpuUsage
+                }
+                return gauge
               }
-              return gauge
             });
-            console.log('CPUUsages',cpuUsages);
-        newAvgValue = cpuUsages.reduce((s, g) => s + +g, 0) / cpuUsages.length;
+
+          const filteredCpuUsages = cpuUsages.filter(value => typeof value === 'number');
+
+          console.log('CPUUsages in Token',cpuUsages);
+          console.log('filteredCpuUsages in Token',filteredCpuUsages);
+        newAvgValue = filteredCpuUsages.reduce((s, g) => s + +g, 0) / filteredCpuUsages.length;
         newAvg = newAvgValue.toFixed(2);
         newData = [
           {
@@ -173,21 +147,20 @@ const CpuUsage = () => {
       setData(newData);
       setAvg(newAvg);
       console.log('New average', newAvg);
-    }}, messageFromServerCPU);
+    }}, messageFromServerToken);
 
 
-    console.log('CPU messageFromServer', messageFromServerCPU);
-    if(messageFromServerCPU){
-      console.log('CPU messageFromServer.gauge', messageFromServerCPU[0].process_cpu_usage.gauge);
-  
+    console.log('Token messageFromServer', messageFromServerToken);
+    if (messageFromServerToken.length == 37) {
+      console.log('Token messageFromServer.usage.data', messageFromServerToken[16].usage.data[0].counter);
     }
   //end
 
   // Render
   return (
     <Tile className="infrastructure-components cpu-usage" >
-      <h5>Latest CPU usage</h5>
-          <button onClick={sendMessageToServerCPU}>Load graph</button>
+      <h5>Average Token per Session</h5>
+          <button onClick={sendMessageToServerToken}>Load graph</button>
         <div className="cpu-usage-chart">
           <GaugeChart
             data={data}
@@ -195,11 +168,11 @@ const CpuUsage = () => {
           />
         </div>
         <div className="cpu-usage-data">
-          <div className="label">Average CPU usage for last 7 days</div>
+          <div className="label">Average Token per Session</div>
           <h3 className="data">{avg} %</h3>
         </div>
     </Tile>
   );
 };
 
-export default CpuUsage;
+export default TokenPerSession;
