@@ -20,6 +20,8 @@ logging.basicConfig(level=logging.DEBUG)
 def kafka_subscribe(consumer):
 
     print("running")
+    if consumer is None:
+        sys.exit("Kafka consumer not initialized properly. Return and exit.")
     # Subscribe to multiple topics
     topics = ['auditing','spans','metrics','log_history','session_info','embedding','user_satisfaction','accuracy', 'anthropic_metrics']
     consumer.subscribe(topics)
@@ -34,6 +36,7 @@ def kafka_subscribe(consumer):
 
 def create_kafka_consumer():
     logging.debug("create kafka consumer")
+    consumer = None
     try:
         consumer = KafkaConsumer(
             bootstrap_servers=kafka_server,
