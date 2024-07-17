@@ -56,7 +56,7 @@ const defaultMessage = [
   }
 ];
 
-const TokenPerSession = () => {
+const TokenPerSession1 = () => {
 
   const [data, setData] = useState(defaultData);
   const [avg, setAvg] = useState(0);
@@ -81,7 +81,7 @@ const TokenPerSession = () => {
 
   // Function to send message to WebSocket server
   const sendMessageToServerToken = () => {
-    var q = 'SELECT usage,application_name,token_cost FROM token_usage WHERE id BETWEEN 9 AND 17';
+    var q = 'SELECT json_object,application_name FROM anthropic_metrics';
     if (websocket && websocket.readyState === WebSocket.OPEN) {
       const message = {
         tab: 'auditing',
@@ -95,7 +95,7 @@ const TokenPerSession = () => {
   useEffect(() => {
     if (websocket) {
       websocket.onmessage = (event) => {
-        setMessageFromServerToken(JSON.parse(event.data));
+        setMessageFromServerToken(event.data);
         console.log('Token messageFromServer inside useeffect', messageFromServerToken);
       };
     }
@@ -151,10 +151,10 @@ const TokenPerSession = () => {
     }}, messageFromServerToken);
 
 
+    console.log('Json object =', typeof(messageFromServerToken[0].json_object));
     console.log('Token messageFromServer', messageFromServerToken);
-    console.log('Token messageFromServer.usage.data', typeof(messageFromServerToken[0].usage.token_count));
     if (messageFromServerToken.length == 37) {
-      console.log('Token messageFromServer.usage.data', typeof(messageFromServerToken[16].usage.token_count));
+      console.log('Token messageFromServer.usage.data', messageFromServerToken[16].usage.data[0].counter);
     }
   //end
 
@@ -177,4 +177,4 @@ const TokenPerSession = () => {
   );
 };
 
-export default TokenPerSession;
+export default TokenPerSession1;

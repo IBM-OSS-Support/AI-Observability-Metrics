@@ -30,6 +30,7 @@ import PolicyDiagram from "./PolicyDiagram/PolicyDiagram";
 import TokenPerSession from "./TokenPerSession/TokenPerSession";
 import SuccessRate from "./SuccessRate/SuccessRate";
 import FailureRate from "./FailureRate/FailureRate";
+import TokenPerSession1 from "./TokenPerSession/TokenPerSession1";
 
 const Performance = () => {
   return (
@@ -53,6 +54,9 @@ const Performance = () => {
 					</Column>
           <Column max={4} xlg={4} lg={4} md={4} sm={4} className="content-tile">
 						<TokenPerSession />
+					</Column>
+          <Column max={4} xlg={4} lg={4} md={4} sm={4} className="content-tile">
+						<TokenPerSession1 />
 					</Column>
 		  		</Grid>
 			</AccordionItem>
