@@ -6,3 +6,4 @@ applications/metrics/__pycache__/
 applications/postgres/__pycache__/
 applications/*.xlsx
 .vscode
+applications/metrics/jsons/

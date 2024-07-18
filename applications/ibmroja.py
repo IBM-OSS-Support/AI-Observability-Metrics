@@ -23,10 +23,10 @@ logger = logging.getLogger()
 logger.setLevel(logging.CRITICAL)
 load_dotenv(find_dotenv())
 
-logging.basicConfig()
-logger = logging.getLogger()
-logger.setLevel(logging.DEBUG)
-load_dotenv(find_dotenv())
+#logging.basicConfig()
+#logger = logging.getLogger()
+#logger.setLevel(logging.DEBUG)
+#load_dotenv(find_dotenv())
 
 # Load environment variables
 API_URL = os.getenv('API_URL')
@@ -117,8 +117,8 @@ def gather_metrics(app_data, question, status):
     json_obj = []
     json_obj.append(safety_score.calculate_safety_score(app_data["user"], app_data["app_name"], question))
     json_obj.append(log_app.log_prompt_info(app_data["user"], app_data["app_name"], question, status))
-    json_obj.append(maintenance.get_maintenance_info(app_data["user"], app_data["app_name"]))
-    json_obj.append(session.get_session_info(app_data["user"], app_data["app_name"]))
+    #json_obj.append(maintenance.get_maintenance_info(app_data["user"], app_data["app_name"]))
+    #json_obj.append(session.get_session_info(app_data["user"], app_data["app_name"]))
     json_obj.append(user_satisfaction.prepare_user_satisfaction(app_data["user"], app_data["app_name"],question,app_data["rating"],app_data["comment"]))
     json_obj.append(accuracy.prepare_accuracy(app_data["user"], app_data["app_name"], app_data["accuracy"]))
     return json_obj

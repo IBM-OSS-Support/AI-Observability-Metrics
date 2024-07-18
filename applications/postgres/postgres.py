@@ -15,8 +15,10 @@ class Message_Single:
         self.value = value
 
 def upload_to_postgres_with_message(jsonobj):
-    m = Message_Single(jsonobj["kafka-topic"], jsonobj)
+    json_string = json.dumps(jsonobj)
+    m = Message_Single(jsonobj["kafka-topic"], json_string)
     upload_to_postgres(m)
+
 
 
 def calculate_openai_cost(token_count, rate_per_1000_tokens=0.002):
@@ -31,7 +33,7 @@ def upload_to_postgres(message):
     json_object = json.loads(json_data)
     json_object_sanitized = json.dumps(json_object, default=lambda x: None if isinstance(x, float) and (x == float('inf') or x == float('-inf') or x != x) else x)
     json_object = json.loads(json_object_sanitized)
-    
+     
     conn = create_db_connection()
 
     topic_processing_functions = {
