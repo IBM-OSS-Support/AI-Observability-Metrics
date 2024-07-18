@@ -15,7 +15,7 @@ import appData from './constants/appdata.json'
 import traceablityData from './constants/traceabilityservices.json'
 
 let data, traceData = [];
-const API_BASE_URL = 'http://9.20.196.69:3001';//9.20.196.69
+const API_BASE_URL = process.env.REACT_APP_API_URL
 
 export const getAppData = () => {
   
