@@ -233,7 +233,6 @@ def process_log_history(message,conn,json_object):
 def process_metrics(message,conn,json_object):
     
     cursor = conn.cursor()
-    print("----------tahsin metrics-----------------------------------------: ")
     #json_object = json_object["metrics"]
     # Create a table if it does not exist
     create_table_sql = """
@@ -459,16 +458,11 @@ def create_db_connection():
     try:
         # Get database connection parameters from environment variables
         
-        DB_NAME="roja_postgres"
-# DB_NAME=roja_dev # dev 
-        DB_USER="roja_user"
-        DB_PASSWORD="roja_user"
-        DB_HOST="9.20.196.69"
-        DB_PORT=5432
-        #DB_NAME = os.environ.get("DB_NAME")
-        #DB_USER = os.environ.get("DB_USER")
-        #DB_PASSWORD = os.environ.get("DB_PASSWORD")
-        #DB_HOST = os.environ.get("DB_HOST")
+        DB_NAME=os.getenv('DB_NAME')
+        DB_USER=os.getenv('DB_USER')
+        DB_PASSWORD=os.getenv('DB_PASSWORD')
+        DB_HOST=os.getenv('DB_HOST')
+        DB_PORT=os.getenv('DB_PORT')
         print(DB_NAME, DB_USER, DB_PASSWORD, DB_HOST)
         # Establish the database connection
         connection = psycopg2.connect(

@@ -3,11 +3,8 @@ from flask import Flask, request, make_response, jsonify
 import os
 import json
 import logging
-import psycopg2
-import datetime
 from flask_cors import CORS
 from dotenv import load_dotenv
-from utils import _gunzip_data, calculate_openai_cost
 
 
 #/root/roja-project/roja-metric-poc/applications/kafka_roja
@@ -21,35 +18,6 @@ CORS(app)
 
 # Set up basic logginglogging.basicConfig(level=logging.DEBUG)
 logging.basicConfig(level=logging.CRITICAL)
-
-
-def create_db_connection():
-    try:
-        # Get database connection parameters from environment variables
-        
-        DB_NAME="roja_postgres"
-        DB_USER="roja_user"
-        DB_PASSWORD="roja_user"
-        DB_HOST="9.20.196.69"
-        DB_PORT=5432
-        #DB_NAME = os.environ.get("DB_NAME")
-        #DB_USER = os.environ.get("DB_USER")
-        #DB_PASSWORD = os.environ.get("DB_PASSWORD")
-        #DB_HOST = os.environ.get("DB_HOST")
-        print(DB_NAME, DB_USER, DB_PASSWORD, DB_HOST)
-        # Establish the database connection
-        connection = psycopg2.connect(
-            dbname=DB_NAME,
-            user=DB_USER,
-            password=DB_PASSWORD,
-            host=DB_HOST
-        )
-
-        return connection
-
-    except psycopg2.Error as e:
-        print("Error connecting to the database:", e)
-        return None
 
 def extract_application_name(data_obj):
     if isinstance(data_obj, list):
@@ -72,7 +40,6 @@ def extract_application_user(data_obj):
 @app.route('/additional_metrics', methods=['POST'])
 def upload_additional():
     try:
-        print("tahsin in /addtional_signals")
         logging.debug("Received request: /additional_metrics")
         data = request.get_json()
         producer.kafka_producer(data)
@@ -100,7 +67,6 @@ def upload_anthropic():
 def upload_through_rest_scores():
     
     try:
-        print("tahsin in /api/v1/scores/")
         logging.debug("Received request: /api/v1/scores/")
         data = request.get_json()
 
@@ -119,7 +85,6 @@ def upload_through_rest_scores():
 def upload_through_rest_logs():
     
     try:
-        print("tahsin in /api/v1/logs/")
         logging.debug("Received request: /api/v1/logs/")
         data = {
             "kafka-topic":"logs",
@@ -165,7 +130,6 @@ def upload_through_rest_spans():
 def upload_through_rest_metrics():
     
     try:
-        print("tahsin in /api/v1/metrics/")
         logging.debug("Received request: /api/v1/metrics/")
         jdata = request.get_json()
         

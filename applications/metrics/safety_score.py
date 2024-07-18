@@ -4,8 +4,9 @@ import datetime
 from dateutil.relativedelta import relativedelta
 from openai import OpenAI
 import graphsignal
+import os
 
-openai_api_key = "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" #os.getenv('OPENAI_API_KEY')
+openai_api_key = os.getenv('OPENAI_API_KEY')
 APPLICATION_METRIC = "auditing"
 
 # Define the API endpoint
@@ -42,8 +43,6 @@ def parse_moderation_response(json_obj):
     return json_obj['results'][0]
 
 def calculate_safety_score(user, app_name, question):
-    #graphsignal.set_context_tag('user', user)
-    #with graphsignal.start_trace('calculate_safety_score'):
         # Define the data payload
     data = {
         "input": question
@@ -55,7 +54,7 @@ def calculate_safety_score(user, app_name, question):
     result_info["app-user"] = user
     result_info["application-name"] = app_name
     # Write the system info to a JSON file
-    with open("auditing.json", "w") as json_file:
+    with open("metrics/jsons/auditing.json", "w") as json_file:
         json.dump(result_info, json_file, indent=4)
     return result_info
 

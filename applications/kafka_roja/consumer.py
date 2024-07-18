@@ -12,7 +12,7 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from postgres import postgres
 
 
-kafka_server = 'localhost:9092'
+kafka_server = os.getenv('KAFKA_URL')
 
 # Set up basic logging
 logging.basicConfig(level=logging.DEBUG)

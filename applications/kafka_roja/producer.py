@@ -1,9 +1,9 @@
 from kafka import KafkaProducer, KafkaConsumer
 import logging
 import json
+import os
 
-url = 'http://localhost:5000/receive_json'
-kafka_server = 'localhost:9092'
+kafka_server = os.getenv('KAFKA_URL')
 producer = KafkaProducer(bootstrap_servers=kafka_server)
 
 # Set up basic logging

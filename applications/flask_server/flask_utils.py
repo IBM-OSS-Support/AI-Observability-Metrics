@@ -1,9 +1,12 @@
 import requests
 import json
+import os
+
+flask_server_url = os.getenv('FLASK_SERVER_URL')
 
 def send_data(json_data):
     # URL of the Flask server
-    url = 'http://127.0.0.1:3001/additional_metrics'
+    url = flask_server_url + '/additional_metrics'
 
     # Convert JSON data to string
     payload = json.dumps(json_data)
@@ -19,7 +22,7 @@ def send_data(json_data):
 
 def send_anthropic_data(json_data):
     # URL of the Flask server
-    url = 'http://127.0.0.1:3001/anthropic_metrics'
+    url = flask_server_url + '/anthropic_metrics'
 
     # Convert JSON data to string
     payload = json.dumps(json_data)
