@@ -9,6 +9,16 @@ import socket
 # Set up basic logging
 logging.basicConfig(level=logging.CRITICAL)
 
+class Message_Single:
+    def __init__(self, topic, value):
+        self.topic = topic
+        self.value = value
+
+def upload_to_postgres_with_message(jsonobj):
+    m = Message_Single(jsonobj["kafka-topic"], jsonobj)
+    upload_to_postgres(m)
+
+
 def calculate_openai_cost(token_count, rate_per_1000_tokens=0.002):
     """
     Calculate the cost for using a language model based on token usage.

@@ -9,7 +9,7 @@ from dotenv import load_dotenv
 
 #/root/roja-project/roja-metric-poc/applications/kafka_roja
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from kafka_roja import producer
+from postgres import postgres
 
 load_dotenv()
 
@@ -42,7 +42,7 @@ def upload_additional():
     try:
         logging.debug("Received request: /additional_metrics")
         data = request.get_json()
-        producer.kafka_producer(data)
+        postgres.upload_to_postgres_with_message(data)
         return jsonify({"message": "additional metrics JSON received successfully"}), 200
     except Exception as e:
         logging.error(f'Error processing request: {str(e)}')
@@ -55,7 +55,7 @@ def upload_anthropic():
         print("ANTHROPIC METRICS IN FLASK_APP")
         logging.debug("Received request: /anthropic_metrics")
         data = request.get_json()
-        producer.kafka_producer(data)
+        postgres.upload_to_postgres_with_message(data)
         print("Data which is sent is: ", data)
         return jsonify({"message": "Anthropic metrics JSON received successfully"}), 200
     except Exception as e:
@@ -75,7 +75,7 @@ def upload_through_rest_scores():
         # Open the file in write mode and use json.dump() to write the data
         with open(file_path, 'w') as file:
             json.dump(data, file)
-        producer.kafka_producer(data)
+        postgres.upload_to_postgres_with_message(data)
         return jsonify({"message": "scores JSON received successfully"}), 200
     except Exception as e:
         logging.error(f'Error processing request: {str(e)}')
@@ -95,7 +95,7 @@ def upload_through_rest_logs():
         # Open the file in write mode and use json.dump() to write the data
         with open(file_path, 'w') as file:
             json.dump(data, file)
-        #producer.kafka_producer(data)
+        postgres.upload_to_postgres_with_message(data)
         return jsonify({"message": "logs JSON received successfully"}), 200
     except Exception as e:
         logging.error(f'Error processing request: {str(e)}')
@@ -120,7 +120,7 @@ def upload_through_rest_spans():
         # Open the file in write mode and use json.dump() to write the data
         with open(file_path, 'w') as file:
             json.dump(data, file)
-        producer.kafka_producer(data)
+        postgres.upload_to_postgres_with_message(data)
         return jsonify({"message": "spans JSON received successfully"}), 200
     except Exception as e:
         logging.error(f'Error processing request: {str(e)}')
@@ -146,7 +146,7 @@ def upload_through_rest_metrics():
         # Open the file in write mode and use json.dump() to write the data
         with open(file_path, 'w') as file:
             json.dump(data, file)
-        producer.kafka_producer(data)
+        postgres.upload_to_postgres_with_message(data)
         return jsonify({"message": "metrics JSON received successfully"}), 200
     except Exception as e:
         logging.error(f'Error processing request: {str(e)}')
