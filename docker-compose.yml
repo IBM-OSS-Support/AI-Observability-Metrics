@@ -8,9 +8,9 @@ services:
     ports:
       - "8080:8080"
 
-  client-test:
+  client-app:
     build:
-      context: ./client-test
+      context: ./client-app
       dockerfile: Dockerfile
     ports:
       - "3001:80"

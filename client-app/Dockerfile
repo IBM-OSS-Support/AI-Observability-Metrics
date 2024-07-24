@@ -8,7 +8,7 @@ WORKDIR /app
 COPY package*.json ./
 
 # Install dependencies
-RUN npm install && npm install node-sass
+RUN npm install && npm install sass
 
 RUN npm install --save-dev @babel/plugin-proposal-private-property-in-object
 
