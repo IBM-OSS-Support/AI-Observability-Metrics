@@ -9,21 +9,24 @@
  * of its trade secrets, irrespective of what has been deposited with
  * the U.S. Copyright Office.
  ****************************************************************************** */
-import React, { forwardRef, useImperativeHandle, useMemo, useRef, useState } from 'react';
-import { useEffect } from 'react';
-import CustomDataTable from '../../common/CustomDataTable';
+import React, { forwardRef, useEffect, useImperativeHandle, useRef, useState } from "react";
+import PageContainer from "../common/PageContainer";
 
-const FrequencyOfUseTable = forwardRef((props, ref) => {
-  
+import Transactions from "../Traces/Transactions/Transactions";
+import CustomDataTable from "../common/CustomDataTable";
+
+const MaintenanceTable = forwardRef((props, ref) => {
+
+
   const websocketRef = useRef(null);
   const [websocket, setWebsocket] = useState(null);
-  const [messageFromServerFreqTable, setMessageFromServerFreqTable] = useState('');
-  const [rowDataFreqTable, setRowDataFreqTable] = useState([]); // Define state for formatted data
-  const [headersFreqTable, setHeadersFreqTable] = useState([]); // Define state for headers
+  const [messageFromServerLog, setMessageFromServerLog] = useState('');
+  const [rowDataLog, setRowDataLog] = useState([]); // Define state for formatted data
+  const [headersLog, setHeadersLog] = useState([]); // Define state for headers
 
 
   useImperativeHandle(ref, () => ({
-    sendMessageToServerFreqTable,
+    sendMessageToServerLog,
   }));
 
   // Connect to WebSocket server on component mount
@@ -39,8 +42,10 @@ const FrequencyOfUseTable = forwardRef((props, ref) => {
   }, []);
 
   // Function to send message to WebSocket server
-  const sendMessageToServerFreqTable = (messageFromServerFreqTable) => {
-    var q = 'WITH operation_counts AS ( SELECT operation, COUNT(*) AS operation_count FROM operations GROUP BY operation ), total_count AS ( SELECT COUNT(*) AS total FROM operations ) SELECT oc.operation, oc.operation_count, (oc.operation_count * 100.0 / tc.total) AS percentage_usage FROM operation_counts oc, total_count tc ORDER BY percentage_usage DESC;';
+  const sendMessageToServerLog = (messageFromServerLog) => {
+    var start_timestamp = '2024-03-28 10:23:58.072245';
+    var end_timestamp = '2024-04-25 12:40:18.875514';
+    var q = 'SELECT * FROM maintenance';
     const ws = websocketRef.current;
     
     if (ws) {
@@ -67,7 +72,7 @@ const FrequencyOfUseTable = forwardRef((props, ref) => {
     if (websocket) {
       websocket.onmessage = (event) => {
         console.log('log data', event.data);
-        setMessageFromServerFreqTable(JSON.parse(event.data));
+        setMessageFromServerLog(JSON.parse(event.data));
         console.log('log event data[0]',event.data[4]);
         // console.log('setRowDataLog', messageFromServerLog[0]);
         // setRowDataLog(messageFromServerLog);
@@ -75,35 +80,42 @@ const FrequencyOfUseTable = forwardRef((props, ref) => {
       //setMessageFromServerLog(messageFromServerLog);
     }
   }, [websocket]);
-console.log('Frequency table messageFromServer', messageFromServerFreqTable[5]);
-console.log('Frequency table row data', rowDataFreqTable);
+
+console.log('log table row data', rowDataLog);
 // code starts here
 
 useEffect(() => {
-  setHeadersFreqTable([
-    { key: "operation", header: "Operation" },
-    { key: "operation_count", header: "Operation Count" },
-    { key: "percentage_usage", header: "Frequency of Use" },
+  setHeadersLog([
+    {key: "id" , header: "ID"},
+    {key: "graphsignal_library_version", header: "Graphsignal Library Version"},
+    { key: "os_name", header: "OS Name" },
+    {key: "os_version" , header: "OS Version"},
+    {key: "runtime_name", header: "Runtime Name"},
+    { key: "runtime_version", header: "Runtime Version" },
+    // { key: "app_user", header: "User" },
+    // { key: "timestamp", header: "Timestamp" },
   ]);
 }, []);
 
-  const arrayFreqTable = Array.isArray(messageFromServerFreqTable) ? messageFromServerFreqTable : [messageFromServerFreqTable];
-
-  console.log('Array log', arrayFreqTable);
+  const arrayLog = Array.isArray(messageFromServerLog) ? messageFromServerLog : [messageFromServerLog];
+  console.log('log table before arraylog', messageFromServerLog[0]);
+  console.log('Array log', arrayLog[0]);
+  const arrayLogtemp = arrayLog.map((arrayItem) => {
+    const { id, key, value } = arrayItem;
+    return {
+      id, key, value
+    };
+  });
+  console.log('arrayLogtemp', arrayLogtemp);
 // code ends here
-
-  return (
-    <div>
+	return(
       <div>
         <CustomDataTable
-        headers={headersFreqTable}
-        rows={arrayFreqTable}
+        headers={headersLog}
+        rows={arrayLog}
         />
       </div>
-    </div>
-  );
+	);
 });
 
-export default FrequencyOfUseTable;
-
-
+export default MaintenanceTable;

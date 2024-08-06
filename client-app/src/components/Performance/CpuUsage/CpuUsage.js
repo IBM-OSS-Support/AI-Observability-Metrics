@@ -9,7 +9,7 @@
  * of its trade secrets, irrespective of what has been deposited with
  * the U.S. Copyright Office.
  ****************************************************************************** */
-import React, { useEffect, useState } from "react";
+import React, { forwardRef, useEffect, useImperativeHandle, useRef, useState } from "react";
 import moment from "moment";
 
 // Components ----------------------------------------------------------------->
@@ -52,12 +52,13 @@ const defaultData = [
 
 const defaultMessage = [
   {
-    process_cpu_usage : {gauge : 0}
+    process_cpu_usage: { gauge: 0 }
   }
 ];
 
-const CpuUsage = () => {
-
+const CpuUsage = forwardRef((props, ref) => {
+  
+  const websocketRef = useRef(null);
   const [data, setData] = useState(defaultData);
   const [avg, setAvg] = useState(0);
   const [websocket, setWebsocket] = useState(null);
@@ -65,10 +66,15 @@ const CpuUsage = () => {
 
   const { state } = useStoreContext();
 
+  useImperativeHandle(ref, () => ({
+    sendMessageToServerCPU,
+  }));
+
   // Connect to WebSocket server on component mount
   useEffect(() => {
     const apiUrl = process.env.REACT_APP_WEBSOCKET_URL;
     const ws = new WebSocket(apiUrl);
+    websocketRef.current = ws;
     setWebsocket(ws);
     // Cleanup function to close WebSocket connection on component unmount
     return () => {
@@ -79,12 +85,24 @@ const CpuUsage = () => {
   // Function to send message to WebSocket server
   const sendMessageToServerCPU = () => {
     var q = 'SELECT process_cpu_usage FROM system';
-    if (websocket && websocket.readyState === WebSocket.OPEN) {
-      const message = {
-        tab: 'auditing',
-        action: q
-      };
-      websocket.send(JSON.stringify(message));
+    const ws = websocketRef.current;
+    
+    if (ws) {
+      if (ws.readyState === WebSocket.OPEN) {
+        const message = {
+          tab: "auditing",
+          action: q,
+        };
+        ws.send(JSON.stringify(message));
+      } else {
+        ws.onopen = () => {
+          const message = {
+            tab: "auditing",
+            action: q,
+          };
+          ws.send(JSON.stringify(message));
+        };
+      }
     }
   };
 
@@ -97,69 +115,27 @@ const CpuUsage = () => {
     }
   }, [websocket]);
 
-  // useEffect(() => {
-  //   let newData = defaultData;
-  //   let newAvg = 0;
-  //   if(state.status === 'success') {
-  //     const appData = getAppData();
+  useEffect(() => {
+    let newData = defaultData;
+    let newAvg = 0;
+    let newAvgValue = 0;
+    if(state.status === 'success') {
+      const appData = getAppData();
 
-  //     console.log('CPU app data', appData[0].data);
+      console.log('CPU app data', appData[0].data);
       
-
-  //     const cpuUsages = appData
-  //       .filter(d => moment(d.data.upload_ms / 1000).diff(moment(), 'days') <= 7)
-  //       .map(d => {
-  //         const cpuUsage = d.data.metrics.find(m => m.name === 'process_cpu_usage');
-  //         let gauge = 0;
-  //         console.log('CPUUsage', cpuUsage);
-  //         if (cpuUsage) {
-  //           gauge = (cpuUsage.gauge || 0)
-  //         }
-  //         return gauge
-  //       });
-  //       console.log('CPUUsages',cpuUsages);
-  //     newData = [
-  //       {
-  //         group: 'value',
-  //         value: cpuUsages[0] || 0
-  //       }
-  //     ];
-  //     newAvg = (cpuUsages.reduce((s, g) => s + +g, 0) / cpuUsages.length).toFixed(2);
-  //   }
-
-  //   setData(newData);
-  //   setAvg(newAvg);
-  // }, [state.status]);
-  // console.log('CPU messageFromServer', messageFromServerCPU);
-  // if(messageFromServerCPU){
-  //   console.log('CPU messageFromServer.gauge', messageFromServerCPU[0].process_cpu_usage.gauge);
-
-  // }
-
-  // start
-
-    useEffect(() => {
-      let newData = defaultData;
-      let newAvg = 0;
-      let newAvgValue = 0;
-      if(state.status === 'success') {
-        const appData = getAppData();
-  
-        console.log('CPU app data', appData[0].data);
-        
-        if (messageFromServerCPU) {
-          
-          const cpuUsages = messageFromServerCPU
-            .map(d => {
-              const cpuUsage = d.process_cpu_usage.gauge;
-              let gauge = 0;
-              console.log('CPUUsage', cpuUsage);
-              if (cpuUsage) {
-                gauge = cpuUsage
-              }
-              return gauge
-            });
-            console.log('CPUUsages',cpuUsages);
+      if (messageFromServerCPU) {
+        const cpuUsages = messageFromServerCPU
+          .map(d => {
+            const cpuUsage = d.process_cpu_usage.gauge;
+            let gauge = 0;
+            console.log('CPUUsage', cpuUsage);
+            if (cpuUsage) {
+              gauge = cpuUsage;
+            }
+            return gauge;
+          });
+          console.log('CPUUsages', cpuUsages);
         newAvgValue = cpuUsages.reduce((s, g) => s + +g, 0) / cpuUsages.length;
         newAvg = newAvgValue.toFixed(2);
         newData = [
@@ -168,39 +144,32 @@ const CpuUsage = () => {
             value: newAvgValue || 0
           }
         ];
-        
       }
-  
+
       setData(newData);
       setAvg(newAvg);
       console.log('New average', newAvg);
-    }}, messageFromServerCPU);
-
-
-    console.log('CPU messageFromServer', messageFromServerCPU);
-    if(messageFromServerCPU){
-      console.log('CPU messageFromServer.gauge', messageFromServerCPU[0].process_cpu_usage.gauge);
-  
     }
-  //end
+  }, [messageFromServerCPU, state.status]);
+
+  console.log('CPU messageFromServer', messageFromServerCPU);
+  if (messageFromServerCPU) {
+    console.log('CPU messageFromServer.gauge', messageFromServerCPU[0].process_cpu_usage.gauge);
+  }
 
   // Render
   return (
-    <Tile className="infrastructure-components cpu-usage" >
+    <Tile className="infrastructure-components cpu-usage">
       <h5>Latest CPU usage</h5>
-          <button onClick={sendMessageToServerCPU}>Load graph</button>
-        <div className="cpu-usage-chart">
-          <GaugeChart
-            data={data}
-            options={options}
-          />
-        </div>
-        <div className="cpu-usage-data">
-          <div className="label">Average CPU usage for last 7 days</div>
-          <h3 className="data">{avg} %</h3>
-        </div>
+      <div className="cpu-usage-chart">
+        <GaugeChart data={data} options={options} />
+      </div>
+      <div className="cpu-usage-data">
+        <div className="label">Average CPU usage for last 7 days</div>
+        <h3 className="data">{avg} %</h3>
+      </div>
     </Tile>
   );
-};
+});
 
 export default CpuUsage;
