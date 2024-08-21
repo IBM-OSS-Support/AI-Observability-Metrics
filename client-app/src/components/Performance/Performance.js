@@ -33,6 +33,9 @@ import FailureRate from "./FailureRate/FailureRate";
 import TokenPerSession1 from "./TokenPerSession/TokenPerSession1";
 
 const Performance = () => {
+  const [selectedItem, setSelectedDeployment] = useState(null);
+  const [selectedUser, setSelectedUser] = useState(null);
+  const [selectedTimestampRange, setSelectedTimestampRange] = useState(null); // Default value
 
   const tokenPerSessionRef = useRef();
   const cpuUsageRef = useRef();
@@ -55,6 +58,30 @@ const Performance = () => {
     }
   }, []); 
 
+  const handleFilterChange = (selectedItem, selectedUser, selectedTimestampRange) => {
+    setSelectedDeployment(selectedItem);
+    setSelectedUser(selectedUser);
+    setSelectedTimestampRange(selectedTimestampRange);
+    console.log('Selected Deployment:', selectedItem);
+    console.log('Selected User:', selectedUser);
+    console.log('Selected Timestamp Range:', selectedTimestampRange);
+
+    if (cpuUsageRef.current) {
+      cpuUsageRef.current.sendMessageToServerCPU(selectedItem, selectedUser, selectedTimestampRange);
+    }
+    if (callCountRef.current) {
+      callCountRef.current.sendMessageToServerCallCount(selectedItem, selectedUser, selectedTimestampRange);
+    }
+    // if (callCountRef.current) {
+    //   callCountRef.current.sendMessageToServerCallCount(selectedItem, selectedUser, selectedTimestampRange);
+    // }
+    if (tokenPerSessionRef.current) {
+      tokenPerSessionRef.current.sendMessageToServerToken(selectedItem, selectedUser, selectedTimestampRange);
+    }
+    if (latencyRef.current) {
+      latencyRef.current.sendMessageToServerLatency(selectedItem, selectedUser, selectedTimestampRange);
+    }
+  };
 
   return (
     <PageContainer
@@ -65,37 +92,28 @@ const Performance = () => {
       }}
     >
       <div className="home-container">
-    <Filter />
+    <Filter onFilterChange={handleFilterChange} />
     <Accordion align="start">
       <AccordionItem title="Session Characteristics" open={false}>
         <Grid fullWidth narrow id="body" className="page-content body">
-          {/* <Column max={4} xlg={4} lg={4} md={4} sm={4} className="content-tile">
-            <SessionLength />
-          </Column>
-          <Column max={4} xlg={4} lg={4} md={4} sm={4} className="content-tile">
-            <RequestsPerSession />
-          </Column>
-          <Column max={4} xlg={4} lg={4} md={4} sm={4} className="content-tile">
-            <TokenPerSession />
-          </Column> */}
           <Column max={16} xlg={16} lg={16} md={4} sm={4} className="content-tile">
-            <TokenPerSession1 ref={tokenPerSessionRef}/>
+            <TokenPerSession1 ref={tokenPerSessionRef} selectedTimestampRange={selectedTimestampRange} />
           </Column>
           </Grid>
       </AccordionItem>
     </Accordion>
         <Grid fullWidth narrow id="body" className="page-content body">
           <Column max={8} xlg={8} lg={8} md={4} sm={4} className="content-tile">
-            <CpuUsage ref={cpuUsageRef}/>
+            <CpuUsage ref={cpuUsageRef} selectedTimestampRange={selectedTimestampRange} />
           </Column>
           <Column max={8} xlg={8} lg={8} md={4} sm={4} className="content-tile">
           <Tile className="chart-tile">
-            <CallCountGraph ref={callCountRef}/>
+            <CallCountGraph ref={callCountRef} selectedTimestampRange={selectedTimestampRange} />
           </Tile>
           </Column>
           <Column max={16} xlg={16} lg={16} md={4} sm={4} className="content-tile">
             <Tile className="chart-tile">
-              <LatencyGraph ref={latencyRef}/>
+              <LatencyGraph ref={latencyRef} selectedTimestampRange={selectedTimestampRange} />
             </Tile>
           </Column>
           

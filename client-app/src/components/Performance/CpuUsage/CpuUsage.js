@@ -1,21 +1,6 @@
-/* ******************************************************************************
- * IBM Confidential
- *
- * OCO Source Materials
- *
- *  Copyright IBM Corp. 2023  All Rights Reserved.
- *
- * The source code for this program is not published or otherwise divested
- * of its trade secrets, irrespective of what has been deposited with
- * the U.S. Copyright Office.
- ****************************************************************************** */
 import React, { forwardRef, useEffect, useImperativeHandle, useRef, useState } from "react";
-import moment from "moment";
-
-// Components ----------------------------------------------------------------->
 import { Tile } from "@carbon/react";
 import { GaugeChart } from "@carbon/charts-react";
-import { getAppData } from "../../../appData";
 import { useStoreContext } from "../../../store";
 
 const options = {
@@ -41,7 +26,7 @@ const options = {
       value: '#136e6d'
     }
   }
-}
+};
 
 const defaultData = [
   {
@@ -56,116 +41,93 @@ const defaultMessage = [
   }
 ];
 
-const CpuUsage = forwardRef((props, ref) => {
-  
+const CpuUsage = forwardRef(({ selectedItem, selectedUser }, ref) => {
   const websocketRef = useRef(null);
   const [data, setData] = useState(defaultData);
+  const [latest, setLatest] = useState(0);
   const [avg, setAvg] = useState(0);
   const [websocket, setWebsocket] = useState(null);
   const [messageFromServerCPU, setMessageFromServerCPU] = useState(defaultMessage);
-
-  const { state } = useStoreContext();
 
   useImperativeHandle(ref, () => ({
     sendMessageToServerCPU,
   }));
 
-  // Connect to WebSocket server on component mount
   useEffect(() => {
     const apiUrl = process.env.REACT_APP_WEBSOCKET_URL;
     const ws = new WebSocket(apiUrl);
     websocketRef.current = ws;
     setWebsocket(ws);
-    // Cleanup function to close WebSocket connection on component unmount
+
     return () => {
       ws.close();
     };
   }, []);
 
-  // Function to send message to WebSocket server
-  const sendMessageToServerCPU = () => {
-    var q = 'SELECT process_cpu_usage FROM system';
+  const sendMessageToServerCPU = (selectedItem, selectedUser) => {
+    let q = 'SELECT process_cpu_usage FROM system';
+
+    if (selectedItem) {
+      q += ` WHERE application_name = '${selectedItem}'`;
+    }
+    if (selectedUser) {
+      q += selectedItem ? ` AND app_user = '${selectedUser}'` : ` WHERE app_user = '${selectedUser}'`;
+    }
+
     const ws = websocketRef.current;
-    
-    if (ws) {
-      if (ws.readyState === WebSocket.OPEN) {
+    if (ws && ws.readyState === WebSocket.OPEN) {
+      const message = {
+        tab: "auditing",
+        action: q,
+      };
+      ws.send(JSON.stringify(message));
+    } else {
+      ws.onopen = () => {
         const message = {
           tab: "auditing",
           action: q,
         };
         ws.send(JSON.stringify(message));
-      } else {
-        ws.onopen = () => {
-          const message = {
-            tab: "auditing",
-            action: q,
-          };
-          ws.send(JSON.stringify(message));
-        };
-      }
+      };
     }
   };
 
-  // Listen for messages from WebSocket server
   useEffect(() => {
     if (websocket) {
       websocket.onmessage = (event) => {
-        setMessageFromServerCPU(JSON.parse(event.data));
+        const receivedData = JSON.parse(event.data);
+        setMessageFromServerCPU(receivedData);
       };
     }
   }, [websocket]);
 
   useEffect(() => {
-    let newData = defaultData;
-    let newAvg = 0;
-    let newAvgValue = 0;
-    if(state.status === 'success') {
-      const appData = getAppData();
-
-      console.log('CPU app data', appData[0].data);
+    if (messageFromServerCPU && messageFromServerCPU.length > 0) {
+      const cpuUsages = messageFromServerCPU.map(d => d.process_cpu_usage.gauge || 0);
       
-      if (messageFromServerCPU) {
-        const cpuUsages = messageFromServerCPU
-          .map(d => {
-            const cpuUsage = d.process_cpu_usage.gauge;
-            let gauge = 0;
-            console.log('CPUUsage', cpuUsage);
-            if (cpuUsage) {
-              gauge = cpuUsage;
-            }
-            return gauge;
-          });
-          console.log('CPUUsages', cpuUsages);
-        newAvgValue = cpuUsages.reduce((s, g) => s + +g, 0) / cpuUsages.length;
-        newAvg = newAvgValue.toFixed(2);
-        newData = [
-          {
-            group: 'value',
-            value: newAvgValue || 0
-          }
-        ];
-      }
+      // Calculate the latest CPU usage (most recent value)
+      const latestUsage = cpuUsages[cpuUsages.length - 1] || 0;
+      setLatest(latestUsage);
 
-      setData(newData);
+      // Calculate the average CPU usage
+      const total = cpuUsages.reduce((sum, gauge) => sum + gauge, 0);
+      const newAvgValue = cpuUsages.length > 0 ? total / cpuUsages.length : 0;
+      const newAvg = newAvgValue.toFixed(2);
       setAvg(newAvg);
-      console.log('New average', newAvg);
+
+      // Update chart data to reflect the latest value
+      setData([{ group: 'value', value: latestUsage }]);
     }
-  }, [messageFromServerCPU, state.status]);
+  }, [messageFromServerCPU]);
 
-  console.log('CPU messageFromServer', messageFromServerCPU);
-  if (messageFromServerCPU) {
-    console.log('CPU messageFromServer.gauge', messageFromServerCPU[0].process_cpu_usage.gauge);
-  }
-
-  // Render
   return (
     <Tile className="infrastructure-components cpu-usage">
-      <h5>Latest CPU usage</h5>
+      <h5>Latest CPU Usage</h5>
       <div className="cpu-usage-chart">
         <GaugeChart data={data} options={options} />
       </div>
       <div className="cpu-usage-data">
-        <div className="label">Average CPU usage for last 7 days</div>
+        <div className="label">Average CPU Usage</div>
         <h3 className="data">{avg} %</h3>
       </div>
     </Tile>

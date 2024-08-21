@@ -172,7 +172,7 @@ const CpuUsage = () => {
   
       setData(newData);
       setAvg(newAvg);
-      console.log('New average', newAvg);
+      console.log('New average cpu', newAvg);
     }}, messageFromServerCPU);
 
 

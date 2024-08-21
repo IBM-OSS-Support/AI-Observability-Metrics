@@ -29,6 +29,8 @@ export const getIntervals = (start, end, number) => {
     intEnd = intEnd + step;
   }
 
+  console.log("intervals::", intervals);
+  
   return intervals;
 }
 

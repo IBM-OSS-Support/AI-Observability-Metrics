@@ -1,28 +1,29 @@
 import React, { useEffect, useState } from 'react';
-import { Dropdown } from "@carbon/react";
+import { ComboBox } from "@carbon/react";
+
+const Filter = ({ onFilterChange }) => {
+  const [websocket, setWebsocket] = useState(null);
+  const [messageFromServerFilter, setMessageFromServerFilter] = useState([]);
+  const [selectedItem, setSelectedItem] = useState(null);
+  const [selectedItemUser, setSelectedItemUser] = useState(null);
+  const [filteredApplications, setFilteredApplications] = useState([]); 
+  const [selectedTimeWindow, setSelectedTimeWindow] = useState(null);
+
+  const [selectedTimestampRange, setSelectedTimestampRange] = useState(null);
 
 
-const Filter = () => {
-    
-    const [websocket, setWebsocket] = useState(null);
-    const [messageFromServerFilter, setMessageFromServerFilter] = useState('');
-    const [selectedItem, setSelectedItem] = useState(null);
-    const [selectedItemUser, setSelectedItemUser] = useState(null);
-  
+  const generateUniqueId = () => `header-filter-${Math.random().toString(36).substr(2, 9)}`;
 
-    // Connect to WebSocket server on component mount
   useEffect(() => {
     const ws = new WebSocket('ws://localhost:8080');
     setWebsocket(ws);
-    // Cleanup function to close WebSocket connection on component unmount
     return () => {
       ws.close();
     };
   }, []);
 
-  // Function to send message to WebSocket server
-  const sendMessageToServerFilter = (messageFromServerLog) => {
-    var q = 'SELECT application_name,app_user FROM maintenance';
+  const sendMessageToServerFilter = () => {
+    const q = 'SELECT application_name, app_user, timestamp FROM maintenance';
     if (websocket && websocket.readyState === WebSocket.OPEN) {
       const message = {
         tab: 'auditing',
@@ -32,66 +33,99 @@ const Filter = () => {
     }
   };
 
-  // Listen for messages from WebSocket server
   useEffect(() => {
     if (websocket) {
       websocket.onmessage = (event) => {
-        setMessageFromServerFilter(JSON.parse(event.data));
+        const data = JSON.parse(event.data);
+        setMessageFromServerFilter(data);
+        handleSelectUser({ selectedItem: selectedItemUser }, data);
       };
-    
     }
   }, [websocket]);
 
   console.log('Filter messageFromServerFilter', messageFromServerFilter);
-  console.log('Filter Type',typeof(messageFromServerFilter));
-  
-      if (messageFromServerFilter) {
-        var applicationNames = messageFromServerFilter.map(app => app.application_name);
-        var users = messageFromServerFilter.map(app => app.app_user);
-        console.log(applicationNames);
-      }
 
-      const uniqueApplicationNames = [...new Set(applicationNames)];
-      const uniqueUsers = [...new Set(users)];
-      
-  const deploymentOptions = messageFromServerFilter ? uniqueApplicationNames : ["Select"];
-  const userOptions = messageFromServerFilter ? uniqueUsers : ["Select"];
+  const users = messageFromServerFilter.length > 0 
+    ? [...new Set(messageFromServerFilter.map(app => app.app_user))] 
+    : ["No users available"];
 
-  const handleSelect = (event) => {
-    setSelectedItem(event.selectedItem); // Update state with selected item
-    console.log("Selected item:", event.selectedItem);
+  const handleSelectUser = (event, data = messageFromServerFilter) => {
+    const selectedUser = event.selectedItem;
+    setSelectedItemUser(selectedUser);
+
+    const appsForUser = data
+      .filter(app => app.app_user === selectedUser)
+      .map(app => app.application_name);
+
+    setFilteredApplications([...new Set(appsForUser)]);
+
+    onFilterChange(selectedItem, selectedUser, selectedTimeWindow);
   };
 
-  const handleSelectUser = (event) => {
-    setSelectedItemUser(event.selectedItemUser); // Update state with selected item
-    console.log("Selected item User:", event.selectedItemUser);
+  const handleSelectApplication = (event) => {
+    const selectedApp = event.selectedItem;
+    setSelectedItem(selectedApp);
+
+    onFilterChange(selectedApp, selectedItemUser, selectedTimeWindow);
   };
 
-    return (
-        <div className="header-filter flex">
-        <Dropdown
-        onFocus={sendMessageToServerFilter}
-        selectedItem={selectedItem} // Controlled component setup
-        onChange={handleSelect}
-        items={deploymentOptions}
-        label="Choose Deployment Name"
-        size="md"
-        />
-        <Dropdown
-        onFocus={sendMessageToServerFilter}
-        selectedItemUser={selectedItemUser} // Controlled component setup
+  // const handleSelectTimeWindow = (event) => {
+  //   const selectedWindow = event.selectedItem;
+  //   setSelectedTimeWindow(selectedWindow);
+
+  //   onFilterChange(selectedItem, selectedItemUser, selectedWindow);
+  // };
+
+  const applicationOptions = filteredApplications.length > 0 
+    ? filteredApplications 
+    : ["Select a user first"];
+
+  // const timeWindowOptions = ['Last Day', 'Last 5 Days', 'Last 10 Days'];
+
+  const handleSelectTimestampRange = (event) => {
+    const selectedRange = event.selectedItem;
+    setSelectedTimestampRange(selectedRange);
+    onFilterChange(selectedItem, selectedItemUser, selectedTimeWindow, selectedTimestampRange);
+  };
+
+  const timestampRangeOptions = [
+    { label: 'Last 24 hours', value: 'last24hours' },
+    { label: 'Last 7 days', value: 'last7days' },
+    { label: 'Last 30 days', value: 'last30days' },
+  ];
+
+  // Generate a unique ID dynamically
+  const uniqueId = generateUniqueId();
+
+  return (
+    <div className="header-filter flex">
+      <ComboBox
+        id={uniqueId}
+        selectedItem={selectedItemUser}
         onChange={handleSelectUser}
-        items={userOptions}
-        label="Choose User Name"
+        items={users}
+        placeholder="Choose User Name"
         size="md"
-        />
-        <Dropdown
-        items={['Timestamp 1', 'Timestamp 2', 'Timestamp 3']}
-        label="Choose Time Window"
+        onFocus={sendMessageToServerFilter}
+      />
+      <ComboBox
+        id={uniqueId}
+        selectedItem={selectedItem}
+        onChange={handleSelectApplication}
+        items={applicationOptions}
+        placeholder="Choose Application Name"
         size="md"
-        />
+      />
+      <ComboBox
+        id={uniqueId}
+        selectedItem={selectedTimestampRange}
+        onChange={handleSelectTimestampRange}
+        items={timestampRangeOptions}
+        placeholder="Choose Timestamp Range"
+        size="md"
+      />
     </div>
-    );
-  };
-  
-  export default Filter;
+  );
+};
+
+export default Filter;

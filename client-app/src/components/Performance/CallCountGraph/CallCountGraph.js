@@ -1,27 +1,15 @@
-/* ******************************************************************************
- * IBM Confidential
- *
- * OCO Source Materials
- *
- *  Copyright IBM Corp. 2024  All Rights Reserved.
- *
- * The source code for this program is not published or otherwise divested
- * of its trade secrets, irrespective of what has been deposited with
- * the U.S. Copyright Office.
- ****************************************************************************** */
 import React, { forwardRef, useEffect, useImperativeHandle, useRef, useState } from "react";
 import CustomLineChart from "../../common/CustomLineChart";
 import { callCountOptions } from "../constants";
 import { useStoreContext } from "../../../store";
 import { getIntervals } from "../helper";
 import moment from "moment";
+import NoData from "../../common/NoData/NoData";
 
-const CallCountGraph = forwardRef((props, ref) => {
-
+const CallCountGraph = forwardRef(({ selectedItem, selectedUser, selectedTimestampRange }, ref) => {
   const websocketRef = useRef(null);
   const [websocket, setWebsocket] = useState(null);
   const [messageFromServerCallCount, setMessageFromServerCallCount] = useState('');
-
 
   useImperativeHandle(ref, () => ({
     sendMessageToServerCallCount,
@@ -40,8 +28,19 @@ const CallCountGraph = forwardRef((props, ref) => {
   }, []);
 
   // Function to send message to WebSocket server
-  const sendMessageToServerCallCount = () => {
-    const q = 'SELECT application_name, data, timestamp FROM performance';
+  const sendMessageToServerCallCount = (selectedItem, selectedUser) => {
+    let q = 'SELECT application_name, data, timestamp FROM performance';
+  
+    if (selectedItem && !selectedUser) {
+      q += ` WHERE application_name = '${selectedItem}'`;
+    }
+    if (selectedUser && !selectedItem) {
+      q += ` WHERE app_user = '${selectedUser}'`;
+    }
+    if (selectedUser && selectedItem) {
+      q += ` WHERE application_name = '${selectedItem}' AND app_user = '${selectedUser}'`;
+    }
+  
     const ws = websocketRef.current;
     
     if (ws) {
@@ -72,58 +71,80 @@ const CallCountGraph = forwardRef((props, ref) => {
     }
   }, [websocket]);
 
-  const { state } = useStoreContext();
-  console.log('state', state);
-
   const getCallCountDataInside = (apps) => {
     const starttime = 1718342400000;
     const endtime = 1724044799000;
     let obj = {};
     let returnArray = [];
-
-    console.log('CallCount apps', apps);
-
+  
     const intervals = getIntervals(starttime, endtime, 10);
-    console.log('CallCount intervals', intervals);
 
+    let TestStartTime = starttime;
+
+    // console.log(messageFromServerCallCount.map(entry => entry.timestamp), "TestStartTime", TestStartTime);
+
+     // Log the data type
+     console.log("Type of messageFromServerCallCount:", typeof messageFromServerCallCount);
+     console.log("Is Array:", Array.isArray(messageFromServerCallCount));
+     console.log("Actual Data:", messageFromServerCallCount);
+ 
+    //  if (Array.isArray(messageFromServerCallCount)) { debugger
+    //      // If it's an array, proceed with map function
+    //      const timestampsInMilliseconds = messageFromServerCallCount.map(entry => new Date(entry.timestamp).getTime());
+ 
+    //      const minTimestamp = Math.min(...timestampsInMilliseconds);
+ 
+    //      const constantTimestamp = new Date('2024-01-01T00:00:00.000Z').getTime();
+ 
+    //      if (minTimestamp < constantTimestamp) {
+    //          console.log("The minimum timestamp is earlier than the constant timestamp.");
+    //      } else {
+    //          console.log("The minimum timestamp is not earlier than the constant timestamp.");
+    //      }
+ 
+    //      console.log(`Minimum Timestamp in milliseconds: ${minTimestamp}`);
+
+    //      TestStartTime = minTimestamp;
+    //     //  return TestStartTime;
+    //   } else {
+    //      // If it's not an array, log an error
+    //       console.error("messageFromServerCallCount is not an array. It is:", messageFromServerCallCount);
+    //     }
+    
+
+    console.log("messageFromServerCallCount", messageFromServerCallCount);
+
+    debugger
+  
+    // Loop through intervals
     for (const i in intervals) {
       let { start, end } = intervals[i];
-      start = moment(start);
+      start = TestStartTime;
       end = moment(end);
-
-      console.log('CallCount start and end', start, end);
-
+  
+      // Loop through apps
       for (const appId in apps) {
         const app = apps[appId];
-        console.log("latency app.data.call_count.counter", app.data.call_count.counter);
         let callCount = app.data.call_count.counter;
-        console.log(appId, 'CallCount value', callCount);
-        
+  
         const appTime = moment(app.timestamp);
-        console.log('CallCount appTime', appTime);
-        
-        console.log('For CallCount app time check', appTime.isSameOrAfter(start) && appTime.isSameOrBefore(end));
-        
+  
         if (appTime.isSameOrAfter(start) && appTime.isSameOrBefore(end)) {
           if (obj[i]) {
-            obj[i].value = callCount;
+            obj[i].value += callCount;
             obj[i].key = end.add(50, 'minutes').format('YYYY-MM-DDTHH:mm:ssZ');
-            returnArray.push({ ...obj[i] });
           } else {
             obj[i] = {
               group: 'Dataset1',
               key: appTime.add(240, 'minutes').format('YYYY-MM-DDTHH:mm:ssZ'),
               value: callCount,
             }
-            returnArray.push({ ...obj[i] });
           }
-          console.log(appId, 'CallCount obj', obj[i]);
+          returnArray.push({ ...obj[i] });
         }
       }
     }
-    console.log('CallCount return array', returnArray);
-    console.log('CallCount object', Object.values(obj));
-
+  
     return returnArray;
   };
 
@@ -132,10 +153,14 @@ const CallCountGraph = forwardRef((props, ref) => {
 
   return (
     <>
-      <CustomLineChart
-        data={CallCountDataInside}
-        options={callCountOptions}
-      />
+      {CallCountDataInside.length === 0 ? (
+        <NoData />
+      ) : (
+        <CustomLineChart
+          data={CallCountDataInside}
+          options={callCountOptions}
+        />
+      )}
     </>
   );
 });

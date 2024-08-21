@@ -1,0 +1,27 @@
+.iec--empty-state__wrapper {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    height: 100%;
+
+    .iec--empty-state__text-wrapper {
+        .iec--empty-state__text {
+            font-size: 0.875rem;
+            font-weight: 400;
+            line-height: 1.28572;
+            letter-spacing: 0.16px;
+            position: relative;
+            display: block;
+            padding: 5px;
+            outline: 2px solid transparent;
+            outline-offset: -2px;
+
+            &.cds--type-heading-03 {
+                font-size: 1.25rem;
+                font-weight: 400;
+                line-height: 1.4;
+                letter-spacing: 0;
+            }
+        }
+    }
+}

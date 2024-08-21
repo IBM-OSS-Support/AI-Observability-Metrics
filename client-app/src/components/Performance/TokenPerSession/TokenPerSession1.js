@@ -1,14 +1,3 @@
-/* ******************************************************************************
- * IBM Confidential
- *
- * OCO Source Materials
- *
- *  Copyright IBM Corp. 2023  All Rights Reserved.
- *
- * The source code for this program is not published or otherwise divested
- * of its trade secrets, irrespective of what has been deposited with
- * the U.S. Copyright Office.
- ****************************************************************************** */
 import React, { forwardRef, useEffect, useImperativeHandle, useRef, useState } from "react";
 import { Tile } from "@carbon/react";
 import { StackedBarChart } from "@carbon/charts-react";
@@ -34,7 +23,7 @@ const options = {
   },
   toolbar: {
     enabled: true,
-    controls:[{
+    controls: [{
       type: "Make fullscreen"
     }],
     text: "Make fullscreen",
@@ -71,7 +60,7 @@ const defaultMessage = [
   }
 ];
 
-const TokenPerSession1 = forwardRef((props, ref) => {
+const TokenPerSession1 = forwardRef(({ selectedItem, selectedUser }, ref) => {
   const websocketRef = useRef(null);
   const [data, setData] = useState(defaultData);
   const [avg, setAvg] = useState(0);
@@ -88,96 +77,115 @@ const TokenPerSession1 = forwardRef((props, ref) => {
   useEffect(() => {
     const apiUrl = process.env.REACT_APP_WEBSOCKET_URL;
     const ws = new WebSocket(apiUrl);
-    console.log("ws", ws);
+    console.log("WebSocket connected:", ws);
     websocketRef.current = ws;
     setWebsocket(ws);
     // Cleanup function to close WebSocket connection on component unmount
     return () => {
       ws.close();
+      console.log("WebSocket closed");
     };
   }, []);
 
   // Function to send message to WebSocket server
-  const sendMessageToServerToken = () => {
-    const q = "SELECT application_name, total_count FROM anthropic_metrics";
+  const sendMessageToServerToken = (selectedItem, selectedUser, selectedTimeWindow) => {
+    let q = "SELECT * FROM anthropic_metrics WHERE 1=1";
+  
+    if (selectedItem) {
+      q += ` AND application_name = '${selectedItem}'`;
+    }
+    if (selectedUser) {
+      q += ` AND app_user = '${selectedUser}'`;
+    }
+    if (selectedTimeWindow) { debugger
+      let timeCondition = '';
+      const now = new Date();
+      switch (selectedTimeWindow) {
+        case 'Last Day':
+          timeCondition = ` AND timestamp >= '${new Date(now - 1 * 24 * 60 * 60 * 1000).toISOString()}'`;
+          break;
+        case 'Last 5 Days':
+          timeCondition = ` AND timestamp >= '${new Date(now - 5 * 24 * 60 * 60 * 1000).toISOString()}'`;
+          break;
+        case 'Last 10 Days':
+          timeCondition = ` AND timestamp >= '${new Date(now - 10 * 24 * 60 * 60 * 1000).toISOString()}'`;
+          break;
+        default:
+          break;
+      }
+      q += timeCondition;
+    }
+  
+    console.log("Sending query:", q);
+  
     const ws = websocketRef.current;
-    
+  
     if (ws) {
+      const message = {
+        tab: "auditing",
+        action: q
+      };
       if (ws.readyState === WebSocket.OPEN) {
-        const message = {
-          tab: "auditing",
-          action: q
-        };
         ws.send(JSON.stringify(message));
+        console.log("Message sent:", message);
       } else {
         ws.onopen = () => {
-          const message = {
-            tab: "auditing",
-            action: q
-          };
           ws.send(JSON.stringify(message));
+          console.log("Message sent after WebSocket open:", message);
         };
       }
     }
   };
+  
 
   // Listen for messages from WebSocket server
   useEffect(() => {
     if (websocket) {
       websocket.onmessage = (event) => {
-        setMessageFromServerToken(JSON.parse(event.data));
-        console.log("Token messageFromServer inside useEffect", messageFromServerToken);
+        const data = JSON.parse(event.data);
+        setMessageFromServerToken(data);
+        console.log("Message received from server:", data);
       };
     }
   }, [websocket]);
 
   // Update chart data when messageFromServerToken changes
   useEffect(() => {
-    let newData = defaultData;
-    let newAvg = 0;
-    let newAvgValue = 0;
     if (state.status === "success") {
-      const appData = getAppData();
-  
-      console.log("Token app data", appData[0].data);
-  
       if (messageFromServerToken.length > 0) {
         const cpuUsages = messageFromServerToken.map((d) => {
-          if (d.total_count) {
-            const cpuUsage = d.total_count;
-            let gauge = 0;
-            console.log("CPUUsage in Token", cpuUsage);
-            if (cpuUsage) {
-              gauge = Number(cpuUsage);
-            }
-            return gauge;
-          }
-          return 0; // return 0 for entries without total_count to keep the data structure consistent
+          const cpuUsage = d.total_count;
+          return cpuUsage ? Number(cpuUsage) : 0;
         });
 
-        const filteredCpuUsages = cpuUsages.filter((value) => typeof value === "number");
+        const filteredCpuUsages = cpuUsages.filter((value) => typeof value === "number" && !isNaN(value));
 
-        console.log("CPUUsages in Token", cpuUsages);
-        console.log("filteredCpuUsages in Token", filteredCpuUsages);
-        newAvgValue = filteredCpuUsages.reduce((s, g) => s + +g, 0) / filteredCpuUsages.length;
-        newAvg = newAvgValue.toFixed(2);
-        newData = [
+        console.log("CPU Usages:", cpuUsages);
+        console.log("Filtered CPU Usages:", filteredCpuUsages);
+
+        const total = filteredCpuUsages.reduce((s, g) => s + g, 0);
+        const newAvgValue = filteredCpuUsages.length > 0 ? total / filteredCpuUsages.length : 0;
+        const newAvg = newAvgValue.toFixed(2);
+
+        setData([
           {
             group: "value",
             key: "Average",
-            value: newAvgValue || 0
+            value: newAvgValue
           }
-        ];
+        ]);
+        setAvg(newAvg);
+
+        console.log("New average token:", newAvg);
+      } else {
+        // Reset data to default if no message from server
+        setData(defaultData);
+        setAvg(0);
       }
-  
-      setData(newData);
-      setAvg(newAvg);
-      console.log("New average", newAvg);
     }
   }, [messageFromServerToken, state.status]);
 
-  console.log("Json object =", typeof messageFromServerToken[0].json_object);
-  console.log("Token messageFromServer1", messageFromServerToken);
+  console.log("Current messageFromServerToken:", messageFromServerToken);
 
   // Render
   return (
