@@ -1,5 +1,16 @@
-import React, { useEffect, useState } from 'react';
-import { ComboBox } from "@carbon/react";
+/* ******************************************************************************
+ * IBM Confidential
+ *
+ * OCO Source Materials
+ *
+ *  Copyright IBM Corp. 2023  All Rights Reserved.
+ *
+ * The source code for this program is not published or otherwise divested
+ * of its trade secrets, irrespective of what has been deposited with
+ * the U.S. Copyright Office.
+ ****************************************************************************** */
+import React, { useEffect, useState, useRef } from 'react';
+import { ComboBox, DatePicker, DatePickerInput } from "@carbon/react";
 
 const Filter = ({ onFilterChange }) => {
   const [websocket, setWebsocket] = useState(null);
@@ -7,12 +18,11 @@ const Filter = ({ onFilterChange }) => {
   const [selectedItem, setSelectedItem] = useState(null);
   const [selectedItemUser, setSelectedItemUser] = useState(null);
   const [filteredApplications, setFilteredApplications] = useState([]); 
-  const [selectedTimeWindow, setSelectedTimeWindow] = useState(null);
-
   const [selectedTimestampRange, setSelectedTimestampRange] = useState(null);
+  const [startDate, setStartDate] = useState(null);
+  const [endDate, setEndDate] = useState(null);
 
-
-  const generateUniqueId = () => `header-filter-${Math.random().toString(36).substr(2, 9)}`;
+  const uniqueId = useRef(`header-filter-${Math.random().toString(36).substr(2, 9)}`).current;
 
   useEffect(() => {
     const ws = new WebSocket('ws://localhost:8080');
@@ -41,9 +51,7 @@ const Filter = ({ onFilterChange }) => {
         handleSelectUser({ selectedItem: selectedItemUser }, data);
       };
     }
-  }, [websocket]);
-
-  console.log('Filter messageFromServerFilter', messageFromServerFilter);
+  }, [websocket, selectedItemUser]);
 
   const users = messageFromServerFilter.length > 0 
     ? [...new Set(messageFromServerFilter.map(app => app.app_user))] 
@@ -58,34 +66,50 @@ const Filter = ({ onFilterChange }) => {
       .map(app => app.application_name);
 
     setFilteredApplications([...new Set(appsForUser)]);
-
-    onFilterChange(selectedItem, selectedUser, selectedTimeWindow);
+    onFilterChange(selectedItem, selectedUser, selectedTimestampRange, startDate, endDate);
   };
 
   const handleSelectApplication = (event) => {
     const selectedApp = event.selectedItem;
     setSelectedItem(selectedApp);
-
-    onFilterChange(selectedApp, selectedItemUser, selectedTimeWindow);
+    onFilterChange(selectedApp, selectedItemUser, selectedTimestampRange, startDate, endDate);
   };
 
-  // const handleSelectTimeWindow = (event) => {
-  //   const selectedWindow = event.selectedItem;
-  //   setSelectedTimeWindow(selectedWindow);
+  const handleDateChange = (range) => {
+    const [start, end] = range;
+    setStartDate(start);
+    setEndDate(end);
 
-  //   onFilterChange(selectedItem, selectedItemUser, selectedWindow);
-  // };
+    // Calculate number of days selected
+    const numberOfDaysSelected = calculateDaysDifference(start, end);
+
+    console.log("numberOfDaysSelected", numberOfDaysSelected);
+    
+    // Pass number of days selected to the parent component or use as needed
+    onFilterChange(selectedItem, selectedItemUser, selectedTimestampRange, start, end, numberOfDaysSelected);
+  };
+
+  const calculateDaysDifference = (startDate, endDate) => {
+    const start = new Date(startDate);
+    const end = new Date(endDate);
+
+    // Calculate the difference in time
+    const timeDiff = end.getTime() - start.getTime();
+
+    // Convert time difference from milliseconds to days
+    const daysDiff = timeDiff / (1000 * 3600 * 24);
+
+    return Math.ceil(daysDiff); // Round up to the nearest whole number
+  };
 
   const applicationOptions = filteredApplications.length > 0 
     ? filteredApplications 
     : ["Select a user first"];
 
-  // const timeWindowOptions = ['Last Day', 'Last 5 Days', 'Last 10 Days'];
-
   const handleSelectTimestampRange = (event) => {
     const selectedRange = event.selectedItem;
     setSelectedTimestampRange(selectedRange);
-    onFilterChange(selectedItem, selectedItemUser, selectedTimeWindow, selectedTimestampRange);
+    onFilterChange(selectedItem, selectedItemUser, selectedRange, startDate, endDate);
   };
 
   const timestampRangeOptions = [
@@ -94,13 +118,10 @@ const Filter = ({ onFilterChange }) => {
     { label: 'Last 30 days', value: 'last30days' },
   ];
 
-  // Generate a unique ID dynamically
-  const uniqueId = generateUniqueId();
-
   return (
     <div className="header-filter flex">
       <ComboBox
-        id={uniqueId}
+        id={`${uniqueId}-user`}
         selectedItem={selectedItemUser}
         onChange={handleSelectUser}
         items={users}
@@ -109,21 +130,32 @@ const Filter = ({ onFilterChange }) => {
         onFocus={sendMessageToServerFilter}
       />
       <ComboBox
-        id={uniqueId}
+        id={`${uniqueId}-app`}
         selectedItem={selectedItem}
         onChange={handleSelectApplication}
         items={applicationOptions}
         placeholder="Choose Application Name"
         size="md"
       />
-      <ComboBox
-        id={uniqueId}
-        selectedItem={selectedTimestampRange}
-        onChange={handleSelectTimestampRange}
-        items={timestampRangeOptions}
-        placeholder="Choose Timestamp Range"
+      <DatePicker
+        id={`${uniqueId}-date`}
+        datePickerType="range"
+        onChange={handleDateChange}
+        dateFormat="m/d/Y"
+        placeholder="Choose Date Range"
         size="md"
-      />
+      >
+        <DatePickerInput
+          id={`${uniqueId}-start`}
+          placeholder="Timestamp Start Date"
+          pattern="\d{1,2}/\d{1,2}/\d{4}"
+        />
+        <DatePickerInput
+          id={`${uniqueId}-end`}
+          placeholder="Timestamp End Date"
+          pattern="\d{1,2}/\d{1,2}/\d{4}"
+        />
+      </DatePicker>
     </div>
   );
 };

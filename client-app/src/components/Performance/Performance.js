@@ -33,9 +33,12 @@ import FailureRate from "./FailureRate/FailureRate";
 import TokenPerSession1 from "./TokenPerSession/TokenPerSession1";
 
 const Performance = () => {
-  const [selectedItem, setSelectedDeployment] = useState(null);
+  const [selectedDeployment, setSelectedDeployment] = useState(null);
   const [selectedUser, setSelectedUser] = useState(null);
-  const [selectedTimestampRange, setSelectedTimestampRange] = useState(null); // Default value
+  const [selectedTimestampRange, setSelectedTimestampRange] = useState('last7days'); // Default value
+  const [startDate, setStartDate] = useState(null);
+  const [endDate, setEndDate] = useState(null);
+  const [numberOfDaysSelected, setNumberOfDaysSelected] = useState(null);
 
   const tokenPerSessionRef = useRef();
   const cpuUsageRef = useRef();
@@ -58,23 +61,29 @@ const Performance = () => {
     }
   }, []); 
 
-  const handleFilterChange = (selectedItem, selectedUser, selectedTimestampRange) => {
+  const handleFilterChange = (selectedItem, selectedUser, selectedTimestampRange, startDate, endDate, numberOfDaysSelected) => {
     setSelectedDeployment(selectedItem);
     setSelectedUser(selectedUser);
     setSelectedTimestampRange(selectedTimestampRange);
+    setStartDate(startDate);
+    setEndDate(endDate);
+    setNumberOfDaysSelected(numberOfDaysSelected);
     console.log('Selected Deployment:', selectedItem);
     console.log('Selected User:', selectedUser);
     console.log('Selected Timestamp Range:', selectedTimestampRange);
+    console.log('Selected startDate:', startDate);
+    console.log('Selected endDate:', endDate);
+    console.log('Selected numberOfDaysSelected:', numberOfDaysSelected);
 
     if (cpuUsageRef.current) {
       cpuUsageRef.current.sendMessageToServerCPU(selectedItem, selectedUser, selectedTimestampRange);
     }
-    if (callCountRef.current) {
-      callCountRef.current.sendMessageToServerCallCount(selectedItem, selectedUser, selectedTimestampRange);
-    }
     // if (callCountRef.current) {
     //   callCountRef.current.sendMessageToServerCallCount(selectedItem, selectedUser, selectedTimestampRange);
     // }
+    if (callCountRef.current) {
+      callCountRef.current.sendMessageToServerCallCount(selectedItem, selectedUser, selectedTimestampRange, numberOfDaysSelected);
+    }
     if (tokenPerSessionRef.current) {
       tokenPerSessionRef.current.sendMessageToServerToken(selectedItem, selectedUser, selectedTimestampRange);
     }
@@ -91,29 +100,29 @@ const Performance = () => {
         subtitle: "Performance graphs",
       }}
     >
-      <div className="home-container">
-    <Filter onFilterChange={handleFilterChange} />
-    <Accordion align="start">
-      <AccordionItem title="Session Characteristics" open={false}>
-        <Grid fullWidth narrow id="body" className="page-content body">
-          <Column max={16} xlg={16} lg={16} md={4} sm={4} className="content-tile">
-            <TokenPerSession1 ref={tokenPerSessionRef} selectedTimestampRange={selectedTimestampRange} />
-          </Column>
-          </Grid>
-      </AccordionItem>
-    </Accordion>
+    <div className="home-container">
+      <Filter onFilterChange={handleFilterChange} />
+      <Accordion align="start">
+        <AccordionItem title="Session Characteristics" open={false}>
+          <Grid fullWidth narrow id="body" className="page-content body">
+            <Column max={16} xlg={16} lg={16} md={4} sm={4} className="content-tile">
+              <TokenPerSession1 ref={tokenPerSessionRef}/>
+            </Column>
+            </Grid>
+        </AccordionItem>
+      </Accordion>
         <Grid fullWidth narrow id="body" className="page-content body">
           <Column max={8} xlg={8} lg={8} md={4} sm={4} className="content-tile">
-            <CpuUsage ref={cpuUsageRef} selectedTimestampRange={selectedTimestampRange} />
+            <CpuUsage ref={cpuUsageRef}/>
           </Column>
           <Column max={8} xlg={8} lg={8} md={4} sm={4} className="content-tile">
           <Tile className="chart-tile">
-            <CallCountGraph ref={callCountRef} selectedTimestampRange={selectedTimestampRange} />
+            <CallCountGraph ref={callCountRef} numberOfDaysSelected={numberOfDaysSelected} />
           </Tile>
           </Column>
           <Column max={16} xlg={16} lg={16} md={4} sm={4} className="content-tile">
             <Tile className="chart-tile">
-              <LatencyGraph ref={latencyRef} selectedTimestampRange={selectedTimestampRange} />
+              <LatencyGraph ref={latencyRef}/>
             </Tile>
           </Column>
           

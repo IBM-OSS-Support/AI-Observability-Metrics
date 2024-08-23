@@ -1,3 +1,14 @@
+/* ******************************************************************************
+ * IBM Confidential
+ *
+ * OCO Source Materials
+ *
+ *  Copyright IBM Corp. 2024  All Rights Reserved.
+ *
+ * The source code for this program is not published or otherwise divested
+ * of its trade secrets, irrespective of what has been deposited with
+ * the U.S. Copyright Office.
+ ****************************************************************************** */
 import React, { forwardRef, useEffect, useImperativeHandle, useRef, useState } from "react";
 import CustomLineChart from "../../common/CustomLineChart";
 import { callCountOptions } from "../constants";
@@ -6,14 +17,19 @@ import { getIntervals } from "../helper";
 import moment from "moment";
 import NoData from "../../common/NoData/NoData";
 
-const CallCountGraph = forwardRef(({ selectedItem, selectedUser, selectedTimestampRange }, ref) => {
+const CallCountGraph = forwardRef(({selectedItem, selectedUser, selectedTimestampRange, numberOfDaysSelected}, ref) => {
+
   const websocketRef = useRef(null);
   const [websocket, setWebsocket] = useState(null);
   const [messageFromServerCallCount, setMessageFromServerCallCount] = useState('');
 
+  let defaultNumberofDays = 7;
+  
+
   useImperativeHandle(ref, () => ({
     sendMessageToServerCallCount,
   }));
+  
 
   // Connect to WebSocket server on component mount
   useEffect(() => {
@@ -28,9 +44,13 @@ const CallCountGraph = forwardRef(({ selectedItem, selectedUser, selectedTimesta
   }, []);
 
   // Function to send message to WebSocket server
-  const sendMessageToServerCallCount = (selectedItem, selectedUser) => {
+  const sendMessageToServerCallCount = (selectedItem, selectedUser, selectedTimestampRange, numberOfDaysSelected) => {
     let q = 'SELECT application_name, data, timestamp FROM performance';
-  
+
+    defaultNumberofDays = numberOfDaysSelected;
+    console.log(defaultNumberofDays, "numberOfDaysSelected::::", numberOfDaysSelected);
+
+    // Add filtering logic based on selectedItem, selectedUser, and selectedTimestampRange
     if (selectedItem && !selectedUser) {
       q += ` WHERE application_name = '${selectedItem}'`;
     }
@@ -40,7 +60,27 @@ const CallCountGraph = forwardRef(({ selectedItem, selectedUser, selectedTimesta
     if (selectedUser && selectedItem) {
       q += ` WHERE application_name = '${selectedItem}' AND app_user = '${selectedUser}'`;
     }
-  
+    if (selectedTimestampRange) {
+      const endTime = moment();
+      let startTime;
+
+      switch (selectedTimestampRange) {
+        case 'last24hours':
+          startTime = endTime.clone().subtract(24, 'hours');
+          break;
+        case 'last7days':
+          startTime = endTime.clone().subtract(7, 'days');
+          break;
+        case 'last30days':
+          startTime = endTime.clone().subtract(30, 'days');
+          break;
+        default:
+          startTime = endTime.clone().subtract(7, 'days');
+      }
+      
+      q += ` AND timestamp`;
+    }
+
     const ws = websocketRef.current;
     
     if (ws) {
@@ -60,6 +100,7 @@ const CallCountGraph = forwardRef(({ selectedItem, selectedUser, selectedTimesta
         };
       }
     }
+    return defaultNumberofDays
   };
 
   // Listen for messages from WebSocket server
@@ -71,85 +112,58 @@ const CallCountGraph = forwardRef(({ selectedItem, selectedUser, selectedTimesta
     }
   }, [websocket]);
 
-  const getCallCountDataInside = (apps) => {
-    const starttime = 1718342400000;
-    const endtime = 1724044799000;
+  useEffect(() => {
+    if (messageFromServerCallCount) {
+        getCallCountDataInside(messageFromServerCallCount, numberOfDaysSelected);
+    }
+}, [messageFromServerCallCount, numberOfDaysSelected]);
+
+  const { state } = useStoreContext();
+  console.log('state', state);
+
+  const getCallCountDataInside = (apps, defaultNumberofDays) => {
+    const endtime = Date.now();
+    const SelectedDays = numberOfDaysSelected ? numberOfDaysSelected : defaultNumberofDays;
+    const starttime = endtime - SelectedDays * 24 * 60 * 60 * 10000;
+    console.log(numberOfDaysSelected, 'Starttime call', starttime);
+    console.log(defaultNumberofDays, 'Endtime call', endtime);
     let obj = {};
     let returnArray = [];
+
+    console.log('CallCount apps', apps);
+
   
-    const intervals = getIntervals(starttime, endtime, 10);
+    //new code 
+    const result = [];
 
-    let TestStartTime = starttime;
+    for (const appId in apps) {
+      const app = apps[appId];
+      console.log('CallCount app', appId, ':', app);
+      const timestamp = app.timestamp;
+      console.log('CallCount Time', timestamp);
 
-    // console.log(messageFromServerCallCount.map(entry => entry.timestamp), "TestStartTime", TestStartTime);
-
-     // Log the data type
-     console.log("Type of messageFromServerCallCount:", typeof messageFromServerCallCount);
-     console.log("Is Array:", Array.isArray(messageFromServerCallCount));
-     console.log("Actual Data:", messageFromServerCallCount);
- 
-    //  if (Array.isArray(messageFromServerCallCount)) { debugger
-    //      // If it's an array, proceed with map function
-    //      const timestampsInMilliseconds = messageFromServerCallCount.map(entry => new Date(entry.timestamp).getTime());
- 
-    //      const minTimestamp = Math.min(...timestampsInMilliseconds);
- 
-    //      const constantTimestamp = new Date('2024-01-01T00:00:00.000Z').getTime();
- 
-    //      if (minTimestamp < constantTimestamp) {
-    //          console.log("The minimum timestamp is earlier than the constant timestamp.");
-    //      } else {
-    //          console.log("The minimum timestamp is not earlier than the constant timestamp.");
-    //      }
- 
-    //      console.log(`Minimum Timestamp in milliseconds: ${minTimestamp}`);
-
-    //      TestStartTime = minTimestamp;
-    //     //  return TestStartTime;
-    //   } else {
-    //      // If it's not an array, log an error
-    //       console.error("messageFromServerCallCount is not an array. It is:", messageFromServerCallCount);
-    //     }
-    
-
-    console.log("messageFromServerCallCount", messageFromServerCallCount);
-
-    debugger
-  
-    // Loop through intervals
-    for (const i in intervals) {
-      let { start, end } = intervals[i];
-      start = TestStartTime;
-      end = moment(end);
-  
-      // Loop through apps
-      for (const appId in apps) {
-        const app = apps[appId];
-        let callCount = app.data.call_count.counter;
-  
-        const appTime = moment(app.timestamp);
-  
-        if (appTime.isSameOrAfter(start) && appTime.isSameOrBefore(end)) {
-          if (obj[i]) {
-            obj[i].value += callCount;
-            obj[i].key = end.add(50, 'minutes').format('YYYY-MM-DDTHH:mm:ssZ');
-          } else {
-            obj[i] = {
-              group: 'Dataset1',
-              key: appTime.add(240, 'minutes').format('YYYY-MM-DDTHH:mm:ssZ'),
-              value: callCount,
-            }
-          }
-          returnArray.push({ ...obj[i] });
-        }
+      if (new Date(timestamp).getTime() >= starttime && new Date(timestamp).getTime() <= endtime) {
+        result.push({
+          group: 'Dataset 1',
+          key: app.timestamp,
+          value: app.data.call_count.counter
+        });
       }
     }
-  
-    return returnArray;
+
+    console.log('CallCount Result', result);
+    call_count_number = result.length
+    return result;
   };
 
-  const CallCountDataInside = getCallCountDataInside(messageFromServerCallCount);
-  console.log('CallCount Data Inside', CallCountDataInside);
+  let call_count_number;
+  console.log("call_count_number:",call_count_number);
+  const CallCountDataInside = getCallCountDataInside(messageFromServerCallCount, defaultNumberofDays);
+  console.log("defaultNumberofDays",defaultNumberofDays, 'CallCount Data Inside', CallCountDataInside);
+
+  const callCountOptions = {
+    title: `Call Count : ` + call_count_number
+  }
 
   return (
     <>

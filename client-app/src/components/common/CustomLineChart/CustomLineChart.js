@@ -42,12 +42,12 @@ const defaultOptions = {
     }
   },
   points: {
-    fillOpacity: 1,
+    fillOpacity: 0.1,
     filled: true,
-    radius: 4
+    radius: 6
   },
   timeScale: {
-    addSpaceOnEdges: 0.1
+    addSpaceOnEdges: 1
   },
   legend: {
     enabled: false,
