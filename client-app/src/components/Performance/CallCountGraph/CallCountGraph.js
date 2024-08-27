@@ -151,7 +151,7 @@ const CallCountGraph = forwardRef(({selectedItem, selectedUser, selectedTimestam
       }
     }
 
-    console.log('CallCount Result', result);
+    console.log(result.value, 'CallCount Result', result);
     call_count_number = result.length
     return result;
   };

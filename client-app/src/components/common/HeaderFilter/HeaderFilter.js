@@ -148,11 +148,13 @@ const Filter = ({ onFilterChange }) => {
         <DatePickerInput
           id={`${uniqueId}-start`}
           placeholder="Timestamp Start Date"
+          labelText=""
           pattern="\d{1,2}/\d{1,2}/\d{4}"
         />
         <DatePickerInput
           id={`${uniqueId}-end`}
           placeholder="Timestamp End Date"
+          labelText=""
           pattern="\d{1,2}/\d{1,2}/\d{4}"
         />
       </DatePicker>

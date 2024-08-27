@@ -88,7 +88,7 @@ const Performance = () => {
       tokenPerSessionRef.current.sendMessageToServerToken(selectedItem, selectedUser, selectedTimestampRange);
     }
     if (latencyRef.current) {
-      latencyRef.current.sendMessageToServerLatency(selectedItem, selectedUser, selectedTimestampRange);
+      latencyRef.current.sendMessageToServerLatency(selectedItem, selectedUser, selectedTimestampRange, numberOfDaysSelected);
     }
   };
 
@@ -122,7 +122,7 @@ const Performance = () => {
           </Column>
           <Column max={16} xlg={16} lg={16} md={4} sm={4} className="content-tile">
             <Tile className="chart-tile">
-              <LatencyGraph ref={latencyRef}/>
+              <LatencyGraph ref={latencyRef} numberOfDaysSelected={numberOfDaysSelected} />
             </Tile>
           </Column>
           
