@@ -9,7 +9,7 @@
  * of its trade secrets, irrespective of what has been deposited with
  * the U.S. Copyright Office.
  ****************************************************************************** */
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Accordion, AccordionItem, Column, Content, Dropdown, Grid, Tile } from "@carbon/react";
 
 // Globals -------------------------------------------------------------------->
@@ -33,6 +33,29 @@ import FailureRate from "./FailureRate/FailureRate";
 import TokenPerSession1 from "./TokenPerSession/TokenPerSession1";
 
 const Performance = () => {
+
+  const tokenPerSessionRef = useRef();
+  const cpuUsageRef = useRef();
+  const callCountRef = useRef();
+  const latencyRef = useRef();
+
+
+  useEffect(() => {
+    if (tokenPerSessionRef.current) {
+      tokenPerSessionRef.current.sendMessageToServerToken();
+    }
+    if (cpuUsageRef.current) {
+      cpuUsageRef.current.sendMessageToServerCPU();
+    }
+    if (callCountRef.current) {
+      callCountRef.current.sendMessageToServerCallCount();
+    }
+    if (latencyRef.current) {
+      latencyRef.current.sendMessageToServerLatency();
+    }
+  }, []); 
+
+
   return (
     <PageContainer
       className="page-container performance-page"
@@ -42,85 +65,40 @@ const Performance = () => {
       }}
     >
       <div className="home-container">
-		<Filter />
-		<Accordion align="start">
-			<AccordionItem title="Session Characteristics" open={false}>
-				<Grid fullWidth narrow id="body" className="page-content body">
-					<Column max={4} xlg={4} lg={4} md={4} sm={4} className="content-tile">
-						<SessionLength />
-					</Column>
-					<Column max={4} xlg={4} lg={4} md={4} sm={4} className="content-tile">
-						<RequestsPerSession />
-					</Column>
+    <Filter />
+    <Accordion align="start">
+      <AccordionItem title="Session Characteristics" open={false}>
+        <Grid fullWidth narrow id="body" className="page-content body">
+          {/* <Column max={4} xlg={4} lg={4} md={4} sm={4} className="content-tile">
+            <SessionLength />
+          </Column>
           <Column max={4} xlg={4} lg={4} md={4} sm={4} className="content-tile">
-						<TokenPerSession />
-					</Column>
+            <RequestsPerSession />
+          </Column>
           <Column max={4} xlg={4} lg={4} md={4} sm={4} className="content-tile">
-						<TokenPerSession1 />
-					</Column>
-		  		</Grid>
-			</AccordionItem>
-		</Accordion>
+            <TokenPerSession />
+          </Column> */}
+          <Column max={16} xlg={16} lg={16} md={4} sm={4} className="content-tile">
+            <TokenPerSession1 ref={tokenPerSessionRef}/>
+          </Column>
+          </Grid>
+      </AccordionItem>
+    </Accordion>
         <Grid fullWidth narrow id="body" className="page-content body">
           <Column max={8} xlg={8} lg={8} md={4} sm={4} className="content-tile">
-            <CpuUsage />
+            <CpuUsage ref={cpuUsageRef}/>
           </Column>
           <Column max={8} xlg={8} lg={8} md={4} sm={4} className="content-tile">
           <Tile className="chart-tile">
-            <CallCountGraph />
+            <CallCountGraph ref={callCountRef}/>
           </Tile>
           </Column>
           <Column max={16} xlg={16} lg={16} md={4} sm={4} className="content-tile">
             <Tile className="chart-tile">
-              <LatencyGraph />
+              <LatencyGraph ref={latencyRef}/>
             </Tile>
           </Column>
-          {/* <Column
-            max={16}
-            xlg={16}
-            lg={16}
-            md={4}
-            sm={4}
-            className="content-tile"
-          >
-            <PolicyDiagram/>
-          </Column> */}
-          {/* <Column
-            max={8}
-            xlg={8}
-            lg={8}
-            md={4}
-            sm={4}
-            className="content-tile"
-          >
-            <Tile className="chart-tile">
-              <ErrorRate />
-            </Tile>
-          </Column>
-		  <Column
-            max={8}
-            xlg={8}
-            lg={8}
-            md={4}
-            sm={4}
-            className="content-tile"
-          >
-            <Tile className="chart-tile">
-            	<AbandonmentRate />
-            </Tile>
-          </Column> */}
-		  {/* <Column
-            max={8}
-            xlg={8}
-            lg={8}
-            md={4}
-            sm={4}
-            className="content-tile"
-          >
-            <Tile className="chart-tile">
-              <AnalyticAggregation />
-            </Tile>
-          </Column> */}
+          
         </Grid>
       </div>
     </PageContainer>

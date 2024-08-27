@@ -1,21 +1,30 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useImperativeHandle, forwardRef, useRef } from "react";
 import CustomDataTable from "../../common/CustomDataTable";
 
-const SafetyScoreTable = () => {
-  const [websocket, setWebsocket] = useState(null);
+const SafetyScoreTable = forwardRef((props, ref) => {
+  const websocketRef = useRef(null);
   const [messageFromServer, setMessageFromServer] = useState([{ key: "1" }]);
-  const [rowData, setRowData] = useState([]); // Define state for formatted data
-  const [headers, setHeaders] = useState([]); // Define state for headers
+  const [rowData, setRowData] = useState([]);
+  const [headers, setHeaders] = useState([]);
   const [pagination, setPagination] = useState({ offset: 0, first: 10 });
   const [searchText, setSearchText] = useState("");
   const [filters, setFilters] = useState([]);
   const [selectedFilters, setSelectedFilters] = useState({});
 
-  // Connect to WebSocket server on component mount
+  useImperativeHandle(ref, () => ({
+    sendMessageToServer,
+  }));
+
   useEffect(() => {
     const apiUrl = process.env.REACT_APP_WEBSOCKET_URL;
     const ws = new WebSocket(apiUrl);
-    setWebsocket(ws);
+    websocketRef.current = ws;
+
+    console.log("Inside Table ws:", ws);
+
+    ws.onmessage = (event) => {
+      setMessageFromServer(JSON.parse(event.data));
+    };
 
     // Cleanup function to close WebSocket connection on component unmount
     return () => {
@@ -23,45 +32,40 @@ const SafetyScoreTable = () => {
     };
   }, []);
 
-  // Function to send message to WebSocket server
   const sendMessageToServer = () => {
-    var start_timestamp = "2024-03-28 10:23:58.072245";
-    var end_timestamp = "2024-04-25 12:40:18.875514";
-    var q =
-      "SELECT COUNT(*) AS total_records, SUM(CASE WHEN flagged THEN 1 ELSE 0 END) AS true_count, SUM(CASE WHEN NOT flagged THEN 1 ELSE 0 END) AS false_count, (SUM(CASE WHEN flagged THEN 1 ELSE 0 END)::NUMERIC / COUNT(*)) * 100 AS true_percentage, (SUM(CASE WHEN NOT flagged THEN 1 ELSE 0 END)::NUMERIC / COUNT(*)) * 100 AS false_percentage FROM auditing WHERE timestamp BETWEEN '" +
-      start_timestamp +
-      "' AND '" +
-      end_timestamp +
-      "'";
-    if (websocket && websocket.readyState === WebSocket.OPEN) {
-      const message = {
-        tab: "auditing",
-        action: q,
+    const start_timestamp = "2024-03-28 10:23:58.072245";
+    const end_timestamp = "2024-04-25 12:40:18.875514";
+    const q = `
+      SELECT COUNT(*) AS total_records,
+             SUM(CASE WHEN flagged THEN 1 ELSE 0 END) AS true_count,
+             SUM(CASE WHEN NOT flagged THEN 1 ELSE 0 END) AS false_count,
+             (SUM(CASE WHEN flagged THEN 1 ELSE 0 END)::NUMERIC / COUNT(*)) * 100 AS true_percentage,
+             (SUM(CASE WHEN NOT flagged THEN 1 ELSE 0 END)::NUMERIC / COUNT(*)) * 100 AS false_percentage
+      FROM auditing
+      WHERE timestamp BETWEEN '${start_timestamp}' AND '${end_timestamp}'`;
+
+    console.log("Inside Table sendMessageToServer");
+
+    const ws = websocketRef.current;
+    if (ws) {
+      ws.onopen = () => {
+        if (ws.readyState === WebSocket.OPEN) {
+          const message = {
+            tab: "auditing",
+            action: q,
+          };
+          ws.send(JSON.stringify(message));
+        }
       };
-      websocket.send(JSON.stringify(message));
     }
   };
 
-  // Listen for messages from WebSocket server
-  useEffect(() => {
-    if (websocket) {
-      websocket.onmessage = (event) => {
-        setMessageFromServer(JSON.parse(event.data));
-      };
-    }
-    sendMessageToServer(messageFromServer);
-    console.log("111websocket: ", messageFromServer);
-  }, [websocket]);
-
   useEffect(() => {
     if (messageFromServer.length > 0) {
-      console.log("Inside if-messageFromServer: ", messageFromServer);
       const formattedData = messageFromServer;
       setRowData(formattedData[0]);
     }
   }, [messageFromServer]);
-
-  console.log("messageFromServer", messageFromServer);
 
   useEffect(() => {
     setHeaders([
@@ -73,94 +77,12 @@ const SafetyScoreTable = () => {
     ]);
   }, []);
 
-  const formatData = (data) => {
-    // Format data here
-    const formattedRow = {
-      id: "1", // Assuming a single row
-      cells: [
-        {
-          id: "total_records",
-          value: { displayType: "number", data: data[0].total_records },
-        },
-        {
-          id: "true_count",
-          value: { displayType: "number", data: data[0].true_count },
-        },
-        {
-          id: "false_count",
-          value: { displayType: "number", data: data[0].false_count },
-        },
-        {
-          id: "true_percentage",
-          value: { displayType: "number", data: data[0].true_percentage },
-        },
-        {
-          id: "false_percentage",
-          value: { displayType: "number", data: data[0].false_percentage },
-        },
-      ],
-    };
-
-    return formattedRow;
-  };
-
-  // const setHeaderRow = () => {
-  //   // Format the data to match the structure expected by CustomDataTable
-  //   const formattedData = messageFromServer.map((data, index) => ({
-  //     id: index.toString(), // Provide a unique identifier for each row if needed
-  //     cells: [
-  //       { key: "total_records", value: { displayType: "number", data: data.total_records } },
-  //       { key: "true_count", value: { displayType: "number", data: data.true_count } },
-  //       { key: "false_count", value: { displayType: "number", data: data.false_count } },
-  //       { key: "true_percentage", value: { displayType: "number", data: data.true_percentage } },
-  //       { key: "false_percentage", value: { displayType: "number", data: data.false_percentage } },
-  //     ],
-  //   }));
-
-  //   // Define headers for the table
-  //   const headers = [
-  //     { key: "total_records", header: "Total Records" },
-  //     { key: "true_count", header: "True Count" },
-  //     { key: "false_count", header: "False Count" },
-  //     { key: "true_percentage", header: "True Percentage" },
-  //     { key: "false_percentage", header: "False Percentage" },
-  //   ];
-
-  //   const Testing1 = formattedData
-  //   // Update state with headers and formatted data
-  //   setHeaders(headers);
-  //   setFormattedData(Testing1);
-  //   console.log('Headers', headers);
-  //   console.log('Formatted data', formattedData);
-  // };
-console.log('safetyscore rowdata :', rowData);
   return (
     <div>
-      {/* <table>
-          <thead>
-            <tr>
-              {messageFromServer && Object.keys(messageFromServer[0]).map((key, index) => (
-                <th key={index}>{key}</th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {messageFromServer && messageFromServer.map((item, index) => (
-              <tr key={index}>
-                {Object.values(item).map((value, index) => (
-                  <td key={index}>{value}</td>
-                ))}
-              </tr>
-            ))}
-          </tbody>
-        </table> */}
-      {console.log("Testing", [rowData])}
-      <button onClick={sendMessageToServer}>Load data</button>
       <CustomDataTable
         headers={headers}
         rows={[rowData]}
-        loading={false} // Set loading to true if data is being fetched asynchronously
-        // Pass any other required props to the CustomDataTable component
+        loading={false}
         search={{
           searchText: searchText,
           persistent: true,
@@ -189,6 +111,6 @@ console.log('safetyscore rowdata :', rowData);
       />
     </div>
   );
-};
+});
 
 export default SafetyScoreTable;

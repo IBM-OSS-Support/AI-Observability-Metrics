@@ -1,19 +1,8 @@
-/* ******************************************************************************
- * IBM Confidential
- *
- * OCO Source Materials
- *
- *  Copyright IBM Corp. 2023  All Rights Reserved.
- *
- * The source code for this program is not published or otherwise divested
- * of its trade secrets, irrespective of what has been deposited with
- * the U.S. Copyright Office.
- ****************************************************************************** */
-import React, { useEffect, useState } from "react";
+import React, { forwardRef, useEffect, useImperativeHandle, useRef, useState } from "react";
 import moment from "moment";
 
 // Components ----------------------------------------------------------------->
-import { Dropdown, Tile } from "@carbon/react";
+import { Tile } from "@carbon/react";
 import { GaugeChart } from "@carbon/charts-react";
 import { getAppData } from "../../../appData";
 import { useStoreContext } from "../../../store";
@@ -56,20 +45,35 @@ const defaultMessage = [
   },
 ];
 
-const UserSatisfaction = () => {
+const UserSatisfaction = forwardRef((props, ref) => {
+  const websocketRef = useRef(null);
   const [data, setData] = useState(defaultData);
   const [avg, setAvg] = useState(0);
-  const [websocket, setWebsocket] = useState(null);
   const [messageFromServerUser, setMessageFromServerUser] = useState(defaultMessage);
 
   const { state } = useStoreContext();
 
+  useImperativeHandle(ref, () => ({
+    sendMessageToServerUser,
+  }));
+
   // Connect to WebSocket server on component mount
   useEffect(() => {
     const apiUrl = process.env.REACT_APP_WEBSOCKET_URL;
+    console.log('API URL', apiUrl);
+    console.log('Process.env', process.env);
     const ws = new WebSocket(apiUrl);
-    console.log('ws', ws);
-    setWebsocket(ws);
+    websocketRef.current = ws;
+
+    ws.onopen = () => {
+      console.log('WebSocket connection established');
+      sendMessageToServerUser();
+    };
+
+    ws.onmessage = (event) => {
+      setMessageFromServerUser(JSON.parse(event.data));
+    };
+
     // Cleanup function to close WebSocket connection on component unmount
     return () => {
       ws.close();
@@ -78,27 +82,22 @@ const UserSatisfaction = () => {
 
   // Function to send message to WebSocket server
   const sendMessageToServerUser = () => {
-    var q = "SELECT * FROM user_satisfaction";
-    if (websocket && websocket.readyState === WebSocket.OPEN) {
+    const q = "SELECT * FROM user_satisfaction"
+
+    const ws = websocketRef.current;
+    console.log("inside adoption ws:", ws);
+    if (ws && ws.readyState === WebSocket.OPEN) {
       const message = {
         tab: "auditing",
         action: q,
       };
-      websocket.send(JSON.stringify(message));
+      ws.send(JSON.stringify(message));
     }
   };
 
-  // Listen for messages from WebSocket server
-  useEffect(() => {
-    if (websocket) {
-      websocket.onmessage = (event) => {
-        setMessageFromServerUser(JSON.parse(event.data));
-      };
-    }
-  }, [websocket]);
+  
 
-  // start
-
+  // Update chart data when messageFromServerUser changes
   useEffect(() => {
     let newData = defaultData;
     let newAvg = 0;
@@ -108,7 +107,7 @@ const UserSatisfaction = () => {
 
       console.log("User app data", appData[0].data);
 
-      if (messageFromServerUser) {
+      if (messageFromServerUser.length > 0) {
         const cpuUsages = messageFromServerUser.map((d) => {
           const cpuUsage = d.rating;
           let gauge = 0;
@@ -133,7 +132,7 @@ const UserSatisfaction = () => {
       setAvg(newAvg);
       console.log("New average in User", newAvg);
     }
-  }, messageFromServerUser);
+  }, [messageFromServerUser]);
 
   console.log("User messageFromServer", messageFromServerUser);
   if (messageFromServerUser) {
@@ -148,7 +147,6 @@ const UserSatisfaction = () => {
   return (
     <Tile className="infrastructure-components cpu-usage">
       <h5>Average rating of Application</h5>
-        <button onClick={sendMessageToServerUser}>Load graph</button>
       <div className="cpu-usage-chart">
         <GaugeChart data={data} options={options} />
       </div>
@@ -158,6 +156,6 @@ const UserSatisfaction = () => {
       </div>
     </Tile>
   );
-};
+});
 
 export default UserSatisfaction;

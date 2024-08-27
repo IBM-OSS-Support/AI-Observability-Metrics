@@ -63,9 +63,9 @@ const Filter = () => {
     console.log("Selected item:", event.selectedItem);
   };
 
-  const handleSelectUser = (e) => {
-    setSelectedItemUser(e.selectedItemUser); // Update state with selected item
-    console.log("Selected item:", e.selectedItemUser);
+  const handleSelectUser = (event) => {
+    setSelectedItemUser(event.selectedItemUser); // Update state with selected item
+    console.log("Selected item User:", event.selectedItemUser);
   };
 
     return (
