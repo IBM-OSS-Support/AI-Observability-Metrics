@@ -9,7 +9,7 @@
  * of its trade secrets, irrespective of what has been deposited with
  * the U.S. Copyright Office.
  ****************************************************************************** */
-import React, { useEffect, useRef } from "react";
+import React from "react";
 import { Column, Grid, Tile } from "@carbon/react";
 
 // Globals -------------------------------------------------------------------->
@@ -23,16 +23,6 @@ import UserSatisfaction from "./UserSatisfaction/UserSatisfaction";
 import LatencyGraph from "../Performance/LatencyGraph/LatencyGraph";
 
 const Performance = () => {
-
-  const costGraphRef = useRef();
-
-  useEffect(() => {
-    if (costGraphRef.current) {
-      costGraphRef.current.sendMessageToServerCost();
-    }
-  }, []);   
-
-
   return (
     <PageContainer
       className="page-container metering-page"
@@ -53,7 +43,7 @@ const Performance = () => {
             className="content-tile"
           >
             <Tile className="chart-tile">
-              <CostGraph ref={costGraphRef}/>
+              <CostGraph />
             </Tile>
           </Column>
           {/* <Column max={8} xlg={8} lg={8} md={8} sm={4} className="content-tile">

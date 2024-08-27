@@ -9,13 +9,13 @@
  * of its trade secrets, irrespective of what has been deposited with
  * the U.S. Copyright Office.
  ****************************************************************************** */
-import React, { useEffect, useState, useCallback, forwardRef, useRef, useImperativeHandle } from "react";
-import moment from "moment";
+import React, { useEffect, useMemo, useState } from "react";
+
 import CustomLineChart from "../../common/CustomLineChart";
+import moment from "moment";
+import { LineChart } from "@carbon/charts-react";
 
-const CostGraph = forwardRef((props, ref) => {
-
-  const websocketRef = useRef(null);
+function CostGraph() {
   const defaultMessage = [
     {
       token_cost: 0,
@@ -29,15 +29,10 @@ const CostGraph = forwardRef((props, ref) => {
     title: "Token Cost",
   };
 
-  useImperativeHandle(ref, () => ({
-    sendMessageToServerCost,
-  }));
-
   // Connect to WebSocket server on component mount
   useEffect(() => {
     const apiUrl = process.env.REACT_APP_WEBSOCKET_URL;
     const ws = new WebSocket(apiUrl);
-    websocketRef.current = ws;
     setWebsocket(ws);
     // Cleanup function to close WebSocket connection on component unmount
     return () => {
@@ -46,28 +41,16 @@ const CostGraph = forwardRef((props, ref) => {
   }, []);
 
   // Function to send message to WebSocket server
-  const sendMessageToServerCost = useCallback(() => {
+  const sendMessageToServerCost = () => {
     var q = "SELECT application_name, token_cost,timestamp FROM token_usage";
-    const ws = websocketRef.current;
-    
-    if (ws) {
-      if (ws.readyState === WebSocket.OPEN) {
-        const message = {
-          tab: "auditing",
-          action: q,
-        };
-        ws.send(JSON.stringify(message));
-      } else {
-        ws.onopen = () => {
-          const message = {
-            tab: "auditing",
-            action: q,
-          };
-          ws.send(JSON.stringify(message));
-        };
-      }
+    if (websocket && websocket.readyState === WebSocket.OPEN) {
+      const message = {
+        tab: "auditing",
+        action: q,
+      };
+      websocket.send(JSON.stringify(message));
     }
-  }, [websocket]);
+  };
 
   // Listen for messages from WebSocket server
   useEffect(() => {
@@ -170,9 +153,10 @@ const CostGraph = forwardRef((props, ref) => {
 
   return (
     <>
+      <button onClick={sendMessageToServerCost}>Load graph</button>
       <CustomLineChart data={costGraphData} options={costGraphOptions} />
     </>
   );
-});
+}
 
 export default CostGraph;

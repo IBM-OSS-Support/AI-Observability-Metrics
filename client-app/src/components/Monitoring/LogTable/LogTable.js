@@ -1,23 +1,28 @@
-import React, { forwardRef, useImperativeHandle, useMemo, useRef, useState } from 'react';
+/* ******************************************************************************
+ * IBM Confidential
+ *
+ * OCO Source Materials
+ *
+ *  Copyright IBM Corp. 2024  All Rights Reserved.
+ *
+ * The source code for this program is not published or otherwise divested
+ * of its trade secrets, irrespective of what has been deposited with
+ * the U.S. Copyright Office.
+ ****************************************************************************** */
+import React, { useMemo, useState } from 'react';
 import { useEffect } from 'react';
 import CustomDataTable from '../../common/CustomDataTable';
 
-const LogTable = forwardRef((props, ref) => {
-  
-  const websocketRef = useRef(null);
+const LogTable = () => {
   const [websocket, setWebsocket] = useState(null);
-  const [messageFromServerLogTable, setMessageFromServerLogTable] = useState([]);
-  const [headersLogTable, setHeadersLogTable] = useState([]);
-
-  useImperativeHandle(ref, () => ({
-    sendMessageToServerLogTable,
-  }));
+  const [messageFromServerLogTable, setMessageFromServerLogTable] = useState('');
+  const [rowDataLogTable, setRowDataLogTable] = useState([]); // Define state for formatted data
+  const [headersLogTable, setHeadersLogTable] = useState([]); // Define state for headers
 
   // Connect to WebSocket server on component mount
   useEffect(() => {
     const apiUrl = process.env.REACT_APP_WEBSOCKET_URL;
     const ws = new WebSocket(apiUrl);
-    websocketRef.current = ws;
     setWebsocket(ws);
     // Cleanup function to close WebSocket connection on component unmount
     return () => {
@@ -30,24 +35,12 @@ const LogTable = forwardRef((props, ref) => {
     var start_timestamp = '2024-03-28 10:23:58.072245';
     var end_timestamp = '2024-04-25 12:40:18.875514';
     var q = 'SELECT id,application_name,app_user,timestamp FROM maintenance';
-    const ws = websocketRef.current;
-    
-    if (ws) {
-      if (ws.readyState === WebSocket.OPEN) {
-        const message = {
-          tab: "auditing",
-          action: q,
-        };
-        ws.send(JSON.stringify(message));
-      } else {
-        ws.onopen = () => {
-          const message = {
-            tab: "auditing",
-            action: q,
-          };
-          ws.send(JSON.stringify(message));
-        };
-      }
+    if (websocket && websocket.readyState === WebSocket.OPEN) {
+      const message = {
+        tab: 'auditing',
+        action: q
+      };
+      websocket.send(JSON.stringify(message));
     }
   };
 
@@ -56,42 +49,46 @@ const LogTable = forwardRef((props, ref) => {
     if (websocket) {
       websocket.onmessage = (event) => {
         console.log('log data', event.data);
-        const data = JSON.parse(event.data);
-        // Format the data to include hyperlinks
-        const formattedData = data.map(row => ({
-          ...row,
-          application_name: (
-            <a href={`#/trace-analysis/${row.application_name}`} target="_blank" rel="noopener noreferrer">
-              {row.application_name}
-            </a>
-          ),
-        }));
-        setMessageFromServerLogTable(formattedData);
+        setMessageFromServerLogTable(JSON.parse(event.data));
+        console.log('log event data[0]',event.data[4]);
+        // console.log('setRowDataLog', messageFromServerLog[0]);
+        // setRowDataLog(messageFromServerLog);
       };
+      //setMessageFromServerLog(messageFromServerLog);
     }
   }, [websocket]);
+console.log('log table messageFromServer', messageFromServerLogTable[5]);
+console.log('log table row data', rowDataLogTable);
+// code starts here
 
-  useEffect(() => {
-    setHeadersLogTable([
-      { key: "id", header: "ID" },
-      { key: "application_name", header: "Application Name" },
-      { key: "app_user", header: "User" },
-      { key: "timestamp", header: "Timestamp" },
-    ]);
-  }, []);
+useEffect(() => {
+  setHeadersLogTable([
+    {key: "id", header: "ID"},
+    { key: "application_name", header: "Application Name" },
+    { key: "app_user", header: "User" },
+    { key: "timestamp", header: "Timestamp" },
+  ]);
+}, []);
 
   const arrayLogTable = Array.isArray(messageFromServerLogTable) ? messageFromServerLogTable : [messageFromServerLogTable];
 
+  console.log('Array log', arrayLogTable);
+// code ends here
+
   return (
     <div>
+      <button onClick={sendMessageToServerLogTable}>Load data</button>
+      {/* Display message received from server */}
       <div>
         <CustomDataTable
-          headers={headersLogTable}
-          rows={arrayLogTable}
+        headers={headersLogTable}
+        rows={Array.isArray(messageFromServerLogTable) ? messageFromServerLogTable : [messageFromServerLogTable]}
         />
       </div>
     </div>
   );
-});
+};
 
 export default LogTable;
+
+

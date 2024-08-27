@@ -152,7 +152,7 @@ const TokenPerSession = () => {
 
 
     console.log('Token messageFromServer', messageFromServerToken);
-    console.log('Token messageFromServer Type', typeof(messageFromServerToken[0].usage.token_count));
+    console.log('Token messageFromServer.usage.data', typeof(messageFromServerToken[0].usage.token_count));
     if (messageFromServerToken.length == 37) {
       console.log('Token messageFromServer.usage.data', typeof(messageFromServerToken[16].usage.token_count));
     }

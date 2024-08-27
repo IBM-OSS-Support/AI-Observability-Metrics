@@ -9,7 +9,7 @@
  * of its trade secrets, irrespective of what has been deposited with
  * the U.S. Copyright Office.
  ****************************************************************************** */
-import React, { forwardRef, useEffect, useImperativeHandle, useMemo, useRef, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 
 import CustomLineChart from "../../common/CustomLineChart";
 
@@ -23,21 +23,15 @@ import moment from "moment";
 import { Button } from "@carbon/react";
 import { json } from "react-router-dom";
 
-const LatencyGraph = forwardRef((props, ref) => {
-  
-  const websocketRef = useRef(null);
+function LatencyGraph() {
+
   const [websocket, setWebsocket] = useState(null);
   const [messageFromServerLatency, setMessageFromServerLatency] = useState('');
-
-  useImperativeHandle(ref, () => ({
-    sendMessageToServerLatency,
-  }));
 
   // Connect to WebSocket server on component mount
   useEffect(() => {
     const apiUrl = process.env.REACT_APP_WEBSOCKET_URL;
     const ws = new WebSocket(apiUrl);
-    websocketRef.current = ws;
     setWebsocket(ws);
     // Cleanup function to close WebSocket connection on component unmount
     return () => {
@@ -48,24 +42,12 @@ const LatencyGraph = forwardRef((props, ref) => {
   // Function to send message to WebSocket server
   const sendMessageToServerLatency = () => {
     var q = 'SELECT application_name, data, timestamp FROM performance';
-    const ws = websocketRef.current;
-    
-    if (ws) {
-      if (ws.readyState === WebSocket.OPEN) {
-        const message = {
-          tab: "auditing",
-          action: q,
-        };
-        ws.send(JSON.stringify(message));
-      } else {
-        ws.onopen = () => {
-          const message = {
-            tab: "auditing",
-            action: q,
-          };
-          ws.send(JSON.stringify(message));
-        };
-      }
+    if (websocket && websocket.readyState === WebSocket.OPEN) {
+      const message = {
+        tab: 'auditing',
+        action: q
+      };
+      websocket.send(JSON.stringify(message));
     }
   };
 
@@ -86,8 +68,8 @@ const LatencyGraph = forwardRef((props, ref) => {
   
   
   const getLatencyDataInside = (apps) => {
-    const starttime = 1718342400000;
-    const endtime = 1724044799000;
+    let starttime = 1717998543000;
+    let endtime = 1722050943000;
     let obj = {};
     let returnArray = [];
   
@@ -163,12 +145,13 @@ const LatencyGraph = forwardRef((props, ref) => {
 
   return (
     <>
+    <button onClick={sendMessageToServerLatency}>Load Data</button>
     <CustomLineChart
       data={latencyDataInside}
       options={latencyOptions}
     />
     </>
   );
-});
+}
 
 export default LatencyGraph;

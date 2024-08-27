@@ -9,28 +9,20 @@
  * of its trade secrets, irrespective of what has been deposited with
  * the U.S. Copyright Office.
  ****************************************************************************** */
-import React, { forwardRef, useImperativeHandle, useMemo, useRef, useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { useEffect } from 'react';
 import CustomDataTable from '../../common/CustomDataTable';
 
-const FrequencyOfUseTable = forwardRef((props, ref) => {
-  
-  const websocketRef = useRef(null);
+const FrequencyOfUseTable = () => {
   const [websocket, setWebsocket] = useState(null);
   const [messageFromServerFreqTable, setMessageFromServerFreqTable] = useState('');
   const [rowDataFreqTable, setRowDataFreqTable] = useState([]); // Define state for formatted data
   const [headersFreqTable, setHeadersFreqTable] = useState([]); // Define state for headers
 
-
-  useImperativeHandle(ref, () => ({
-    sendMessageToServerFreqTable,
-  }));
-
   // Connect to WebSocket server on component mount
   useEffect(() => {
     const apiUrl = process.env.REACT_APP_WEBSOCKET_URL;
     const ws = new WebSocket(apiUrl);
-    websocketRef.current = ws;
     setWebsocket(ws);
     // Cleanup function to close WebSocket connection on component unmount
     return () => {
@@ -41,24 +33,12 @@ const FrequencyOfUseTable = forwardRef((props, ref) => {
   // Function to send message to WebSocket server
   const sendMessageToServerFreqTable = (messageFromServerFreqTable) => {
     var q = 'WITH operation_counts AS ( SELECT operation, COUNT(*) AS operation_count FROM operations GROUP BY operation ), total_count AS ( SELECT COUNT(*) AS total FROM operations ) SELECT oc.operation, oc.operation_count, (oc.operation_count * 100.0 / tc.total) AS percentage_usage FROM operation_counts oc, total_count tc ORDER BY percentage_usage DESC;';
-    const ws = websocketRef.current;
-    
-    if (ws) {
-      if (ws.readyState === WebSocket.OPEN) {
-        const message = {
-          tab: "auditing",
-          action: q,
-        };
-        ws.send(JSON.stringify(message));
-      } else {
-        ws.onopen = () => {
-          const message = {
-            tab: "auditing",
-            action: q,
-          };
-          ws.send(JSON.stringify(message));
-        };
-      }
+    if (websocket && websocket.readyState === WebSocket.OPEN) {
+      const message = {
+        tab: 'auditing',
+        action: q
+      };
+      websocket.send(JSON.stringify(message));
     }
   };
 
@@ -94,6 +74,8 @@ useEffect(() => {
 
   return (
     <div>
+      <button onClick={sendMessageToServerFreqTable}>Load data</button>
+      {/* Display message received from server */}
       <div>
         <CustomDataTable
         headers={headersFreqTable}
@@ -102,7 +84,7 @@ useEffect(() => {
       </div>
     </div>
   );
-});
+};
 
 export default FrequencyOfUseTable;
 
