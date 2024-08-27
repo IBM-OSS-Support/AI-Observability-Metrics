@@ -1,19 +1,49 @@
-version: '3.8'
-
 services:
+
+  postgres:
+    image: postgres:latest
+    container_name: postgres
+    restart: always
+    environment:
+      POSTGRES_DB: roja_postgres
+      POSTGRES_USER: roja_user
+      POSTGRES_PASSWORD: roja_user
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  flask_app:
+    #build:
+      #context: .
+        #    container_name: flask_app
+    image: flaskapp:latest
+    container_name: flaskapp
+    ports:
+      - "5000:5000"
+    restart: on-failure
+    depends_on:
+      - postgres
   websocket-server:
     build:
       context: ./websocket-server
       dockerfile: Dockerfile
+    container_name: websocket-server
     ports:
       - "8080:8080"
+    depends_on: 
+      - postgres  
 
   client-app:
     build:
       context: ./client-app
       dockerfile: Dockerfile
+    container_name: client
     ports:
       - "3001:80"
     depends_on:
       - websocket-server
 
+volumes:
+  pgdata:
+    driver: local

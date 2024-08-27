@@ -9,7 +9,7 @@
  * of its trade secrets, irrespective of what has been deposited with
  * the U.S. Copyright Office.
  ****************************************************************************** */
-import React, { useEffect, useState } from "react";
+import React, { forwardRef, useEffect, useImperativeHandle, useRef, useState } from "react";
 import moment from "moment";
 
 // Components ----------------------------------------------------------------->
@@ -56,8 +56,9 @@ const defaultMessage = [
   }
 ];
 
-const FrequencyOfUse = () => {
-
+const FrequencyOfUse = forwardRef((props, ref) => {
+  
+  const websocketRef = useRef(null);
   const [data, setData] = useState(defaultData);
   const [avg, setAvg] = useState(0);
   const [websocket, setWebsocket] = useState(null);
@@ -65,10 +66,16 @@ const FrequencyOfUse = () => {
 
   const { state } = useStoreContext();
 
+
+  useImperativeHandle(ref, () => ({
+    sendMessageToServerFrequency,
+  }));
+
   // Connect to WebSocket server on component mount
   useEffect(() => {
     const apiUrl = process.env.REACT_APP_WEBSOCKET_URL;
     const ws = new WebSocket(apiUrl);
+    websocketRef.current = ws;
     setWebsocket(ws);
     // Cleanup function to close WebSocket connection on component unmount
     return () => {
@@ -79,12 +86,24 @@ const FrequencyOfUse = () => {
   // Function to send message to WebSocket server
   const sendMessageToServerFrequency = () => {
     var q = 'WITH operation_counts AS ( SELECT operation, COUNT(*) AS operation_count FROM operations GROUP BY operation ), total_count AS ( SELECT COUNT(*) AS total FROM operations ) SELECT oc.operation, oc.operation_count, (oc.operation_count * 100.0 / tc.total) AS percentage_usage FROM operation_counts oc, total_count tc ORDER BY percentage_usage DESC;';
-    if (websocket && websocket.readyState === WebSocket.OPEN) {
-      const message = {
-        tab: 'auditing',
-        action: q
-      };
-      websocket.send(JSON.stringify(message));
+    const ws = websocketRef.current;
+    
+    if (ws) {
+      if (ws.readyState === WebSocket.OPEN) {
+        const message = {
+          tab: "auditing",
+          action: q,
+        };
+        ws.send(JSON.stringify(message));
+      } else {
+        ws.onopen = () => {
+          const message = {
+            tab: "auditing",
+            action: q,
+          };
+          ws.send(JSON.stringify(message));
+        };
+      }
     }
   };
 
@@ -143,7 +162,6 @@ const FrequencyOfUse = () => {
   return (
     <Tile className="infrastructure-components cpu-usage" >
       <h5>Frequency of Use</h5>
-          <button onClick={sendMessageToServerFrequency}>Load graph</button>
         <div className="cpu-usage-chart">
           <GaugeChart
             data={data}
@@ -156,6 +174,6 @@ const FrequencyOfUse = () => {
         </div>
     </Tile>
   );
-};
+});
 
 export default FrequencyOfUse;
