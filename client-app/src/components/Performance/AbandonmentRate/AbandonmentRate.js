@@ -69,9 +69,21 @@ const AbandonmentRate = forwardRef((props, ref) => {
   }, []);
 
   // Function to send message to WebSocket server
-  const sendMessageToServerAbandonment = () => {
-    var q =
-      "SELECT COUNT(*) AS total_count, COUNT(*) FILTER (WHERE status = 'user_abandoned') * 100.0 / COUNT(*) AS user_abandoned_percentage, COUNT(*) FILTER (WHERE status = 'success') * 100.0 / COUNT(*) AS success_percentage, COUNT(*) FILTER (WHERE status = 'failure') * 100.0 / COUNT(*) AS failure_percentage FROM log_history ";
+  const sendMessageToServerAbandonment = (selectedItem, selectedUser) => {
+    let q = `SELECT COUNT(*) AS total_count, COUNT(*) FILTER (WHERE status = 'user_abandoned') * 100.0 / COUNT(*) AS user_abandoned_percentage FROM log_history `;
+    // let q = `SELECT * FROM log_history`
+      if (selectedItem) {
+        q = `SELECT COUNT(*) FILTER (WHERE application_name = '${selectedItem}') AS total_count, COUNT(*) FILTER (WHERE status = 'user_abandoned') * 100.0 / COUNT(*) AS user_abandoned_percentage FROM log_history `;
+        console.log("selectedItem", selectedItem, "Q", q);
+      }
+      if (selectedUser) {
+        q = `SELECT COUNT(*) FILTER (WHERE app_user = '${selectedUser}') AS total_count, COUNT(*) FILTER (WHERE status = 'user_abandoned' AND app_user = '${selectedUser}') * 100.0 / COUNT(*) AS user_abandoned_percentage FROM log_history `;
+        console.log("selectedUser", selectedUser, "Q", q);
+      }
+      if(selectedUser && selectedItem) {
+        q = `SELECT COUNT(*) FILTER (WHERE app_user = '${selectedUser}' AND application_name = '${selectedItem}') AS total_count, COUNT(*) FILTER (WHERE status = 'user_abandoned' AND app_user = '${selectedUser}' AND application_name = '${selectedItem}') * 100.0 / COUNT(*) AS user_abandoned_percentage FROM log_history `;
+        console.log("selectedUser", selectedUser, "Q", q);
+      }
     
     const ws = websocketRef.current;
     
@@ -133,7 +145,7 @@ const AbandonmentRate = forwardRef((props, ref) => {
     }
   }, [messageFromServerAbandonment]);
 
-  console.log("Abandonment messageFromServer", messageFromServerAbandonment);
+  console.log(messageFromServerAbandonment.total_count, "Abandonment messageFromServer", messageFromServerAbandonment);
   if (messageFromServerAbandonment) {
     console.log(
       "Abandonment messageFromServer.gauge",
@@ -149,8 +161,8 @@ const AbandonmentRate = forwardRef((props, ref) => {
         <GaugeChart data={data} options={options} />
       </div>
       <div className="cpu-usage-data">
-        <div className="label">Abandonment Rate</div>
-        <h3 className="data">{avg} %</h3>
+        <div className="label">Total Count</div>
+        <h3 className="data">{messageFromServerAbandonment[0].total_count} </h3>
       </div>
     </Tile>
   );

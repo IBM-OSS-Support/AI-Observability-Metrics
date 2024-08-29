@@ -82,21 +82,72 @@ const AdoptionRate = forwardRef((props, ref) => {
   }, []);
 
   // Function to send message to WebSocket server
-  const sendMessageToServerAdoption = () => {
-    const q = `
-      WITH user_counts AS (
-        SELECT app_user, COUNT(*) AS user_count
-        FROM auditing
-        GROUP BY app_user
-      ),
-      total_count AS (
-        SELECT COUNT(*) AS total
-        FROM auditing
-      )
-      SELECT uc.app_user, uc.user_count, (uc.user_count * 100.0 / tc.total) AS percentage_usage
-      FROM user_counts uc, total_count tc
-      ORDER BY percentage_usage DESC;
-    `;
+  const sendMessageToServerAdoption = (selectedItem, selectedUser) => {
+    let q = ` WITH user_counts AS (
+              SELECT app_user, COUNT(*) AS user_count
+              FROM auditing
+              GROUP BY app_user
+            ),
+            total_count AS (
+              SELECT COUNT(*) AS total
+              FROM auditing
+            )
+            SELECT uc.app_user, uc.user_count, (uc.user_count * 100.0 / tc.total) AS percentage_usage
+            FROM user_counts uc, total_count tc
+            ORDER BY percentage_usage DESC;`;
+
+    // let q = `SELECT * FROM auditing`
+
+    console.log("Adop QQ:::", q);
+    
+
+
+    if (selectedItem) {
+      q = `WITH user_counts AS (
+            SELECT app_user, COUNT(*) AS user_count
+            FROM auditing WHERE application_name = '${selectedItem}'
+            GROUP BY app_user
+          ),
+          total_count AS (
+            SELECT COUNT(*) AS total
+            FROM auditing
+          )
+          SELECT uc.app_user, uc.user_count, (uc.user_count * 100.0 / tc.total) AS percentage_usage
+          FROM user_counts uc, total_count tc
+          ORDER BY percentage_usage DESC;`;
+      console.log("selectedItem", selectedItem, "Q", q);
+    }
+    if (selectedUser) {
+      q = `WITH user_counts AS (
+            SELECT app_user, COUNT(*) AS user_count
+            FROM auditing WHERE app_user = '${selectedUser}'
+            GROUP BY app_user
+          ),
+          total_count AS (
+            SELECT COUNT(*) AS total
+            FROM auditing
+          )
+          SELECT uc.app_user, uc.user_count, (uc.user_count * 100.0 / tc.total) AS percentage_usage
+          FROM user_counts uc, total_count tc
+          ORDER BY percentage_usage DESC;`;
+      console.log("selectedUser", selectedUser, "Q", q);
+    }
+    if(selectedUser && selectedItem) {
+      q = `WITH user_counts AS (
+            SELECT app_user, COUNT(*) AS user_count
+            FROM auditing WHERE app_user = '${selectedUser}' AND application_name = '${selectedItem}'
+            GROUP BY app_user
+          ),
+          total_count AS (
+            SELECT COUNT(*) AS total
+            FROM auditing
+          )
+          SELECT uc.app_user, uc.user_count, (uc.user_count * 100.0 / tc.total) AS percentage_usage
+          FROM user_counts uc, total_count tc
+          ORDER BY percentage_usage DESC;`;
+      console.log("selectedUser", selectedUser, "Q", q);
+    }
+    
 
     const ws = websocketRef.current;
     console.log("inside adoption ws:", ws);
@@ -121,6 +172,9 @@ const AdoptionRate = forwardRef((props, ref) => {
       ]);
     }
   }, [messageFromServerAdoption]);
+
+  console.log("messageFromServerAdoption", messageFromServerAdoption);
+  
 
   // Render
   return (

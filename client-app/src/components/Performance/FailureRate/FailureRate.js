@@ -68,8 +68,21 @@ const FailureRate = forwardRef((props, ref) => {
   }, []);
 
   // Function to send message to WebSocket server
-  const sendMessageToServerFailure = () => {
-    var q = "SELECT COUNT(*) AS total_count, COUNT(*) FILTER (WHERE status = 'user_abandoned') * 100.0 / COUNT(*) AS user_abandoned_percentage, COUNT(*) FILTER (WHERE status = 'success') * 100.0 / COUNT(*) AS success_percentage, COUNT(*) FILTER (WHERE status = 'failure') * 100.0 / COUNT(*) AS failure_percentage FROM log_history ";
+  const sendMessageToServerFailure = (selectedItem, selectedUser) => {
+    var q = "SELECT COUNT(*) AS total_count, COUNT(*) FILTER (WHERE status = 'failure') * 100.0 / COUNT(*) AS failure_percentage FROM log_history ";
+
+    if (selectedItem) {
+      q = `SELECT COUNT(*) FILTER (WHERE application_name = '${selectedItem}') AS total_count, COUNT(*) FILTER (WHERE status = 'failure') * 100.0 / COUNT(*) AS failure_percentage FROM log_history`;
+      console.log("selectedItem", selectedItem, "Q", q);
+    }
+    if (selectedUser) {
+      q = `SELECT COUNT(*) FILTER (WHERE app_user = '${selectedUser}') AS total_count, COUNT(*) FILTER (WHERE status = 'failure' AND app_user = '${selectedUser}') * 100.0 / COUNT(*) AS failure_percentage FROM log_history`;
+      console.log("selectedUser", selectedUser, "Q", q);
+    }
+    if(selectedUser && selectedItem) {
+      q = `SELECT COUNT(*) FILTER (WHERE app_user = '${selectedUser}' AND application_name = '${selectedItem}') AS total_count, COUNT(*) FILTER (WHERE status = 'failure' AND app_user = '${selectedUser}' AND application_name = '${selectedItem}') * 100.0 / COUNT(*) AS failure_percentage FROM log_history`;
+      console.log("selectedUser", selectedUser, "Q", q);
+    }
     
     const ws = websocketRef.current;
     
@@ -131,7 +144,7 @@ const FailureRate = forwardRef((props, ref) => {
     }
   }, [messageFromServerFailure]);
 
-  console.log('Failure messageFromServer', messageFromServerFailure);
+  console.log(messageFromServerFailure[0].total_count, 'Failure messageFromServer', messageFromServerFailure);
   if (messageFromServerFailure) {
     console.log('Failure messageFromServer.gauge', messageFromServerFailure[0].failure_percentage);
   }
@@ -144,8 +157,8 @@ const FailureRate = forwardRef((props, ref) => {
         <GaugeChart data={data} options={options} />
       </div>
       <div className="cpu-usage-data">
-        <div className="label">Failure Rate</div>
-        <h3 className="data">{avg} %</h3>
+        <div className="label">Total Count</div>
+        <h3 className="data">{messageFromServerFailure[0].total_count} </h3>
       </div>
     </Tile>
   );

@@ -47,8 +47,6 @@ const Performance = () => {
   const latencyRef = useRef();
   const accuracyRef = useRef();
 
-  
-
 
   useEffect(() => {
     if (tokenPerSessionRef.current) {
@@ -92,7 +90,7 @@ const Performance = () => {
       tokenPerSessionRef.current.sendMessageToServerToken(selectedItem, selectedUser, selectedTimestampRange);
     }
     if (latencyRef.current) {
-      latencyRef.current.sendMessageToServerLatency(selectedItem, selectedUser, selectedTimestampRange, numberOfDaysSelected, startDate, endDate);
+      latencyRef.current.sendMessageToServerLatency(selectedItem, selectedUser, selectedTimestampRange, startDate, endDate);
     }
     if (accuracyRef.current) {
       accuracyRef.current.sendMessageToServerAccuracy(selectedItem, selectedUser, startDate, endDate);

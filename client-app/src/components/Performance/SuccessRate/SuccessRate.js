@@ -79,8 +79,30 @@ const SuccessRate = forwardRef((props, ref) => {
   }, []);
 
   // Function to send message to WebSocket server
-  const sendMessageToServerSuccess = () => {
-    var q = "SELECT COUNT(*) AS total_count, COUNT(*) FILTER (WHERE status = 'user_abandoned') * 100.0 / COUNT(*) AS user_abandoned_percentage, COUNT(*) FILTER (WHERE status = 'success') * 100.0 / COUNT(*) AS success_percentage, COUNT(*) FILTER (WHERE status = 'failure') * 100.0 / COUNT(*) AS failure_percentage FROM log_history ";
+  const sendMessageToServerSuccess = (selectedItem, selectedUser) => {
+    var q = `SELECT COUNT(*) AS total_count, COUNT(*) FILTER (WHERE status = 'success') * 100.0 / COUNT(*) AS success_percentage FROM log_history`;
+
+    if (selectedItem) {
+      q = `SELECT COUNT(*) FILTER (WHERE application_name = '${selectedItem}') AS total_count, COUNT(*) FILTER (WHERE status = 'success') * 100.0 / COUNT(*) AS success_percentage FROM log_history`;
+      console.log("selectedItem", selectedItem, "Q", q);
+    }
+    if (selectedUser) {
+      q = `SELECT 
+          COUNT(*) FILTER (WHERE app_user = '${selectedUser}') AS total_count, 
+          COUNT(*) FILTER (WHERE status = 'success' AND app_user = '${selectedUser}') * 100.0 / 
+          (SELECT COUNT(*) FROM log_history WHERE app_user = '${selectedUser}') AS success_percentage
+          FROM log_history`;
+      console.log("selectedUser", selectedUser, "Q", q);
+    }
+    if(selectedUser && selectedItem) {
+      q = `SELECT 
+          COUNT(*) FILTER (WHERE app_user = '${selectedUser}' AND application_name = '${selectedItem}') AS total_count,
+          
+          COUNT(*) FILTER (WHERE status = 'success' AND app_user = '${selectedUser}' AND application_name = '${selectedItem}') * 100.0 / 
+          (SELECT COUNT(*) FROM log_history WHERE app_user = '${selectedUser}' AND application_name = '${selectedItem}') AS success_percentage
+          FROM log_history;`;
+      console.log("selectedUser", selectedUser, "Q", q);
+    }
     
     const ws = websocketRef.current;
     
@@ -142,7 +164,7 @@ const SuccessRate = forwardRef((props, ref) => {
     }
   }, [messageFromServerSuccess]);
 
-  console.log('Success messageFromServer', messageFromServerSuccess);
+  console.log(messageFromServerSuccess[0].total_count, 'Success messageFromServer', messageFromServerSuccess);
   if (messageFromServerSuccess) {
     console.log('Success messageFromServer.gauge', messageFromServerSuccess[0].success_percentage);
   }
@@ -155,8 +177,8 @@ const SuccessRate = forwardRef((props, ref) => {
         <GaugeChart data={data} options={options} />
       </div>
       <div className="cpu-usage-data">
-        <div className="label">Success Rate</div>
-        <h3 className="data">{avg} %</h3>
+        <div className="label">Total Count</div>
+        <h3 className="data">{messageFromServerSuccess[0].total_count} </h3>
       </div>
     </Tile>
   );
