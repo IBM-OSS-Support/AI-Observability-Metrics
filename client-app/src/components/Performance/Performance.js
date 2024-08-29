@@ -85,11 +85,8 @@ const Performance = () => {
     if (cpuUsageRef.current) {
       cpuUsageRef.current.sendMessageToServerCPU(selectedItem, selectedUser, selectedTimestampRange);
     }
-    // if (callCountRef.current) {
-    //   callCountRef.current.sendMessageToServerCallCount(selectedItem, selectedUser, selectedTimestampRange);
-    // }
     if (callCountRef.current) {
-      callCountRef.current.sendMessageToServerCallCount(selectedItem, selectedUser, selectedTimestampRange, numberOfDaysSelected);
+      callCountRef.current.sendMessageToServerCallCount(selectedItem, selectedUser, selectedTimestampRange, startDate, endDate);
     }
     if (tokenPerSessionRef.current) {
       tokenPerSessionRef.current.sendMessageToServerToken(selectedItem, selectedUser, selectedTimestampRange);
@@ -127,7 +124,7 @@ const Performance = () => {
           </Column>
           <Column max={8} xlg={8} lg={8} md={4} sm={4} className="content-tile">
           <Tile className="chart-tile">
-            <CallCountGraph ref={callCountRef} numberOfDaysSelected={numberOfDaysSelected} />
+            <CallCountGraph ref={callCountRef} startDate={startDate} endDate={endDate} />
           </Tile>
           </Column>
           <Column max={8} xlg={8} lg={8} md={4} sm={4} className="content-tile">

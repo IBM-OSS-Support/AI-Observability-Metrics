@@ -17,12 +17,11 @@ import { getIntervals, getLatencyData } from "../helper";
 import moment from "moment";
 import NoData from "../../common/NoData/NoData";
 
-const LatencyGraph = forwardRef(({ selectedItem, selectedUser, selectedTimestampRange, numberOfDaysSelected, startDate, endDate }, ref) => {
+const LatencyGraph = forwardRef(({ selectedItem, selectedUser, selectedTimestampRange, startDate, endDate }, ref) => {
   const websocketRef = useRef(null);
   const [websocket, setWebsocket] = useState(null);
   const [messageFromServerLatency, setMessageFromServerLatency] = useState('');
 
-  let defaultNumberofDays = 7;
   console.log('Start Date and End Date from Latency', startDate, endDate);
 
   useImperativeHandle(ref, () => ({
@@ -39,11 +38,8 @@ const LatencyGraph = forwardRef(({ selectedItem, selectedUser, selectedTimestamp
     };
   }, []);
 
-  const sendMessageToServerLatency = (selectedItem, selectedUser, selectedTimestampRange, numberOfDaysSelected, startDate, endDate) => {
+  const sendMessageToServerLatency = (selectedItem, selectedUser, startDate, endDate) => {
     let q = 'SELECT application_name, data, timestamp FROM performance';
-
-    defaultNumberofDays = numberOfDaysSelected;
-    console.log(defaultNumberofDays, "numberOfDaysSelected::::", numberOfDaysSelected);
 
     // Add filtering logic based on selectedItem, selectedUser, and selectedTimestampRange
     if (selectedItem && !selectedUser) {
@@ -55,26 +51,6 @@ const LatencyGraph = forwardRef(({ selectedItem, selectedUser, selectedTimestamp
     if (selectedUser && selectedItem) {
       q += ` WHERE application_name = '${selectedItem}' AND app_user = '${selectedUser}'`;
     }
-    // if (selectedTimestampRange) {
-    //   const endTime = moment();
-    //   let startTime;
-
-    //   switch (selectedTimestampRange) {
-    //     case 'last24hours':
-    //       startTime = endTime.clone().subtract(24, 'hours');
-    //       break;
-    //     case 'last7days':
-    //       startTime = endTime.clone().subtract(7, 'days');
-    //       break;
-    //     case 'last30days':
-    //       startTime = endTime.clone().subtract(30, 'days');
-    //       break;
-    //     default:
-    //       startTime = endTime.clone().subtract(7, 'days');
-    //   }
-      
-    //   q += ` AND timestamp`;
-    // }
     if (startDate && endDate) {
       q += ` WHERE timestamp >= '${startDate}' AND timestamp <= '${endDate}'`;
     }
@@ -128,9 +104,9 @@ const LatencyGraph = forwardRef(({ selectedItem, selectedUser, selectedTimestamp
     // const intervals = getIntervals(starttime, endtime, 10);
 
 
-    console.log('Latency apps', apps);
+    // console.log('Latency apps', apps);
 
-    console.log("messageFromServerLatency", messageFromServerLatency);
+    // console.log("messageFromServerLatency", messageFromServerLatency);
 
     //new code 
     const result = [];

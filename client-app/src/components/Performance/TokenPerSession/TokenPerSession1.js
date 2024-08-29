@@ -1,9 +1,9 @@
 import React, { forwardRef, useEffect, useImperativeHandle, useRef, useState } from "react";
 import { Tile } from "@carbon/react";
 import { StackedBarChart } from "@carbon/charts-react";
-import { getAppData } from "../../../appData";
-import { useStoreContext } from "../../../store";
 import { Maximize } from "@carbon/icons-react";
+import moment from 'moment';
+import NoData from "../../common/NoData/NoData";
 
 const options = {
   theme: "g100",
@@ -60,35 +60,30 @@ const defaultMessage = [
   }
 ];
 
-const TokenPerSession1 = forwardRef(({ selectedItem, selectedUser }, ref) => {
+const TokenPerSession1 = forwardRef(({ selectedItem, selectedUser, selectedTimestampRange, startDate, endDate }, ref) => {
   const websocketRef = useRef(null);
   const [data, setData] = useState(defaultData);
   const [avg, setAvg] = useState(0);
   const [websocket, setWebsocket] = useState(null);
   const [messageFromServerToken, setMessageFromServerToken] = useState(defaultMessage);
-
-  const { state } = useStoreContext();
+  const [startDateState, setStartDateState] = useState(startDate);
+  const [endDateState, setEndDateState] = useState(endDate);
 
   useImperativeHandle(ref, () => ({
     sendMessageToServerToken,
   }));
 
-  // Connect to WebSocket server on component mount
   useEffect(() => {
     const apiUrl = process.env.REACT_APP_WEBSOCKET_URL;
     const ws = new WebSocket(apiUrl);
-    console.log("WebSocket connected:", ws);
     websocketRef.current = ws;
     setWebsocket(ws);
-    // Cleanup function to close WebSocket connection on component unmount
     return () => {
       ws.close();
-      console.log("WebSocket closed");
     };
   }, []);
 
-  // Function to send message to WebSocket server
-  const sendMessageToServerToken = (selectedItem, selectedUser, selectedTimeWindow) => {
+  const sendMessageToServerToken = (selectedItem, selectedUser, startDate, endDate) => {
     let q = "SELECT * FROM anthropic_metrics WHERE 1=1";
   
     if (selectedItem) {
@@ -97,26 +92,9 @@ const TokenPerSession1 = forwardRef(({ selectedItem, selectedUser }, ref) => {
     if (selectedUser) {
       q += ` AND app_user = '${selectedUser}'`;
     }
-    if (selectedTimeWindow) { debugger
-      let timeCondition = '';
-      const now = new Date();
-      switch (selectedTimeWindow) {
-        case 'Last Day':
-          timeCondition = ` AND timestamp >= '${new Date(now - 1 * 24 * 60 * 60 * 1000).toISOString()}'`;
-          break;
-        case 'Last 5 Days':
-          timeCondition = ` AND timestamp >= '${new Date(now - 5 * 24 * 60 * 60 * 1000).toISOString()}'`;
-          break;
-        case 'Last 10 Days':
-          timeCondition = ` AND timestamp >= '${new Date(now - 10 * 24 * 60 * 60 * 1000).toISOString()}'`;
-          break;
-        default:
-          break;
-      }
-      q += timeCondition;
+    if (startDate && endDate) {
+      q += ` AND timestamp >= '${startDate.toISOString()}' AND timestamp <= '${endDate.toISOString()}'`;
     }
-  
-    console.log("Sending query:", q);
   
     const ws = websocketRef.current;
   
@@ -127,75 +105,70 @@ const TokenPerSession1 = forwardRef(({ selectedItem, selectedUser }, ref) => {
       };
       if (ws.readyState === WebSocket.OPEN) {
         ws.send(JSON.stringify(message));
-        console.log("Message sent:", message);
       } else {
         ws.onopen = () => {
           ws.send(JSON.stringify(message));
-          console.log("Message sent after WebSocket open:", message);
         };
       }
     }
   };
-  
 
-  // Listen for messages from WebSocket server
   useEffect(() => {
     if (websocket) {
       websocket.onmessage = (event) => {
         const data = JSON.parse(event.data);
         setMessageFromServerToken(data);
-        console.log("Message received from server:", data);
       };
     }
   }, [websocket]);
 
-  // Update chart data when messageFromServerToken changes
   useEffect(() => {
-    if (state.status === "success") {
-      if (messageFromServerToken.length > 0) {
-        const cpuUsages = messageFromServerToken.map((d) => {
-          const cpuUsage = d.total_count;
-          return cpuUsage ? Number(cpuUsage) : 0;
-        });
-
-        const filteredCpuUsages = cpuUsages.filter((value) => typeof value === "number" && !isNaN(value));
-
-        console.log("CPU Usages:", cpuUsages);
-        console.log("Filtered CPU Usages:", filteredCpuUsages);
-
-        const total = filteredCpuUsages.reduce((s, g) => s + g, 0);
-        const newAvgValue = filteredCpuUsages.length > 0 ? total / filteredCpuUsages.length : 0;
-        const newAvg = newAvgValue.toFixed(2);
-
-        setData([
-          {
-            group: "value",
-            key: "Average",
-            value: newAvgValue
-          }
-        ]);
-        setAvg(newAvg);
-
-        console.log("New average token:", newAvg);
-      } else {
-        // Reset data to default if no message from server
-        setData(defaultData);
-        setAvg(0);
-      }
+    if (startDateState && endDateState) {
+      sendMessageToServerToken(selectedItem, selectedUser, startDateState, endDateState);
     }
-  }, [messageFromServerToken, state.status]);
+  }, [startDateState, endDateState, selectedItem, selectedUser]);
 
-  console.log("Current messageFromServerToken:", messageFromServerToken);
+  useEffect(() => {
+    if (messageFromServerToken.length > 0) {
+      const cpuUsages = messageFromServerToken.map((d) => {
+        const cpuUsage = d.total_count;
+        return cpuUsage ? Number(cpuUsage) : 0;
+      });
 
-  // Render
+      const filteredCpuUsages = cpuUsages.filter((value) => typeof value === "number" && !isNaN(value));
+
+      const total = filteredCpuUsages.reduce((s, g) => s + g, 0);
+      const newAvgValue = filteredCpuUsages.length > 0 ? total / filteredCpuUsages.length : 0;
+      const newAvg = newAvgValue.toFixed(2);
+
+      setData([
+        {
+          group: "value",
+          key: "Average",
+          value: newAvgValue
+        }
+      ]);
+      setAvg(newAvg);
+    } else {
+      setData(defaultData);
+      setAvg(0);
+    }
+  }, [messageFromServerToken]);
+
   return (
-    <Tile>
-      <StackedBarChart data={data} options={options} />
-      <div className="cpu-usage-data">
-        <div className="label">Average Tokens per Session</div>
-        <h3 className="data">{avg}</h3>
-      </div>
-    </Tile>
+    <>
+    {messageFromServerToken.length > 0 ? (
+      <Tile>
+        <StackedBarChart data={data} options={options} />
+        <div className="cpu-usage-data pt-1">
+          <div className="label">Average Tokens per Session</div>
+          <h3 className="data">{avg}</h3>
+        </div>
+      </Tile>
+    ) : (
+      <NoData />
+    )}
+    </>
   );
 });
 
