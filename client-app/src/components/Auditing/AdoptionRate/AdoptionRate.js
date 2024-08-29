@@ -173,8 +173,7 @@ const AdoptionRate = forwardRef((props, ref) => {
     }
   }, [messageFromServerAdoption]);
 
-  console.log("messageFromServerAdoption", messageFromServerAdoption);
-  
+  console.log('Adoption messageFromServerAdoption', messageFromServerAdoption);
 
   // Render
   return (

@@ -35,7 +35,7 @@ import Accuracy from "./Accuracy/Accuracy";
 
 const Performance = () => {
   const [selectedDeployment, setSelectedDeployment] = useState(null);
-  const [selectedUser, setSelectedUser] = useState(null);
+  const [selectedUser, setSelectedUser] = useState('all');
   const [selectedTimestampRange, setSelectedTimestampRange] = useState('last7days'); // Default value
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
@@ -132,7 +132,7 @@ const Performance = () => {
           </Column>
           <Column max={8} xlg={8} lg={8} md={4} sm={4} className="content-tile">
             <Tile className="chart-tile">
-              <Accuracy ref={accuracyRef} startDate={startDate} endDate={endDate}/>
+              <Accuracy ref={accuracyRef} startDate={startDate} endDate={endDate} selectedUser={selectedUser} selectedItem={selectedDeployment}/>
             </Tile>
           </Column>
           

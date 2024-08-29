@@ -2,6 +2,7 @@ import React, { forwardRef, useEffect, useImperativeHandle, useRef, useState } f
 import { Tile } from "@carbon/react";
 import { MeterChart } from "@carbon/charts-react";
 import { useStoreContext } from "../../../store";
+import NoData from "../../common/NoData/NoData";
 
 const getColorByValue = (value) => {
   if (value >= 4) return "#00bfae"; // Excellent
@@ -24,7 +25,7 @@ const options = (color, statusText) => ({
     proportional: {
       total: 5,
       totalFormatter: e => statusText,
-      breakdownFormatter: e => `The rating of Boomiah application is ${e.datasetsTotal.toFixed(2)} out of 5`
+      breakdownFormatter: e => `The rating of the application is ${e.datasetsTotal.toFixed(2)} out of 5`
     },
     height: '70%',
     width: '150%'
@@ -47,7 +48,7 @@ const defaultData = [
   }
 ];
 
-const UserSatisfaction = forwardRef((props, ref) => {
+const UserSatisfaction = forwardRef(({ selectedItem, selectedUser, startDate, endDate }, ref) => {
   const websocketRef = useRef(null);
   const [data, setData] = useState(defaultData);
   const [avg, setAvg] = useState(0);
@@ -71,8 +72,21 @@ const UserSatisfaction = forwardRef((props, ref) => {
     };
   }, []);
 
-  const sendMessageToServerUser = () => {
-    const q = "SELECT * FROM user_satisfaction";
+  const sendMessageToServerUser = (selectedItem, selectedUser, startDate, endDate) => {
+    let q = "SELECT * FROM user_satisfaction";
+
+    // Add filtering logic based on selectedItem, selectedUser, and selectedTimestampRange
+    if (selectedItem && !selectedUser) {
+      q += ` WHERE application_name = '${selectedItem}'`;
+    }
+    if (selectedUser && !selectedItem) {
+      q += ` WHERE app_user = '${selectedUser}'`;
+    }
+    if (selectedUser && selectedItem) {
+      q += ` WHERE application_name = '${selectedItem}' AND app_user = '${selectedUser}'`;
+    }
+
+    console.log("q from application rating", q);
     const ws = websocketRef.current;
 
     if (ws) {
@@ -104,7 +118,29 @@ const UserSatisfaction = forwardRef((props, ref) => {
 
   useEffect(() => {
     if (messageFromServerUser && state.status === 'success') {
-      const UserRating = messageFromServerUser.map(d => d.rating || 0);
+
+      let filteredData = messageFromServerUser;
+
+    if (startDate && endDate) {
+      const convertUTCToIST = (utcDateString) => {
+        const utcDate = new Date(utcDateString);
+        const istOffset = 5.5 * 60 * 60 * 1000; // IST is UTC+5:30
+        return new Date(utcDate.getTime() + istOffset); // Returns a Date object in IST
+      };
+
+      filteredData = messageFromServerUser.filter((accuracy) => {
+        const timestamp = convertUTCToIST(accuracy.timestamp);
+        console.log("Converted timestamp:", timestamp);
+
+        // Log the comparison for debugging
+        console.log("Is timestamp within range:", timestamp >= startDate && timestamp <= endDate);
+
+        return timestamp >= startDate && timestamp <= endDate;
+      });
+    };
+
+      console.log("Filtered Data:", filteredData);
+      const UserRating = filteredData.map(d => d.rating || 0);
 
       const newAvgValue = UserRating.reduce((s, g) => s + +g, 0) / UserRating.length;
       const newAvg = newAvgValue.toFixed(2);
@@ -128,16 +164,36 @@ const UserSatisfaction = forwardRef((props, ref) => {
     }
   }, [messageFromServerUser, state.status]);
 
+  console.log('messageFromServerUser', messageFromServerUser);
+
   return (
     <Tile className="infrastructure-components accuracy">
       <h5>Application Rating</h5>
       <div className="cpu-usage-chart">
-        <MeterChart data={data} options={chartOptions} />
-      </div>
-      <div className="cpu-usage-data">
-        <div className="label">Application rating of last 7 days</div>
+    {avg > 0 ? (
+      <MeterChart data={data} options={chartOptions} />
+      
+    ) : (
+      <NoData />
+    )}
+  </div>
+  <div className="cpu-usage-data">
+    {avg > 0 ? (
+      <>
+        <div className="label">
+            {selectedUser && selectedItem ? (
+              `Average rating of ${selectedItem} is`
+            ) : (
+              `Average rating of ${selectedUser} Application is`
+            )}
+          </div>
         <h3 className="data">{avg}/5</h3>
+      </>
+    ) : (
+      <div className="label">
       </div>
+    )}
+  </div>
     </Tile>
   );
 });
