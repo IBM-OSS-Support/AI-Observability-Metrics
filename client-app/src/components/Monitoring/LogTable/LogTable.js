@@ -61,7 +61,7 @@ const LogTable = forwardRef((props, ref) => {
         const formattedData = data.map(row => ({
           ...row,
           application_name: (
-            <a href={`#/trace-analysis/${row.application_name}`} target="_blank" rel="noopener noreferrer">
+            <a href={`#/trace-analysis/${row.application_name}`}>
               {row.application_name}
             </a>
           ),
@@ -81,6 +81,7 @@ const LogTable = forwardRef((props, ref) => {
   }, []);
 
   const arrayLogTable = Array.isArray(messageFromServerLogTable) ? messageFromServerLogTable : [messageFromServerLogTable];
+  console.log('LogTable Row', arrayLogTable);
 
   return (
     <div>

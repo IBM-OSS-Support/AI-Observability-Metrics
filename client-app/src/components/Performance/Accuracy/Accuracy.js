@@ -4,27 +4,27 @@ import { MeterChart } from "@carbon/charts-react";
 import { useStoreContext } from "../../../store";
 
 const getColorByValue = (value) => {
-  if (value >= 4) return "#00bfae"; // Excellent
-  if (value >= 3) return "#f1c21b"; // Good
+  if (value >= 8) return "#00bfae"; // Excellent
+  if (value >= 4) return "#f1c21b"; // Good
   return "#f46666"; // Bad
 };
 
 const getStatusText = (value) => {
-  if (value >= 4) return "Excellent";
-  if (value >= 3) return "Good";
+  if (value >= 8) return "Excellent";
+  if (value >= 4) return "Good";
   return "Bad";
 };
 
-const options = (color, statusText) => ({
+const options = (color, statusText, selectedUser) => ({
   theme: "g90",
   resizable: true,
   height: '80%',
   width: '100%',
   meter: {
     proportional: {
-      total: 5,
+      total: 10,
       totalFormatter: e => statusText,
-      breakdownFormatter: e => `The rating of Boomiah application is ${e.datasetsTotal.toFixed(2)} out of 5`
+      breakdownFormatter: e => `The accuracy score of the application is ${e.datasetsTotal} out of 10`
     },
     height: '70%',
     width: '150%'
@@ -47,18 +47,18 @@ const defaultData = [
   }
 ];
 
-const UserSatisfaction = forwardRef((props, ref) => {
+const Accuracy = forwardRef(({ selectedItem, selectedUser, startDate, endDate }, ref) => {
   const websocketRef = useRef(null);
   const [data, setData] = useState(defaultData);
   const [avg, setAvg] = useState(0);
   const [websocket, setWebsocket] = useState(null);
-  const [messageFromServerUser, setMessageFromServerUser] = useState(null);
+  const [messageFromServerAccuracy, setMessageFromServerAccuracy] = useState(null);
   const [chartOptions, setChartOptions] = useState(options("#f46666", "Bad")); // Default options
 
   const { state } = useStoreContext();
 
   useImperativeHandle(ref, () => ({
-    sendMessageToServerUser,
+    sendMessageToServerAccuracy,
   }));
 
   useEffect(() => {
@@ -71,8 +71,21 @@ const UserSatisfaction = forwardRef((props, ref) => {
     };
   }, []);
 
-  const sendMessageToServerUser = () => {
-    const q = "SELECT * FROM user_satisfaction";
+  const sendMessageToServerAccuracy = (selectedItem, selectedUser, startDate, endDate) => {
+    let q = 'SELECT * FROM accuracy';
+
+    // Add filtering logic based on selectedItem, selectedUser, and selectedTimestampRange
+    if (selectedItem && !selectedUser) {
+      q += ` WHERE application_name = '${selectedItem}'`;
+    }
+    if (selectedUser && !selectedItem) {
+      q += ` WHERE app_user = '${selectedUser}'`;
+    }
+    if (selectedUser && selectedItem) {
+      q += ` WHERE application_name = '${selectedItem}' AND app_user = '${selectedUser}'`;
+    }
+
+    console.log('q from accuracy', q);
     const ws = websocketRef.current;
 
     if (ws) {
@@ -97,21 +110,21 @@ const UserSatisfaction = forwardRef((props, ref) => {
   useEffect(() => {
     if (websocket) {
       websocket.onmessage = (event) => {
-        setMessageFromServerUser(JSON.parse(event.data));
+        setMessageFromServerAccuracy(JSON.parse(event.data));
       };
     }
   }, [websocket]);
 
   useEffect(() => {
-    if (messageFromServerUser && state.status === 'success') {
-      const UserRating = messageFromServerUser.map(d => d.rating || 0);
+    if (messageFromServerAccuracy && state.status === 'success') {
+      const accuracyScore = messageFromServerAccuracy.map(d => d.accuracy_score || 0);
 
-      const newAvgValue = UserRating.reduce((s, g) => s + +g, 0) / UserRating.length;
+      const newAvgValue = accuracyScore.reduce((s, g) => s + +g, 0) / accuracyScore.length;
       const newAvg = newAvgValue.toFixed(2);
 
       const newData = [
         {
-          group: 'User rating',
+          group: 'Accuracy score',
           value: newAvgValue // Ensure the value is between 0 and 10
         }
       ];
@@ -126,20 +139,20 @@ const UserSatisfaction = forwardRef((props, ref) => {
       setAvg(newAvg);
       setChartOptions(options(chartColor, statusText));
     }
-  }, [messageFromServerUser, state.status]);
+ }, [messageFromServerAccuracy, state.status]);
 
   return (
     <Tile className="infrastructure-components accuracy">
-      <h5>Application Rating</h5>
+      <h5>Accuracy Score</h5>
       <div className="cpu-usage-chart">
         <MeterChart data={data} options={chartOptions} />
       </div>
       <div className="cpu-usage-data">
-        <div className="label">Application rating of last 7 days</div>
-        <h3 className="data">{avg}/5</h3>
+        <div className="label">Average accuracy of application is</div>
+        <h3 className="data">{avg}/10</h3>
       </div>
     </Tile>
   );
 });
 
-export default UserSatisfaction;
+export default Accuracy;

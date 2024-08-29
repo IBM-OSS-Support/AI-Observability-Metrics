@@ -17,12 +17,13 @@ import { getIntervals, getLatencyData } from "../helper";
 import moment from "moment";
 import NoData from "../../common/NoData/NoData";
 
-const LatencyGraph = forwardRef(({ selectedItem, selectedUser, selectedTimestampRange, numberOfDaysSelected }, ref) => {
+const LatencyGraph = forwardRef(({ selectedItem, selectedUser, selectedTimestampRange, numberOfDaysSelected, startDate, endDate }, ref) => {
   const websocketRef = useRef(null);
   const [websocket, setWebsocket] = useState(null);
   const [messageFromServerLatency, setMessageFromServerLatency] = useState('');
 
   let defaultNumberofDays = 7;
+  console.log('Start Date and End Date from Latency', startDate, endDate);
 
   useImperativeHandle(ref, () => ({
     sendMessageToServerLatency,
@@ -38,7 +39,7 @@ const LatencyGraph = forwardRef(({ selectedItem, selectedUser, selectedTimestamp
     };
   }, []);
 
-  const sendMessageToServerLatency = (selectedItem, selectedUser, selectedTimestampRange, numberOfDaysSelected) => {
+  const sendMessageToServerLatency = (selectedItem, selectedUser, selectedTimestampRange, numberOfDaysSelected, startDate, endDate) => {
     let q = 'SELECT application_name, data, timestamp FROM performance';
 
     defaultNumberofDays = numberOfDaysSelected;
@@ -54,26 +55,31 @@ const LatencyGraph = forwardRef(({ selectedItem, selectedUser, selectedTimestamp
     if (selectedUser && selectedItem) {
       q += ` WHERE application_name = '${selectedItem}' AND app_user = '${selectedUser}'`;
     }
-    if (selectedTimestampRange) {
-      const endTime = moment();
-      let startTime;
+    // if (selectedTimestampRange) {
+    //   const endTime = moment();
+    //   let startTime;
 
-      switch (selectedTimestampRange) {
-        case 'last24hours':
-          startTime = endTime.clone().subtract(24, 'hours');
-          break;
-        case 'last7days':
-          startTime = endTime.clone().subtract(7, 'days');
-          break;
-        case 'last30days':
-          startTime = endTime.clone().subtract(30, 'days');
-          break;
-        default:
-          startTime = endTime.clone().subtract(7, 'days');
-      }
+    //   switch (selectedTimestampRange) {
+    //     case 'last24hours':
+    //       startTime = endTime.clone().subtract(24, 'hours');
+    //       break;
+    //     case 'last7days':
+    //       startTime = endTime.clone().subtract(7, 'days');
+    //       break;
+    //     case 'last30days':
+    //       startTime = endTime.clone().subtract(30, 'days');
+    //       break;
+    //     default:
+    //       startTime = endTime.clone().subtract(7, 'days');
+    //   }
       
-      q += ` AND timestamp`;
+    //   q += ` AND timestamp`;
+    // }
+    if (startDate && endDate) {
+      q += ` WHERE timestamp >= '${startDate}' AND timestamp <= '${endDate}'`;
     }
+
+    console.log('q from latency', q);
 
     const ws = websocketRef.current;
 
@@ -105,25 +111,20 @@ const LatencyGraph = forwardRef(({ selectedItem, selectedUser, selectedTimestamp
   }, [websocket]);
 
   useEffect(() => {
-    sendMessageToServerLatency(selectedItem, selectedUser, selectedTimestampRange);
-  }, [selectedItem, selectedUser, selectedTimestampRange]);
+    sendMessageToServerLatency(selectedItem, selectedUser, selectedTimestampRange, startDate, endDate);
+  }, [selectedItem, selectedUser, selectedTimestampRange, startDate, endDate]);
 
   useEffect(() => {
     if (messageFromServerLatency) {
-        getLatencyDataInside(messageFromServerLatency, numberOfDaysSelected);
+        getLatencyDataInside(messageFromServerLatency, startDate, endDate);
     }
-}, [messageFromServerLatency, numberOfDaysSelected]);
+}, [messageFromServerLatency, startDate, endDate]);
 
-  const getLatencyDataInside = (apps, defaultNumberofDays) => {
-    const endtime = Date.now();
-    const SelectedDays = numberOfDaysSelected ? numberOfDaysSelected : defaultNumberofDays;
+  const getLatencyDataInside = (apps, startDate, endDate) => {
+    let startTime = startDate;
+    let endTime = endDate;
+    const SelectedDays = endTime - startTime;
     console.log("SelectedDays", SelectedDays);
-    
-    const starttime = endtime - SelectedDays * 24 * 60 * 60 * 10000;
-    console.log(numberOfDaysSelected, 'Starttime call', starttime);
-    console.log(defaultNumberofDays, 'Endtime call', endtime);
-    let obj = {};
-    let returnArray = [];
     // const intervals = getIntervals(starttime, endtime, 10);
 
 
@@ -137,71 +138,58 @@ const LatencyGraph = forwardRef(({ selectedItem, selectedUser, selectedTimestamp
     for (const appId in apps) {
       const app = apps[appId];
       console.log('Latency appID & app', appId, ':', app);
-      const timestamp = app.timestamp;
+      const convertUTCToIST = (utcDateString) => {
+        const utcDate = new Date(utcDateString);
+      
+        // Calculate the offset between UTC and IST
+        const istOffset = 5.5 * 60 * 60 * 1000; // IST is UTC+5:30
+      
+        // Add the IST offset to the UTC date
+        const istDate = new Date(utcDate.getTime() + istOffset);
+      
+        return istDate; // Returns a Date object in IST
+      };
+      const timestamp = convertUTCToIST(app.timestamp);
       console.log('Latency Time', timestamp);
 
-      console.log("new Date(timestamp).getTime() >= starttime && new Date(timestamp).getTime() <= endtime", new Date(timestamp).getTime() >= starttime , new Date(timestamp).getTime() <= endtime);
+      let latency = app.data.latency.histogram.bins;
+        if (Array.isArray(app.data.latency.histogram.bins)) {
+          latency = latency > 0 ? latency / 100000000 : 0;
+        } else if (typeof app.data.latency.histogram.bins === 'number') {
+          latency = app.data.latency.histogram.bins;
+        }
+
       
-      if (new Date(timestamp).getTime() >= starttime && new Date(timestamp).getTime() <= endtime) {
+      console.log('Time inside getLatencyDataInside', startTime, endTime);  
+      console.log('new Date(timestamp).getTime()', new Date(timestamp).getTime());
+
+      console.log("new Date(timestamp).getTime() >= startTime && new Date(timestamp).getTime() <= endTime", timestamp >= startTime , timestamp <= endTime);
+      
+      if (timestamp >= startTime && timestamp <= endTime) {
         result.push({
           group: 'Dataset 1',
           key: app.timestamp,
-          value: app.data.latency.histogram.counts
+          value: latency
         });
-      }else if(SelectedDays === undefined || SelectedDays === null) {
+      }else if(startTime == undefined && endTime == undefined){
         result.push({
-          group: 'Dataset-1',
+          group: 'Dataset 1',
           key: app.timestamp,
-          value: app.data.latency.histogram.counts
+          value: latency
         });
       }
     }
 
-    console.log(result.value, 'latency Result', result);
+    console.log('latency Result', result);
     latency_number = result.length
     return result;
   };
 
-    // for (const i in intervals) {
-      
-    //   let { start, end } = intervals[i];
-    //   start = moment(start);
-    //   end = moment(end);
-
-    //   for (const appId in apps) {
-    //     const app = apps[appId];
-    //     let latency = app.data.latency.histogram.bins;
-
-    //     if (Array.isArray(app.data.latency.histogram.bins)) {
-    //       latency = latency > 0 ? latency / 100000000 : 0;
-    //     } else if (typeof app.data.latency.histogram.bins === 'number') {
-    //       latency = app.data.latency.histogram.bins;
-    //     }
-
-    //     const appTime = moment(app.timestamp);
-
-    //     if (appTime.isSameOrAfter(start) && appTime.isSameOrBefore(end)) {
-    //       if (obj[i]) {
-    //         obj[i].value += latency;
-    //         obj[i].key = end.add(50, 'minutes').format('YYYY-MM-DDTHH:mm:ssZ');
-    //       } else {
-    //         obj[i] = {
-    //           group: 'Dataset1',
-    //           key: appTime.add(240, 'minutes').format('YYYY-MM-DDTHH:mm:ssZ'),
-    //           value: latency,
-    //         };
-    //       }
-    //       returnArray.push({ ...obj[i] });
-    //     }
-    //   }
-    // }
-
-    // return returnArray;
-  // };
+    
   let latency_number;
   console.log("latency_number:",latency_number);
-  const latencyDataInside = getLatencyDataInside(messageFromServerLatency, selectedItem, selectedUser, defaultNumberofDays);
-  console.log("defaultNumberofDays:",defaultNumberofDays, "latencyDataInside", latencyDataInside);
+  const latencyDataInside = getLatencyDataInside(messageFromServerLatency, startDate, endDate);
+  console.log("latencyDataInside", latencyDataInside);
   
   const latencyOptions = {
     title: 'Latency (in seconds): ' + latency_number,

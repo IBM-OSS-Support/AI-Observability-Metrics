@@ -10,30 +10,31 @@
  * the U.S. Copyright Office.
  ****************************************************************************** */
  .cpu-usage {
-  &-chart {
-    height: 100%;
-    width: 100%;
-    padding-top: 1rem;
-    margin: 0 auto;
-    align-items: center;
-  }
-
-  &-data {
-    display: flex;
-    width: calc(100% + 2rem);
-    margin: -1rem -1rem;
-    border-top: .0625rem solid $border-subtle;
-
-    .label {
-      border-right: .0625rem solid $border-subtle;
-      padding: 1rem;
+    &-chart {
+      height: 100%;
+      width: 100%;
+      padding-top: 1rem;
+      margin: 0 auto;
       align-items: center;
-      flex: 1;
     }
 
-    .data {
-      padding: 1rem;
-      white-space: nowrap;
+    &-data {
+      display: flex;
+      width: calc(100% + 2rem);
+      margin: -1rem -1rem;
+      border-top: .0625rem solid $border-subtle;
+
+      .label {
+        border-right: .0625rem solid $border-subtle;
+        padding: 1rem;
+        align-items: center;
+        flex: 1;
+      }
+
+      .data {
+        padding: 1rem;
+        white-space: nowrap;
+      }
     }
   }
-}
+  

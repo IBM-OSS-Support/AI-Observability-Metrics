@@ -31,6 +31,8 @@ const CallCountGraph = forwardRef(({selectedItem, selectedUser, selectedTimestam
   }));
   
 
+  
+
   // Connect to WebSocket server on component mount
   useEffect(() => {
     const apiUrl = process.env.REACT_APP_WEBSOCKET_URL;
@@ -167,7 +169,7 @@ const CallCountGraph = forwardRef(({selectedItem, selectedUser, selectedTimestam
 
   return (
     <>
-      {CallCountDataInside.length === 0 ? (
+    {CallCountDataInside.length === 0 ? (
         <NoData />
       ) : (
         <CustomLineChart

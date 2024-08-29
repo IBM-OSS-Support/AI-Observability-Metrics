@@ -31,6 +31,7 @@ import TokenPerSession from "./TokenPerSession/TokenPerSession";
 import SuccessRate from "./SuccessRate/SuccessRate";
 import FailureRate from "./FailureRate/FailureRate";
 import TokenPerSession1 from "./TokenPerSession/TokenPerSession1";
+import Accuracy from "./Accuracy/Accuracy";
 
 const Performance = () => {
   const [selectedDeployment, setSelectedDeployment] = useState(null);
@@ -44,6 +45,9 @@ const Performance = () => {
   const cpuUsageRef = useRef();
   const callCountRef = useRef();
   const latencyRef = useRef();
+  const accuracyRef = useRef();
+
+  
 
 
   useEffect(() => {
@@ -58,6 +62,9 @@ const Performance = () => {
     }
     if (latencyRef.current) {
       latencyRef.current.sendMessageToServerLatency();
+    }
+    if (accuracyRef.current) {
+      accuracyRef.current.sendMessageToServerAccuracy();
     }
   }, []); 
 
@@ -88,7 +95,10 @@ const Performance = () => {
       tokenPerSessionRef.current.sendMessageToServerToken(selectedItem, selectedUser, selectedTimestampRange);
     }
     if (latencyRef.current) {
-      latencyRef.current.sendMessageToServerLatency(selectedItem, selectedUser, selectedTimestampRange, numberOfDaysSelected);
+      latencyRef.current.sendMessageToServerLatency(selectedItem, selectedUser, selectedTimestampRange, numberOfDaysSelected, startDate, endDate);
+    }
+    if (accuracyRef.current) {
+      accuracyRef.current.sendMessageToServerAccuracy(selectedItem, selectedUser, startDate, endDate);
     }
   };
 
@@ -120,9 +130,14 @@ const Performance = () => {
             <CallCountGraph ref={callCountRef} numberOfDaysSelected={numberOfDaysSelected} />
           </Tile>
           </Column>
-          <Column max={16} xlg={16} lg={16} md={4} sm={4} className="content-tile">
+          <Column max={8} xlg={8} lg={8} md={4} sm={4} className="content-tile">
             <Tile className="chart-tile">
-              <LatencyGraph ref={latencyRef} numberOfDaysSelected={numberOfDaysSelected} />
+              <LatencyGraph ref={latencyRef} numberOfDaysSelected={numberOfDaysSelected} startDate={startDate} endDate={endDate} />
+            </Tile>
+          </Column>
+          <Column max={8} xlg={8} lg={8} md={4} sm={4} className="content-tile">
+            <Tile className="chart-tile">
+              <Accuracy ref={accuracyRef} startDate={startDate} endDate={endDate}/>
             </Tile>
           </Column>
           

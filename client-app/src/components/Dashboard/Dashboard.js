@@ -19,10 +19,10 @@ import MetricsTile from "./MetricsTile/MetricsTile";
 import RojaChat from "../common/RojaChat";
 import CpuUsage from "./CpuUsage/CpuUsage";
 import CallCountGraph from "../Metrics/Performance/CallCountGraph";
-import LatencyGraph from "../Metrics/Performance/LatencyGraph";
 import TokenCountGraph from "../Metrics/Data/TokenCountGraph";
 import MemoryTile from "./MemoryTile/MemoryTile";
 import { Link } from "react-router-dom";
+import LatencyGraph from "../Performance/LatencyGraph/LatencyGraph";
 
 function Dashboard() {
   return (

@@ -28,7 +28,7 @@ const defaultOptions = {
       mapsTo: "key",
       scaleType: "time",
       ticks: {
-        number: 45,
+        number: 15,
         formatter: (tick => moment(tick).format('hh:mm A'))
       }
     }
