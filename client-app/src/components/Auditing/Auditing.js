@@ -110,7 +110,7 @@ const Auditing = () => {
       <div className="home-container">
         <Filter onFilterChange={handleFilterChange} />
         <Accordion align="start">
-          <AccordionItem title="Error Rate" open={false}>
+          <AccordionItem title="Overall Error Rate" open={false}>
             <Grid fullWidth narrow id="body" className="page-content body">
               <Column max={4} xlg={4} lg={4} md={4} sm={4} className="content-tile">
                 <AbandonmentRate ref={abandonmentRateRef} selectedItem={selectedDeployment} selectedUser={selectedUser} startDate={startDate} endDate={endDate} />

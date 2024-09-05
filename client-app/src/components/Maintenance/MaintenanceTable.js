@@ -42,44 +42,26 @@ const MaintenanceTable = forwardRef((props, ref) => {
   }, []);
 
   // Function to send message to WebSocket server
-  const sendMessageToServerLog = (messageFromServerLog) => {
+  const sendMessageToServerLog = async (messageFromServerLog) => {
     var start_timestamp = '2024-03-28 10:23:58.072245';
     var end_timestamp = '2024-04-25 12:40:18.875514';
-    var q = 'SELECT * FROM maintenance';
-    const ws = websocketRef.current;
-    
-    if (ws) {
-      if (ws.readyState === WebSocket.OPEN) {
-        const message = {
-          tab: "auditing",
-          action: q,
-        };
-        ws.send(JSON.stringify(message));
-      } else {
-        ws.onopen = () => {
-          const message = {
-            tab: "auditing",
-            action: q,
-          };
-          ws.send(JSON.stringify(message));
-        };
-      }
+    var q = 'SELECT * FROM maintenance limit 10';
+    try {
+      const apiUrl = process.env.REACT_APP_BACKEND_API_URL; // Use API URL instead of WebSocket URL
+      const response = await fetch(apiUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ query: q }),
+      });
+
+      const result = await response.json();
+      setMessageFromServerLog(result);
+    } catch (error) {
+      console.error('Error fetching data from API:', error);
     }
   };
-
-  // Listen for messages from WebSocket server
-  useEffect(() => {
-    if (websocket) {
-      websocket.onmessage = (event) => {
-        console.log('log data', event.data);
-        setMessageFromServerLog(JSON.parse(event.data));
-        console.log('log event data[0]',event.data[4]);
-        // console.log('setRowDataLog', messageFromServerLog[0]);
-        // setRowDataLog(messageFromServerLog);
-      };
-      //setMessageFromServerLog(messageFromServerLog);
-    }
-  }, [websocket]);
 
 console.log('log table row data', rowDataLog);
 // code starts here

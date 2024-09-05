@@ -82,34 +82,9 @@ const Navigation = () => {
           icon: MeterAlt
         },
         {
-          name: 'Monitoring',
-          subpath: '/monitoring',
-          icon: CloudMonitoring // DevicesApps
-        },
-        {
-          name: 'Rate limiting',
-          subpath: '/rate-limiting',
-          icon: StarReview //  StarHalf
-        },
-        {
           name: 'Maintenance',
           subpath: '/maintenance',
           icon: AudioConsole // VehicleServices
-        },
-        {
-          name: 'Security',
-          subpath: '/security',
-          icon: Security
-        },
-        {
-          name: 'Compliance',
-          subpath: '/compliance',
-          icon: WhitePaper
-        },
-        {
-          name: 'CVE Workflow',
-          subpath: '/cve',
-          icon: WarningAlt
         },
         // {
         //   name: 'Sessions',
