@@ -54,8 +54,6 @@ def calculate_safety_score(user, app_name, question):
     result_info["app-user"] = user
     result_info["application-name"] = app_name
     # Write the system info to a JSON file
-    with open("metrics/jsons/auditing.json", "w") as json_file:
-        json.dump(result_info, json_file, indent=4)
     return result_info
 
     

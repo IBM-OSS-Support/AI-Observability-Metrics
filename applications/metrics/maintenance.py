@@ -38,9 +38,5 @@ def generate_system_info(user, app_name):
 def get_maintenance_info(user, app_name):
     system_info = generate_system_info(user, app_name)
 
-    # Write the system info to a JSON file
-    with open("metrics/jsons/system_info.json", "w") as json_file:
-        json.dump(system_info, json_file, indent=4)
-
     print("System information has been written to system_info.json")
     return system_info

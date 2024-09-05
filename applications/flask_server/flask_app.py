@@ -73,8 +73,8 @@ def upload_through_rest_scores():
         file_path = '/tmp/scores.json'
 
         # Open the file in write mode and use json.dump() to write the data
-        with open(file_path, 'w') as file:
-            json.dump(data, file)
+        #with open(file_path, 'w') as file:
+        #    json.dump(data, file)
         postgres.upload_to_postgres_with_message(data)
         return jsonify({"message": "scores JSON received successfully"}), 200
     except Exception as e:
@@ -90,11 +90,11 @@ def upload_through_rest_logs():
             "kafka-topic":"logs",
             "logs":request.get_json()
         }
-        file_path = '/tmp/logs.json'
+        #file_path = '/tmp/logs.json'
 
         # Open the file in write mode and use json.dump() to write the data
-        with open(file_path, 'w') as file:
-            json.dump(data, file)
+        #with open(file_path, 'w') as file:
+        #    json.dump(data, file)
         #postgres.upload_to_postgres_with_message(data)
         return jsonify({"message": "logs JSON received successfully"}), 200
     except Exception as e:
@@ -118,8 +118,8 @@ def upload_through_rest_spans():
         file_path = '/tmp/spans.json'
 
         # Open the file in write mode and use json.dump() to write the data
-        with open(file_path, 'w') as file:
-            json.dump(data, file)
+        #with open(file_path, 'w') as file:
+        #    json.dump(data, file)
         postgres.upload_to_postgres_with_message(data)
         return jsonify({"message": "spans JSON received successfully"}), 200
     except Exception as e:
@@ -141,11 +141,11 @@ def upload_through_rest_metrics():
             "metrics":jdata
         }
 
-        file_path = '/tmp/metrics.json'
+        #file_path = '/tmp/metrics.json'
 
         # Open the file in write mode and use json.dump() to write the data
-        with open(file_path, 'w') as file:
-            json.dump(data, file)
+        #with open(file_path, 'w') as file:
+        #    json.dump(data, file)
         postgres.upload_to_postgres_with_message(data)
         return jsonify({"message": "metrics JSON received successfully"}), 200
     except Exception as e:

@@ -154,8 +154,4 @@ def get_session_info(app_user,application_name):
         "sessions": sessions
     }
 
-    with open(f"metrics/jsons/openai_costs.json", "w") as f:
-        json.dump(json_object, f, indent=4)
-
-    df_costs.to_excel("metrics/jsons/openai_costs.xlsx", index=True)  # This will save the DataFrame without the index
     return json_object

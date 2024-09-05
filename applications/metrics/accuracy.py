@@ -16,8 +16,6 @@ def prepare_accuracy(user, app_name, accuracy):
         "application-name" : app_name,
     }
     # Write the system info to a JSON file
-    with open("metrics/jsons/accuracy.json", "w") as json_file:
-        json.dump(result_info, json_file, indent=4)
     return result_info
 
     

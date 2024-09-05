@@ -48,8 +48,6 @@ def get_embeddings_score(user, app_name, input_string, model):
     response_json["application-name"] = app_name
     response_json["prompt"] = input_string
     # Write the system info to a JSON file
-    with open("metrics/jsons/embeddings.json", "w") as json_file:
-        json.dump(response_json, json_file, indent=4)
     return response_json
 
 if __name__ == "__main__":
