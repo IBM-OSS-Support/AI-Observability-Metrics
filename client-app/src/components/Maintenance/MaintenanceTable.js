@@ -29,18 +29,6 @@ const MaintenanceTable = forwardRef((props, ref) => {
     sendMessageToServerLog,
   }));
 
-  // Connect to WebSocket server on component mount
-  useEffect(() => {
-    const apiUrl = process.env.REACT_APP_WEBSOCKET_URL;
-    const ws = new WebSocket(apiUrl);
-    websocketRef.current = ws;
-    setWebsocket(ws);
-    // Cleanup function to close WebSocket connection on component unmount
-    return () => {
-      ws.close();
-    };
-  }, []);
-
   // Function to send message to WebSocket server
   const sendMessageToServerLog = async (messageFromServerLog) => {
     var start_timestamp = '2024-03-28 10:23:58.072245';
