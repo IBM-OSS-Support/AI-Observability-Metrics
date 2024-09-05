@@ -8,8 +8,8 @@ import os # get environment vars
 import pandas as pd # you probably wrote this one before I tell
 import time # sleeper to avoid exceeding API limits
 
-openai_org_id = "org-zvKGqHl0adRlJbe7lpb7n1wX" #from james #"org-8BwheRTrv47l6MxkOrVnU7uG" #os.getenv('OPENAI_ORG_ID')
-openai_api_key = "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" # from james #"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" #os.getenv('OPENAI_API_KEY')
+openai_org_id = os.getenv('OPENAI_ORG_ID')
+openai_api_key = os.getenv('OPENAI_API_KEY')
 APPLICATION_METRIC = "session_info"
 
 def get_session_info(app_user,application_name):
@@ -154,8 +154,8 @@ def get_session_info(app_user,application_name):
         "sessions": sessions
     }
 
-    with open(f"openai_costs.json", "w") as f:
+    with open(f"metrics/jsons/openai_costs.json", "w") as f:
         json.dump(json_object, f, indent=4)
 
-    df_costs.to_excel("openai_costs.xlsx", index=True)  # This will save the DataFrame without the index
+    df_costs.to_excel("metrics/jsons/openai_costs.xlsx", index=True)  # This will save the DataFrame without the index
     return json_object

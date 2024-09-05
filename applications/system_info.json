@@ -1,9 +1,0 @@
-{
-    "kafka-topic": "maintenance",
-    "OperatingSystem": "Linux-5.14.0-427.el9.x86_64-x86_64-with-glibc2.34",
-    "MachineArchitecture": "x86_64",
-    "PythonVersion": "3.9.18 (main, Jan 24 2024, 00:00:00) \n[GCC 11.4.1 20231218 (Red Hat 11.4.1-3)]",
-    "OpenAIVersion": "1.14.0",
-    "app-user": "Bhoomaiah",
-    "application-name": "bhoomaiah_application"
-}

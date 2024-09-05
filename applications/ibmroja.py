@@ -23,10 +23,10 @@ logger = logging.getLogger()
 logger.setLevel(logging.CRITICAL)
 load_dotenv(find_dotenv())
 
-logging.basicConfig()
-logger = logging.getLogger()
-logger.setLevel(logging.DEBUG)
-load_dotenv(find_dotenv())
+#logging.basicConfig()
+#logger = logging.getLogger()
+#logger.setLevel(logging.DEBUG)
+#load_dotenv(find_dotenv())
 
 # Load environment variables
 API_URL = os.getenv('API_URL')
@@ -37,7 +37,6 @@ ANTHROPIC_API_KEY = os.getenv('ANTHROPIC_API_KEY')
 def inject_roja_instrumentation(app_data):
     print(API_URL,GRAPHSIGNAL_API_KEY,app_data["app_name"])
     graphsignal.configure(api_url=API_URL,api_key=GRAPHSIGNAL_API_KEY, deployment=app_data["app_name"]) # to send to IBM ROJA server
-    #graphsignal.configure(deployment=APPLICATION_NAME)
     graphsignal.set_context_tag('user', app_data["user"])
     pass
 
@@ -58,7 +57,6 @@ def solve(user_id, task):
         return "failure"
 
 def run_chat_model(USER, question):
-    print("tahsin")
     try:
         llm = ChatOpenAI(temperature=0)
         graphsignal.set_context_tag('user', USER)
@@ -68,13 +66,7 @@ def run_chat_model(USER, question):
         ])
         runnable = prompt | llm
         time.sleep(10) 
-        #arra = []
-        #print(arra[1])
-
-        #with graphsignal.start_trace("predict", {"record_samples": True, "record_metrics":True, "enable_profiling":True}):
-        #with graphsignal.score('sharifscore') as score1:
         with graphsignal.trace("run_chat_model") as tr:
-            #span.set_payload('input', input_data, usage=dict(token_count=input_token_count))
             for chunk in runnable.stream({"question": question}):
                 print(chunk, end="", flush=True)
         return "success"
@@ -110,7 +102,6 @@ def answer_questions(user_id, questions):
 
 def run_anthropic_model(user, question):
 
-    # api_key = ANTHROPIC_API_KEY
     client = anthropic.Anthropic(api_key = ANTHROPIC_API_KEY)
 
     response = client.messages.create(
@@ -126,9 +117,8 @@ def gather_metrics(app_data, question, status):
     json_obj = []
     json_obj.append(safety_score.calculate_safety_score(app_data["user"], app_data["app_name"], question))
     json_obj.append(log_app.log_prompt_info(app_data["user"], app_data["app_name"], question, status))
-    json_obj.append(maintenance.get_maintenance_info(app_data["user"], app_data["app_name"]))
-    json_obj.append(session.get_session_info(app_data["user"], app_data["app_name"]))
-    #json_obj.append(embeddings.get_embeddings_score(user,app_name,question,"text-embedding-3-small"))
+    #json_obj.append(maintenance.get_maintenance_info(app_data["user"], app_data["app_name"]))
+    #json_obj.append(session.get_session_info(app_data["user"], app_data["app_name"]))
     json_obj.append(user_satisfaction.prepare_user_satisfaction(app_data["user"], app_data["app_name"],question,app_data["rating"],app_data["comment"]))
     json_obj.append(accuracy.prepare_accuracy(app_data["user"], app_data["app_name"], app_data["accuracy"]))
     return json_obj

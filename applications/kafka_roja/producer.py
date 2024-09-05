@@ -1,9 +1,9 @@
 from kafka import KafkaProducer, KafkaConsumer
 import logging
 import json
+import os
 
-url = 'http://localhost:5000/receive_json'
-kafka_server = 'localhost:9092'
+kafka_server = os.getenv('KAFKA_URL')
 producer = KafkaProducer(bootstrap_servers=kafka_server)
 
 # Set up basic logging
@@ -13,10 +13,6 @@ logger = logging.getLogger()
 def extract_topic(json_data):
     if "kafka-topic" in json_data:
         return json_data["kafka-topic"]
-    #elif "spans" in json_data:
-    #    return "spans"
-    #elif "metrics" in json_data:
-    #    return "metrics"
     else:
         logger.error("Unknown topic sent: ", json_data)
         return "None"

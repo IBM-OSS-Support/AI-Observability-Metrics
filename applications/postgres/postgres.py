@@ -9,6 +9,18 @@ import socket
 # Set up basic logging
 logging.basicConfig(level=logging.CRITICAL)
 
+class Message_Single:
+    def __init__(self, topic, value):
+        self.topic = topic
+        self.value = value
+
+def upload_to_postgres_with_message(jsonobj):
+    json_string = json.dumps(jsonobj)
+    m = Message_Single(jsonobj["kafka-topic"], json_string)
+    upload_to_postgres(m)
+
+
+
 def calculate_openai_cost(token_count, rate_per_1000_tokens=0.002):
     """
     Calculate the cost for using a language model based on token usage.
@@ -21,7 +33,7 @@ def upload_to_postgres(message):
     json_object = json.loads(json_data)
     json_object_sanitized = json.dumps(json_object, default=lambda x: None if isinstance(x, float) and (x == float('inf') or x == float('-inf') or x != x) else x)
     json_object = json.loads(json_object_sanitized)
-    
+     
     conn = create_db_connection()
 
     topic_processing_functions = {
@@ -233,7 +245,6 @@ def process_log_history(message,conn,json_object):
 def process_metrics(message,conn,json_object):
     
     cursor = conn.cursor()
-    print("----------tahsin metrics-----------------------------------------: ")
     #json_object = json_object["metrics"]
     # Create a table if it does not exist
     create_table_sql = """
@@ -285,15 +296,10 @@ def process_metrics(message,conn,json_object):
     def get_usage_objects(data_obj):
         json_new = {"data":[]}
         print("get usage objects")
-        #time.sleep(5)
         if isinstance(data_obj, list):
-            #print("yes is instance")
-            #time.sleep(5)
             for item in data_obj:
                 if "scope" in item and item["scope"] == "usage" and "name" in item:
-                    #print("got one")
                     json_new["data"].append(item)
-                    #time.sleep(5)
         print(json_new)
         return json_new
 
@@ -307,7 +313,6 @@ def process_metrics(message,conn,json_object):
                     total_tokens += item["counter"]
 
         print("total_tokens: ", total_tokens)
-        #time.sleep(5)
         return calculate_openai_cost(total_tokens)
 
     json_usage_objects = get_usage_objects(json_object["metrics"])
@@ -465,16 +470,11 @@ def create_db_connection():
     try:
         # Get database connection parameters from environment variables
         
-        DB_NAME="roja_postgres"
-# DB_NAME=roja_dev # dev 
-        DB_USER="roja_user"
-        DB_PASSWORD="roja_user"
-        DB_HOST="9.20.196.69"
-        DB_PORT=5432
-        #DB_NAME = os.environ.get("DB_NAME")
-        #DB_USER = os.environ.get("DB_USER")
-        #DB_PASSWORD = os.environ.get("DB_PASSWORD")
-        #DB_HOST = os.environ.get("DB_HOST")
+        DB_NAME=os.getenv('DB_NAME')
+        DB_USER=os.getenv('DB_USER')
+        DB_PASSWORD=os.getenv('DB_PASSWORD')
+        DB_HOST=os.getenv('DB_HOST')
+        DB_PORT=os.getenv('DB_PORT')
         print(DB_NAME, DB_USER, DB_PASSWORD, DB_HOST)
         # Establish the database connection
         connection = psycopg2.connect(

@@ -4,8 +4,9 @@ import datetime
 from dateutil.relativedelta import relativedelta
 from openai import OpenAI
 import graphsignal
+import os
 
-openai_api_key = "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" #os.getenv('OPENAI_API_KEY')
+openai_api_key = os.getenv('OPENAI_API_KEY')
 APPLICATION_METRIC = "embedding"
 
 # Define the API endpoint
@@ -47,7 +48,7 @@ def get_embeddings_score(user, app_name, input_string, model):
     response_json["application-name"] = app_name
     response_json["prompt"] = input_string
     # Write the system info to a JSON file
-    with open("embeddings.json", "w") as json_file:
+    with open("metrics/jsons/embeddings.json", "w") as json_file:
         json.dump(response_json, json_file, indent=4)
     return response_json
 

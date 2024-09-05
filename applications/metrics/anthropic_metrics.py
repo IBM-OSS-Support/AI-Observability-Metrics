@@ -44,6 +44,6 @@ def anthropic_metrics_json(data, response):
     data["total_cost"] = total_cost
 
     # Write the system info to a JSON file
-    with open("anthropic_accuracy.json", "w") as json_file:
+    with open("metrics/jsons/anthropic_accuracy.json", "w") as json_file:
         json.dump(data, json_file, indent=4)
     return data
