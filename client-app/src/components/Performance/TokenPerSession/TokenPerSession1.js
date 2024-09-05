@@ -1,4 +1,4 @@
-import React, { forwardRef, useEffect, useImperativeHandle, useRef, useState } from "react";
+import React, { forwardRef, useEffect, useImperativeHandle, useState } from "react";
 import { Tile } from "@carbon/react";
 import { StackedBarChart } from "@carbon/charts-react";
 import { Maximize } from "@carbon/icons-react";
@@ -54,82 +54,57 @@ const defaultData = [
   }
 ];
 
-const defaultMessage = [
-  {
-    usage: { counter: 0 }
-  }
-];
-
 const TokenPerSession1 = forwardRef(({ selectedItem, selectedUser, selectedTimestampRange, startDate, endDate }, ref) => {
-  const websocketRef = useRef(null);
   const [data, setData] = useState(defaultData);
   const [avg, setAvg] = useState(0);
-  const [websocket, setWebsocket] = useState(null);
-  const [messageFromServerToken, setMessageFromServerToken] = useState(defaultMessage);
-  const [startDateState, setStartDateState] = useState(startDate);
-  const [endDateState, setEndDateState] = useState(endDate);
+  const [messageFromServerToken, setMessageFromServerToken] = useState('');
 
   useImperativeHandle(ref, () => ({
     sendMessageToServerToken,
   }));
 
-  useEffect(() => {
-    const apiUrl = process.env.REACT_APP_WEBSOCKET_URL;
-    const ws = new WebSocket(apiUrl);
-    websocketRef.current = ws;
-    setWebsocket(ws);
-    return () => {
-      ws.close();
-    };
-  }, []);
-
-  const sendMessageToServerToken = (selectedItem, selectedUser, startDate, endDate) => {
-    let q = "SELECT * FROM anthropic_metrics WHERE 1=1";
+  const sendMessageToServerToken = async (selectedItem, selectedUser, startDate, endDate) => {
+    let query = "SELECT * FROM anthropic_metrics WHERE 1=1";
   
     if (selectedItem) {
-      q += ` AND application_name = '${selectedItem}'`;
+      query += ` AND application_name = '${selectedItem}'`;
     }
     if (selectedUser) {
-      q += ` AND app_user = '${selectedUser}'`;
+      query += ` AND app_user = '${selectedUser}'`;
     }
     if (startDate && endDate) {
-      q += ` AND timestamp >= '${startDate.toISOString()}' AND timestamp <= '${endDate.toISOString()}'`;
+      query += ` AND timestamp >= '${startDate.toISOString()}' AND timestamp <= '${endDate.toISOString()}'`;
     }
   
-    const ws = websocketRef.current;
+    try {
+      const apiUrl = process.env.REACT_APP_BACKEND_API_URL;
+      const response = await fetch(apiUrl, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ query }),
+      });
   
-    if (ws) {
-      const message = {
-        tab: "auditing",
-        action: q
-      };
-      if (ws.readyState === WebSocket.OPEN) {
-        ws.send(JSON.stringify(message));
-      } else {
-        ws.onopen = () => {
-          ws.send(JSON.stringify(message));
-        };
+      if (!response.ok) {
+        throw new Error("Failed to fetch token data");
       }
+  
+      const data = await response.json();
+      setMessageFromServerToken(data);
+    } catch (error) {
+      console.error("Error fetching token data:", error);
     }
   };
 
   useEffect(() => {
-    if (websocket) {
-      websocket.onmessage = (event) => {
-        const data = JSON.parse(event.data);
-        setMessageFromServerToken(data);
-      };
+    if (startDate && endDate) {
+      sendMessageToServerToken(selectedItem, selectedUser, startDate, endDate);
     }
-  }, [websocket]);
+  }, [selectedItem, selectedUser, startDate, endDate]);
 
   useEffect(() => {
-    if (startDateState && endDateState) {
-      sendMessageToServerToken(selectedItem, selectedUser, startDateState, endDateState);
-    }
-  }, [startDateState, endDateState, selectedItem, selectedUser]);
-
-  useEffect(() => {
-    if (messageFromServerToken.length > 0) {
+    if (messageFromServerToken) {
       const cpuUsages = messageFromServerToken.map((d) => {
         const cpuUsage = d.total_count;
         return cpuUsage ? Number(cpuUsage) : 0;
@@ -166,7 +141,9 @@ const TokenPerSession1 = forwardRef(({ selectedItem, selectedUser, selectedTimes
         </div>
       </Tile>
     ) : (
-      <NoData />
+      <Tile className="nodata-wrap">
+        <NoData />
+      </Tile>
     )}
     </>
   );

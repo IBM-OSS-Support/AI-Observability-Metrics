@@ -1,14 +1,23 @@
-FROM node:14
+# Use the official Node.js image from the Docker Hub
+FROM node:18
 
+# Set the working directory in the container
 WORKDIR /app
 
+
+ENV REACT_APP_BACKEND_API_URL="http://localhost:3001/data"
+
+# Copy package.json and package-lock.json into the container
 COPY package*.json ./
 
-RUN npm install && npm install ws --save && npm install pg --save
+# Install dependencies
+RUN npm install
 
+# Copy the rest of the application code into the container
 COPY . .
 
-EXPOSE 8080
+# Expose the port the server is running on
+EXPOSE 3001
 
+# Command to run the application
 CMD ["node", "server.js"]
-

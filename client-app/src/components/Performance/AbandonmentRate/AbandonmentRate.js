@@ -1,4 +1,4 @@
-import React, { forwardRef, useEffect, useImperativeHandle, useRef, useState } from "react";
+import React, { forwardRef, useEffect, useImperativeHandle, useState } from "react";
 import { Tile } from "@carbon/react";
 import { GaugeChart } from "@carbon/charts-react";
 import { getAppData } from "../../../appData";
@@ -43,11 +43,8 @@ const defaultMessage = [
 ];
 
 const AbandonmentRate = forwardRef((props, ref) => {
-  
-  const websocketRef = useRef(null);
   const [data, setData] = useState(defaultData);
   const [avg, setAvg] = useState(0);
-  const [websocket, setWebsocket] = useState(null);
   const [messageFromServerAbandonment, setMessageFromServerAbandonment] = useState(defaultMessage);
 
   const { state } = useStoreContext();
@@ -56,104 +53,64 @@ const AbandonmentRate = forwardRef((props, ref) => {
     sendMessageToServerAbandonment,
   }));
 
-  // Connect to WebSocket server on component mount
-  useEffect(() => {
-    const apiUrl = process.env.REACT_APP_WEBSOCKET_URL;
-    const ws = new WebSocket(apiUrl);
-    websocketRef.current = ws;
-    setWebsocket(ws);
-    // Cleanup function to close WebSocket connection on component unmount
-    return () => {
-      ws.close();
-    };
-  }, []);
+  // Function to fetch data from the API
+  const sendMessageToServerAbandonment = async (selectedItem, selectedUser) => {
+    let query = `SELECT COUNT(*) AS total_count, COUNT(*) FILTER (WHERE status = 'user_abandoned') * 100.0 / COUNT(*) AS user_abandoned_percentage FROM log_history`;
+    
+    if (selectedItem) {
+      query = `SELECT COUNT(*) FILTER (WHERE application_name = '${selectedItem}') AS total_count, COUNT(*) FILTER (WHERE status = 'user_abandoned') * 100.0 / COUNT(*) AS user_abandoned_percentage FROM log_history`;
+    }
+    if (selectedUser) {
+      query = `SELECT COUNT(*) FILTER (WHERE app_user = '${selectedUser}') AS total_count, COUNT(*) FILTER (WHERE status = 'user_abandoned' AND app_user = '${selectedUser}') * 100.0 / COUNT(*) AS user_abandoned_percentage FROM log_history`;
+    }
+    if (selectedUser && selectedItem) {
+      query = `SELECT COUNT(*) FILTER (WHERE app_user = '${selectedUser}' AND application_name = '${selectedItem}') AS total_count, COUNT(*) FILTER (WHERE status = 'user_abandoned' AND app_user = '${selectedUser}' AND application_name = '${selectedItem}') * 100.0 / COUNT(*) AS user_abandoned_percentage FROM log_history`;
+    }
 
-  // Function to send message to WebSocket server
-  const sendMessageToServerAbandonment = (selectedItem, selectedUser) => {
-    let q = `SELECT COUNT(*) AS total_count, COUNT(*) FILTER (WHERE status = 'user_abandoned') * 100.0 / COUNT(*) AS user_abandoned_percentage FROM log_history `;
-    // let q = `SELECT * FROM log_history`
-      if (selectedItem) {
-        q = `SELECT COUNT(*) FILTER (WHERE application_name = '${selectedItem}') AS total_count, COUNT(*) FILTER (WHERE status = 'user_abandoned') * 100.0 / COUNT(*) AS user_abandoned_percentage FROM log_history `;
-        console.log("selectedItem", selectedItem, "Q", q);
+    try {
+      const apiUrl = process.env.REACT_APP_BACKEND_API_URL;
+      const response = await fetch(apiUrl, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ query }), // Sending query as body
+      });
+
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
       }
-      if (selectedUser) {
-        q = `SELECT COUNT(*) FILTER (WHERE app_user = '${selectedUser}') AS total_count, COUNT(*) FILTER (WHERE status = 'user_abandoned' AND app_user = '${selectedUser}') * 100.0 / COUNT(*) AS user_abandoned_percentage FROM log_history `;
-        console.log("selectedUser", selectedUser, "Q", q);
-      }
-      if(selectedUser && selectedItem) {
-        q = `SELECT COUNT(*) FILTER (WHERE app_user = '${selectedUser}' AND application_name = '${selectedItem}') AS total_count, COUNT(*) FILTER (WHERE status = 'user_abandoned' AND app_user = '${selectedUser}' AND application_name = '${selectedItem}') * 100.0 / COUNT(*) AS user_abandoned_percentage FROM log_history `;
-        console.log("selectedUser", selectedUser, "Q", q);
-      }
-    
-    const ws = websocketRef.current;
-    
-    if (ws) {
-      if (ws.readyState === WebSocket.OPEN) {
-        const message = {
-          tab: "auditing",
-          action: q,
-        };
-        ws.send(JSON.stringify(message));
-      } else {
-        ws.onopen = () => {
-          const message = {
-            tab: "auditing",
-            action: q,
-          };
-          ws.send(JSON.stringify(message));
-        };
-      }
+
+      const data = await response.json();
+      setMessageFromServerAbandonment(data); // Assuming the data format matches the expected structure
+    } catch (error) {
+      console.error("Error fetching data:", error);
     }
   };
 
-  // Listen for messages from WebSocket server
   useEffect(() => {
-    if (websocket) {
-      websocket.onmessage = (event) => {
-        setMessageFromServerAbandonment(JSON.parse(event.data));
-      };
-    }
-  }, [websocket]);
-
-  // Update chart data when messageFromServerAbandonment changes
-  useEffect(() => {
-    let newData = defaultData;
-    let newAvg = 0;
-    let newAvgValue = 0;
-    let newAvgValueToNumber = 0;
     if (state.status === "success") {
       const appData = getAppData();
 
       console.log("Abandonment app data", appData[0].data);
 
       if (messageFromServerAbandonment.length > 0) {
-        newAvgValue = messageFromServerAbandonment[0].user_abandoned_percentage;
-        newAvgValueToNumber = parseFloat(newAvgValue);
-        console.log("Adoption newAvgValue", newAvgValueToNumber);
-        newAvg = newAvgValueToNumber.toFixed(2);
-        newData = [
+        const newAvgValue = messageFromServerAbandonment[0].user_abandoned_percentage;
+        const newAvgValueToNumber = parseFloat(newAvgValue);
+        const newAvg = newAvgValueToNumber.toFixed(2);
+
+        setData([
           {
             group: "value",
             value: newAvgValueToNumber || 0,
           },
-        ];
+        ]);
+        setAvg(newAvg);
+        console.log("New average Abandonment", newAvg);
       }
-
-      setData(newData);
-      setAvg(newAvg);
-      console.log("New average Abandonment", newAvg);
     }
-  }, [messageFromServerAbandonment]);
+  }, [messageFromServerAbandonment, state]);
 
-  console.log(messageFromServerAbandonment.total_count, "Abandonment messageFromServer", messageFromServerAbandonment);
-  if (messageFromServerAbandonment) {
-    console.log(
-      "Abandonment messageFromServer.gauge",
-      messageFromServerAbandonment[0].user_abandoned_percentage
-    );
-  }
-
-  // Render
   return (
     <Tile className="infrastructure-components cpu-usage">
       <h5>Abandonment Rate</h5>
@@ -162,7 +119,7 @@ const AbandonmentRate = forwardRef((props, ref) => {
       </div>
       <div className="cpu-usage-data">
         <div className="label">Total Count</div>
-        <h3 className="data">{messageFromServerAbandonment[0].total_count} </h3>
+        <h3 className="data">{messageFromServerAbandonment[0].total_count}</h3>
       </div>
     </Tile>
   );
