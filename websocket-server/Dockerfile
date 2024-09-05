@@ -5,7 +5,7 @@ FROM node:18
 WORKDIR /app
 
 
-ENV REACT_APP_BACKEND_API_URL="http://localhost:3001/data"
+ENV REACT_APP_BACKEND_API_URL="http://localhost:5000/data"
 
 # Copy package.json and package-lock.json into the container
 COPY package*.json ./

@@ -4,7 +4,7 @@ FROM node:18
 # Set working directory for the app
 WORKDIR /app
 
-ENV REACT_APP_BACKEND_API_URL="http://http://9.20.196.69/:3001/data"
+ENV REACT_APP_BACKEND_API_URL="http://9.20.196.69:5000/data"
 
 # Copy package.json and package-lock.json to the working directory
 COPY package*.json ./

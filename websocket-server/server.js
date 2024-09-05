@@ -4,7 +4,7 @@ const cors = require('cors');
 const os = require('os'); // Import the os module
 
 const app = express();
-const port = 3001;
+const port = 5000;
 
 app.use(cors());
 app.use(express.json());
