@@ -9,101 +9,99 @@
  * of its trade secrets, irrespective of what has been deposited with
  * the U.S. Copyright Office.
  ****************************************************************************** */
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef, useCallback } from 'react';
 import { ComboBox, DatePicker, DatePickerInput } from "@carbon/react";
 
 const Filter = ({ onFilterChange }) => {
-  const [websocket, setWebsocket] = useState(null);
   const [messageFromServerFilter, setMessageFromServerFilter] = useState([]);
   const [selectedItem, setSelectedItem] = useState(null);
   const [selectedItemUser, setSelectedItemUser] = useState(null);
-  const [filteredApplications, setFilteredApplications] = useState([]); 
+  const [filteredApplications, setFilteredApplications] = useState([]);
   const [selectedTimestampRange, setSelectedTimestampRange] = useState(null);
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
 
   const uniqueId = useRef(`header-filter-${Math.random().toString(36).substr(2, 9)}`).current;
 
-  useEffect(() => {
-    const ws = new WebSocket('ws://localhost:8080');
-    setWebsocket(ws);
-    return () => {
-      ws.close();
-    };
-  }, []);
+  // Function to fetch data from API
+  const fetchFilterData = useCallback(async () => {
+    const apiUrl = process.env.REACT_APP_BACKEND_API_URL; // Ensure you have the correct API URL here
+    const query = 'SELECT application_name, app_user, timestamp FROM maintenance';
 
-  const sendMessageToServerFilter = () => {
-    const q = 'SELECT application_name, app_user, timestamp FROM maintenance';
-    if (websocket && websocket.readyState === WebSocket.OPEN) {
-      const message = {
-        tab: 'auditing',
-        action: q
-      };
-      websocket.send(JSON.stringify(message));
+    try {
+      const response = await fetch(apiUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ query })
+      });
+
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+
+      const data = await response.json();
+      setMessageFromServerFilter(data);
+      handleSelectUser({ selectedItem: selectedItemUser }, data); // Ensure user selection logic is updated with new data
+    } catch (error) {
+      console.error('Error fetching filter data:', error);
     }
-  };
+  }, [selectedItemUser]);
 
   useEffect(() => {
-    if (websocket) {
-      websocket.onmessage = (event) => {
-        const data = JSON.parse(event.data);
-        setMessageFromServerFilter(data);
-        handleSelectUser({ selectedItem: selectedItemUser }, data);
-      };
-    }
-  }, [websocket, selectedItemUser]);
+    // Fetch the filter data when the component mounts
+    fetchFilterData();
+  }, [fetchFilterData]);
 
-  const users = messageFromServerFilter.length > 0 
-    ? [...new Set(messageFromServerFilter.map(app => app.app_user))] 
+  const users = messageFromServerFilter.length > 0
+    ? [...new Set(messageFromServerFilter.map(app => app.app_user))]
     : ["No users available"];
 
-  const handleSelectUser = (event, data = messageFromServerFilter) => {
+  const handleSelectUser = useCallback((event, data = messageFromServerFilter) => {
     const selectedUser = event.selectedItem;
-    setSelectedItemUser(selectedUser);
 
-    const appsForUser = data
-      .filter(app => app.app_user === selectedUser)
-      .map(app => app.application_name);
+    if (selectedUser !== selectedItemUser) {
+      setSelectedItemUser(selectedUser);
 
-    setFilteredApplications([...new Set(appsForUser)]);
-    onFilterChange(selectedItem, selectedUser, selectedTimestampRange, startDate, endDate);
-  };
+      const appsForUser = data
+        .filter(app => app.app_user === selectedUser)
+        .map(app => app.application_name);
 
-  const handleSelectApplication = (event) => {
+      setFilteredApplications([...new Set(appsForUser)]);
+      onFilterChange(selectedItem, selectedUser, selectedTimestampRange, startDate, endDate);
+    }
+  }, [selectedItemUser, messageFromServerFilter, selectedItem, selectedTimestampRange, startDate, endDate, onFilterChange]);
+
+  const handleSelectApplication = useCallback((event) => {
     const selectedApp = event.selectedItem;
-    setSelectedItem(selectedApp);
-    onFilterChange(selectedApp, selectedItemUser, selectedTimestampRange, startDate, endDate);
-  };
+
+    if (selectedApp !== selectedItem) {
+      setSelectedItem(selectedApp);
+      onFilterChange(selectedApp, selectedItemUser, selectedTimestampRange, startDate, endDate);
+    }
+  }, [selectedItem, selectedItemUser, selectedTimestampRange, startDate, endDate, onFilterChange]);
 
   const handleDateChange = (range) => {
     const [start, end] = range;
     setStartDate(start);
     setEndDate(end);
 
-    // Calculate number of days selected
     const numberOfDaysSelected = calculateDaysDifference(start, end);
-
     console.log("numberOfDaysSelected", numberOfDaysSelected);
-    
-    // Pass number of days selected to the parent component or use as needed
+
     onFilterChange(selectedItem, selectedItemUser, selectedTimestampRange, start, end, numberOfDaysSelected);
   };
 
   const calculateDaysDifference = (startDate, endDate) => {
     const start = new Date(startDate);
     const end = new Date(endDate);
-
-    // Calculate the difference in time
     const timeDiff = end.getTime() - start.getTime();
-
-    // Convert time difference from milliseconds to days
-    const daysDiff = timeDiff / (1000 * 3600 * 24);
-
-    return Math.ceil(daysDiff); // Round up to the nearest whole number
+    return Math.ceil(timeDiff / (1000 * 3600 * 24));
   };
 
-  const applicationOptions = filteredApplications.length > 0 
-    ? filteredApplications 
+  const applicationOptions = filteredApplications.length > 0
+    ? filteredApplications
     : ["Select a user first"];
 
   const handleSelectTimestampRange = (event) => {
@@ -127,7 +125,7 @@ const Filter = ({ onFilterChange }) => {
         items={users}
         placeholder="Choose User Name"
         size="md"
-        onFocus={sendMessageToServerFilter}
+        onFocus={fetchFilterData} // Trigger fetch when user interacts
       />
       <ComboBox
         id={`${uniqueId}-app`}

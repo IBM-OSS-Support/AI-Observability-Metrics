@@ -1,32 +1,22 @@
-# Use Node.js image as base
-FROM node:14 as build
+# Use the Node.js base image
+FROM node:18
 
-# Set working directory in the container
+# Set working directory for the app
 WORKDIR /app
+
+ENV REACT_APP_BACKEND_API_URL="http://http://9.20.196.69/:3001/data"
 
 # Copy package.json and package-lock.json to the working directory
 COPY package*.json ./
 
 # Install dependencies
-RUN npm install && npm install sass
-
-RUN npm install --save-dev @babel/plugin-proposal-private-property-in-object
+RUN npm install
 
 # Copy the entire application to the working directory
 COPY . .
 
-# Build the React app
-RUN npm run build
+# Expose port (adjust if necessary)
+EXPOSE 3000
 
-# Use nginx image as base for serving the static files
-FROM nginx:alpine
-
-# Copy the built files from the previous stage to nginx directory
-COPY --from=build /app/build /usr/share/nginx/html
-
-# Expose port 80
-EXPOSE 80
-
-# Command to start nginx
-CMD ["nginx", "-g", "daemon off;"]
-
+# Command to start the application
+CMD ["npm", "start"]

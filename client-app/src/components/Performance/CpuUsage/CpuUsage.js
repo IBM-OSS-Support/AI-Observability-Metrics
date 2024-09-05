@@ -1,4 +1,4 @@
-import React, { forwardRef, useEffect, useImperativeHandle, useRef, useState } from "react";
+import React, { forwardRef, useEffect, useImperativeHandle, useState } from "react";
 import { Tile } from "@carbon/react";
 import { GaugeChart } from "@carbon/charts-react";
 import { useStoreContext } from "../../../store";
@@ -42,64 +42,46 @@ const defaultMessage = [
 ];
 
 const CpuUsage = forwardRef(({ selectedItem, selectedUser }, ref) => {
-  const websocketRef = useRef(null);
   const [data, setData] = useState(defaultData);
   const [latest, setLatest] = useState(0);
   const [avg, setAvg] = useState(0);
-  const [websocket, setWebsocket] = useState(null);
   const [messageFromServerCPU, setMessageFromServerCPU] = useState(defaultMessage);
 
   useImperativeHandle(ref, () => ({
     sendMessageToServerCPU,
   }));
 
-  useEffect(() => {
-    const apiUrl = process.env.REACT_APP_WEBSOCKET_URL;
-    const ws = new WebSocket(apiUrl);
-    websocketRef.current = ws;
-    setWebsocket(ws);
-
-    return () => {
-      ws.close();
-    };
-  }, []);
-
-  const sendMessageToServerCPU = (selectedItem, selectedUser) => {
-    let q = 'SELECT process_cpu_usage FROM system';
+  // Function to fetch data from the API
+  const sendMessageToServerCPU = async (selectedItem, selectedUser) => {
+    let query = 'SELECT process_cpu_usage FROM system';
 
     if (selectedItem) {
-      q += ` WHERE application_name = '${selectedItem}'`;
+      query += ` WHERE application_name = '${selectedItem}'`;
     }
     if (selectedUser) {
-      q += selectedItem ? ` AND app_user = '${selectedUser}'` : ` WHERE app_user = '${selectedUser}'`;
+      query += selectedItem ? ` AND app_user = '${selectedUser}'` : ` WHERE app_user = '${selectedUser}'`;
     }
 
-    const ws = websocketRef.current;
-    if (ws && ws.readyState === WebSocket.OPEN) {
-      const message = {
-        tab: "auditing",
-        action: q,
-      };
-      ws.send(JSON.stringify(message));
-    } else {
-      ws.onopen = () => {
-        const message = {
-          tab: "auditing",
-          action: q,
-        };
-        ws.send(JSON.stringify(message));
-      };
+    try {
+      const apiUrl = process.env.REACT_APP_BACKEND_API_URL;
+      const response = await fetch(apiUrl, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ query }), // Sending query as body
+      });
+
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+
+      const data = await response.json();
+      setMessageFromServerCPU(data); // Assuming the data format matches the expected structure
+    } catch (error) {
+      console.error("Error fetching data:", error);
     }
   };
-
-  useEffect(() => {
-    if (websocket) {
-      websocket.onmessage = (event) => {
-        const receivedData = JSON.parse(event.data);
-        setMessageFromServerCPU(receivedData);
-      };
-    }
-  }, [websocket]);
 
   useEffect(() => {
     if (messageFromServerCPU && messageFromServerCPU.length > 0) {

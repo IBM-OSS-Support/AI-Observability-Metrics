@@ -59,10 +59,10 @@ const Performance = () => {
       callCountRef.current.sendMessageToServerCallCount();
     }
     if (latencyRef.current) {
-      latencyRef.current.sendMessageToServerLatency();
+      latencyRef.current.fetchLatencyData();
     }
     if (accuracyRef.current) {
-      accuracyRef.current.sendMessageToServerAccuracy();
+      accuracyRef.current.fetchAccuracyData();
     }
   }, []); 
 
@@ -90,10 +90,10 @@ const Performance = () => {
       tokenPerSessionRef.current.sendMessageToServerToken(selectedItem, selectedUser, selectedTimestampRange);
     }
     if (latencyRef.current) {
-      latencyRef.current.sendMessageToServerLatency(selectedItem, selectedUser, selectedTimestampRange, startDate, endDate);
+      latencyRef.current.fetchLatencyData(selectedItem, selectedUser, selectedTimestampRange, startDate, endDate);
     }
     if (accuracyRef.current) {
-      accuracyRef.current.sendMessageToServerAccuracy(selectedItem, selectedUser, startDate, endDate);
+      accuracyRef.current.fetchAccuracyData(selectedItem, selectedUser, startDate, endDate);
     }
   };
 

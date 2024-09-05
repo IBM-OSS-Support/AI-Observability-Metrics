@@ -9,7 +9,7 @@
  * of its trade secrets, irrespective of what has been deposited with
  * the U.S. Copyright Office.
  ****************************************************************************** */
-import React, { forwardRef, useEffect, useImperativeHandle, useRef, useState } from "react";
+import React, { forwardRef, useEffect, useImperativeHandle, useState } from "react";
 import CustomLineChart from "../../common/CustomLineChart";
 import { latencyOptions } from "../constants";
 import { useStoreContext } from "../../../store";
@@ -18,158 +18,100 @@ import moment from "moment";
 import NoData from "../../common/NoData/NoData";
 
 const LatencyGraph = forwardRef(({ selectedItem, selectedUser, selectedTimestampRange, startDate, endDate }, ref) => {
-  const websocketRef = useRef(null);
-  const [websocket, setWebsocket] = useState(null);
   const [messageFromServerLatency, setMessageFromServerLatency] = useState('');
 
-  console.log('Start Date and End Date from Latency', startDate, endDate);
-
   useImperativeHandle(ref, () => ({
-    sendMessageToServerLatency,
+    fetchLatencyData,
   }));
 
-  useEffect(() => {
-    const apiUrl = process.env.REACT_APP_WEBSOCKET_URL;
-    const ws = new WebSocket(apiUrl);
-    websocketRef.current = ws;
-    setWebsocket(ws);
-    return () => {
-      ws.close();
-    };
-  }, []);
-
-  const sendMessageToServerLatency = (selectedItem, selectedUser, startDate, endDate) => {
-    let q = 'SELECT application_name, data, timestamp FROM performance';
+  // Function to fetch data from the API
+  const fetchLatencyData = async (selectedItem, selectedUser, startDate, endDate) => {
+    let query = 'SELECT application_name, data, timestamp FROM performance';
 
     // Add filtering logic based on selectedItem, selectedUser, and selectedTimestampRange
     if (selectedItem && !selectedUser) {
-      q += ` WHERE application_name = '${selectedItem}'`;
+      query += ` WHERE application_name = '${selectedItem}'`;
     }
     if (selectedUser && !selectedItem) {
-      q += ` WHERE app_user = '${selectedUser}'`;
+      query += ` WHERE app_user = '${selectedUser}'`;
     }
     if (selectedUser && selectedItem) {
-      q += ` WHERE application_name = '${selectedItem}' AND app_user = '${selectedUser}'`;
+      query += ` WHERE application_name = '${selectedItem}' AND app_user = '${selectedUser}'`;
     }
     if (startDate && endDate) {
-      q += ` WHERE timestamp >= '${startDate}' AND timestamp <= '${endDate}'`;
+      query += ` WHERE timestamp >= '${startDate}' AND timestamp <= '${endDate}'`;
     }
 
-    console.log('q from latency', q);
+    try {
+      const apiUrl = process.env.REACT_APP_BACKEND_API_URL;
+      const response = await fetch(apiUrl, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ query }),
+      });
 
-    const ws = websocketRef.current;
-
-    if (ws) {
-      if (ws.readyState === WebSocket.OPEN) {
-        const message = {
-          tab: "auditing",
-          action: q,
-        };
-        ws.send(JSON.stringify(message));
-      } else {
-        ws.onopen = () => {
-          const message = {
-            tab: "auditing",
-            action: q,
-          };
-          ws.send(JSON.stringify(message));
-        };
+      if (!response.ok) {
+        throw new Error("Failed to fetch data");
       }
+
+      const data = await response.json();
+      setMessageFromServerLatency(data); // Assuming the data is in the correct structure
+    } catch (error) {
+      console.error("Error fetching data:", error);
     }
   };
 
   useEffect(() => {
-    if (websocket) {
-      websocket.onmessage = (event) => {
-        setMessageFromServerLatency(JSON.parse(event.data));
-      };
-    }
-  }, [websocket]);
-
-  useEffect(() => {
-    sendMessageToServerLatency(selectedItem, selectedUser, selectedTimestampRange, startDate, endDate);
-  }, [selectedItem, selectedUser, selectedTimestampRange, startDate, endDate]);
-
-  useEffect(() => {
-    if (messageFromServerLatency) {
-        getLatencyDataInside(messageFromServerLatency, startDate, endDate);
-    }
-}, [messageFromServerLatency, startDate, endDate]);
+    fetchLatencyData(selectedItem, selectedUser, startDate, endDate);
+  }, [selectedItem, selectedUser, startDate, endDate]);
 
   const getLatencyDataInside = (apps, startDate, endDate) => {
-    let startTime = startDate;
-    let endTime = endDate;
-    const SelectedDays = endTime - startTime;
-    console.log("SelectedDays", SelectedDays);
-    // const intervals = getIntervals(starttime, endtime, 10);
-
-
-    // console.log('Latency apps', apps);
-
-    // console.log("messageFromServerLatency", messageFromServerLatency);
-
-    //new code 
     const result = [];
 
     for (const appId in apps) {
       const app = apps[appId];
-      console.log('Latency appID & app', appId, ':', app);
       const convertUTCToIST = (utcDateString) => {
         const utcDate = new Date(utcDateString);
-      
-        // Calculate the offset between UTC and IST
         const istOffset = 5.5 * 60 * 60 * 1000; // IST is UTC+5:30
-      
-        // Add the IST offset to the UTC date
-        const istDate = new Date(utcDate.getTime() + istOffset);
-      
-        return istDate; // Returns a Date object in IST
+        return new Date(utcDate.getTime() + istOffset); // Returns a Date object in IST
       };
+
       const timestamp = convertUTCToIST(app.timestamp);
-      console.log('Latency Time', timestamp);
 
       let latency = app.data.latency.histogram.bins;
-        if (Array.isArray(app.data.latency.histogram.bins)) {
-          latency = latency > 0 ? latency / 100000000 : 0;
-        } else if (typeof app.data.latency.histogram.bins === 'number') {
-          latency = app.data.latency.histogram.bins;
-        }
+      if (Array.isArray(app.data.latency.histogram.bins)) {
+        latency = latency > 0 ? latency / 100000000 : 0;
+      } else if (typeof latency === 'number') {
+        latency = latency;
+      }
 
-      
-      console.log('Time inside getLatencyDataInside', startTime, endTime);  
-      console.log('new Date(timestamp).getTime()', new Date(timestamp).getTime());
-
-      console.log("new Date(timestamp).getTime() >= startTime && new Date(timestamp).getTime() <= endTime", timestamp >= startTime , timestamp <= endTime);
-      
-      if (timestamp >= startTime && timestamp <= endTime) {
+      if (timestamp >= startDate && timestamp <= endDate) {
         result.push({
           group: 'Dataset 1',
           key: app.timestamp,
-          value: latency
+          value: latency,
         });
-      }else if(startTime == undefined && endTime == undefined){
+      } else if (!startDate && !endDate) {
         result.push({
           group: 'Dataset 1',
           key: app.timestamp,
-          value: latency
+          value: latency,
         });
       }
     }
 
-    console.log('latency Result', result);
-    latency_number = result.length
     return result;
   };
 
-    
-  let latency_number;
-  console.log("latency_number:",latency_number);
+  const { state } = useStoreContext();
   const latencyDataInside = getLatencyDataInside(messageFromServerLatency, startDate, endDate);
-  console.log("latencyDataInside", latencyDataInside);
-  
+  const latency_number = latencyDataInside.length;
+
   const latencyOptions = {
     title: 'Latency (in seconds): ' + latency_number,
-  }
+  };
 
   return (
     <>

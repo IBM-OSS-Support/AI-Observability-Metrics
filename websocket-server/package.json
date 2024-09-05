@@ -1,16 +1,56 @@
 {
-    "name": "my-app",
-    "version": "1.0.0",
-    "description": "A sample application",
-    "main": "index.js",
-    "scripts": {
-      "start": "node index.js"
-    },
-    "dependencies": {
-      "ws": "^8.7.0",
-      "pg": "^8.10.0"
-    },
-    "devDependencies": {},
-    "author": "Your Name",
-    "license": "MIT"
+  "name": "roja_metric_poc_ui",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "@carbon/charts-react": "^1.13.18",
+    "@carbon/colors": "^11.14.0",
+    "@carbon/elements": "^11.12.0",
+    "@carbon/ibm-products": "^2.0.0-rc.21",
+    "@carbon/icons-react": "^11.10.0",
+    "@carbon/react": "^1.13.0",
+    "@testing-library/jest-dom": "^5.17.0",
+    "@testing-library/react": "^13.4.0",
+    "@testing-library/user-event": "^13.5.0",
+    "axios": "^1.6.5",
+    "browserslist": "^4.23.3",
+    "cors": "^2.8.5",
+    "crypto-browserify": "^3.12.0",
+    "express": "^4.19.2",
+    "moment": "^2.30.1",
+    "path-browserify": "^1.0.1",
+    "pg": "^8.12.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-router-dom": "6.4",
+    "react-scripts": "5.0.1",
+    "reactflow": "^11.10.2",
+    "stream-browserify": "^3.0.0",
+    "util": "^0.12.5",
+    "web-vitals": "^2.1.4"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
   }
+}

@@ -1,64 +1,59 @@
-import React, { forwardRef, useImperativeHandle, useMemo, useRef, useState } from 'react';
-import { useEffect } from 'react';
+import React, { forwardRef, useImperativeHandle, useState, useEffect } from 'react';
 import CustomDataTable from '../../common/CustomDataTable';
 
-const LogTable = forwardRef((props, ref) => {
-  
-  const websocketRef = useRef(null);
-  const [websocket, setWebsocket] = useState(null);
+const LogTable = forwardRef(({ selectedItem, selectedUser, startDate, endDate }, ref) => {
   const [messageFromServerLogTable, setMessageFromServerLogTable] = useState([]);
   const [headersLogTable, setHeadersLogTable] = useState([]);
 
   useImperativeHandle(ref, () => ({
-    sendMessageToServerLogTable,
+    fetchLogTableData,
   }));
 
-  // Connect to WebSocket server on component mount
-  useEffect(() => {
-    const apiUrl = process.env.REACT_APP_WEBSOCKET_URL;
-    const ws = new WebSocket(apiUrl);
-    websocketRef.current = ws;
-    setWebsocket(ws);
-    // Cleanup function to close WebSocket connection on component unmount
-    return () => {
-      ws.close();
-    };
-  }, []);
+  // Function to fetch data from the API
+  const fetchLogTableData = async (selectedItem, selectedUser, startDate, endDate) => {
+    let query = 'SELECT id, application_name, app_user, timestamp FROM maintenance';
 
-  // Function to send message to WebSocket server
-  const sendMessageToServerLogTable = (messageFromServerLogTable) => {
-    var start_timestamp = '2024-03-28 10:23:58.072245';
-    var end_timestamp = '2024-04-25 12:40:18.875514';
-    var q = 'SELECT id,application_name,app_user,timestamp FROM maintenance';
-    const ws = websocketRef.current;
-    
-    if (ws) {
-      if (ws.readyState === WebSocket.OPEN) {
-        const message = {
-          tab: "auditing",
-          action: q,
-        };
-        ws.send(JSON.stringify(message));
-      } else {
-        ws.onopen = () => {
-          const message = {
-            tab: "auditing",
-            action: q,
-          };
-          ws.send(JSON.stringify(message));
-        };
-      }
+    // Add filtering logic based on selectedItem, selectedUser, startDate, and endDate
+    if (selectedItem && !selectedUser) {
+      query += ` WHERE application_name = '${selectedItem}'`;
     }
-  };
+    if (selectedUser && !selectedItem) {
+      query += ` WHERE app_user = '${selectedUser}'`;
+    }
+    if (selectedUser && selectedItem) {
+      query += ` WHERE application_name = '${selectedItem}' AND app_user = '${selectedUser}'`;
+    }
 
-  // Listen for messages from WebSocket server
-  useEffect(() => {
-    if (websocket) {
-      websocket.onmessage = (event) => {
-        console.log('log data', event.data);
-        const data = JSON.parse(event.data);
-        // Format the data to include hyperlinks
-        const formattedData = data.map(row => ({
+    const apiUrl = process.env.REACT_APP_BACKEND_API_URL;
+
+    try {
+      const response = await fetch(`${apiUrl}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ query }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+
+      const data = await response.json();
+
+      const convertUTCToIST = (utcDateString) => {
+        const utcDate = new Date(utcDateString);
+        const istOffset = 5.5 * 60 * 60 * 1000; // IST is UTC+5:30
+        return new Date(utcDate.getTime() + istOffset);
+      };
+
+      if (startDate && endDate) {
+        const filteredData = data.filter((row) => {
+          const rowTimestamp = convertUTCToIST(row.timestamp);
+          return rowTimestamp >= startDate && rowTimestamp <= endDate;
+        });
+
+        const formattedData = filteredData.map((row) => ({
           ...row,
           application_name: (
             <a href={`#/trace-analysis/${row.application_name}`}>
@@ -67,16 +62,29 @@ const LogTable = forwardRef((props, ref) => {
           ),
         }));
         setMessageFromServerLogTable(formattedData);
-      };
+      } else {
+        const formattedData = data.map((row) => ({
+          ...row,
+          application_name: (
+            <a href={`#/trace-analysis/${row.application_name}`}>
+              {row.application_name}
+            </a>
+          ),
+        }));
+        setMessageFromServerLogTable(formattedData);
+      }
+    } catch (error) {
+      console.error('Error fetching log table data:', error);
     }
-  }, [websocket]);
+  };
 
+  // Set headers for the table
   useEffect(() => {
     setHeadersLogTable([
-      { key: "id", header: "ID" },
-      { key: "application_name", header: "Application Name" },
-      { key: "app_user", header: "User" },
-      { key: "timestamp", header: "Timestamp" },
+      { key: 'id', header: 'ID' },
+      { key: 'application_name', header: 'Application Name' },
+      { key: 'app_user', header: 'User' },
+      { key: 'timestamp', header: 'Timestamp' },
     ]);
   }, []);
 
@@ -85,12 +93,7 @@ const LogTable = forwardRef((props, ref) => {
 
   return (
     <div>
-      <div>
-        <CustomDataTable
-          headers={headersLogTable}
-          rows={arrayLogTable}
-        />
-      </div>
+      <CustomDataTable headers={headersLogTable} rows={arrayLogTable} />
     </div>
   );
 });

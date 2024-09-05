@@ -9,7 +9,7 @@
  * of its trade secrets, irrespective of what has been deposited with
  * the U.S. Copyright Office.
  ****************************************************************************** */
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import PageContainer from "../common/PageContainer";
 
 import Transactions from "../Traces/Transactions/Transactions";
@@ -25,12 +25,42 @@ const Monitoring = () => {
   const logTableRef = useRef();
   const frequencyOfUseRef = useRef();
 
-  useEffect(() => {
+  const [selectedDeployment, setSelectedDeployment] = useState(null);
+  const [selectedUser, setSelectedUser] = useState('');
+  const [selectedTimestampRange, setSelectedTimestampRange] = useState('last7days'); // Default value
+  const [startDate, setStartDate] = useState(null);
+  const [endDate, setEndDate] = useState(null);
+  const [numberOfDaysSelected, setNumberOfDaysSelected] = useState(null);
+
+  const handleFilterChange = (selectedItem, selectedUser, selectedTimestampRange, startDate, endDate, numberOfDaysSelected) => {
+    setSelectedDeployment(selectedItem);
+    setSelectedUser(selectedUser);
+    setSelectedTimestampRange(selectedTimestampRange);
+    setStartDate(startDate);
+    setEndDate(endDate);
+    setNumberOfDaysSelected(numberOfDaysSelected);
+    console.log('Selected Deployment:', selectedItem);
+    console.log('Selected User:', selectedUser);
+    console.log('Selected Timestamp Range:', selectedTimestampRange);
+    console.log('Selected startDate:', startDate);
+    console.log('Selected endDate:', endDate);
+    console.log('Selected numberOfDaysSelected:', numberOfDaysSelected);
+    
     if (logTableRef.current) {
-      logTableRef.current.sendMessageToServerLogTable();
+      logTableRef.current.fetchLogTableData(selectedItem, selectedUser, startDate, endDate);
     }
     if (frequencyOfUseRef.current) {
-      frequencyOfUseRef.current.sendMessageToServerFrequency();
+      frequencyOfUseRef.current.fetchFrequencyData(selectedItem, selectedUser, startDate, endDate);
+    }
+  };
+
+
+  useEffect(() => {
+    if (logTableRef.current) {
+      logTableRef.current.fetchLogTableData();
+    }
+    if (frequencyOfUseRef.current) {
+      frequencyOfUseRef.current.fetchFrequencyData();
     }
   }, []);   
 
@@ -43,20 +73,15 @@ const Monitoring = () => {
         subtitle: "Traceability data",
       }}
     >
-      <Filter />
+      <Filter onFilterChange={handleFilterChange}/>
       <Transactions
         component='monitor'
 			/>
-      <LogTable ref={logTableRef}/>
+      <LogTable ref={logTableRef} selectedItem={selectedDeployment} selectedUser={selectedUser} startDate={startDate} endDate={endDate}/>
       <Grid fullWidth narrow id="body" className="page-content body">
-        <Column max={8} xlg={8} lg={8} md={4} sm={4} className="content-tile">
+        <Column max={16} xlg={16} lg={16} md={4} sm={4} className="content-tile">
     <Tile className="chart-tile">
-      <AssetReusability />
-    </Tile>
-        </Column>
-        <Column max={8} xlg={8} lg={8} md={4} sm={4} className="content-tile">
-    <Tile className="chart-tile">
-      <FrequencyOfUse ref={frequencyOfUseRef}/>
+      <FrequencyOfUse ref={frequencyOfUseRef} selectedItem={selectedDeployment} selectedUser={selectedUser} startDate={startDate} endDate={endDate}/>
     </Tile>
         </Column>
         {/* <Column max={16} xlg={16} lg={16} md={4} sm={4} className="content-tile">

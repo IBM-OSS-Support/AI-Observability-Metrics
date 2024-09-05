@@ -1,10 +1,9 @@
-import React, { forwardRef, useEffect, useImperativeHandle, useRef, useState } from "react";
+import React, { forwardRef, useEffect, useImperativeHandle, useState } from "react";
 import moment from "moment";
 
 // Components ----------------------------------------------------------------->
 import { Tile } from "@carbon/react";
 import { GaugeChart } from "@carbon/charts-react";
-import { getAppData } from "../../../appData";
 import { useStoreContext } from "../../../store";
 
 const options = {
@@ -41,13 +40,11 @@ const defaultData = [
 
 const defaultMessage = [
   {
-    percentage_usage : 0
+    percentage_usage: 0
   }
 ];
 
 const AdoptionRate = forwardRef((props, ref) => {
-
-  const websocketRef = useRef(null);
   const [data, setData] = useState(defaultData);
   const [avg, setAvg] = useState(0);
   const [messageFromServerAdoption, setMessageFromServerAdoption] = useState(defaultMessage);
@@ -58,31 +55,8 @@ const AdoptionRate = forwardRef((props, ref) => {
     sendMessageToServerAdoption,
   }));
 
-  // Connect to WebSocket server on component mount
-  useEffect(() => {
-    const apiUrl = process.env.REACT_APP_WEBSOCKET_URL;
-    console.log('API URL', apiUrl);
-    console.log('Process.env', process.env);
-    const ws = new WebSocket(apiUrl);
-    websocketRef.current = ws;
-
-    ws.onopen = () => {
-      console.log('WebSocket connection established');
-      sendMessageToServerAdoption();
-    };
-
-    ws.onmessage = (event) => {
-      setMessageFromServerAdoption(JSON.parse(event.data));
-    };
-
-    // Cleanup function to close WebSocket connection on component unmount
-    return () => {
-      ws.close();
-    };
-  }, []);
-
-  // Function to send message to WebSocket server
-  const sendMessageToServerAdoption = (selectedItem, selectedUser) => {
+  // Function to send query to the API and get the response
+  const sendMessageToServerAdoption = async (selectedItem, selectedUser) => {
     let q = ` WITH user_counts AS (
               SELECT app_user, COUNT(*) AS user_count
               FROM auditing
@@ -95,12 +69,6 @@ const AdoptionRate = forwardRef((props, ref) => {
             SELECT uc.app_user, uc.user_count, (uc.user_count * 100.0 / tc.total) AS percentage_usage
             FROM user_counts uc, total_count tc
             ORDER BY percentage_usage DESC;`;
-
-    // let q = `SELECT * FROM auditing`
-
-    console.log("Adop QQ:::", q);
-    
-
 
     if (selectedItem) {
       q = `WITH user_counts AS (
@@ -115,8 +83,8 @@ const AdoptionRate = forwardRef((props, ref) => {
           SELECT uc.app_user, uc.user_count, (uc.user_count * 100.0 / tc.total) AS percentage_usage
           FROM user_counts uc, total_count tc
           ORDER BY percentage_usage DESC;`;
-      console.log("selectedItem", selectedItem, "Q", q);
     }
+
     if (selectedUser) {
       q = `WITH user_counts AS (
             SELECT app_user, COUNT(*) AS user_count
@@ -130,9 +98,9 @@ const AdoptionRate = forwardRef((props, ref) => {
           SELECT uc.app_user, uc.user_count, (uc.user_count * 100.0 / tc.total) AS percentage_usage
           FROM user_counts uc, total_count tc
           ORDER BY percentage_usage DESC;`;
-      console.log("selectedUser", selectedUser, "Q", q);
     }
-    if(selectedUser && selectedItem) {
+
+    if (selectedUser && selectedItem) {
       q = `WITH user_counts AS (
             SELECT app_user, COUNT(*) AS user_count
             FROM auditing WHERE app_user = '${selectedUser}' AND application_name = '${selectedItem}'
@@ -145,18 +113,22 @@ const AdoptionRate = forwardRef((props, ref) => {
           SELECT uc.app_user, uc.user_count, (uc.user_count * 100.0 / tc.total) AS percentage_usage
           FROM user_counts uc, total_count tc
           ORDER BY percentage_usage DESC;`;
-      console.log("selectedUser", selectedUser, "Q", q);
     }
-    
 
-    const ws = websocketRef.current;
-    console.log("inside adoption ws:", ws);
-    if (ws && ws.readyState === WebSocket.OPEN) {
-      const message = {
-        tab: "auditing",
-        action: q,
-      };
-      ws.send(JSON.stringify(message));
+    try {
+      const apiUrl = process.env.REACT_APP_BACKEND_API_URL; // Use API URL instead of WebSocket URL
+      const response = await fetch(apiUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ query: q }),
+      });
+
+      const result = await response.json();
+      setMessageFromServerAdoption(result);
+    } catch (error) {
+      console.error('Error fetching data from API:', error);
     }
   };
 
@@ -177,7 +149,7 @@ const AdoptionRate = forwardRef((props, ref) => {
 
   // Render
   return (
-    <Tile className="infrastructure-components cpu-usage" >
+    <Tile className="infrastructure-components cpu-usage">
       <h5>Adoption Rate</h5>
       <div className="cpu-usage-chart">
         <GaugeChart
