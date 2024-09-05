@@ -9,19 +9,16 @@
  * of its trade secrets, irrespective of what has been deposited with
  * the U.S. Copyright Office.
  ****************************************************************************** */
-import React, { useEffect, useState, useCallback, forwardRef, useRef, useImperativeHandle } from "react";
+import React, { useEffect, useState, useCallback, forwardRef, useImperativeHandle } from "react";
 import moment from "moment";
 import CustomLineChart from "../../common/CustomLineChart";
 
 const CostGraph = forwardRef((props, ref) => {
-
-  const websocketRef = useRef(null);
   const defaultMessage = [
     {
       token_cost: 0,
     },
   ];
-  const [websocket, setWebsocket] = useState(null);
   const [messageFromServerCost, setMessageFromServerCost] =
     useState(defaultMessage);
 
@@ -33,50 +30,25 @@ const CostGraph = forwardRef((props, ref) => {
     sendMessageToServerCost,
   }));
 
-  // Connect to WebSocket server on component mount
-  useEffect(() => {
-    const apiUrl = process.env.REACT_APP_WEBSOCKET_URL;
-    const ws = new WebSocket(apiUrl);
-    websocketRef.current = ws;
-    setWebsocket(ws);
-    // Cleanup function to close WebSocket connection on component unmount
-    return () => {
-      ws.close();
-    };
-  }, []);
-
   // Function to send message to WebSocket server
-  const sendMessageToServerCost = useCallback(() => {
+  const sendMessageToServerCost = useCallback(async () => {
     var q = "SELECT application_name, token_cost,timestamp FROM token_usage";
-    const ws = websocketRef.current;
-    
-    if (ws) {
-      if (ws.readyState === WebSocket.OPEN) {
-        const message = {
-          tab: "auditing",
-          action: q,
-        };
-        ws.send(JSON.stringify(message));
-      } else {
-        ws.onopen = () => {
-          const message = {
-            tab: "auditing",
-            action: q,
-          };
-          ws.send(JSON.stringify(message));
-        };
-      }
-    }
-  }, [websocket]);
+    try {
+      const apiUrl = process.env.REACT_APP_BACKEND_API_URL; // Use API URL instead of WebSocket URL
+      const response = await fetch(apiUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ query: q }),
+      });
 
-  // Listen for messages from WebSocket server
-  useEffect(() => {
-    if (websocket) {
-      websocket.onmessage = (event) => {
-        setMessageFromServerCost(JSON.parse(event.data));
-      };
+      const result = await response.json();
+      setMessageFromServerCost(result);
+    } catch (error) {
+      console.error('Error fetching data from API:', error);
     }
-  }, [websocket]);
+  }, []);
 
   console.log("Token Cost messageFromServer", messageFromServerCost);
 
