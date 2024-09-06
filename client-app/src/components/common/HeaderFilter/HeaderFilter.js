@@ -10,7 +10,7 @@
  * the U.S. Copyright Office.
  ****************************************************************************** */
 import React, { useEffect, useState, useRef, useCallback } from 'react';
-import { ComboBox, DatePicker, DatePickerInput } from "@carbon/react";
+import { ComboBox, DatePicker, DatePickerInput, Button } from "@carbon/react";
 
 const Filter = ({ onFilterChange }) => {
   const [messageFromServerFilter, setMessageFromServerFilter] = useState([]);
@@ -64,12 +64,22 @@ const Filter = ({ onFilterChange }) => {
     if (selectedUser !== selectedItemUser) {
       setSelectedItemUser(selectedUser);
 
-      const appsForUser = data
-        .filter(app => app.app_user === selectedUser)
-        .map(app => app.application_name);
+      if (!selectedUser) {
+        // Clear all filters if user is cleared
+        setSelectedItem(null);
+        setStartDate(null);
+        setEndDate(null);
+        setSelectedTimestampRange(null);
+        setFilteredApplications([]);
+        onFilterChange(null, null, null, null, null);
+      } else {
+        const appsForUser = data
+          .filter(app => app.app_user === selectedUser)
+          .map(app => app.application_name);
 
-      setFilteredApplications([...new Set(appsForUser)]);
-      onFilterChange(selectedItem, selectedUser, selectedTimestampRange, startDate, endDate);
+        setFilteredApplications([...new Set(appsForUser)]);
+        onFilterChange(selectedItem, selectedUser, selectedTimestampRange, startDate, endDate);
+      }
     }
   }, [selectedItemUser, messageFromServerFilter, selectedItem, selectedTimestampRange, startDate, endDate, onFilterChange]);
 
@@ -83,14 +93,20 @@ const Filter = ({ onFilterChange }) => {
   }, [selectedItem, selectedItemUser, selectedTimestampRange, startDate, endDate, onFilterChange]);
 
   const handleDateChange = (range) => {
-    const [start, end] = range;
-    setStartDate(start);
-    setEndDate(end);
+    if (range && range[0] && range[1]) {
+      const [start, end] = range;
+      setStartDate(start);
+      setEndDate(end);
 
-    const numberOfDaysSelected = calculateDaysDifference(start, end);
-    console.log("numberOfDaysSelected", numberOfDaysSelected);
+      const numberOfDaysSelected = calculateDaysDifference(start, end);
+      console.log("numberOfDaysSelected", numberOfDaysSelected);
 
-    onFilterChange(selectedItem, selectedItemUser, selectedTimestampRange, start, end, numberOfDaysSelected);
+      onFilterChange(selectedItem, selectedItemUser, selectedTimestampRange, start, end, numberOfDaysSelected);
+    } else {
+      setStartDate(null);
+      setEndDate(null);
+      onFilterChange(selectedItem, selectedItemUser, selectedTimestampRange, null, null, 0);
+    }
   };
 
   const calculateDaysDifference = (startDate, endDate) => {
@@ -110,11 +126,23 @@ const Filter = ({ onFilterChange }) => {
     onFilterChange(selectedItem, selectedItemUser, selectedRange, startDate, endDate);
   };
 
+  const handleClearAll = () => {
+    setSelectedItem(null);
+    setSelectedItemUser(null);
+    setStartDate(null);
+    setEndDate(null);
+    setSelectedTimestampRange(null);
+    setFilteredApplications([]);
+    onFilterChange(null, null, null, null, null);
+  };
+
   const timestampRangeOptions = [
     { label: 'Last 24 hours', value: 'last24hours' },
     { label: 'Last 7 days', value: 'last7days' },
     { label: 'Last 30 days', value: 'last30days' },
   ];
+
+  const isClearButtonVisible = selectedItemUser || selectedItem || startDate || endDate || selectedTimestampRange;
 
   return (
     <div className="header-filter flex">
@@ -142,6 +170,7 @@ const Filter = ({ onFilterChange }) => {
         dateFormat="m/d/Y"
         placeholder="Choose Date Range"
         size="md"
+        value={startDate && endDate ? [startDate, endDate] : []}  // Use empty array to clear DatePicker
       >
         <DatePickerInput
           id={`${uniqueId}-start`}
@@ -156,6 +185,15 @@ const Filter = ({ onFilterChange }) => {
           pattern="\d{1,2}/\d{1,2}/\d{4}"
         />
       </DatePicker>
+      {isClearButtonVisible && (
+        <Button
+          kind="danger--ghost"
+          onClick={handleClearAll}
+          className="clear-all-button"
+        >
+          Clear All
+        </Button>
+      )}
     </div>
   );
 };

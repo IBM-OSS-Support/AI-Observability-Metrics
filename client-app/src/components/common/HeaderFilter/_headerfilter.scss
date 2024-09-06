@@ -29,6 +29,15 @@
       font-family: inherit;
     }
   }
+  .clear-all-button {
+    &:hover {
+      background: transparent;
+    }
+    &:focus {
+      border: none;
+      box-shadow: none;
+    }
+  }
 }
 
 

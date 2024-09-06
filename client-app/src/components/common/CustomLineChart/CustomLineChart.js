@@ -28,8 +28,8 @@ const defaultOptions = {
       mapsTo: "key",
       scaleType: "time",
       ticks: {
-        number: 15,
-        formatter: (tick => moment(tick).format('hh:mm A'))
+        number: 13,
+        formatter: (tick => moment(tick).format('MMM DD, YY'))
       }
     }
   },
@@ -54,9 +54,18 @@ const defaultOptions = {
   },
   toolbar: {
     enabled: true,
-    controls:[{
-      type: "Make fullscreen"
-    }],
+    numberOfIcons: 4,
+    controls:[
+      {
+        type: "Make fullscreen",
+     },
+     {
+       type: "Zoom out",
+     },
+     {
+       type: "Zoom in",
+     }
+    ],
     text: "Make fullscreen",
     iconSVG: {
       content: Maximize
@@ -66,6 +75,11 @@ const defaultOptions = {
   color: {
     scale: {
       'Dataset1': '#893ffc'
+    }
+  },
+  zoomBar: {
+    top: {
+      enabled: true
     }
   },
   height: "100%"
