@@ -6,6 +6,11 @@ services:
       context: ./applications/flask_server  # Assuming your Flask app code is in a folder named 'flask-app'
     environment:
       - FLASK_SERVER_URL=http://127.0.0.1:3001
+      - DB_NAME=roja_postgres
+      - DB_USER=roja_user
+      - DB_PASSWORD=roja_user
+      - DB_HOST=9.20.196.69
+      - DB_PORT=5432
     ports:
       - "3001:3001"  # Exposing port 3001 for the Flask server
     networks:
@@ -14,6 +19,14 @@ services:
   server:
     build:
       context: ./websocket-server
+    environment:
+      - DB_NAME=roja_postgres
+      - DB_USER=roja_user
+      - DB_PASSWORD=roja_user
+      - DB_HOST=9.20.196.69
+      - DB_PORT=5432
+      - REACT_APP_BACKEND_API_URL=http://localhost:5000/data
+      - SERVER_PORT=3001
     ports:
       - "5000:5000"
     networks:
@@ -28,6 +41,7 @@ services:
       - server
     environment:
       - REACT_APP_SERVER_URL=http://server:3001
+      - REACT_APP_BACKEND_API_URL=http://9.20.196.69:5000/data
     networks:
       - mynetwork
 
