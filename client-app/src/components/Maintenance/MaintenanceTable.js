@@ -1,41 +1,24 @@
-/* ******************************************************************************
- * IBM Confidential
- *
- * OCO Source Materials
- *
- *  Copyright IBM Corp. 2024  All Rights Reserved.
- *
- * The source code for this program is not published or otherwise divested
- * of its trade secrets, irrespective of what has been deposited with
- * the U.S. Copyright Office.
- ****************************************************************************** */
 import React, { forwardRef, useEffect, useImperativeHandle, useRef, useState } from "react";
-import PageContainer from "../common/PageContainer";
-
-import Transactions from "../Traces/Transactions/Transactions";
 import CustomDataTable from "../common/CustomDataTable";
+import { Pagination } from "@carbon/react";
 
 const MaintenanceTable = forwardRef((props, ref) => {
-
-
-  const websocketRef = useRef(null);
-  const [websocket, setWebsocket] = useState(null);
-  const [messageFromServerLog, setMessageFromServerLog] = useState('');
+  const [messageFromServerLog, setMessageFromServerLog] = useState([]);
   const [rowDataLog, setRowDataLog] = useState([]); // Define state for formatted data
   const [headersLog, setHeadersLog] = useState([]); // Define state for headers
-
+  const [currentPage, setCurrentPage] = useState(1); // Current page state
+  const [rowsPerPage, setRowsPerPage] = useState(5); // Rows per page
+  const [totalItems, setTotalItems] = useState(0); // Total number of items
 
   useImperativeHandle(ref, () => ({
     sendMessageToServerLog,
   }));
 
-  // Function to send message to WebSocket server
+  // Function to send message to the API server
   const sendMessageToServerLog = async (messageFromServerLog) => {
-    var start_timestamp = '2024-03-28 10:23:58.072245';
-    var end_timestamp = '2024-04-25 12:40:18.875514';
     var q = 'SELECT * FROM maintenance limit 10';
     try {
-      const apiUrl = process.env.REACT_APP_BACKEND_API_URL; // Use API URL instead of WebSocket URL
+      const apiUrl = process.env.REACT_APP_BACKEND_API_URL;
       const response = await fetch(apiUrl, {
         method: 'POST',
         headers: {
@@ -46,46 +29,51 @@ const MaintenanceTable = forwardRef((props, ref) => {
 
       const result = await response.json();
       setMessageFromServerLog(result);
+      setTotalItems(result.length); // Set the total number of items
     } catch (error) {
       console.error('Error fetching data from API:', error);
     }
   };
 
-console.log('log table row data', rowDataLog);
-// code starts here
+  useEffect(() => {
+    setHeadersLog([
+      { key: "id", header: "ID" },
+      { key: "graphsignal_library_version", header: "Graphsignal Library Version" },
+      { key: "os_name", header: "OS Name" },
+      { key: "os_version", header: "OS Version" },
+      { key: "runtime_name", header: "Runtime Name" },
+      { key: "runtime_version", header: "Runtime Version" },
+    ]);
+  }, []);
 
-useEffect(() => {
-  setHeadersLog([
-    {key: "id" , header: "ID"},
-    {key: "graphsignal_library_version", header: "Graphsignal Library Version"},
-    { key: "os_name", header: "OS Name" },
-    {key: "os_version" , header: "OS Version"},
-    {key: "runtime_name", header: "Runtime Name"},
-    { key: "runtime_version", header: "Runtime Version" },
-    // { key: "app_user", header: "User" },
-    // { key: "timestamp", header: "Timestamp" },
-  ]);
-}, []);
+  // Get data for the current page
+  const getCurrentPageData = () => {
+    const startIndex = (currentPage - 1) * rowsPerPage;
+    const endIndex = startIndex + rowsPerPage;
+    return messageFromServerLog.slice(startIndex, endIndex);
+  };
 
-  const arrayLog = Array.isArray(messageFromServerLog) ? messageFromServerLog : [messageFromServerLog];
-  console.log('log table before arraylog', messageFromServerLog[0]);
-  console.log('Array log', arrayLog[0]);
-  const arrayLogtemp = arrayLog.map((arrayItem) => {
-    const { id, key, value } = arrayItem;
-    return {
-      id, key, value
-    };
-  });
-  console.log('arrayLogtemp', arrayLogtemp);
-// code ends here
-	return(
-      <div>
-        <CustomDataTable
-        headers={headersLog}
-        rows={arrayLog}
-        />
-      </div>
-	);
+  const handlePaginationChange = ({ page, pageSize }) => {
+    setCurrentPage(page);
+    setRowsPerPage(pageSize);
+  };
+
+  const currentRows = getCurrentPageData();
+
+  return (
+    <div>
+      <CustomDataTable headers={headersLog} rows={currentRows} />
+
+      {/* Add pagination component */}
+      <Pagination
+        totalItems={totalItems}
+        pageSize={rowsPerPage}
+        page={currentPage}
+        onChange={handlePaginationChange} // Use a single handler for both page and pageSize
+        pageSizes={[5, 10, 20, 30, 40, 50]} // Options for rows per page
+      />
+    </div>
+  );
 });
 
 export default MaintenanceTable;
