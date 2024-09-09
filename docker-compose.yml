@@ -11,6 +11,7 @@ services:
       - DB_PASSWORD=roja_user
       - DB_HOST=9.20.196.69
       - DB_PORT=5432
+      - FLASK_APP=flask_app.py
     ports:
       - "3001:3001"  # Exposing port 3001 for the Flask server
     networks:
