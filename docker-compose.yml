@@ -27,7 +27,7 @@ services:
       - DB_HOST=9.20.196.69
       - DB_PORT=5432
       - REACT_APP_BACKEND_API_URL=http://localhost:5000/data
-      - SERVER_PORT=3001
+      - SERVER_PORT=5000
     ports:
       - "5000:5000"
     networks:
