@@ -8,8 +8,8 @@ from dotenv import load_dotenv
 
 
 #/root/roja-project/roja-metric-poc/applications/kafka_roja
-sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from postgres import postgres
+#sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+import postgres
 
 load_dotenv()
 

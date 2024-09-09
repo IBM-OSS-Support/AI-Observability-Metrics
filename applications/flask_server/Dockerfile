@@ -1,23 +1,24 @@
-# Use the official Node.js image from the Docker Hub
-FROM node:18
+# Flask Dockerfile
+FROM python:3.9
 
-# Set the working directory in the container
 WORKDIR /app
 
+# Copy requirements and install them
+COPY requirements.txt requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt
 
-ENV REACT_APP_BACKEND_API_URL="http://localhost:5000/data"
-
-# Copy package.json and package-lock.json into the container
-COPY package*.json ./
-
-# Install dependencies
-RUN npm install
-
-# Copy the rest of the application code into the container
+# Copy all application code (flask_app.py, postgres.py, etc.)
 COPY . .
 
-# Expose the port the server is running on
-EXPOSE 3001
+# Set environment variables
+ENV DB_NAME=roja_postgres
+ENV DB_USER=roja_user
+ENV DB_PASSWORD=roja_user
+ENV DB_HOST=9.20.196.69
+ENV DB_PORT=5432
 
-# Command to run the application
-CMD ["node", "server.js"]
+# Set environment variables
+ENV FLASK_APP=flask_app.py
+
+# Run the Flask app
+CMD ["flask", "run", "--host=0.0.0.0", "--port=3001"]

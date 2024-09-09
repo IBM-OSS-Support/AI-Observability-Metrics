@@ -3,7 +3,7 @@ services:
 
   flask-server:
     build:
-      context: ./flask-app  # Assuming your Flask app code is in a folder named 'flask-app'
+      context: ./applications/flask_server  # Assuming your Flask app code is in a folder named 'flask-app'
     environment:
       - FLASK_SERVER_URL=http://127.0.0.1:3001
     ports:
