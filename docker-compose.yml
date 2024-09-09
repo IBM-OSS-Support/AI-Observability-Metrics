@@ -1,5 +1,16 @@
 version: '3'
 services:
+
+  flask-server:
+    build:
+      context: ./flask-app  # Assuming your Flask app code is in a folder named 'flask-app'
+    environment:
+      - FLASK_SERVER_URL=http://127.0.0.1:3001
+    ports:
+      - "3001:3001"  # Exposing port 3001 for the Flask server
+    networks:
+      - mynetwork
+
   server:
     build:
       context: ./websocket-server
