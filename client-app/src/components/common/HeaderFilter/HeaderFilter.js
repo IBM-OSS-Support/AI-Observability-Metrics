@@ -9,7 +9,7 @@
  * of its trade secrets, irrespective of what has been deposited with
  * the U.S. Copyright Office.
  ****************************************************************************** */
-import React, { useEffect, useState, useRef, useCallback } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { ComboBox, DatePicker, DatePickerInput, Button } from "@carbon/react";
 
 const Filter = ({ onFilterChange }) => {
@@ -17,15 +17,14 @@ const Filter = ({ onFilterChange }) => {
   const [selectedItem, setSelectedItem] = useState(null);
   const [selectedItemUser, setSelectedItemUser] = useState(null);
   const [filteredApplications, setFilteredApplications] = useState([]);
-  const [selectedTimestampRange, setSelectedTimestampRange] = useState(null);
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
+  const [lastEndDate, setLastEndDate] = useState(null); // Added state to store last end date
 
-  const uniqueId = useRef(`header-filter-${Math.random().toString(36).substr(2, 9)}`).current;
+  const uniqueId = `header-filter-${Math.random().toString(36).substr(2, 9)}`;
 
-  // Function to fetch data from API
   const fetchFilterData = useCallback(async () => {
-    const apiUrl = process.env.REACT_APP_BACKEND_API_URL; // Ensure you have the correct API URL here
+    const apiUrl = process.env.REACT_APP_BACKEND_API_URL;
     const query = 'SELECT application_name, app_user, timestamp FROM maintenance';
 
     try {
@@ -43,14 +42,13 @@ const Filter = ({ onFilterChange }) => {
 
       const data = await response.json();
       setMessageFromServerFilter(data);
-      handleSelectUser({ selectedItem: selectedItemUser }, data); // Ensure user selection logic is updated with new data
+      handleSelectUser({ selectedItem: selectedItemUser }, data);
     } catch (error) {
       console.error('Error fetching filter data:', error);
     }
   }, [selectedItemUser]);
 
   useEffect(() => {
-    // Fetch the filter data when the component mounts
     fetchFilterData();
   }, [fetchFilterData]);
 
@@ -68,81 +66,54 @@ const Filter = ({ onFilterChange }) => {
         // Clear all filters if user is cleared
         setSelectedItem(null);
         setStartDate(null);
-        setEndDate(null);
-        setSelectedTimestampRange(null);
         setFilteredApplications([]);
-        onFilterChange(null, null, null, null, null);
+        onFilterChange(null, null, null, null);
       } else {
         const appsForUser = data
           .filter(app => app.app_user === selectedUser)
           .map(app => app.application_name);
 
         setFilteredApplications([...new Set(appsForUser)]);
-        onFilterChange(selectedItem, selectedUser, selectedTimestampRange, startDate, endDate);
+        onFilterChange(selectedItem, selectedItemUser, startDate, endDate);
       }
     }
-  }, [selectedItemUser, messageFromServerFilter, selectedItem, selectedTimestampRange, startDate, endDate, onFilterChange]);
+  }, [selectedItemUser, messageFromServerFilter, selectedItem, startDate, endDate, onFilterChange]);
 
   const handleSelectApplication = useCallback((event) => {
     const selectedApp = event.selectedItem;
+    setSelectedItem(selectedApp);
+    onFilterChange(selectedApp, selectedItemUser, startDate, endDate);
+  }, [selectedItemUser, startDate, endDate, onFilterChange]);
 
-    if (selectedApp !== selectedItem) {
-      setSelectedItem(selectedApp);
-      onFilterChange(selectedApp, selectedItemUser, selectedTimestampRange, startDate, endDate);
+  const handleDateChange = (dateRange) => {
+    if (Array.isArray(dateRange) && dateRange.length === 2) {
+      const [start, end] = dateRange;
+      setStartDate(start || null);
+      setEndDate(end || null);
+      onFilterChange(selectedItem, selectedItemUser, start || null, end || null);
     }
-  }, [selectedItem, selectedItemUser, selectedTimestampRange, startDate, endDate, onFilterChange]);
-
-  const handleDateChange = (range) => {
-    if (range && range[0] && range[1]) {
-      const [start, end] = range;
-      setStartDate(start);
-      setEndDate(end);
-
-      const numberOfDaysSelected = calculateDaysDifference(start, end);
-      console.log("numberOfDaysSelected", numberOfDaysSelected);
-
-      onFilterChange(selectedItem, selectedItemUser, selectedTimestampRange, start, end, numberOfDaysSelected);
-    } else {
-      setStartDate(null);
-      setEndDate(null);
-      onFilterChange(selectedItem, selectedItemUser, selectedTimestampRange, null, null, 0);
-    }
-  };
-
-  const calculateDaysDifference = (startDate, endDate) => {
-    const start = new Date(startDate);
-    const end = new Date(endDate);
-    const timeDiff = end.getTime() - start.getTime();
-    return Math.ceil(timeDiff / (1000 * 3600 * 24));
-  };
-
-  const applicationOptions = filteredApplications.length > 0
-    ? filteredApplications
-    : ["Select a user first"];
-
-  const handleSelectTimestampRange = (event) => {
-    const selectedRange = event.selectedItem;
-    setSelectedTimestampRange(selectedRange);
-    onFilterChange(selectedItem, selectedItemUser, selectedRange, startDate, endDate);
   };
 
   const handleClearAll = () => {
+    // Store the last end date before clearing
+    setLastEndDate(endDate);
+
     setSelectedItem(null);
     setSelectedItemUser(null);
-    setStartDate(null);
-    setEndDate(null);
-    setSelectedTimestampRange(null);
+    setStartDate(null); // Clear start date
+    setEndDate(null);   // Clear end date
     setFilteredApplications([]);
-    onFilterChange(null, null, null, null, null);
+    onFilterChange(null, null, null, null);
   };
 
-  const timestampRangeOptions = [
-    { label: 'Last 24 hours', value: 'last24hours' },
-    { label: 'Last 7 days', value: 'last7days' },
-    { label: 'Last 30 days', value: 'last30days' },
-  ];
+  const handleStartDateClick = () => {
+    // Reapply the stored end date when clicking start date
+    if (startDate === null && lastEndDate !== null) {
+      setEndDate(lastEndDate);
+    }
+  };
 
-  const isClearButtonVisible = selectedItemUser || selectedItem || startDate || endDate || selectedTimestampRange;
+  const applicationOptions = filteredApplications.length > 0 ? filteredApplications : ["Select a user first"];
 
   return (
     <div className="header-filter flex">
@@ -153,7 +124,6 @@ const Filter = ({ onFilterChange }) => {
         items={users}
         placeholder="Choose User Name"
         size="md"
-        onFocus={fetchFilterData} // Trigger fetch when user interacts
       />
       <ComboBox
         id={`${uniqueId}-app`}
@@ -167,25 +137,33 @@ const Filter = ({ onFilterChange }) => {
         id={`${uniqueId}-date`}
         datePickerType="range"
         onChange={handleDateChange}
-        dateFormat="m/d/Y"
-        placeholder="Choose Date Range"
+        value={[startDate, endDate]}
+        dateFormat="d/m/Y"
         size="md"
-        value={startDate && endDate ? [startDate, endDate] : []}  // Use empty array to clear DatePicker
       >
         <DatePickerInput
           id={`${uniqueId}-start`}
           placeholder="Timestamp Start Date"
           labelText=""
           pattern="\d{1,2}/\d{1,2}/\d{4}"
+          value={startDate ? new Date(startDate).toLocaleDateString() : ""}
+          onChange={() => {}}
+          onKeyDown={(e) => e.preventDefault()}
+          readOnly
+          onClick={handleStartDateClick} // Handle click to reapply end date
         />
         <DatePickerInput
           id={`${uniqueId}-end`}
           placeholder="Timestamp End Date"
           labelText=""
           pattern="\d{1,2}/\d{1,2}/\d{4}"
+          value={endDate ? new Date(endDate).toLocaleDateString() : ""}
+          onChange={() => {}}
+          onKeyDown={(e) => e.preventDefault()}
+          readOnly
         />
       </DatePicker>
-      {isClearButtonVisible && (
+      {(selectedItem || selectedItemUser || startDate || endDate) && (
         <Button
           kind="danger--ghost"
           onClick={handleClearAll}
