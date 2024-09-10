@@ -19,7 +19,7 @@ const Filter = ({ onFilterChange }) => {
   const [filteredApplications, setFilteredApplications] = useState([]);
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
-  const [lastEndDate, setLastEndDate] = useState(null); // Added state to store last end date
+  const [lastEndDate, setLastEndDate] = useState(null);
 
   const uniqueId = `header-filter-${Math.random().toString(36).substr(2, 9)}`;
 
@@ -58,26 +58,25 @@ const Filter = ({ onFilterChange }) => {
 
   const handleSelectUser = useCallback((event, data = messageFromServerFilter) => {
     const selectedUser = event.selectedItem;
+    console.log("handleSelectUser called with:", selectedUser);
 
-    if (selectedUser !== selectedItemUser) {
-      setSelectedItemUser(selectedUser);
+    setSelectedItemUser(selectedUser);
 
-      if (!selectedUser) {
-        // Clear all filters if user is cleared
-        setSelectedItem(null);
-        setStartDate(null);
-        setFilteredApplications([]);
-        onFilterChange(null, null, null, null);
-      } else {
-        const appsForUser = data
-          .filter(app => app.app_user === selectedUser)
-          .map(app => app.application_name);
+    if (!selectedUser) {
+      setSelectedItem(null);
+      setStartDate(null);
+      setEndDate(null);
+      setFilteredApplications([]);
+      onFilterChange(null, null, null, null);
+    } else {
+      const appsForUser = data
+        .filter(app => app.app_user === selectedUser)
+        .map(app => app.application_name);
 
-        setFilteredApplications([...new Set(appsForUser)]);
-        onFilterChange(selectedItem, selectedItemUser, startDate, endDate);
-      }
+      setFilteredApplications([...new Set(appsForUser)]);
+      onFilterChange(selectedItem, selectedUser, startDate, endDate);
     }
-  }, [selectedItemUser, messageFromServerFilter, selectedItem, startDate, endDate, onFilterChange]);
+  }, [selectedItem, selectedItemUser, messageFromServerFilter, startDate, endDate, onFilterChange]);
 
   const handleSelectApplication = useCallback((event) => {
     const selectedApp = event.selectedItem;
@@ -95,19 +94,20 @@ const Filter = ({ onFilterChange }) => {
   };
 
   const handleClearAll = () => {
-    // Store the last end date before clearing
+    console.log("handleClearAll called");
+    
     setLastEndDate(endDate);
 
     setSelectedItem(null);
     setSelectedItemUser(null);
-    setStartDate(null); // Clear start date
-    setEndDate(null);   // Clear end date
+    setStartDate(null);
+    setEndDate(null);
     setFilteredApplications([]);
+
     onFilterChange(null, null, null, null);
   };
 
   const handleStartDateClick = () => {
-    // Reapply the stored end date when clicking start date
     if (startDate === null && lastEndDate !== null) {
       setEndDate(lastEndDate);
     }
@@ -118,6 +118,7 @@ const Filter = ({ onFilterChange }) => {
   return (
     <div className="header-filter flex">
       <ComboBox
+        key={`user-${selectedItemUser}`} // Ensures re-render
         id={`${uniqueId}-user`}
         selectedItem={selectedItemUser}
         onChange={handleSelectUser}
@@ -126,6 +127,7 @@ const Filter = ({ onFilterChange }) => {
         size="md"
       />
       <ComboBox
+        key={`app-${selectedItem}`} // Ensures re-render
         id={`${uniqueId}-app`}
         selectedItem={selectedItem}
         onChange={handleSelectApplication}
@@ -150,7 +152,7 @@ const Filter = ({ onFilterChange }) => {
           onChange={() => {}}
           onKeyDown={(e) => e.preventDefault()}
           readOnly
-          onClick={handleStartDateClick} // Handle click to reapply end date
+          onClick={handleStartDateClick}
         />
         <DatePickerInput
           id={`${uniqueId}-end`}
