@@ -15,10 +15,11 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 
 import CustomDataTable from "../../common/CustomDataTable";
 import { Download, Maximize } from "@carbon/icons-react";
-import { Accordion, AccordionItem } from "@carbon/react";
+import { Accordion, AccordionItem, Tile } from "@carbon/react";
 import { useStoreContext } from "../../../store";
 import { getAppData } from "../../../appData";
 import TimelineGraph from "./TimelineGraph";
+import NoData from "../../common/NoData/NoData";
 
 const Transactions = ({ component, showColors }) => {
   const navigate = useNavigate();
@@ -288,16 +289,19 @@ console.log("defaultHeaders", defaultHeaders);
   return (
     <div className="traces-container">
       { component !== "maintenance" && component !== "safetyscore" && component !== "audit" &&
-        <div className="trace-sections">
-          <Accordion align="start">
-            <AccordionItem title="Timeline chart (Applications)" open={true}>
-              <div className="timeline-chart-wrapper">
-                ASD
-                <TimelineGraph />
-              </div>
-            </AccordionItem>
-          </Accordion>
-        </div>
+        // <div className="trace-sections">
+        //   <Accordion align="start">
+        //     <AccordionItem title="Timeline chart (Applications)" open={true}>
+        //       <div className="timeline-chart-wrapper">
+        //         ASD
+        //         <TimelineGraph />
+        //       </div>
+        //     </AccordionItem>
+        //   </Accordion>
+        // </div>
+        <Tile className="nodata-wrap">
+          <NoData />
+        </Tile>
       
       }
       {/* {component !== "audit" &&

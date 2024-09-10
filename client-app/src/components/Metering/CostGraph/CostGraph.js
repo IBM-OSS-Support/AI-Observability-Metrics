@@ -12,15 +12,15 @@
 import React, { useEffect, useState, useCallback, forwardRef, useImperativeHandle } from "react";
 import moment from "moment";
 import CustomLineChart from "../../common/CustomLineChart";
+import NoData from "../../common/NoData/NoData";
 
-const CostGraph = forwardRef((props, ref) => {
+const CostGraph = forwardRef(({ selectedItem, selectedUser, startDate, endDate }, ref) => {
   const defaultMessage = [
     {
       token_cost: 0,
     },
   ];
-  const [messageFromServerCost, setMessageFromServerCost] =
-    useState(defaultMessage);
+  const [messageFromServerCost, setMessageFromServerCost] = useState(defaultMessage);
 
   const costGraphOptions = {
     title: "Token Cost",
@@ -31,8 +31,19 @@ const CostGraph = forwardRef((props, ref) => {
   }));
 
   // Function to send message to WebSocket server
-  const sendMessageToServerCost = useCallback(async () => {
-    var q = "SELECT application_name, token_cost,timestamp FROM token_usage";
+  const sendMessageToServerCost = useCallback(async (selectedItem, selectedUser, startDate, endDate) => {
+    var query = "SELECT application_name, app_user, token_cost,timestamp FROM token_usage";
+    // Add filtering logic based on selectedItem, selectedUser, startDate, and endDate
+    if (selectedItem && !selectedUser) {
+      query += ` WHERE application_name = '${selectedItem}'`;
+    }
+    if (selectedUser && !selectedItem) {
+      query += ` WHERE app_user = '${selectedUser}'`;
+    }
+    if (selectedUser && selectedItem) {
+      query += ` WHERE application_name = '${selectedItem}' AND app_user = '${selectedUser}'`;
+    }
+    console.log('q', query);
     try {
       const apiUrl = process.env.REACT_APP_BACKEND_API_URL; // Use API URL instead of WebSocket URL
       const response = await fetch(apiUrl, {
@@ -40,7 +51,7 @@ const CostGraph = forwardRef((props, ref) => {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ query: q }),
+        body: JSON.stringify({ query: query }),
       });
 
       const result = await response.json();
@@ -54,95 +65,84 @@ const CostGraph = forwardRef((props, ref) => {
 
   // starts
 
-  const getIntervals = (start, end, number) => {
-    const interval = end - start;
-    const step = Math.round(interval / number);
-    const intervals = {};
+  // const getIntervals = (start, end, number) => {
+  //   const interval = end - start;
+  //   const step = Math.round(interval / number);
+  //   const intervals = {};
 
-    let intStart = start;
-    let intEnd = start + step;
-    while (intEnd <= end) {
-      intervals[`${intStart}-${intEnd}`] = {
-        start: intStart,
-        end: intEnd,
-      };
+  //   let intStart = start;
+  //   let intEnd = start + step;
+  //   while (intEnd <= end) {
+  //     intervals[`${intStart}-${intEnd}`] = {
+  //       start: intStart,
+  //       end: intEnd,
+  //     };
 
-      intStart = intStart + step;
-      intEnd = intEnd + step;
-    }
+  //     intStart = intStart + step;
+  //     intEnd = intEnd + step;
+  //   }
 
-    return intervals;
-  };
+  //   return intervals;
+  // };
 
-  const getCostGraphData = (apps) => {
-    let obj = {};
-    let graphArray = [];
-    let startTime = 1711615438201;
-    let endTime = 1717585058217;
-    console.log("time in cost graph", startTime);
-
-    console.log("CostGraph apps", apps);
-
-    const intervals = getIntervals(startTime, endTime, 10);
-    console.log("CostGraph intervals", intervals);
-
-    for (const i in intervals) {
-      let { start, end } = intervals[i];
-      start = moment(start);
-      end = moment(end);
-      
-      console.log("CostGraph - inside for loop - start", start);
-      
+  const getCostGraphData = (apps, startDate, endDate) => {
+    let result = [];
       for (const appId in apps) {
         const app = apps[appId];
-        const count = app.token_cost;
-        const appTime = moment(app.timestamp);
-        let returnArray = [];
-        console.log("CostGraph - app", app);
-        console.log(
-          "CostGraph - appTime.isSameOrAfter(start) and appTime.isSameOrBefore(end)",
-          appTime.isSameOrAfter(start),
-          appTime.isSameOrBefore(end)
-        );
+        const convertUTCToIST = (utcDateString) => {
+          const utcDate = new Date(utcDateString);
+          const istOffset = 5.5 * 60 * 60 * 1000; // IST is UTC+5:30
+          return new Date(utcDate.getTime() + istOffset); // Returns a Date object in IST
+        };
 
-        if (appTime.isSameOrAfter(start) && appTime.isSameOrBefore(end)) {
-          console.log("Cost Graph obj outside if", obj[i]);
+        const timestamp = convertUTCToIST(app.timestamp);
 
-          if (obj[i]) {
-            obj[i].value = parseFloat(app.token_cost);
-            obj[i].key = app.timestamp;
-            let abc = obj[i];
-            if (!isNaN(abc.value)) {
-              graphArray.push({ ...abc }); // Add the object to the array
-            }
-            console.log("Cost Graph obj in if", abc);
-          } else {
-            obj[i] = {
-              group: "Dataset1",
-              key: app.timestamp,
-              value: app.token_cost,
-            };
-            console.log("Cost Graph obj in else", obj[i]);
+        let tokenCost = parseFloat(app.token_cost);
+
+        if(tokenCost){
+          if (Array.isArray(tokenCost)) {
+            tokenCost = tokenCost > 0 ? tokenCost / 100000000 : 0;
+          } else if (typeof tokenCost === 'number') {
+            tokenCost = tokenCost;
           }
         }
-      returnArray = Object.values(obj);
-      console.log("Costgraph object inside for loop", returnArray);
+
+        // Filter out NaN values
+        if (isNaN(tokenCost)) {
+          continue; 
+        }
+
+        if (timestamp >= startDate && timestamp <= endDate) {
+          result.push({
+            group: 'Dataset 1',
+            key: app.timestamp,
+            value: tokenCost,
+          });
+        } else if (!startDate && !endDate) {
+          result.push({
+            group: 'Dataset 1',
+            key: app.timestamp,
+            value: tokenCost,
+          });
+        }
       }
-    }
-    console.log("CostGraph Object", Object.values(obj));
-    console.log("CostGraph Object - obj", obj);
-    console.log("Graph Array", graphArray);
-    return graphArray;
+  
+      return result;
+        
   };
 
-  const costGraphData = getCostGraphData(messageFromServerCost);
+  const costGraphData = getCostGraphData(messageFromServerCost, startDate, endDate);
   console.log("costGraphData", costGraphData);
 
   //ends
 
   return (
     <>
-      <CustomLineChart data={costGraphData} options={costGraphOptions} />
+    {costGraphData.length === 0 ? (
+        <NoData />
+      ) : (
+        <CustomLineChart data={costGraphData} options={costGraphOptions} />
+      )}
     </>
   );
 });
