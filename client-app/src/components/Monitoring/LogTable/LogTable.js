@@ -1,9 +1,13 @@
 import React, { forwardRef, useImperativeHandle, useState, useEffect } from 'react';
 import CustomDataTable from '../../common/CustomDataTable';
+import { Pagination } from '@carbon/react';
 
 const LogTable = forwardRef(({ selectedItem, selectedUser, startDate, endDate }, ref) => {
   const [messageFromServerLogTable, setMessageFromServerLogTable] = useState([]);
   const [headersLogTable, setHeadersLogTable] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1); // Current page state
+  const [rowsPerPage, setRowsPerPage] = useState(5); // Rows per page
+  const [totalItems, setTotalItems] = useState(0); // Total number of items
 
   useImperativeHandle(ref, () => ({
     fetchLogTableData,
@@ -47,32 +51,25 @@ const LogTable = forwardRef(({ selectedItem, selectedUser, startDate, endDate },
         return new Date(utcDate.getTime() + istOffset);
       };
 
+      let filteredData = data;
       if (startDate && endDate) {
-        const filteredData = data.filter((row) => {
+        filteredData = data.filter((row) => {
           const rowTimestamp = convertUTCToIST(row.timestamp);
           return rowTimestamp >= startDate && rowTimestamp <= endDate;
         });
-
-        const formattedData = filteredData.map((row) => ({
-          ...row,
-          application_name: (
-            <a href={`#/trace-analysis/${row.application_name}`}>
-              {row.application_name}
-            </a>
-          ),
-        }));
-        setMessageFromServerLogTable(formattedData);
-      } else {
-        const formattedData = data.map((row) => ({
-          ...row,
-          application_name: (
-            <a href={`#/trace-analysis/${row.application_name}`}>
-              {row.application_name}
-            </a>
-          ),
-        }));
-        setMessageFromServerLogTable(formattedData);
       }
+
+      const formattedData = filteredData.map((row) => ({
+        ...row,
+        application_name: (
+          <a href={`#/trace-analysis/${row.application_name}`}>
+            {row.application_name}
+          </a>
+        ),
+      }));
+
+      setMessageFromServerLogTable(formattedData);
+      setTotalItems(formattedData.length); // Set total number of items
     } catch (error) {
       console.error('Error fetching log table data:', error);
     }
@@ -88,12 +85,32 @@ const LogTable = forwardRef(({ selectedItem, selectedUser, startDate, endDate },
     ]);
   }, []);
 
-  const arrayLogTable = Array.isArray(messageFromServerLogTable) ? messageFromServerLogTable : [messageFromServerLogTable];
-  console.log('LogTable Row', arrayLogTable);
+  // Get data for the current page
+  const getCurrentPageData = () => {
+    const startIndex = (currentPage - 1) * rowsPerPage;
+    const endIndex = startIndex + rowsPerPage;
+    return messageFromServerLogTable.slice(startIndex, endIndex);
+  };
 
+  const handlePaginationChange = ({ page, pageSize }) => {
+    setCurrentPage(page);
+    setRowsPerPage(pageSize);
+  };
+
+  const currentRows = getCurrentPageData();
+  
   return (
     <div>
-      <CustomDataTable headers={headersLogTable} rows={arrayLogTable} />
+      <CustomDataTable headers={headersLogTable} rows={currentRows} />
+
+      {/* Add pagination component */}
+      <Pagination
+        totalItems={totalItems}
+        pageSize={rowsPerPage}
+        page={currentPage}
+        onChange={handlePaginationChange} // Use a single handler for both page and pageSize
+        pageSizes={[5, 10, 20, 30, 40, 50]} // Options for rows per page
+      />
     </div>
   );
 });

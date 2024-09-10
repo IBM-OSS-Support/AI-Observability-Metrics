@@ -10,19 +10,13 @@ const options = {
   theme: "g90",
   title: '',
   resizable: true,
-  height: '80%',
+  height: '60%',
   width: '100%',
   gauge: {
     alignment: 'center',
     type: 'semi',
     status: 'danger',
-    arcWidth: 24
-  },
-  legend: {
-    enabled: false
-  },
-  toolbar: {
-    enabled: false
+    arcWidth: 25,
   },
   color: {
     scale: {
@@ -156,10 +150,6 @@ const AdoptionRate = forwardRef((props, ref) => {
           data={data}
           options={options}
         />
-      </div>
-      <div className="cpu-usage-data">
-        <div className="label">Adoption rate</div>
-        <h3 className="data">{avg} %</h3>
       </div>
     </Tile>
   );

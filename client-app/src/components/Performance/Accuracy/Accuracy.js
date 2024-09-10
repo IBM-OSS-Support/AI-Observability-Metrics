@@ -31,7 +31,7 @@ const options = (color, statusText) => ({
       total: 10,
       totalFormatter: (e) => statusText,
       breakdownFormatter: (e) =>
-        `The accuracy score of the application is ${e.datasetsTotal} out of 10`,
+        `The accuracy score of the application is ${e.datasetsTotal.toFixed(2)} out of 10`,
     },
     height: "70%",
     width: "150%",

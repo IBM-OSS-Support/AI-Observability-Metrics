@@ -1,15 +1,8 @@
-import React, { Fragment, useEffect, useRef, useState } from "react";
-import moment from "moment";
-
+import React, { useEffect, useState } from "react";
 import CustomDataTable from "../common/CustomDataTable";
-import PageContainer from "../common/PageContainer";
-
-import { Accordion, AccordionItem } from "@carbon/react";
-import DataModal from "./DataModal";
 import { useParams } from "react-router-dom";
 import { useStoreContext } from "../../store";
-
-const MODALS = [{ component: DataModal, string: "DataModal" }];
+import { Pagination } from '@carbon/react';
 
 const defaultHeaders = [
   {
@@ -39,76 +32,47 @@ const defaultHeaders = [
     checked: true,
   },
 ];
+
 const TraceAnalysisTable = () => {
   const { appName } = useParams();
-
-  const [searchText, setSearchText] = useState("");
-  const [trace, setTrace] = useState({});
   const [rows, setRows] = useState([]);
-  const [modal, setModal] = useState(false);
   const { state } = useStoreContext();
-
-  const [pagination, setPagination] = useState({ offset: 0, first: 10 });
-
-  const [websocket, setWebsocket] = useState(null);
   const [messageFromServerTraceTable, setMessageFromServerTraceTable] = useState([]);
-  const [headers, setHeaders] = useState([]);
+  const [headers, setHeaders] = useState(defaultHeaders);
+  const [currentPage, setCurrentPage] = useState(1); // Current page state
+  const [rowsPerPage, setRowsPerPage] = useState(5); // Rows per page
+  const [totalItems, setTotalItems] = useState(0); // Total number of items
 
-  const websocketRef = useRef(null);
+  // API call replacing WebSocket
+  const fetchTraceData = async () => {
+    try {
+      const query = `SELECT * FROM operations WHERE application_name = '${appName}'`;
+      const apiUrl = process.env.REACT_APP_BACKEND_API_URL;
+      const response = await fetch(apiUrl, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ query }),
+      });
 
-  // WebSocket start
-
-  // Connect to WebSocket server on component mount
-  useEffect(() => {
-    const apiUrl = process.env.REACT_APP_WEBSOCKET_URL;
-    const ws = new WebSocket(apiUrl);
-    websocketRef.current = ws;
-    setWebsocket(ws);
-
-    // Call sendMessageToServerTrace on page render
-    sendMessageToServerTraceTable();
-
-    // Cleanup function to close WebSocket connection on component unmount
-    return () => {
-      ws.close();
-    };
-  }, []);
-
-  // Function to send message to WebSocket server
-  const sendMessageToServerTraceTable = () => {
-    const q = "SELECT * FROM operations";
-
-    const ws = websocketRef.current;
-
-    if (ws) {
-      if (ws.readyState === WebSocket.OPEN) {
-        const message = {
-          tab: "auditing",
-          action: q,
-        };
-        ws.send(JSON.stringify(message));
-      } else {
-        ws.onopen = () => {
-          const message = {
-            tab: "auditing",
-            action: q,
-          };
-          ws.send(JSON.stringify(message));
-        };
+      if (!response.ok) {
+        throw new Error("Failed to fetch trace data");
       }
+      const data = await response.json();
+      console.log('data in trace table', data);
+      setMessageFromServerTraceTable(data);
+      setTotalItems(data.length)
+    } catch (error) {
+      console.error("Error fetching trace data:", error);
     }
   };
 
-  // Listen for messages from WebSocket server
   useEffect(() => {
-    if (websocket) {
-      websocket.onmessage = (event) => {
-        setMessageFromServerTraceTable(JSON.parse(event.data));
-      };
-    }
-  }, [websocket]);
+    fetchTraceData();
+  }, []);
 
-  // Log messageFromServerTrace to the console
+  // Log messageFromServerTraceTable to the console
   useEffect(() => {
     console.log("messageFromServerTraceTable:", messageFromServerTraceTable);
   }, [messageFromServerTraceTable]);
@@ -119,150 +83,58 @@ const TraceAnalysisTable = () => {
       const data = Array.isArray(messageFromServerTraceTable)
         ? messageFromServerTraceTable
         : [];
-      console.log("Trace Table Data:", data);
 
-      // Find all application data with the matching appName
-    const appDataArray = data.filter((item) => item.application_name === appName);
       // If the application data is found, log it
-      if (appDataArray.length > 0) {
-        console.log("Trace app:", appDataArray);
-
-
-
-        // Map over the array to format each row
-      let formattedRows = appDataArray.map((appData) => ({
-        operation: (
-            <a href={`#/traces/?operation=${appData.operation}`}>
-              {appData.operation}
-            </a>
-          ),
-        id: appData.id
-        // Uncomment and add more keys as needed
-        // latency: appData.latency,
-        // timeline: appData.timeline,
-        // toggletip: appData.parameters,
-        // data: appData.data,
-      }));
+      if (data.length > 0) {
         setHeaders(defaultHeaders);
-        setRows(formattedRows);
-        console.log("Formatted Rows:", formattedRows); // Log formatted rows
-      } else {
-        console.log(`No data found for application_name: ${appName}`);
-      }
-
-      
+        setRows(data);
+      } 
     }
   }, [appName, messageFromServerTraceTable]);
 
-  console.log('Trace Table rows' , rows);
+  // Get data for the current page
+  const getCurrentPageData = () => {
+    const startIndex = (currentPage - 1) * rowsPerPage;
+    const endIndex = startIndex + rowsPerPage;
 
-  // Pagination logic
-  const handlePageChange = (page) => {
-
-    console.log('page', page);
-    if (messageFromServerTraceTable) {
-        const data = Array.isArray(messageFromServerTraceTable)
-          ? messageFromServerTraceTable
-          : [];
-        console.log("Trace Table Data:", data);
-  
-        // Find all application data with the matching appName
-      const appDataArray = data.filter((item) => item.application_name === appName);
-        // If the application data is found, log it
-        if (appDataArray.length > 0) {
-          console.log("Trace app:", appDataArray);
-  
-          // Slice the first 10 items
-        let slicedData = appDataArray.slice(page, page+10);
-  
-  
-          // Map over the array to format each row
-        let formattedRows = slicedData.map((appData) => ({
-          operation: (
-              <a href={`#/traces/?operation=${appData.operation}`}>
-                {appData.operation}
-              </a>
-            ),
-          id: appData.id
-          // Uncomment and add more keys as needed
-          // latency: appData.latency,
-          // timeline: appData.timeline,
-          // toggletip: appData.parameters,
-          // data: appData.data,
-        }));
-          setHeaders(defaultHeaders);
-          setRows(formattedRows);
-          console.log("Formatted Rows:", formattedRows); // Log formatted rows
-        } else {
-          console.log(`No data found for application_name: ${appName}`);
-        }
-  
-        
-      }
+    // Map over the array to format each row
+    let formattedRows = rows.slice(startIndex, endIndex).map((appData) => ({
+      operation: (
+        <a href={`#/traces/?operation=${appData.operation}`}>
+          {appData.operation}
+        </a>
+      ),
+      id: appData.id,
+    }));
+    return formattedRows;
   };
 
-  const handleItemsPerPageChange = (pageSize) => {
-    console.log('pageSize', pageSize);
-    if (messageFromServerTraceTable) {
-        const data = Array.isArray(messageFromServerTraceTable)
-          ? messageFromServerTraceTable
-          : [];
-        console.log("Trace Table Data:", data);
-  
-        // Find all application data with the matching appName
-      const appDataArray = data.filter((item) => item.application_name === appName);
-        // If the application data is found, log it
-        if (appDataArray.length > 0) {
-          console.log("Trace app:", appDataArray);
-  
-          // Slice the first 10 items
-        let slicedData = appDataArray.slice(pageSize, pageSize+10);
-  
-  
-          // Map over the array to format each row
-        let formattedRows = slicedData.map((appData) => ({
-          operation: (
-              <a href={`#/traces/?operation=${appData.operation}`}>
-                {appData.operation}
-              </a>
-            ),
-          id: appData.id
-          // Uncomment and add more keys as needed
-          // latency: appData.latency,
-          // timeline: appData.timeline,
-          // toggletip: appData.parameters,
-          // data: appData.data,
-        }));
-          setHeaders(defaultHeaders);
-          setRows(formattedRows);
-          console.log("Formatted Rows:", formattedRows); // Log formatted rows
-        } else {
-          console.log(`No data found for application_name: ${appName}`);
-        }
-  
-        
-      }
+  const handlePaginationChange = ({ page, pageSize }) => {
+    setCurrentPage(page);
+    setRowsPerPage(pageSize);
   };
 
-  const startIndex = (pagination.page - 1) * pagination.pageSize;
-  const endIndex = startIndex + pagination.pageSize;
-  const paginatedRows = rows.slice(startIndex, endIndex);
-
+  const currentRows = getCurrentPageData();
 
   
+
+  
+
   return (
-    <CustomDataTable
-      headers={defaultHeaders}
-      rows={rows}
-      loading={state.status === "loading"}
-      pagination={{
-        totalItems: rows.length,
-              setPagination,
-              ...pagination,
-        onPageChange: handlePageChange,
-        onItemsPerPageChange: handleItemsPerPageChange,
-      }}
-    />
+    <div>
+      <CustomDataTable
+        headers={defaultHeaders}
+        rows={currentRows}
+      />
+      {/* Add pagination component */}
+      <Pagination
+        totalItems={totalItems}
+        pageSize={rowsPerPage}
+        page={currentPage}
+        onChange={handlePaginationChange} // Use a single handler for both page and pageSize
+        pageSizes={[5, 10, 20, 30, 40, 50]} // Options for rows per page
+      />
+    </div>
   );
 };
 

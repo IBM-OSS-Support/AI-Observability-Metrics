@@ -1,9 +1,6 @@
-import React, { Fragment, useEffect, useRef, useState } from "react";
-import moment from "moment";
-
+import React, { Fragment, useEffect, useState } from "react";
 import CustomDataTable from "../common/CustomDataTable";
 import PageContainer from "../common/PageContainer";
-
 import { Accordion, AccordionItem } from "@carbon/react";
 import DataModal from "./DataModal";
 import { useParams } from "react-router-dom";
@@ -12,228 +9,91 @@ import TraceAnalysisTable from "./TraceAnalysisTable";
 
 const MODALS = [{ component: DataModal, string: "DataModal" }];
 
-const defaultHeaders = [
-  {
-    key: "operation",
-    header: "Operation",
-    checked: true,
-    required: true,
-  },
-  {
-    key: "latency",
-    header: "Latency",
-    checked: true,
-  },
-  {
-    key: "timeline",
-    header: "Timeline",
-    checked: true,
-  },
-  {
-    key: "toggletip",
-    header: "Parameters",
-    checked: true,
-  },
-  {
-    key: "data",
-    header: "",
-    checked: true,
-  },
-];
-const defaultProcessHeaders = [
-  {
-    key: "pid",
-    header: "PID",
-    checked: true,
-    required: true,
-  },
-  {
-    key: "started",
-    header: "Started",
-    checked: true,
-    required: true,
-  },
-  {
-    key: "peakMemory",
-    header: "Peak Memory",
-    checked: true,
-    required: true,
-  },
-  {
-    key: "runtime",
-    header: "Runtime",
-    checked: true,
-    required: true,
-  },
-  {
-    key: "runtime_impl",
-    header: "Runtime Implementation",
-    checked: true,
-    required: true,
-  },
-];
 const defaultLibraryHeaders = [
-  {
-    key: "graphsignal_library_version",
-    header: "Graphsignal Library Version",
-    checked: true,
-    required: true,
-  },
-  {
-    key: "langchain_library_version",
-    header: "Langchain Library Version",
-    checked: true,
-  },
-  {
-    key: "openai_library_version",
-    header: "Openai Library Version",
-    checked: true,
-  },
-];
-const defaultNodeHeaders = [
-  {
-    key: "hostname",
-    header: "Hostname",
-    checked: true,
-    required: true,
-  },
-  {
-    key: "os_name",
-    header: "OS",
-    checked: true,
-    required: true,
-  },
-  {
-    key: "os_version",
-    header: "OS Version",
-    checked: true,
-    required: true,
-  },
-  {
-    key: "runtime_name",
-    header: "Runtime",
-    checked: true,
-    required: true,
-  },
-  {
-    key: "runtime_version",
-    header: "Runtime Version",
-    checked: true,
-    required: true,
-  }
+  { key: "graphsignal_library_version", header: "Graphsignal Library Version", checked: true, required: true },
+  { key: "langchain_library_version", header: "Langchain Library Version", checked: true },
+  { key: "openai_library_version", header: "Openai Library Version", checked: true },
 ];
 
+const defaultNodeHeaders = [
+  { key: "hostname", header: "Hostname", checked: true, required: true },
+  { key: "os_name", header: "OS", checked: true, required: true },
+  { key: "os_version", header: "OS Version", checked: true, required: true },
+  { key: "runtime_name", header: "Runtime", checked: true, required: true },
+  { key: "runtime_version", header: "Runtime Version", checked: true, required: true },
+];
 
 const TraceAnalysis = () => {
   const { appName } = useParams();
-
-  const [searchText, setSearchText] = useState("");
-  const [trace, setTrace] = useState({});
-  const [pagination, setPagination] = useState({ offset: 0, first: 10 });
   const [rowsLibraries, setRowsLibraries] = useState([]);
   const [rowsNode, setRowsNode] = useState([]);
-  const [modal, setModal] = useState(false);
-  const { state } = useStoreContext();
-
-  const [websocket, setWebsocket] = useState(null);
-  const [messageFromServerTrace, setMessageFromServerTrace] = useState([]);
   const [headersLibraries, setHeadersLibraries] = useState([]);
   const [headersNode, setHeadersNode] = useState([]);
+  const { state } = useStoreContext();
 
-  const websocketRef = useRef(null);
+  // API Call to fetch trace data
+  const fetchTraceData = async () => {
+    const apiUrl = process.env.REACT_APP_BACKEND_API_URL; // Replace with actual API endpoint
 
-  // WebSocket start
+    // SQL query to fetch the required data
+    const q = `
+      SELECT * FROM maintenance`;
 
-  // Connect to WebSocket server on component mount
-  useEffect(() => {
-    const apiUrl = process.env.REACT_APP_WEBSOCKET_URL;
-    const ws = new WebSocket(apiUrl);
-    websocketRef.current = ws;
-    setWebsocket(ws);
+    try {
+      const response = await fetch(apiUrl, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ query: q }), // Sending the query in the request body
+      });
 
-    // Call sendMessageToServerTrace on page render
-    sendMessageToServerTrace();
-
-    // Cleanup function to close WebSocket connection on component unmount
-    return () => {
-      ws.close();
-    };
-  }, []);
-
-  // Function to send message to WebSocket server
-  const sendMessageToServerTrace = () => {
-    const q = "SELECT * FROM maintenance";
-
-    const ws = websocketRef.current;
-
-    if (ws) {
-      if (ws.readyState === WebSocket.OPEN) {
-        const message = {
-          tab: "auditing",
-          action: q,
-        };
-        ws.send(JSON.stringify(message));
-      } else {
-        ws.onopen = () => {
-          const message = {
-            tab: "auditing",
-            action: q,
-          };
-          ws.send(JSON.stringify(message));
-        };
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
       }
+
+      const data = await response.json();
+      console.log('data in trace analysis', data);
+      return data;
+    } catch (error) {
+      console.error("Error fetching trace data:", error);
+      return null;
     }
   };
 
-  // Listen for messages from WebSocket server
+  // Fetch trace data on mount
   useEffect(() => {
-    if (websocket) {
-      websocket.onmessage = (event) => {
-        setMessageFromServerTrace(JSON.parse(event.data));
-      };
-    }
-  }, [websocket]);
+    fetchTraceData().then((data) => {
+      if (data) {
+        const appData = data.find((item) => item.application_name === appName);
+        if (appData) {
+          // Set headers and rows for Libraries section
+          setHeadersLibraries(defaultLibraryHeaders);
+          setRowsLibraries([
+            {
+              graphsignal_library_version: appData.graphsignal_library_version,
+              langchain_library_version: appData.langchain_library_version || "N/A",
+              openai_library_version: appData.openai_library_version || "N/A",
+            },
+          ]);
 
-  // Log messageFromServerTrace to the console
-  useEffect(() => {
-    console.log("messageFromServerTrace:", messageFromServerTrace);
-  }, [messageFromServerTrace]);
-
-  // Process and format data
-  useEffect(() => {
-    if (messageFromServerTrace) {
-      const data = Array.isArray(messageFromServerTrace) ? messageFromServerTrace : [];
-      console.log("Trace Data:", data);
-
-      // Find the application data with the matching appName
-      const appData = data.find((item) => item.application_name === appName);
-
-      // If the application data is found, log it
-      if (appData) {
-        console.log("Trace app:", appData);
-
-        // Set headers and rows for LibrariesRow
-        setHeadersLibraries(defaultLibraryHeaders);
-        setRowsLibraries([{
-          graphsignal_library_version: appData.graphsignal_library_version,
-          langchain_library_version: appData.langchain_library_version || 'N/A',
-          openai_library_version: appData.openai_library_version || 'N/A'
-        }]);
-
-        // Set headers and rows for Node
-        setHeadersNode(defaultNodeHeaders);
-        setRowsNode([{
-          hostname: appData.hostname,
-          os_name: appData.os_name || 'N/A',
-          os_version: appData.os_version || 'N/A',
-          runtime_name: appData.runtime_name || 'N/A',
-          runtime_version: appData.runtime_version || 'N/A'
-        }]);
-      } else {
-        console.log(`No data found for application_name: ${appName}`);
+          // Set headers and rows for Node section
+          setHeadersNode(defaultNodeHeaders);
+          setRowsNode([
+            {
+              hostname: appData.hostname,
+              os_name: appData.os_name || "N/A",
+              os_version: appData.os_version || "N/A",
+              runtime_name: appData.runtime_name || "N/A",
+              runtime_version: appData.runtime_version || "N/A",
+            },
+          ]);
+        } else {
+          console.log(`No data found for application_name: ${appName}`);
+        }
       }
-    }
-  }, [appName, messageFromServerTrace]);
+    });
+  }, [appName]);
 
   return (
     <>
@@ -262,7 +122,7 @@ const TraceAnalysis = () => {
         <div className="trace-analysis-section">
           <Accordion align="start" size="sm">
             <AccordionItem title="Node" open>
-            <CustomDataTable headers={headersNode} rows={rowsNode} />
+              <CustomDataTable headers={headersNode} rows={rowsNode} />
             </AccordionItem>
           </Accordion>
         </div>

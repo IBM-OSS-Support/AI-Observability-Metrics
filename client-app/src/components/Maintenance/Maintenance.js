@@ -16,46 +16,39 @@ import { Column, Grid, Tile } from "@carbon/react";
 import HeaderFilter from "../common/HeaderFilter/HeaderFilter";
 import MaintenanceTable from "./MaintenanceTable";
 import PageContainer from "../common/PageContainer";
+import FrequencyOfUse from "../Monitoring/FrequencyOfUse/FrequencyOfUse";
 
 const Maintenance = () => {
-
   const maintenanceTableRef = useRef();
+  const frequencyOfUseRef = useRef();
 
   useEffect(() => {
     if (maintenanceTableRef.current) {
       maintenanceTableRef.current.sendMessageToServerLog();
     }
-  }, []);   
-
+    if (frequencyOfUseRef.current) {
+      frequencyOfUseRef.current.fetchFrequencyData();
+    }
+  }, []);
 
   return (
     <PageContainer
-      className="monitoring-container"
+      className="maintenance-container"
       header={{
         title: "Maintenance",
         subtitle: "Maintenance Graphs",
       }}
     >
       <div className="home-container">
-        <HeaderFilter />
-        <Grid fullWidth narrow id="body" className="page-content body">
-          <Column
-            max={16}
-            xlg={16}
-            lg={16}
-            md={8}
-            sm={4}
-            className="content-tile"
-          >
-            <Tile className="chart-tile">
-              <MaintenanceTable ref={maintenanceTableRef}/>
-            </Tile>
-          </Column>
-          
-        </Grid>
+        <div className="chart-tile_wrap">
+          <Tile className="chart-tile-maintenance">
+            <FrequencyOfUse ref={frequencyOfUseRef} />
+          </Tile>
+        </div>
+        <MaintenanceTable ref={maintenanceTableRef} />
       </div>
     </PageContainer>
   );
-}
+};
 
 export default Maintenance;
