@@ -7,7 +7,8 @@ import time
 import socket
 
 # Set up basic logging
-logging.basicConfig(level=logging.CRITICAL)
+#logging.basicConfig(level=logging.CRITICAL)
+logging.basicConfig(level=logging.DEBUG)
 
 class Message_Single:
     def __init__(self, topic, value):
@@ -68,7 +69,7 @@ def process_anthropic_metrics(message, conn, json_object):
     # Get the current timestamp
     current_timestamp = datetime.datetime.now()
 
-    print(json_object)
+    #print(json_object)
 
     # SQL command to insert the JSON data along with 'application-name', 'tag', and timestamp
     insert_metric_sql = "INSERT INTO accuracy (json_object, application_name, app_user, timestamp) VALUES (%s, %s, %s, %s)"
@@ -95,7 +96,7 @@ def process_accuracy(message,conn,json_object):
     # Get the current timestamp
     current_timestamp = datetime.datetime.now()
 
-    print(json_object)
+    #print(json_object)
 
     # SQL command to insert the JSON data along with 'application-name', 'tag', and timestamp
     insert_metric_sql = "INSERT INTO accuracy (accuracy_score, application_name, app_user, timestamp) VALUES (%s, %s, %s, %s)"
@@ -123,7 +124,7 @@ def process_user_satisfaction(message,conn,json_object):
     # Get the current timestamp
     current_timestamp = datetime.datetime.now()
 
-    print(json_object)
+    #print(json_object)
 
     # SQL command to insert the JSON data along with 'application-name', 'tag', and timestamp
     insert_metric_sql = "INSERT INTO user_satisfaction (rating, comment, application_name, app_user, timestamp) VALUES (%s, %s, %s, %s, %s)"
@@ -152,7 +153,7 @@ def process_embedding(message,conn,json_object):
     # Get the current timestamp
     current_timestamp = datetime.datetime.now()
 
-    print(json_object)
+    #print(json_object)
 
     # SQL command to insert the JSON data along with 'application-name', 'tag', and timestamp
     insert_metric_sql = "INSERT INTO embeddings (embedding, model, usage, application_name, app_user, timestamp) VALUES (%s, %s, %s, %s, %s, %s)"
@@ -179,7 +180,7 @@ def process_session_info(message,conn,json_object):
     # Get the current timestamp
     current_timestamp = datetime.datetime.now()
 
-    print(json_object)
+    #print(json_object)
 
     # SQL command to insert the JSON data along with 'application-name', 'tag', and timestamp
     insert_metric_sql = "INSERT INTO session_info (sessions, application_name, app_user, timestamp) VALUES (%s, %s, %s, %s)"
@@ -208,7 +209,7 @@ def process_log_history(message,conn,json_object):
     # Get the current timestamp
     current_timestamp = datetime.datetime.now()
 
-    print(json_object)
+    #print(json_object)
 
     def extract_completion_status(json_object):
         status = "unknown"
@@ -275,7 +276,7 @@ def process_metrics(message,conn,json_object):
     
     json_system_objects = get_system_objects(json_object["metrics"])
     print(type(json_system_objects), type(json_object))
-    print(json_system_objects, json_object)
+    #print(json_system_objects, json_object)
 
     # SQL command to insert the JSON data along with 'application-name', 'tag', and timestamp
     insert_metric_sql = "INSERT INTO system (process_cpu_usage, process_memory, virtual_memory, node_memory_used, application_name, app_user, timestamp) VALUES (%s, %s, %s, %s, %s, %s, %s)"
@@ -300,7 +301,7 @@ def process_metrics(message,conn,json_object):
             for item in data_obj:
                 if "scope" in item and item["scope"] == "usage" and "name" in item:
                     json_new["data"].append(item)
-        print(json_new)
+        #print(json_new)
         return json_new
 
 
@@ -390,7 +391,6 @@ def process_spans(message,conn,json_object):
     # Get the current timestamp
     current_timestamp = datetime.datetime.now()
 
-    print(json_object)
     json_span_first_object = json_object["spans"][0]
 
     def extract_config(obj):
@@ -417,21 +417,26 @@ def process_spans(message,conn,json_object):
             usage JSONB,
             config JSONB,
             tags JSONB,
+            start_us BIGINT,
+            end_us BIGINT,
+            latency_us BIGINT,
             application_name TEXT,
             app_user TEXT,
             timestamp TIMESTAMP
     )
     """
     cursor.execute(create_table_sql)
-    print("spans")
     for span in json_object["spans"]:
+        start_us = span.get("start_us", 0)
+        end_us = span.get("end_us", 0)
+        latency_ns = span.get("latency_ns", 0)
         if "tags" in span:
             for tag in span["tags"]:
                 if "key" in tag and tag["key"] == "operation":
                     op = tag["value"]
 
-                    insert_metric_sql = "INSERT INTO operations (span_id, operation, exceptions, usage, config, tags, application_name, app_user, timestamp) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)"
-                    cursor.execute(insert_metric_sql, (json.dumps(span["span_id"]), op, json.dumps(span["exceptions"]), json.dumps(span["usage"]), json.dumps(span["config"]), json.dumps(span["tags"]), json_object["application-name"], json_object["app-user"], current_timestamp))
+                    insert_metric_sql = "INSERT INTO operations (span_id, operation, exceptions, usage, config, tags, start_us, end_us, latency_ns, application_name, app_user, timestamp) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
+                    cursor.execute(insert_metric_sql, (json.dumps(span["span_id"]), op, json.dumps(span["exceptions"]), json.dumps(span["usage"]), json.dumps(span["config"]), json.dumps(span["tags"]), start_us, end_us, latency_ns, json_object["application-name"], json_object["app-user"], current_timestamp))
 
     conn.commit()
     cursor.close()
@@ -456,7 +461,7 @@ def process_auditing_message(message,conn,json_object):
     # Get the current timestamp
     current_timestamp = datetime.datetime.now()
 
-    print(json_object)
+    #print(json_object)
 
     # SQL command to insert the JSON data along with 'application-name', 'tag', and timestamp
     insert_metric_sql = "INSERT INTO auditing (flagged, categories, category_scores, application_name, app_user, timestamp) VALUES (%s, %s, %s, %s, %s, %s)"
