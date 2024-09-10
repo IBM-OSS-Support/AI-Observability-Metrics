@@ -35,3 +35,9 @@
   .timeline-chart-wrapper {
     padding-right: 1rem;
   }
+
+  .nodata-wrap {
+    display: flex;
+    align-items: flex-end;
+    min-height: 300px;
+  }
