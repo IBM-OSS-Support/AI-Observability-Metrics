@@ -9,7 +9,7 @@
  * of its trade secrets, irrespective of what has been deposited with
  * the U.S. Copyright Office.
  ****************************************************************************** */
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState, useCallback, useRef } from 'react';
 import { ComboBox, DatePicker, DatePickerInput, Button } from "@carbon/react";
 
 const Filter = ({ onFilterChange }) => {
@@ -20,6 +20,7 @@ const Filter = ({ onFilterChange }) => {
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
   const [lastEndDate, setLastEndDate] = useState(null);
+  const [datePickerKey, setDatePickerKey] = useState(0); // Add a key state to force DatePicker rerender
 
   const uniqueId = `header-filter-${Math.random().toString(36).substr(2, 9)}`;
 
@@ -58,8 +59,6 @@ const Filter = ({ onFilterChange }) => {
 
   const handleSelectUser = useCallback((event, data = messageFromServerFilter) => {
     const selectedUser = event.selectedItem;
-    console.log("handleSelectUser called with:", selectedUser);
-
     setSelectedItemUser(selectedUser);
 
     if (!selectedUser) {
@@ -94,8 +93,6 @@ const Filter = ({ onFilterChange }) => {
   };
 
   const handleClearAll = () => {
-    console.log("handleClearAll called");
-    
     setLastEndDate(endDate);
 
     setSelectedItem(null);
@@ -105,6 +102,9 @@ const Filter = ({ onFilterChange }) => {
     setFilteredApplications([]);
 
     onFilterChange(null, null, null, null);
+
+    // Force re-render of DatePicker to hide the open calendar
+    setDatePickerKey(prevKey => prevKey + 1);
   };
 
   const handleStartDateClick = () => {
@@ -136,6 +136,7 @@ const Filter = ({ onFilterChange }) => {
         size="md"
       />
       <DatePicker
+        key={datePickerKey} // Add key to force re-render
         id={`${uniqueId}-date`}
         datePickerType="range"
         onChange={handleDateChange}
