@@ -47,6 +47,8 @@ const FailureRate = forwardRef((props, ref) => {
   const [data, setData] = useState(defaultData);
   const [avg, setAvg] = useState(0);
   const [messageFromServerFailure, setMessageFromServerFailure] = useState(defaultMessage);
+  const [failureNumber, setFailureNumber] = useState(0);
+  
 
   const { state } = useStoreContext();
 
@@ -99,6 +101,8 @@ const FailureRate = forwardRef((props, ref) => {
         const newAvgValue = messageFromServerFailure[0].failure_percentage; 
         const newAvgValueToNumber = parseFloat(newAvgValue);
         const newAvg = newAvgValueToNumber.toFixed(2);
+        const number = Math.ceil((newAvgValueToNumber * messageFromServerFailure[0].total_count)/100);
+        setFailureNumber(number);
 
         setData([
           {
@@ -119,8 +123,8 @@ const FailureRate = forwardRef((props, ref) => {
         <GaugeChart data={data} options={options} />
       </div>
       <div className="cpu-usage-data">
-        <div className="label">Total Count</div>
-        <h3 className="data">{messageFromServerFailure[0].total_count}</h3>
+        <div className="label">Number of jobs failed</div>
+        <h3 className="data">{failureNumber}</h3>
       </div>
     </Tile>
   );

@@ -47,6 +47,8 @@ const SuccessRate = forwardRef((props, ref) => {
   const [data, setData] = useState(defaultData);
   const [avg, setAvg] = useState(0);
   const [messageFromServerSuccess, setMessageFromServerSuccess] = useState(defaultMessage);
+  const [successNumber, setSuccessNumber] = useState(0);
+  
 
   const { state } = useStoreContext();
 
@@ -107,6 +109,9 @@ const SuccessRate = forwardRef((props, ref) => {
         const newAvgValue = messageFromServerSuccess[0].success_percentage; 
         const newAvgValueToNumber = parseFloat(newAvgValue);
         const newAvg = newAvgValueToNumber.toFixed(2);
+        const number = Math.ceil((newAvgValueToNumber * messageFromServerSuccess[0].total_count)/100);
+        console.log('number', number);
+        setSuccessNumber(number);
 
         setData([
           {
@@ -127,8 +132,8 @@ const SuccessRate = forwardRef((props, ref) => {
         <GaugeChart data={data} options={options} />
       </div>
       <div className="cpu-usage-data">
-        <div className="label">Total Count</div>
-        <h3 className="data">{messageFromServerSuccess[0].total_count}</h3>
+        <div className="label">Number of jobs succeeded</div>
+        <h3 className="data">{successNumber}</h3>
       </div>
     </Tile>
   );
