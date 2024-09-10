@@ -1,20 +1,50 @@
-import React, { useState, useEffect, useImperativeHandle, forwardRef } from "react";
+import React, {
+  useState,
+  useEffect,
+  useImperativeHandle,
+  forwardRef,
+} from "react";
 import CustomDataTable from "../../common/CustomDataTable";
+import { DonutChart, MeterChart, PieChart } from "@carbon/charts-react";
+import { Tile } from "@carbon/react";
+
+const options = {
+  title: "",
+  resizable: true,
+  legend: {
+    alignment: "center",
+  },
+  pie: {
+    valueMapsTo: 'count',
+    alignment: 'center',
+    loading : true
+  },
+  color: {
+    gradient: {
+        colors: '[blue',
+        enabled: true,
+    },
+},
+  height: "400px",
+};
+
+
 
 const SafetyScoreTable = forwardRef(
   ({ selectedItem, selectedUser, startDate, endDate }, ref) => {
-    const [rowData, setRowData] = useState([]);
-    const [headers, setHeaders] = useState([]);
-    const [pagination, setPagination] = useState({ offset: 0, first: 10 });
-    const [searchText, setSearchText] = useState("");
-    const [filters, setFilters] = useState([]);
-    const [selectedFilters, setSelectedFilters] = useState({});
+    const [graphData, setGraphData] = useState([]);
+    const [data, setData] = useState([]);
 
     useImperativeHandle(ref, () => ({
       sendMessageToServer,
     }));
 
-    const sendMessageToServer = async (selectedItem, selectedUser, startDate, endDate) => {
+    const sendMessageToServer = async (
+      selectedItem,
+      selectedUser,
+      startDate,
+      endDate
+    ) => {
       let q = `
       SELECT COUNT(*) AS total_records,
              SUM(CASE WHEN flagged THEN 1 ELSE 0 END) AS true_count,
@@ -99,58 +129,43 @@ const SafetyScoreTable = forwardRef(
         }
 
         const data = await response.json();
-        console.log('data in datatable', data);
-        setRowData(data); // Assuming the data format matches the table rows
+        console.log("data in datatable", data);
+
+        const truePercentage = parseFloat(data[0].true_count);
+        const falsePercentage = parseFloat(data[0].false_count);
+
+        console.log("Percentages", truePercentage, falsePercentage);
+
+
+        const formattedData = [
+          {
+            group: "True Count",
+            count: parseFloat(truePercentage),
+          },
+          {
+            group: "False Count",
+            count: parseFloat(falsePercentage),
+          },
+        ];
+        if (data) {
+          setData(data[0].total_records);
+        }
+        setGraphData(formattedData); // Assuming the data format matches the table rows
       } catch (error) {
         console.error("Error fetching data:", error);
       }
     };
 
-    useEffect(() => {
-      setHeaders([
-        { key: "total_records", header: "Total Records" },
-        { key: "true_count", header: "True Count" },
-        { key: "false_count", header: "False Count" },
-        { key: "true_percentage", header: "True Percentage" },
-        { key: "false_percentage", header: "False Percentage" },
-      ]);
-    }, []);
-
-    console.log('rowdata', rowData);
+    console.log("Graph data", graphData);
 
     return (
-      <div>
-        <CustomDataTable
-          headers={headers}
-          rows={rowData}
-          loading={false}
-          search={{
-            searchText: searchText,
-            persistent: true,
-            placeholder: "Search for queries",
-            onChange: setSearchText,
-          }}
-          filter={{
-            id: "query-history-filter",
-            setSelectedFilters: (newSelectedFilters) => {
-              setSelectedFilters(newSelectedFilters);
-              setPagination((prev) => ({ ...prev, offset: 0 }));
-            },
-          }}
-          pagination={{
-            totalItems: rowData.length,
-            setPagination,
-            ...pagination,
-          }}
-          emptyState={
-            !rowData.length && {
-              type: false ? "NotFound" : "NoData",
-              title: "No traces yet.",
-              noDataSubtitle: "All traces from your data are listed here.",
-            }
-          }
-        />
-      </div>
+      <Tile className="infrastructure-components cpu-usage">
+        <h5>Safety Score</h5>
+        <div className="cpu-usage-chart">
+          <PieChart data={graphData} options={options} />
+        </div>
+          <h5>Total Count = {data}</h5>
+      </Tile>
     );
   }
 );

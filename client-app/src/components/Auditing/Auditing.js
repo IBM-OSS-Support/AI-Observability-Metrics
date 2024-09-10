@@ -110,7 +110,7 @@ const Auditing = () => {
       <div className="home-container">
         <Filter onFilterChange={handleFilterChange} />
         <Accordion align="start">
-          <AccordionItem title="Overall Error Rate" open={false}>
+          <AccordionItem title="Overall Error Rate" open={true}>
             <Grid fullWidth narrow id="body" className="page-content body">
               <Column max={4} xlg={4} lg={4} md={4} sm={4} className="content-tile">
                 <AbandonmentRate ref={abandonmentRateRef} selectedItem={selectedDeployment} selectedUser={selectedUser} startDate={startDate} endDate={endDate} />
@@ -125,19 +125,24 @@ const Auditing = () => {
           </AccordionItem>
         </Accordion>
         <Grid fullWidth narrow id="body" className="page-content body">
-          <Column max={8} xlg={8} lg={8} md={4} sm={4} className="content-tile">
-            <AdoptionRate ref={adoptionRateRef} selectedItem={selectedDeployment} selectedUser={selectedUser} startDate={startDate} endDate={endDate} />
-          </Column>
-          <Column max={8} xlg={8} lg={8} md={4} sm={4} className="content-tile">
+        <Column max={16} xlg={16} lg={16} md={4} sm={4} className="content-tile">
             <Tile className="chart-tile">
               <UserSatisfaction ref={userSatisfactionRef} startDate={startDate} endDate={endDate} selectedUser={selectedUser} selectedItem={selectedDeployment}/>
             </Tile>
           </Column>
-          <Column max={16} xlg={16} lg={16} md={4} sm={4} className="content-tile">
-            <Tile className="chart-tile">
+
+          <Column max={8} xlg={8} lg={8} md={4} sm={4} className="content-tile-adoption">
+          <Tile className="chart-tile-adoption">
+            <AdoptionRate ref={adoptionRateRef} selectedItem={selectedDeployment} selectedUser={selectedUser} startDate={startDate} endDate={endDate} />
+            </Tile>
+          </Column>
+          
+          <Column max={8} xlg={8} lg={8} md={4} sm={4} className="content-tile-safetyscore">
+            <Tile className="chart-tile-safetyscore">
               <SafetyScoreTable ref={safetyScoreTableRef} />
             </Tile>
           </Column>
+
         </Grid>
       </div>
     </PageContainer>

@@ -1,21 +1,27 @@
-import React, { forwardRef, useEffect, useImperativeHandle, useState } from "react";
+import React, {
+  forwardRef,
+  useEffect,
+  useImperativeHandle,
+  useState,
+} from "react";
 import moment from "moment";
-import { Tile } from "@carbon/react";
+import { Button, Tile } from "@carbon/react";
 import { GaugeChart } from "@carbon/charts-react";
 import { getAppData } from "../../../appData";
 import { useStoreContext } from "../../../store";
+import { InformationFilled } from "@carbon/icons-react";
 
 // Chart options
 const options = {
   theme: "g90",
-  title: '',
+  title: "",
   resizable: true,
-  height: '80%',
-  width: '100%',
+  height: "180px",
+  width: "100%",
   gauge: {
-    alignment: 'center',
-    type: 'semi',
-    status: 'danger',
+    alignment: "center",
+    type: "semi",
+    status: "danger",
     arcWidth: 24,
   },
   legend: {
@@ -26,14 +32,14 @@ const options = {
   },
   color: {
     scale: {
-      value: '#136e6d',
+      value: "#136e6d",
     },
   },
 };
 
 const defaultData = [
   {
-    group: 'value',
+    group: "value",
     value: 0,
   },
 ];
@@ -44,10 +50,11 @@ const defaultMessage = [
   },
 ];
 
-const FrequencyOfUse = forwardRef((props, ref) => {
+const FrequencyOfUse = forwardRef(({ selectedItem, selectedUser, startDate, endDate }, ref) => {
   const [data, setData] = useState(defaultData);
   const [avg, setAvg] = useState(0);
-  const [messageFromServerFrequency, setMessageFromServerFrequency] = useState(defaultMessage);
+  const [messageFromServerFrequency, setMessageFromServerFrequency] =
+    useState(defaultMessage);
 
   const { state } = useStoreContext();
 
@@ -63,23 +70,34 @@ const FrequencyOfUse = forwardRef((props, ref) => {
 
     const query = `WITH operation_counts AS ( SELECT operation, COUNT(*) AS operation_count FROM operations GROUP BY operation ), total_count AS ( SELECT COUNT(*) AS total FROM operations ) SELECT oc.operation, oc.operation_count, (oc.operation_count * 100.0 / tc.total) AS percentage_usage FROM operation_counts oc, total_count tc ORDER BY percentage_usage DESC;`;
 
+    // Add filtering logic based on selectedItem, selectedUser, startDate, and endDate
+    if (selectedItem && !selectedUser) {
+      query += ` WHERE application_name = '${selectedItem}'`;
+    }
+    if (selectedUser && !selectedItem) {
+      query += ` WHERE app_user = '${selectedUser}'`;
+    }
+    if (selectedUser && selectedItem) {
+      query += ` WHERE application_name = '${selectedItem}' AND app_user = '${selectedUser}'`;
+    }
+
     try {
       const response = await fetch(`${apiUrl}`, {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({ query }),
       });
 
       if (!response.ok) {
-        throw new Error('Failed to fetch data from API');
+        throw new Error("Failed to fetch data from API");
       }
 
       const data = await response.json();
       setMessageFromServerFrequency(data);
     } catch (error) {
-      console.error('Error fetching frequency data:', error);
+      console.error("Error fetching frequency data:", error);
     }
   };
 
@@ -88,35 +106,47 @@ const FrequencyOfUse = forwardRef((props, ref) => {
     let newData = defaultData;
     let newAvg = 0;
 
-    if (state.status === 'success') {
+    if (state.status === "success") {
       const appData = getAppData();
-      console.log('Frequency app data', appData[0].data);
+      console.log("Frequency app data", appData[0].data);
 
       if (messageFromServerFrequency) {
-        const newAvgValue = parseFloat(messageFromServerFrequency[0].percentage_usage);
-        console.log('Frequency newAvgValue', newAvgValue);
+        const newAvgValue = parseFloat(
+          messageFromServerFrequency[0].percentage_usage
+        );
+        console.log("Frequency newAvgValue", newAvgValue);
 
         newAvg = newAvgValue.toFixed(2);
         newData = [
           {
-            group: 'value',
+            group: "value",
             value: newAvgValue || 0,
           },
         ];
 
         setData(newData);
         setAvg(newAvg);
-        console.log('New average usage', newAvg);
+        console.log("New average usage", newAvg);
       }
     }
   }, [messageFromServerFrequency, state.status]);
 
-  console.log('Frequency messageFromServer', messageFromServerFrequency);
+  console.log("Frequency messageFromServer", messageFromServerFrequency);
 
   // Render the component
   return (
     <Tile className="infrastructure-components cpu-usage">
-      <h5>Frequency of Use</h5>
+      <h5>Frequency of Use
+      <Button
+          hasIconOnly
+          renderIcon={InformationFilled}
+          iconDescription="Frequency of use is the count of occurrences for each distinct operation within a dataset. 
+          It indicates how many times each type of operation has been recorded."
+          kind="ghost"
+          size="sm"
+          className="customButton"
+        />
+      </h5>
       <div className="cpu-usage-chart">
         <GaugeChart data={data} options={options} />
       </div>

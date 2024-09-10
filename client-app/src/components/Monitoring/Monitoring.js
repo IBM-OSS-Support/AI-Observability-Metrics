@@ -74,22 +74,7 @@ const Monitoring = () => {
       }}
     >
       <Filter onFilterChange={handleFilterChange}/>
-      <Transactions
-        component='monitor'
-			/>
       <LogTable ref={logTableRef} selectedItem={selectedDeployment} selectedUser={selectedUser} startDate={startDate} endDate={endDate}/>
-      <Grid fullWidth narrow id="body" className="page-content body">
-        <Column max={16} xlg={16} lg={16} md={4} sm={4} className="content-tile">
-    <Tile className="chart-tile">
-      <FrequencyOfUse ref={frequencyOfUseRef} selectedItem={selectedDeployment} selectedUser={selectedUser} startDate={startDate} endDate={endDate}/>
-    </Tile>
-        </Column>
-        {/* <Column max={16} xlg={16} lg={16} md={4} sm={4} className="content-tile">
-    <Tile className="chart-tile">
-      <FrequencyOfUseTable />
-    </Tile>
-        </Column> */}
-      </Grid>
     </PageContainer>
 	);
 }

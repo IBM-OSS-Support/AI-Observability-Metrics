@@ -1,0 +1,77 @@
+/* ******************************************************************************
+ * IBM Confidential
+ *
+ * OCO Source Materials
+ *
+ *  Copyright IBM Corp. 2024  All Rights Reserved.
+ *
+ * The source code for this program is not published or otherwise divested
+ * of its trade secrets, irrespective of what has been deposited with
+ * the U.S. Copyright Office.
+ ****************************************************************************** */
+
+.maintenance-container {
+  .body {
+    margin: 1rem;
+    background-color: transparent;
+  }
+}
+
+.content-tile-maintenance {
+  height: 100%;
+  margin-bottom: 1rem;
+}
+
+.chart-tile_wrap {
+  margin: 20px 0;
+
+  .chart-tile-maintenance {
+    height: 100%;
+    padding-top: 0.5rem;
+  }
+  .cpu-usage {
+    &-chart {
+      height: 100%;
+      width: 100%;
+      padding-top: 1rem;
+      margin: 0 auto;
+      align-items: center;
+    }
+
+    &-data {
+      display: flex;
+      width: calc(100% + 2rem);
+      margin: -1rem -1rem;
+      border-top: 0.0625rem solid $border-subtle;
+
+      .label {
+        border-right: 0.0625rem solid $border-subtle;
+        padding: 1rem;
+        align-items: center;
+        flex: 1;
+      }
+
+      .data {
+        padding: 1rem;
+        white-space: nowrap;
+      }
+    }
+  }
+
+  .cpu-usage-data {
+    margin: 1rem -1rem -1rem;
+  }
+}
+
+
+.cds--popover-content, .cds--popover-caret {
+  background-color: #333;
+  color: #fff;
+  box-shadow: 0 0 4px 3px rgba(27, 26, 26, 0.5);
+  z-index: 9999
+}
+
+.customButton {
+  padding: 4px 0 0 0;
+}
+

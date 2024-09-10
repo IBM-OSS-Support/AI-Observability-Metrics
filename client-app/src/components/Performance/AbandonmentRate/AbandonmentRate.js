@@ -46,6 +46,7 @@ const AbandonmentRate = forwardRef((props, ref) => {
   const [data, setData] = useState(defaultData);
   const [avg, setAvg] = useState(0);
   const [messageFromServerAbandonment, setMessageFromServerAbandonment] = useState(defaultMessage);
+  const [abandonmentNumber, setAbandonmentNumber] = useState(0);
 
   const { state } = useStoreContext();
 
@@ -90,14 +91,13 @@ const AbandonmentRate = forwardRef((props, ref) => {
 
   useEffect(() => {
     if (state.status === "success") {
-      const appData = getAppData();
-
-      console.log("Abandonment app data", appData[0].data);
 
       if (messageFromServerAbandonment.length > 0) {
         const newAvgValue = messageFromServerAbandonment[0].user_abandoned_percentage;
         const newAvgValueToNumber = parseFloat(newAvgValue);
         const newAvg = newAvgValueToNumber.toFixed(2);
+        const number = Math.ceil((newAvgValueToNumber * messageFromServerAbandonment[0].total_count)/100);
+        setAbandonmentNumber(number);
 
         setData([
           {
@@ -111,6 +111,8 @@ const AbandonmentRate = forwardRef((props, ref) => {
     }
   }, [messageFromServerAbandonment, state]);
 
+  console.log('abandonment data', messageFromServerAbandonment);
+
   return (
     <Tile className="infrastructure-components cpu-usage">
       <h5>Abandonment Rate</h5>
@@ -118,8 +120,8 @@ const AbandonmentRate = forwardRef((props, ref) => {
         <GaugeChart data={data} options={options} />
       </div>
       <div className="cpu-usage-data">
-        <div className="label">Total Count</div>
-        <h3 className="data">{messageFromServerAbandonment[0].total_count}</h3>
+        <div className="label">Number of jobs abandoned</div>
+        <h3 className="data">{abandonmentNumber}</h3>
       </div>
     </Tile>
   );

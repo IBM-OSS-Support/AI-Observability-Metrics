@@ -5,24 +5,20 @@ import moment from "moment";
 import { Tile } from "@carbon/react";
 import { GaugeChart } from "@carbon/charts-react";
 import { useStoreContext } from "../../../store";
+import { Tooltip, Button } from '@carbon/react';
+import { InformationFilled } from "@carbon/icons-react";
 
 const options = {
   theme: "g90",
   title: '',
   resizable: true,
-  height: '80%',
+  height: '60%',
   width: '100%',
   gauge: {
     alignment: 'center',
     type: 'semi',
     status: 'danger',
-    arcWidth: 24
-  },
-  legend: {
-    enabled: false
-  },
-  toolbar: {
-    enabled: false
+    arcWidth: 25,
   },
   color: {
     scale: {
@@ -43,6 +39,8 @@ const defaultMessage = [
     percentage_usage: 0
   }
 ];
+
+
 
 const AdoptionRate = forwardRef((props, ref) => {
   const [data, setData] = useState(defaultData);
@@ -150,16 +148,21 @@ const AdoptionRate = forwardRef((props, ref) => {
   // Render
   return (
     <Tile className="infrastructure-components cpu-usage">
-      <h5>Adoption Rate</h5>
+      <h5>Adoption Rate
+      <Button
+          hasIconOnly
+          renderIcon={InformationFilled}
+          iconDescription="The adoption rate measures how often each user is interacting with or using the system"
+          kind="ghost"
+          size="sm"
+          className="customButton"
+        />
+      </h5>
       <div className="cpu-usage-chart">
         <GaugeChart
           data={data}
           options={options}
         />
-      </div>
-      <div className="cpu-usage-data">
-        <div className="label">Adoption rate</div>
-        <h3 className="data">{avg} %</h3>
       </div>
     </Tile>
   );
