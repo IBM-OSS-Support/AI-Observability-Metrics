@@ -49,6 +49,10 @@ def upload_to_postgres(message):
         'anthropic_metrics': process_anthropic_metrics
     }
 
+    app_name = json_object["application-name"]
+    app_user = json_object["app-user"]
+    logging.debug(f"PROCESSING function: app_user: {app_user} app_name: {app_name}")
+
     processing_function = topic_processing_functions[message.topic]
     processing_function(message,conn,json_object)
 
