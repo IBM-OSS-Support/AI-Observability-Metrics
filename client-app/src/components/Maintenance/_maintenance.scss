@@ -62,3 +62,16 @@
     margin: 1rem -1rem -1rem;
   }
 }
+
+
+.cds--popover-content, .cds--popover-caret {
+  background-color: #333;
+  color: #fff;
+  box-shadow: 0 0 4px 3px rgba(27, 26, 26, 0.5);
+  z-index: 9999
+}
+
+.customButton {
+  padding: 4px 0 0 0;
+}
+
