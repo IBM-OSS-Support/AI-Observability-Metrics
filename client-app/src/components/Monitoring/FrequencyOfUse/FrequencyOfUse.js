@@ -5,10 +5,11 @@ import React, {
   useState,
 } from "react";
 import moment from "moment";
-import { Tile } from "@carbon/react";
+import { Button, Tile } from "@carbon/react";
 import { GaugeChart } from "@carbon/charts-react";
 import { getAppData } from "../../../appData";
 import { useStoreContext } from "../../../store";
+import { InformationFilled } from "@carbon/icons-react";
 
 // Chart options
 const options = {
@@ -135,7 +136,17 @@ const FrequencyOfUse = forwardRef(({ selectedItem, selectedUser, startDate, endD
   // Render the component
   return (
     <Tile className="infrastructure-components cpu-usage">
-      <h5>Frequency of Use</h5>
+      <h5>Frequency of Use
+      <Button
+          hasIconOnly
+          renderIcon={InformationFilled}
+          iconDescription="Frequency of use is the count of occurrences for each distinct operation within a dataset. 
+          It indicates how many times each type of operation has been recorded."
+          kind="ghost"
+          size="sm"
+          className="customButton"
+        />
+      </h5>
       <div className="cpu-usage-chart">
         <GaugeChart data={data} options={options} />
       </div>

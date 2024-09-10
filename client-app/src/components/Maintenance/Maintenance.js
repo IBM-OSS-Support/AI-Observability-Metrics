@@ -40,12 +40,13 @@ const Maintenance = () => {
       }}
     >
       <div className="home-container">
+        
+        <MaintenanceTable ref={maintenanceTableRef} />
         <div className="chart-tile_wrap">
           <Tile className="chart-tile-maintenance">
             <FrequencyOfUse ref={frequencyOfUseRef} />
           </Tile>
         </div>
-        <MaintenanceTable ref={maintenanceTableRef} />
       </div>
     </PageContainer>
   );
