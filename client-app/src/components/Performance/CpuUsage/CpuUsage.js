@@ -47,6 +47,9 @@ const CpuUsage = forwardRef(({ selectedItem, selectedUser }, ref) => {
   const [avg, setAvg] = useState(0);
   const [messageFromServerCPU, setMessageFromServerCPU] = useState(defaultMessage);
 
+  console.log("selectedItem, selectedUser", selectedItem, selectedUser);
+  
+
   useImperativeHandle(ref, () => ({
     sendMessageToServerCPU,
   }));
@@ -89,7 +92,8 @@ const CpuUsage = forwardRef(({ selectedItem, selectedUser }, ref) => {
       
       // Calculate the latest CPU usage (most recent value)
       const latestUsage = cpuUsages[cpuUsages.length - 1] || 0;
-      setLatest(latestUsage);
+      const lastUsage = latestUsage.toFixed(2);
+      setLatest(lastUsage);
 
       // Calculate the average CPU usage
       const total = cpuUsages.reduce((sum, gauge) => sum + gauge, 0);
@@ -98,19 +102,29 @@ const CpuUsage = forwardRef(({ selectedItem, selectedUser }, ref) => {
       setAvg(newAvg);
 
       // Update chart data to reflect the latest value
-      setData([{ group: 'value', value: latestUsage }]);
+      setData([{ group: 'value', value: newAvgValue }]);
     }
   }, [messageFromServerCPU]);
 
   return (
     <Tile className="infrastructure-components cpu-usage">
-      <h5>Latest CPU Usage</h5>
+      <h5>Average CPU Usage</h5>
       <div className="cpu-usage-chart">
         <GaugeChart data={data} options={options} />
       </div>
       <div className="cpu-usage-data">
-        <div className="label">Average CPU Usage</div>
-        <h3 className="data">{avg} %</h3>
+        <div className="label"> 
+          Last
+          {selectedUser && selectedItem 
+            ? ` ${selectedUser}'s ${selectedItem} ` 
+            : selectedUser 
+              ? selectedUser === 'all' ? ` of ${selectedUser} ` : ` ${selectedUser}'s ` 
+              : selectedItem 
+                ? ` ${selectedItem}'s ` 
+                : ' of all '} 
+           CPU Usage
+        </div>
+        <h3 className="data">{latest} %</h3>
       </div>
     </Tile>
   );
