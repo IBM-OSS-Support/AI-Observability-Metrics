@@ -11,7 +11,6 @@
  ****************************************************************************** */
 import React, { forwardRef, useEffect, useImperativeHandle, useState } from "react";
 import CustomLineChart from "../../common/CustomLineChart";
-import { callCountOptions } from "../constants";
 import { useStoreContext } from "../../../store";
 import { getIntervals } from "../helper";
 import moment from "moment";
@@ -72,7 +71,7 @@ const CallCountGraph = forwardRef(({ selectedItem, selectedUser, selectedTimesta
     sendMessageToServerCallCount(selectedItem, selectedUser, selectedTimestampRange, numberOfDaysSelected, startDate, endDate);
   }, [selectedItem, selectedUser, selectedTimestampRange, numberOfDaysSelected, startDate, endDate]);
 
-  const getCallCountDataInside = (apps, startDate, endDate) => {
+  const getCallCountDataInside = (apps, startDate, endDate, selectedItem, selectedUser) => {
     let result = [];
 
     for (const appId in apps) {
@@ -111,19 +110,34 @@ const CallCountGraph = forwardRef(({ selectedItem, selectedUser, selectedTimesta
   };
 
   const { state } = useStoreContext();
-  const CallCountDataInside = getCallCountDataInside(messageFromServerCallCount, startDate, endDate);
+  const CallCountDataInside = getCallCountDataInside(messageFromServerCallCount, startDate, endDate, selectedItem, selectedUser);
   const call_count_number = CallCountDataInside.length;
 
+  const formatDate = (date) => moment(date).format('YYYY-MM-DD');
+  const startDateFormatted = startDate ? formatDate(startDate) : '';
+  const endDateFormatted = endDate ? formatDate(endDate) : '';
+  
   const callCountOptions = {
-    title: `Call Count : ` + call_count_number,
+    // title: `Total Call Count of ${selectedUser || 'all user'}'s ${selectedItem || 'all applications'}: ${call_count_number} in ${startDateFormatted} to ${endDateFormatted} these days`,
+    title: ''
   };
+
+  console.log(startDateFormatted, endDateFormatted, "111122223333", startDate, endDate, selectedItem, selectedUser);
+  
 
   return (
     <>
       {CallCountDataInside.length === 0 ? (
         <NoData />
       ) : (
-        <CustomLineChart data={CallCountDataInside} options={callCountOptions} />
+        <>
+          <h5>
+            {`${selectedUser || 'All User'}'s ${selectedItem || 'all Applications'} Call Count is ${call_count_number}`}
+            {/* Total Call Count of
+            {selectedUser && selectedItem ? ` ${selectedUser}'s ${selectedItem} ` : selectedUser ? selectedUser === 'all' ? ` of ${selectedUser} ` : ` ${selectedUser}'s ` : selectedItem ? ` ${selectedItem}'s ` : ' of all '}  */}
+          </h5>
+          <CustomLineChart data={CallCountDataInside} options={callCountOptions} />
+        </>
       )}
     </>
   );

@@ -108,7 +108,17 @@ const CpuUsage = forwardRef(({ selectedItem, selectedUser }, ref) => {
 
   return (
     <Tile className="infrastructure-components cpu-usage">
-      <h5>Average CPU Usage</h5>
+      <h5>
+        Average 
+        {selectedUser && selectedItem 
+          ? ` ${selectedUser}'s ${selectedItem} ` 
+          : selectedUser 
+            ? selectedUser === 'all' ? ` of ${selectedUser} ` : ` ${selectedUser}'s ` 
+            : selectedItem 
+              ? ` ${selectedItem}'s ` 
+              : ' of all '}  
+          CPU Usage
+      </h5>
       <div className="cpu-usage-chart">
         <GaugeChart data={data} options={options} />
       </div>

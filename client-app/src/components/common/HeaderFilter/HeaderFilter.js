@@ -24,6 +24,9 @@ const Filter = ({ onFilterChange }) => {
 
   const uniqueId = `header-filter-${Math.random().toString(36).substr(2, 9)}`;
 
+  const userComboBoxRef = useRef(null);
+  const appComboBoxRef = useRef(null);
+
   const fetchFilterData = useCallback(async () => {
     const apiUrl = process.env.REACT_APP_BACKEND_API_URL;
     const query = 'SELECT application_name, app_user, timestamp FROM maintenance ORDER BY app_user ASC';
@@ -52,6 +55,20 @@ const Filter = ({ onFilterChange }) => {
   useEffect(() => {
     fetchFilterData();
   }, [fetchFilterData]);
+
+  useEffect(() => {
+    const hideCloseIcon = (ref) => {
+      if (ref.current) {
+        const clearButtons = ref.current.querySelectorAll('.bx--list-box__selection--clear');
+        clearButtons.forEach(button => {
+          button.style.display = 'none';
+        });
+      }
+    };
+
+    hideCloseIcon(userComboBoxRef);
+    hideCloseIcon(appComboBoxRef);
+  }, [userComboBoxRef.current, appComboBoxRef.current]);
 
   const users = messageFromServerFilter.length > 0
     ? [...new Set(messageFromServerFilter.map(app => app.app_user))]
@@ -88,19 +105,19 @@ const Filter = ({ onFilterChange }) => {
       const [start, end] = dateRange;
       setStartDate(start || null);
       setEndDate(end || null);
+      setLastEndDate(end || null); // Update lastEndDate based on new endDate
+
       onFilterChange(selectedItem, selectedItemUser, start || null, end || null);
     }
   };
 
   const handleClearAll = () => {
     setLastEndDate(endDate);
-
     setSelectedItem(null);
     setSelectedItemUser(null);
     setStartDate(null);
     setEndDate(null);
     setFilteredApplications([]);
-
     onFilterChange(null, null, null, null);
 
     // Force re-render of DatePicker to hide the open calendar
@@ -115,25 +132,36 @@ const Filter = ({ onFilterChange }) => {
 
   const applicationOptions = filteredApplications.length > 0 ? filteredApplications : ["Select a user first"];
 
+  // Disable clearing on backspace for ComboBox after the first selection
+  const handleKeyDown = (event, isSelected) => {
+    if (event.key === 'Backspace' && isSelected) {
+      event.preventDefault();
+    }
+  };
+
   return (
     <div className="header-filter flex">
       <ComboBox
-        key={`user-${selectedItemUser}`} // Ensures re-render
+        ref={userComboBoxRef}
+        key={`user-${selectedItemUser}`} 
         id={`${uniqueId}-user`}
         selectedItem={selectedItemUser}
         onChange={handleSelectUser}
         items={users}
         placeholder="Choose User Name"
         size="md"
+        onKeyDown={(e) => handleKeyDown(e, !!selectedItemUser)} // Disable backspace only if user is selected
       />
       <ComboBox
-        key={`app-${selectedItem}`} // Ensures re-render
+        ref={appComboBoxRef}
+        key={`app-${selectedItem}`} 
         id={`${uniqueId}-app`}
         selectedItem={selectedItem}
         onChange={handleSelectApplication}
         items={applicationOptions}
         placeholder="Choose Application Name"
         size="md"
+        onKeyDown={(e) => handleKeyDown(e, !!selectedItem)} // Disable backspace only if application is selected
       />
       <DatePicker
         key={datePickerKey} // Add key to force re-render

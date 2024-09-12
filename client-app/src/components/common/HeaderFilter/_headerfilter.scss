@@ -40,7 +40,7 @@
   }
 }
 
-
-
-
-
+/* Hide the close icon in ComboBox */
+.cds--list-box__selection {
+  display: none !important;
+}

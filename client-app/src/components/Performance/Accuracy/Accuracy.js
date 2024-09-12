@@ -150,7 +150,7 @@ const Accuracy = forwardRef(
 
     return (
       <Tile className="infrastructure-components accuracy">
-        <h5>Accuracy Score</h5>
+        <h5>{`${selectedUser || 'All User'}'s ${selectedItem || 'all Applications'} Accuracy Score is ${avg}`}</h5>
         <div className="cpu-usage-chart">
           {avg > 0 ? (
             <MeterChart data={data} options={chartOptions} />
@@ -163,9 +163,9 @@ const Accuracy = forwardRef(
             <>
               <div className="label">
                 {selectedUser && selectedItem ? (
-                  `Average accuracy of ${selectedItem} is`
+                  `Average accuracy of ${selectedItem || 'All'} is`
                 ) : (
-                  `Average accuracy of ${selectedUser} Application is`
+                  `Average accuracy of ${selectedUser || 'All'} Application is`
                 )}
               </div>
               <h3 className="data">{avg}/10</h3>
