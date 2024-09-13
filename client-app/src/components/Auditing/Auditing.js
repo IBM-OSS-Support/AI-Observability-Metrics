@@ -10,13 +10,7 @@
  * the U.S. Copyright Office.
  ****************************************************************************** */
 import React, { useEffect, useRef, useState } from "react";
-import {
-  Accordion,
-  AccordionItem,
-  Column,
-  Grid,
-  Tile,
-} from "@carbon/react";
+import { Accordion, AccordionItem, Column, Grid, Tile } from "@carbon/react";
 
 // Globals -------------------------------------------------------------------->
 import PageContainer from "../common/PageContainer/PageContainer";
@@ -31,8 +25,9 @@ import UserSatisfaction from "../Metering/UserSatisfaction/UserSatisfaction";
 
 const Auditing = () => {
   const [selectedDeployment, setSelectedDeployment] = useState(null);
-  const [selectedUser, setSelectedUser] = useState('all');
-  const [selectedTimestampRange, setSelectedTimestampRange] = useState('last7days'); // Default value
+  const [selectedUser, setSelectedUser] = useState("all");
+  const [selectedTimestampRange, setSelectedTimestampRange] =
+    useState("last7days"); // Default value
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
   const [numberOfDaysSelected, setNumberOfDaysSelected] = useState(null);
@@ -44,37 +39,80 @@ const Auditing = () => {
   const failureRateRef = useRef();
   const successRateRef = useRef();
 
-  const handleFilterChange = (selectedItem, selectedUser, selectedTimestampRange, startDate, endDate, numberOfDaysSelected) => {
+  const handleFilterChange = (
+    selectedItem,
+    selectedUser,
+    selectedTimestampRange,
+    startDate,
+    endDate,
+    numberOfDaysSelected
+  ) => {
     setSelectedDeployment(selectedItem);
     setSelectedUser(selectedUser);
     setSelectedTimestampRange(selectedTimestampRange);
     setStartDate(startDate);
     setEndDate(endDate);
     setNumberOfDaysSelected(numberOfDaysSelected);
-    console.log('Selected Deployment:', selectedItem);
-    console.log('Selected User:', selectedUser);
-    console.log('Selected Timestamp Range:', selectedTimestampRange);
-    console.log('Selected startDate:', startDate);
-    console.log('Selected endDate:', endDate);
-    console.log('Selected numberOfDaysSelected:', numberOfDaysSelected);
-    
+    console.log("Selected Deployment:", selectedItem);
+    console.log("Selected User:", selectedUser);
+    console.log("Selected Timestamp Range:", selectedTimestampRange);
+    console.log("Selected startDate:", startDate);
+    console.log("Selected endDate:", endDate);
+    console.log("Selected numberOfDaysSelected:", numberOfDaysSelected);
+
     if (safetyScoreTableRef.current) {
-      safetyScoreTableRef.current.sendMessageToServer(selectedItem, selectedUser, selectedTimestampRange, startDate, endDate);
+      safetyScoreTableRef.current.sendMessageToServer(
+        selectedItem,
+        selectedUser,
+        selectedTimestampRange,
+        startDate,
+        endDate
+      );
     }
     if (adoptionRateRef.current) {
-      adoptionRateRef.current.sendMessageToServerAdoption(selectedItem, selectedUser, selectedTimestampRange, startDate, endDate);
+      adoptionRateRef.current.sendMessageToServerAdoption(
+        selectedItem,
+        selectedUser,
+        selectedTimestampRange,
+        startDate,
+        endDate
+      );
     }
     if (userSatisfactionRef.current) {
-      userSatisfactionRef.current.sendMessageToServerUser(selectedItem, selectedUser, selectedTimestampRange, startDate, endDate);
+      userSatisfactionRef.current.sendMessageToServerUser(
+        selectedItem,
+        selectedUser,
+        selectedTimestampRange,
+        startDate,
+        endDate
+      );
     }
     if (abandonmentRateRef.current) {
-      abandonmentRateRef.current.sendMessageToServerAbandonment(selectedItem, selectedUser, selectedTimestampRange, startDate, endDate);
+      abandonmentRateRef.current.sendMessageToServerAbandonment(
+        selectedItem,
+        selectedUser,
+        selectedTimestampRange,
+        startDate,
+        endDate
+      );
     }
     if (failureRateRef.current) {
-      failureRateRef.current.sendMessageToServerFailure(selectedItem, selectedUser, selectedTimestampRange, startDate, endDate);
+      failureRateRef.current.sendMessageToServerFailure(
+        selectedItem,
+        selectedUser,
+        selectedTimestampRange,
+        startDate,
+        endDate
+      );
     }
     if (successRateRef.current) {
-      successRateRef.current.sendMessageToServerSuccess(selectedItem, selectedUser, selectedTimestampRange, startDate, endDate);
+      successRateRef.current.sendMessageToServerSuccess(
+        selectedItem,
+        selectedUser,
+        selectedTimestampRange,
+        startDate,
+        endDate
+      );
     }
   };
 
@@ -109,7 +147,7 @@ const Auditing = () => {
     >
       <div className="home-container">
         <Filter onFilterChange={handleFilterChange} />
-        <Accordion align="start">
+        {/* <Accordion align="start">
           <AccordionItem title="Overall Error Rate" open={true}>
             <Grid fullWidth narrow id="body" className="page-content body">
               <Column max={4} xlg={4} lg={4} md={4} sm={4} className="content-tile">
@@ -123,21 +161,70 @@ const Auditing = () => {
               </Column>
             </Grid>
           </AccordionItem>
-        </Accordion>
+        </Accordion> */}
         <Grid fullWidth narrow id="body" className="page-content body">
-        <Column max={16} xlg={16} lg={16} md={4} sm={4} className="content-tile">
+          <Column max={8} xlg={8} lg={8} md={4} sm={4} className="content-tile">
+            <AbandonmentRate
+              ref={abandonmentRateRef}
+              selectedItem={selectedDeployment}
+              selectedUser={selectedUser}
+              startDate={startDate}
+              endDate={endDate}
+            />
+          </Column>
+          <Column max={8} xlg={8} lg={8} md={4} sm={4} className="content-tile">
+            <FailureRate ref={failureRateRef} />
+          </Column>
+          
+          <Column
+            max={8}
+            xlg={8}
+            lg={8}
+            md={4}
+            sm={4}
+            className="content-tile"
+          >
             <Tile className="chart-tile">
-              <UserSatisfaction ref={userSatisfactionRef} startDate={startDate} endDate={endDate} selectedUser={selectedUser} selectedItem={selectedDeployment}/>
+              <UserSatisfaction
+                ref={userSatisfactionRef}
+                startDate={startDate}
+                endDate={endDate}
+                selectedUser={selectedUser}
+                selectedItem={selectedDeployment}
+              />
+            </Tile>
+          </Column>
+          <Column max={8} xlg={8} lg={8} md={4} sm={4} className="content-tile">
+            <SuccessRate ref={successRateRef} />
+          </Column>
+
+          <Column
+            max={8}
+            xlg={8}
+            lg={8}
+            md={4}
+            sm={4}
+            className="content-tile-adoption"
+          >
+            <Tile className="chart-tile-adoption">
+              <AdoptionRate
+                ref={adoptionRateRef}
+                selectedItem={selectedDeployment}
+                selectedUser={selectedUser}
+                startDate={startDate}
+                endDate={endDate}
+              />
             </Tile>
           </Column>
 
-          <Column max={8} xlg={8} lg={8} md={4} sm={4} className="content-tile-adoption">
-          <Tile className="chart-tile-adoption">
-            <AdoptionRate ref={adoptionRateRef} selectedItem={selectedDeployment} selectedUser={selectedUser} startDate={startDate} endDate={endDate} />
-            </Tile>
-          </Column>
-          
-          <Column max={8} xlg={8} lg={8} md={4} sm={4} className="content-tile-safetyscore">
+          <Column
+            max={8}
+            xlg={8}
+            lg={8}
+            md={4}
+            sm={4}
+            className="content-tile-safetyscore"
+          >
             <Tile className="chart-tile-safetyscore">
               <SafetyScoreTable ref={safetyScoreTableRef} />
             </Tile>
