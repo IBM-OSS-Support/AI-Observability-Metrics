@@ -37,7 +37,7 @@ const TraceAnalysis = () => {
 
     // SQL query to fetch the required data
     const q = `
-      SELECT * FROM maintenance`;
+      SELECT * FROM operations`;
 
     try {
       const response = await fetch(apiUrl, {
@@ -71,9 +71,9 @@ const TraceAnalysis = () => {
           setHeadersLibraries(defaultLibraryHeaders);
           setRowsLibraries([
             {
-              graphsignal_library_version: appData.graphsignal_library_version,
-              langchain_library_version: appData.langchain_library_version || "N/A",
-              openai_library_version: appData.openai_library_version || "N/A",
+              graphsignal_library_version: (appData.config.find(ver => ver.key === 'graphsignal.library.version')).value,
+              langchain_library_version: (appData.config.find(ver => ver.key === 'langchain.library.version')).value,
+              openai_library_version: (appData.config.find(ver => ver.key === 'openai.library.version')).value,
             },
           ]);
 
@@ -81,11 +81,11 @@ const TraceAnalysis = () => {
           setHeadersNode(defaultNodeHeaders);
           setRowsNode([
             {
-              hostname: appData.hostname,
-              os_name: appData.os_name || "N/A",
-              os_version: appData.os_version || "N/A",
-              runtime_name: appData.runtime_name || "N/A",
-              runtime_version: appData.runtime_version || "N/A",
+              hostname: (appData.tags.find(ver => ver.key === 'hostname')).value,
+              os_name: (appData.config.find(ver => ver.key === 'os.name')).value,
+              os_version: (appData.config.find(ver => ver.key === 'os.version')).value,
+              runtime_name: (appData.config.find(ver => ver.key === 'runtime.name')).value,
+              runtime_version: (appData.config.find(ver => ver.key === 'runtime.version')).value,
             },
           ]);
         } else {
@@ -114,11 +114,11 @@ const TraceAnalysis = () => {
             </AccordionItem>
           </Accordion>
         </div>
-        <div className="trace-analysis-section">
+        {/* <div className="trace-analysis-section">
           <Accordion align="start">
             <AccordionItem title="Process" open></AccordionItem>
           </Accordion>
-        </div>
+        </div> */}
         <div className="trace-analysis-section">
           <Accordion align="start" size="sm">
             <AccordionItem title="Node" open>
