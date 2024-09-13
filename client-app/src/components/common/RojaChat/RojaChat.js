@@ -25,7 +25,7 @@ const RojaChat = () => {
   return (
     <div className="chat-container">
       <div className="chat-box">
-        <h5 className="title">Talk to Roja</h5>
+        <h5 className="title">Talk to GenAI</h5>
         <div className="input-container">
 
           <TextInput id="chatInput" placeholder="What do you want to ask?"></TextInput>
@@ -35,7 +35,7 @@ const RojaChat = () => {
           </div>
         </div>
         <label className="chat-info">
-          Roja may generate incorrect information. <br />
+          GenAI may generate incorrect information. <br />
           Verify important information.
         </label>
       </div>

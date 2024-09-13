@@ -148,7 +148,7 @@ const Navigation = () => {
             to={'/'}
             prefix="IBM"
           >
-            ROJA
+            GenAI Observability
           </HeaderName>
           <SideNav
             id="side-nav"
