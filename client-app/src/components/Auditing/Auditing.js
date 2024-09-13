@@ -26,11 +26,8 @@ import UserSatisfaction from "../Metering/UserSatisfaction/UserSatisfaction";
 const Auditing = () => {
   const [selectedDeployment, setSelectedDeployment] = useState(null);
   const [selectedUser, setSelectedUser] = useState("all");
-  const [selectedTimestampRange, setSelectedTimestampRange] =
-    useState("last7days"); // Default value
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
-  const [numberOfDaysSelected, setNumberOfDaysSelected] = useState(null);
 
   const safetyScoreTableRef = useRef();
   const adoptionRateRef = useRef();
@@ -42,29 +39,18 @@ const Auditing = () => {
   const handleFilterChange = (
     selectedItem,
     selectedUser,
-    selectedTimestampRange,
     startDate,
     endDate,
-    numberOfDaysSelected
   ) => {
     setSelectedDeployment(selectedItem);
     setSelectedUser(selectedUser);
-    setSelectedTimestampRange(selectedTimestampRange);
     setStartDate(startDate);
     setEndDate(endDate);
-    setNumberOfDaysSelected(numberOfDaysSelected);
-    console.log("Selected Deployment:", selectedItem);
-    console.log("Selected User:", selectedUser);
-    console.log("Selected Timestamp Range:", selectedTimestampRange);
-    console.log("Selected startDate:", startDate);
-    console.log("Selected endDate:", endDate);
-    console.log("Selected numberOfDaysSelected:", numberOfDaysSelected);
 
     if (safetyScoreTableRef.current) {
       safetyScoreTableRef.current.sendMessageToServer(
         selectedItem,
         selectedUser,
-        selectedTimestampRange,
         startDate,
         endDate
       );
@@ -73,7 +59,6 @@ const Auditing = () => {
       adoptionRateRef.current.sendMessageToServerAdoption(
         selectedItem,
         selectedUser,
-        selectedTimestampRange,
         startDate,
         endDate
       );
@@ -82,7 +67,6 @@ const Auditing = () => {
       userSatisfactionRef.current.sendMessageToServerUser(
         selectedItem,
         selectedUser,
-        selectedTimestampRange,
         startDate,
         endDate
       );
@@ -91,7 +75,6 @@ const Auditing = () => {
       abandonmentRateRef.current.sendMessageToServerAbandonment(
         selectedItem,
         selectedUser,
-        selectedTimestampRange,
         startDate,
         endDate
       );
@@ -100,7 +83,6 @@ const Auditing = () => {
       failureRateRef.current.sendMessageToServerFailure(
         selectedItem,
         selectedUser,
-        selectedTimestampRange,
         startDate,
         endDate
       );
@@ -109,12 +91,14 @@ const Auditing = () => {
       successRateRef.current.sendMessageToServerSuccess(
         selectedItem,
         selectedUser,
-        selectedTimestampRange,
         startDate,
         endDate
       );
     }
   };
+
+  console.log('End date in auditing', endDate);
+  
 
   useEffect(() => {
     if (safetyScoreTableRef.current) {
@@ -147,21 +131,6 @@ const Auditing = () => {
     >
       <div className="home-container">
         <Filter onFilterChange={handleFilterChange} />
-        {/* <Accordion align="start">
-          <AccordionItem title="Overall Error Rate" open={true}>
-            <Grid fullWidth narrow id="body" className="page-content body">
-              <Column max={4} xlg={4} lg={4} md={4} sm={4} className="content-tile">
-                <AbandonmentRate ref={abandonmentRateRef} selectedItem={selectedDeployment} selectedUser={selectedUser} startDate={startDate} endDate={endDate} />
-              </Column>
-              <Column max={4} xlg={4} lg={4} md={4} sm={4} className="content-tile">
-                <SuccessRate ref={successRateRef}/>
-              </Column>
-              <Column max={4} xlg={4} lg={4} md={4} sm={4} className="content-tile">
-                <FailureRate ref={failureRateRef}/>
-              </Column>
-            </Grid>
-          </AccordionItem>
-        </Accordion> */}
         <Grid fullWidth narrow id="body" className="page-content body">
           <Column max={8} xlg={8} lg={8} md={4} sm={4} className="content-tile">
             <AbandonmentRate
