@@ -106,9 +106,15 @@
 }
 
 .content-tile {
-  height: 20rem;
+  height: 24rem;
 }
 
+.p-0 {
+  padding: 0 !important;
+}
+.mt-2 {
+  margin-top: 2rem !important;
+}
 // .cds--tooltip, .cds--tooltip-trigger__wrapper, .customButton {
 //   width: 16px;
 //   height: 16px;

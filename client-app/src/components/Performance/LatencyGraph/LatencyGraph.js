@@ -110,16 +110,27 @@ const LatencyGraph = forwardRef(({ selectedItem, selectedUser, selectedTimestamp
   const latency_number = latencyDataInside.length;
 
   const latencyOptions = {
-    title: 'Latency (in seconds): ' + latency_number,
+    title: '' // 'Latency (in seconds): ' + latency_number,
   };
 
   return (
     <>
       {latencyDataInside.length > 0 ? (
-        <CustomLineChart
-          data={latencyDataInside}
-          options={latencyOptions}
-        />
+        <>
+          <h4 className="title">
+            Latency (in seconds)
+          </h4>
+          <p>
+            <ul className="sub-title">
+              <li><strong>User Name:</strong> { `${selectedUser || 'For All User Name'}`}</li>
+              <li><strong>Application Name:</strong> { `${selectedItem || 'For All Application Name'}`}</li>
+            </ul>
+          </p>
+          <CustomLineChart
+            data={latencyDataInside}
+            options={latencyOptions}
+          />
+        </>
       ) : (
         <NoData />
       )}

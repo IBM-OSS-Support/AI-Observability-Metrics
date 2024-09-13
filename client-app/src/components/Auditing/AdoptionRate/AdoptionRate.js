@@ -12,13 +12,19 @@ const options = {
   theme: "g90",
   title: '',
   resizable: true,
-  height: '60%',
+  height: '80%',
   width: '100%',
   gauge: {
     alignment: 'center',
     type: 'semi',
     status: 'danger',
     arcWidth: 25,
+  },
+  legend: {
+    enabled: false
+  },
+  toolbar: {
+    enabled: false
   },
   color: {
     scale: {
@@ -36,16 +42,18 @@ const defaultData = [
 
 const defaultMessage = [
   {
-    percentage_usage: 0
+    percentage_usage: 0,
+    total_count: 0
   }
 ];
 
 
 
-const AdoptionRate = forwardRef((props, ref) => {
+const AdoptionRate = forwardRef(({selectedUser, selectedItem}, ref) => {
   const [data, setData] = useState(defaultData);
   const [avg, setAvg] = useState(0);
   const [messageFromServerAdoption, setMessageFromServerAdoption] = useState(defaultMessage);
+  const [totalNumber, setTotalNumber] = useState(0);
 
   const { state } = useStoreContext();
 
@@ -134,6 +142,9 @@ const AdoptionRate = forwardRef((props, ref) => {
     if (messageFromServerAdoption.length > 0) {
       const newAvgValue = parseFloat(messageFromServerAdoption[0].percentage_usage) || 0;
       setAvg(newAvgValue.toFixed(2));
+      const number = messageFromServerAdoption.length;
+      console.log('Adop number', number);
+      setTotalNumber(number)
       setData([
         {
           group: 'value',
@@ -147,9 +158,10 @@ const AdoptionRate = forwardRef((props, ref) => {
 
   // Render
   return (
-    <Tile className="infrastructure-components cpu-usage">
-      <h5>Adoption Rate
-      <Button
+    <Tile className="infrastructure-components cpu-usage p-0">
+      <h4 className="title">
+        Adoption Rate
+        <Button
           hasIconOnly
           renderIcon={InformationFilled}
           iconDescription="The adoption rate measures how often each user is interacting with or using the system"
@@ -157,12 +169,22 @@ const AdoptionRate = forwardRef((props, ref) => {
           size="sm"
           className="customButton"
         />
-      </h5>
+      </h4>
+      <p>
+        <ul className="sub-title">
+          <li><strong>User Name:</strong> { `${selectedUser || 'For All User Name'}`}</li>
+          <li><strong>Application Name:</strong> { `${selectedItem || 'For All Application Name'}`}</li>
+        </ul>
+      </p>
       <div className="cpu-usage-chart">
         <GaugeChart
           data={data}
           options={options}
         />
+      </div>
+      <div className="cpu-usage-data">
+        <div className="label">Number of Adoption Rate Occured</div>
+        <h3 className="data">{totalNumber}</h3>
       </div>
     </Tile>
   );

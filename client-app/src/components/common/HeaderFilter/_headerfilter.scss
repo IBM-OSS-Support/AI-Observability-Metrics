@@ -40,7 +40,55 @@
   }
 }
 
+/* Hide the close icon in ComboBox */
+.cds--list-box__selection {
+  display: none !important;
+}
 
+.header-filter-wrapper {
+  position: sticky;
+  top: calc(0px + 47px);
+  z-index: 1000;
+  background-color: #161616; /* Adjust to match your theme */
+  padding: 15px 20px; /* Add padding around the filter bar */
+  width: calc(100% + 2rem);
+  margin-left: -1rem;
+  &.scroll {
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+  }
+}
 
+.header-filter {
+  display: flex;
+  align-items: center; /* Align items vertically */
+  gap: 10px; /* Add space between the filter elements */
+}
 
+.combo-box, .date-picker {
+  flex: 1; /* Ensure even width distribution */
+  min-width: 200px; /* Ensure a minimum width */
+}
 
+.clear-all-button {
+  margin-left: 15px; /* Add space before the button */
+}
+
+.filter-title {
+  font-size: 1.3rem;
+  color: #fff; /* Adjust text color */
+  position: absolute;
+  left: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
+}
+
+.hidden {
+  opacity: 0;
+  visibility: hidden;
+}
+
+.visible {
+  opacity: 1;
+  visibility: visible;
+}

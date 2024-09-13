@@ -1,8 +1,9 @@
 import React, { forwardRef, useEffect, useImperativeHandle, useState } from "react";
-import { Tile } from "@carbon/react";
+import { Button, Tile } from "@carbon/react";
 import { GaugeChart } from "@carbon/charts-react";
 import { getAppData } from "../../../appData";
 import { useStoreContext } from "../../../store";
+import { InformationFilled } from "@carbon/icons-react";
 
 const options = {
   theme: "g90",
@@ -42,7 +43,7 @@ const defaultMessage = [
   },
 ];
 
-const AbandonmentRate = forwardRef((props, ref) => {
+const AbandonmentRate = forwardRef(({selectedUser, selectedItem}, ref) => {
   const [data, setData] = useState(defaultData);
   const [avg, setAvg] = useState(0);
   const [messageFromServerAbandonment, setMessageFromServerAbandonment] = useState(defaultMessage);
@@ -115,7 +116,23 @@ const AbandonmentRate = forwardRef((props, ref) => {
 
   return (
     <Tile className="infrastructure-components cpu-usage">
-      <h5>Abandonment Rate</h5>
+      <h4 className="title">
+        Abandonment Rate
+        <Button
+          hasIconOnly
+          renderIcon={InformationFilled}
+          iconDescription="The abandon rate is the percentage that a user leaves or quits before completing an intended task."
+          kind="ghost"
+          size="sm"
+          className="customButton"
+        />
+      </h4>
+      <p>
+        <ul className="sub-title">
+          <li><strong>User Name:</strong> { `${selectedUser || 'For All User Name'}`}</li>
+          <li><strong>Application Name:</strong> { `${selectedItem || 'For All Application Name'}`}</li>
+        </ul>
+      </p>
       <div className="cpu-usage-chart">
         <GaugeChart data={data} options={options} />
       </div>

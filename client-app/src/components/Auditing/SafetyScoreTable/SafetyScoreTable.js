@@ -6,9 +6,11 @@ import React, {
 } from "react";
 import CustomDataTable from "../../common/CustomDataTable";
 import { DonutChart, MeterChart, PieChart } from "@carbon/charts-react";
-import { Tile } from "@carbon/react";
+import { Button, Tile } from "@carbon/react";
+import { InformationFilled } from "@carbon/icons-react";
 
 const options = {
+  theme: "g90",
   title: "",
   resizable: true,
   legend: {
@@ -19,19 +21,24 @@ const options = {
     alignment: 'center',
     loading : true
   },
+  legend: {
+    enabled: true
+  },
+  toolbar: {
+    enabled: false
+  },
   color: {
     gradient: {
         colors: '[blue',
         enabled: true,
     },
-},
-  height: "400px",
+  },
+  height: "285px",
 };
 
 
 
-const SafetyScoreTable = forwardRef(
-  ({ selectedItem, selectedUser, startDate, endDate }, ref) => {
+const SafetyScoreTable = forwardRef( ({ selectedItem, selectedUser, startDate, endDate }, ref) => {
     const [graphData, setGraphData] = useState([]);
     const [data, setData] = useState([]);
 
@@ -159,12 +166,32 @@ const SafetyScoreTable = forwardRef(
     console.log("Graph data", graphData);
 
     return (
-      <Tile className="infrastructure-components cpu-usage">
-        <h5>Safety Score</h5>
+      <Tile className="infrastructure-components cpu-usage p-0">
+        {/* <h5>Safety Score</h5> */}
+          <h4 className="title">
+            Safety Score
+            <Button
+              hasIconOnly
+              renderIcon={InformationFilled}
+              iconDescription="The safety score indicates where or not the prompt provided by the user was harmful or not."
+              kind="ghost"
+              size="sm"
+              className="customButton"
+            />
+          </h4>
+          <p>
+            <ul className="sub-title">
+              <li><strong>User Name:</strong> { `${selectedUser || 'For All User Name'}`}</li>
+              <li><strong>Application Name:</strong> { `${selectedItem || 'For All Application Name'}`}</li>
+            </ul>
+          </p>
         <div className="cpu-usage-chart">
           <PieChart data={graphData} options={options} />
         </div>
-          <h5>Total Count = {data}</h5>
+        <div className="cpu-usage-data mt-2">
+          <div className="label">Total Number of Rows Counted</div>
+          <h3 className="data">{data}</h3>
+        </div>
       </Tile>
     );
   }
