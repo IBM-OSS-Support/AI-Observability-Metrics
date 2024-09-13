@@ -26,7 +26,8 @@ const defaultHeadersLog = [
 const MaintenanceTable = forwardRef(
   ({ selectedItem, selectedUser, startDate, endDate }, ref) => {
     const [messageFromServerLog, setMessageFromServerLog] = useState([]);
-    const [rows, setRows] = useState([]);
+    const [originalRows, setOriginalRows] = useState([]); // Original data from server
+    const [rows, setRows] = useState([]); // Filtered data
     const [headersLog, setHeadersLog] = useState(defaultHeadersLog);
     const [currentPage, setCurrentPage] = useState(1);
     const [rowsPerPage, setRowsPerPage] = useState(5);
@@ -36,7 +37,6 @@ const MaintenanceTable = forwardRef(
       sendMessageToServerLog,
     }));
 
-    // Function to send the message to the API server (without date filtering)
     const sendMessageToServerLog = async (
       selectedItem,
       selectedUser,
@@ -45,10 +45,7 @@ const MaintenanceTable = forwardRef(
     ) => {
       let query = "SELECT * FROM operations";
 
-      console.log("end date inside sendMessageToServerLog", endDate);
-
-      // Add filtering logic based on selectedItem, selectedUser, startDate, and endDate
-
+      // Build the query based on filters (selectedItem, selectedUser)
       if (selectedItem && !selectedUser) {
         query += ` WHERE application_name = '${selectedItem}'`;
       }
@@ -59,63 +56,42 @@ const MaintenanceTable = forwardRef(
         query += ` WHERE application_name = '${selectedItem}' AND app_user = '${selectedUser}'`;
       }
 
-      console.log("query", query);
-
       try {
         const apiUrl = process.env.REACT_APP_BACKEND_API_URL;
         const response = await fetch(apiUrl, {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ query: query }),
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ query }),
         });
 
         const result = await response.json();
-        console.log("Result:", result);
-
         setMessageFromServerLog(result);
+        setOriginalRows(result); // Store original data
         setTotalItems(result.length);
       } catch (error) {
         console.error("Error fetching data from API:", error);
       }
     };
 
-    useEffect(() => {
-      setHeadersLog(defaultHeadersLog);
-    }, []);
-
     // Re-fetch data when filter values change
     useEffect(() => {
-      sendMessageToServerLog();
+      sendMessageToServerLog(selectedItem, selectedUser, startDate, endDate);
     }, [selectedItem, selectedUser]);
 
     useEffect(() => {
       if (messageFromServerLog.length > 0) {
-        setRows(messageFromServerLog);
+        setRows(messageFromServerLog); // Initially set rows to server data
       }
     }, [messageFromServerLog]);
 
-    // Convert UTC timestamp to IST (for display purposes if necessary)
-    const convertUTCToIST = (utcDateString) => {
-      const utcDate = new Date(utcDateString);
-      const istOffset = 5.5 * 60 * 60 * 1000; // IST is UTC+5:30
-      return new Date(utcDate.getTime() + istOffset); // Returns a Date object in IST
-    };
-
     // Apply frontend date filtering using startDate and endDate
     const filterByDateRange = (rows, startDate, endDate) => {
-      console.log("Start Date:", startDate, "End Date:", endDate);
       if (startDate && endDate) {
-        // Convert startDate and endDate to Date objects if they aren't already
         const start = new Date(startDate).getTime();
         const end = new Date(endDate).getTime();
-        console.log("start and end date", startDate, endDate);
 
         return rows.filter((row) => {
-          const timestamp = convertUTCToIST(row.timestamp).getTime();
-          console.log("time in rows", timestamp);
-          // Ensure row.timestamp is a valid timestamp
+          const timestamp = new Date(row.timestamp).getTime(); // Ensure proper timestamp format
           return timestamp >= start && timestamp <= end;
         });
       }
@@ -123,8 +99,8 @@ const MaintenanceTable = forwardRef(
     };
 
     // Get data for the current page with date filtering applied
-    const getCurrentPageData = (startDate, endDate) => {
-      const filteredRows = filterByDateRange(rows, startDate, endDate); // Apply date filtering here
+    const getCurrentPageData = () => {
+      const filteredRows = filterByDateRange(rows, startDate, endDate); // Use filtered rows for pagination
       const startIndex = (currentPage - 1) * rowsPerPage;
       const endIndex = startIndex + rowsPerPage;
 
@@ -146,7 +122,7 @@ const MaintenanceTable = forwardRef(
         ).value,
       }));
 
-      return rowData.slice(startIndex, endIndex);
+      return rowData.slice(startIndex, endIndex); // Return sliced data for the current page
     };
 
     const handlePaginationChange = ({ page, pageSize }) => {
@@ -154,32 +130,33 @@ const MaintenanceTable = forwardRef(
       setRowsPerPage(pageSize);
     };
 
-    const currentRows = getCurrentPageData(startDate, endDate);
+    const currentRows = getCurrentPageData(); // No setRows inside render
 
     return (
       <>
         {currentRows.length > 0 ? (
           <div>
-          <CustomDataTable headers={headersLog} rows={currentRows} />
+            <CustomDataTable headers={headersLog} rows={currentRows} />
 
-          <Pagination
-            totalItems={totalItems}
-            pageSize={rowsPerPage}
-            page={currentPage}
-            onChange={handlePaginationChange}
-            pageSizes={[5, 10, 20, 30, 40, 50]}
-          />
-        </div>
+            <Pagination
+              totalItems={totalItems}
+              pageSize={rowsPerPage}
+              page={currentPage}
+              onChange={handlePaginationChange}
+              pageSizes={[5, 10, 20, 30, 40, 50]}
+            />
+          </div>
         ) : (
           <Tile className="infrastructure-components content-tile">
             <h4>Maintenance Table</h4>
             <NoData />
           </Tile>
         )}
-        
       </>
     );
   }
 );
 
 export default MaintenanceTable;
+
+

@@ -27,10 +27,9 @@ const Maintenance = () => {
 
   const maintenanceTableRef = useRef();
   const frequencyOfUseRef = useRef();
-  
 
-  console.log('setEndDate', endDate);
-  
+  console.log("setEndDate", endDate);
+
   useEffect(() => {
     if (maintenanceTableRef.current) {
       maintenanceTableRef.current.sendMessageToServerLog();
@@ -45,15 +44,20 @@ const Maintenance = () => {
     selectedItem,
     selectedUser,
     startDate,
-    endDate,
+    endDate
   ) => {
     setSelectedDeployment(selectedItem);
     setSelectedUser(selectedUser);
     setStartDate(startDate);
     setEndDate(endDate);
 
-    console.log('end date inside maintenance', endDate);
-    console.log('all inside maintenance', startDate, selectedItem, selectedUser);
+    console.log("end date inside maintenance", endDate);
+    console.log(
+      "all inside maintenance",
+      startDate,
+      selectedItem,
+      selectedUser
+    );
 
     // Send filter data to table and other components
     if (maintenanceTableRef.current) {
@@ -63,7 +67,6 @@ const Maintenance = () => {
         startDate,
         endDate
       );
-      
     }
     if (frequencyOfUseRef.current) {
       frequencyOfUseRef.current.fetchFrequencyData(
@@ -73,10 +76,7 @@ const Maintenance = () => {
         endDate
       );
     }
-
-    
   };
-  
 
   return (
     <PageContainer
@@ -97,7 +97,13 @@ const Maintenance = () => {
         />
         <div className="chart-tile_wrap">
           <Tile className="chart-tile-maintenance">
-            <FrequencyOfUse ref={frequencyOfUseRef} />
+            <FrequencyOfUse
+              ref={frequencyOfUseRef}
+              selectedItem={selectedDeployment}
+              selectedUser={selectedUser}
+              startDate={startDate}
+              endDate={endDate}
+            />
           </Tile>
         </div>
       </div>
