@@ -79,8 +79,8 @@ const LogTable = forwardRef(({ selectedItem, selectedUser, startDate, endDate },
   useEffect(() => {
     setHeadersLogTable([
       { key: 'id', header: 'ID' },
-      { key: 'application_name', header: 'Application Name' },
       { key: 'app_user', header: 'User' },
+      { key: 'application_name', header: 'Application Name' },
       { key: 'timestamp', header: 'Timestamp' },
     ]);
   }, []);

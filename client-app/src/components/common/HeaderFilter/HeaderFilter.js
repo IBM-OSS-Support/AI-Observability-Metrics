@@ -135,7 +135,8 @@ const Filter = ({ onFilterChange }) => {
   };
 
   const handleClearAll = () => {
-    setLastEndDate(endDate);
+    // setLastEndDate(endDate);
+
     setSelectedItem(null);
     setSelectedItemUser(null);
     setStartDate(null);
@@ -147,11 +148,15 @@ const Filter = ({ onFilterChange }) => {
     setDatePickerKey(prevKey => prevKey + 1);
   };
 
-  const handleStartDateClick = () => {
-    if (startDate === null && lastEndDate !== null) {
-      setEndDate(lastEndDate);
-    }
-  };
+  // const handleStartDateClick = () => {
+  //   if (startDate === null && lastEndDate !== null) {
+  //     console.log('handleStartDateClick', endDate);
+  //     setEndDate(lastEndDate);
+  //   }
+  // };
+
+  console.log('End date inside filter component', endDate);
+  
 
   const applicationOptions = filteredApplications.length > 0 ? filteredApplications : ["Select a user first"];
 
@@ -207,7 +212,6 @@ const Filter = ({ onFilterChange }) => {
             onChange={() => {}}
             onKeyDown={(e) => e.preventDefault()}
             readOnly
-            onClick={handleStartDateClick}
           />
           <DatePickerInput
             id={`${uniqueId}-end`}

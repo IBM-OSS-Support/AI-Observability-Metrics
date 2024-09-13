@@ -68,7 +68,7 @@ const FrequencyOfUse = forwardRef(({ selectedItem, selectedUser, startDate, endD
 
     console.log("apiUrl:", apiUrl);
 
-    const query = `WITH operation_counts AS ( SELECT operation, COUNT(*) AS operation_count FROM operations GROUP BY operation ), total_count AS ( SELECT COUNT(*) AS total FROM operations ) SELECT oc.operation, oc.operation_count, (oc.operation_count * 100.0 / tc.total) AS percentage_usage FROM operation_counts oc, total_count tc ORDER BY percentage_usage DESC;`;
+    let query = `WITH operation_counts AS ( SELECT operation, COUNT(*) AS operation_count FROM operations GROUP BY operation ), total_count AS ( SELECT COUNT(*) AS total FROM operations ) SELECT oc.operation, oc.operation_count, (oc.operation_count * 100.0 / tc.total) AS percentage_usage FROM operation_counts oc, total_count tc ORDER BY percentage_usage DESC;`;
 
     // Add filtering logic based on selectedItem, selectedUser, startDate, and endDate
     if (selectedItem && !selectedUser) {
@@ -136,7 +136,7 @@ const FrequencyOfUse = forwardRef(({ selectedItem, selectedUser, startDate, endD
   // Render the component
   return (
     <Tile className="infrastructure-components cpu-usage">
-      <h5>Frequency of Use
+      {/* <h5>Frequency of Use
       <Button
           hasIconOnly
           renderIcon={InformationFilled}
@@ -146,7 +146,24 @@ const FrequencyOfUse = forwardRef(({ selectedItem, selectedUser, startDate, endD
           size="sm"
           className="customButton"
         />
-      </h5>
+      </h5> */}
+      <h4 className="title">
+            Frequency Of Use
+            <Button
+              hasIconOnly
+              renderIcon={InformationFilled}
+              iconDescription="Frequency of use is the count of occurrences for each distinct operation within a dataset. It indicates how many times each type of operation has been recorded."
+              kind="ghost"
+              size="sm"
+              className="customButton"
+            />
+          </h4>
+          <p>
+            <ul className="sub-title">
+              <li><strong>User Name:</strong> { `${selectedUser || 'For All User Name'}`}</li>
+              <li><strong>Application Name:</strong> { `${selectedItem || 'For All Application Name'}`}</li>
+            </ul>
+          </p>
       <div className="cpu-usage-chart">
         <GaugeChart data={data} options={options} />
       </div>
