@@ -9,7 +9,7 @@
  * of its trade secrets, irrespective of what has been deposited with
  * the U.S. Copyright Office.
  ****************************************************************************** */
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Column, Grid, Tile } from "@carbon/react";
 
 // Globals -------------------------------------------------------------------->
@@ -24,7 +24,34 @@ import LatencyGraph from "../Performance/LatencyGraph/LatencyGraph";
 
 const Performance = () => {
 
+  const [selectedDeployment, setSelectedDeployment] = useState(null);
+  const [selectedUser, setSelectedUser] = useState('');
+  const [selectedTimestampRange, setSelectedTimestampRange] = useState('last7days'); // Default value
+  const [startDate, setStartDate] = useState(null);
+  const [endDate, setEndDate] = useState(null);
+  const [numberOfDaysSelected, setNumberOfDaysSelected] = useState(null);
+
+
   const costGraphRef = useRef();
+
+  const handleFilterChange = (selectedItem, selectedUser, selectedTimestampRange, startDate, endDate, numberOfDaysSelected) => {
+    setSelectedDeployment(selectedItem);
+    setSelectedUser(selectedUser);
+    setSelectedTimestampRange(selectedTimestampRange);
+    setStartDate(startDate);
+    setEndDate(endDate);
+    setNumberOfDaysSelected(numberOfDaysSelected);
+    console.log('Selected Deployment:', selectedItem);
+    console.log('Selected User:', selectedUser);
+    console.log('Selected Timestamp Range:', selectedTimestampRange);
+    console.log('Selected startDate:', startDate);
+    console.log('Selected endDate:', endDate);
+    console.log('Selected numberOfDaysSelected:', numberOfDaysSelected);
+    
+    if (costGraphRef.current) {
+      costGraphRef.current.sendMessageToServerCost(selectedItem, selectedUser, selectedTimestampRange, startDate, endDate);
+    }
+  };
 
   useEffect(() => {
     if (costGraphRef.current) {
@@ -42,7 +69,7 @@ const Performance = () => {
       }}
     >
       <div className="home-container">
-        <HeaderFilter />
+        <HeaderFilter onFilterChange={handleFilterChange}/>
         <Grid fullWidth narrow id="body" className="page-content body">
           <Column
             max={16}
@@ -53,48 +80,9 @@ const Performance = () => {
             className="content-tile"
           >
             <Tile className="chart-tile">
-              <CostGraph ref={costGraphRef}/>
+              <CostGraph ref={costGraphRef} selectedItem={selectedDeployment} selectedUser={selectedUser} startDate={startDate} endDate={endDate}/>
             </Tile>
           </Column>
-          {/* <Column max={8} xlg={8} lg={8} md={8} sm={4} className="content-tile">
-						<UserSatisfaction />
-					</Column>
-          <Column
-            max={8}
-            xlg={8}
-            lg={8}
-            md={8}
-            sm={4}
-            className="content-tile"
-          >
-            <Tile className="chart-tile">
-              <CallCountGraph />
-            </Tile>
-          </Column>
-          <Column
-            max={8}
-            xlg={8}
-            lg={8}
-            md={8}
-            sm={4}
-            className="content-tile"
-          >
-            <Tile className="chart-tile">
-              <LatencyGraph />
-            </Tile>
-          </Column> */}
-          {/* <Column
-            max={16}
-            xlg={16}
-            lg={16}
-            md={8}
-            sm={4}
-            className="content-tile"
-          >
-            <Tile className="chart-tile">
-              <LatencyGraph />
-            </Tile>
-          </Column> */}
         </Grid>
       </div>
     </PageContainer>

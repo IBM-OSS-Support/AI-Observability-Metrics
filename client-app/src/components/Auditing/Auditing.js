@@ -229,6 +229,7 @@ const Auditing = () => {
               <SafetyScoreTable ref={safetyScoreTableRef} />
             </Tile>
           </Column>
+
         </Grid>
       </div>
     </PageContainer>

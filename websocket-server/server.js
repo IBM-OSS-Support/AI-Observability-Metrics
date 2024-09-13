@@ -4,17 +4,17 @@ const cors = require('cors');
 const os = require('os'); // Import the os module
 
 const app = express();
-const port = 5000;
+const port = process.env.SERVER_PORT || 5000;
 
 app.use(cors());
 app.use(express.json());
 
 const client = new Client({
-  user: 'roja_user',
-  host: '9.20.196.69',
-  database: 'roja_postgres',
-  password: 'roja_user',
-  port: 5432,
+  user: process.env.DB_USER,
+  host: process.env.DB_HOST,
+  database: process.env.DB_NAME,
+  password: process.env.DB_PASSWORD,
+  port: process.env.DB_PORT,
 });
 
 client.connect();

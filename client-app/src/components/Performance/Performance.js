@@ -118,7 +118,7 @@ const Performance = () => {
       </Accordion>
         <Grid fullWidth narrow id="body" className="page-content body">
           <Column max={8} xlg={8} lg={8} md={4} sm={4} className="content-tile">
-            <CpuUsage ref={cpuUsageRef}/>
+            <CpuUsage ref={cpuUsageRef} selectedItem={selectedDeployment} selectedUser={selectedUser} />
           </Column>
           <Column max={8} xlg={8} lg={8} md={4} sm={4} className="content-tile">
           <Tile className="chart-tile">

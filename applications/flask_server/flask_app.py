@@ -8,8 +8,8 @@ from dotenv import load_dotenv
 
 
 #/root/roja-project/roja-metric-poc/applications/kafka_roja
-sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from postgres import postgres
+#sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+import postgres
 
 load_dotenv()
 
@@ -17,7 +17,7 @@ app = Flask(__name__)
 CORS(app)
 
 # Set up basic logginglogging.basicConfig(level=logging.DEBUG)
-logging.basicConfig(level=logging.CRITICAL)
+logging.basicConfig(level=logging.DEBUG)
 
 def extract_application_name(data_obj):
     if isinstance(data_obj, list):
@@ -45,7 +45,7 @@ def upload_additional():
         postgres.upload_to_postgres_with_message(data)
         return jsonify({"message": "additional metrics JSON received successfully"}), 200
     except Exception as e:
-        logging.error(f'Error processing request: {str(e)}')
+        logging.exception(f'Error processing request: {str(e)}')
         return f'Error: {str(e)}', 500
     
 
@@ -59,7 +59,7 @@ def upload_anthropic():
         print("Data which is sent is: ", data)
         return jsonify({"message": "Anthropic metrics JSON received successfully"}), 200
     except Exception as e:
-        logging.error(f'Error processing request: {str(e)}')
+        logging.exception(f'Error processing request: {str(e)}')
         return f'Error: {str(e)}', 500
 
 
@@ -78,7 +78,7 @@ def upload_through_rest_scores():
         postgres.upload_to_postgres_with_message(data)
         return jsonify({"message": "scores JSON received successfully"}), 200
     except Exception as e:
-        logging.error(f'Error processing request: {str(e)}')
+        logging.exception(f'Error processing request: {str(e)}')
         return f'Error: {str(e)}', 500
 
 @app.route('/api/v1/logs/', methods=['POST'])
@@ -98,7 +98,7 @@ def upload_through_rest_logs():
         #postgres.upload_to_postgres_with_message(data)
         return jsonify({"message": "logs JSON received successfully"}), 200
     except Exception as e:
-        logging.error(f'Error processing request: {str(e)}')
+        logging.exception(f'Error processing request: {str(e)}')
         return f'Error: {str(e)}', 500
 
 @app.route('/api/v1/spans/', methods=['POST'])
@@ -123,7 +123,7 @@ def upload_through_rest_spans():
         postgres.upload_to_postgres_with_message(data)
         return jsonify({"message": "spans JSON received successfully"}), 200
     except Exception as e:
-        logging.error(f'Error processing request: {str(e)}')
+        logging.exception(f'Error processing request: {str(e)}')
         return f'Error: {str(e)}', 500
 
 @app.route('/api/v1/metrics/', methods=['POST'])
@@ -149,7 +149,7 @@ def upload_through_rest_metrics():
         postgres.upload_to_postgres_with_message(data)
         return jsonify({"message": "metrics JSON received successfully"}), 200
     except Exception as e:
-        logging.error(f'Error processing request: {str(e)}')
+        logging.exception(f'Error processing request: {str(e)}')
         return f'Error: {str(e)}', 500
 
 if __name__ == '__main__':
