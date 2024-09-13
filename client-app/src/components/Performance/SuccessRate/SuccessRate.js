@@ -1,8 +1,9 @@
 import React, { forwardRef, useEffect, useImperativeHandle, useState } from "react";
-import { Tile } from "@carbon/react";
+import { Button, Tile } from "@carbon/react";
 import { GaugeChart } from "@carbon/charts-react";
 import { getAppData } from "../../../appData";
 import { useStoreContext } from "../../../store";
+import { InformationFilled } from "@carbon/icons-react";
 
 const options = {
   theme: "g90",
@@ -43,7 +44,7 @@ const defaultMessage = [
   }
 ];
 
-const SuccessRate = forwardRef((props, ref) => {
+const SuccessRate = forwardRef(({selectedUser, selectedItem}, ref) => {
   const [data, setData] = useState(defaultData);
   const [avg, setAvg] = useState(0);
   const [messageFromServerSuccess, setMessageFromServerSuccess] = useState(defaultMessage);
@@ -101,9 +102,9 @@ const SuccessRate = forwardRef((props, ref) => {
 
   useEffect(() => {
     if (state.status === 'success') {
-      const appData = getAppData();
+      const appData = getAppData(selectedUser, selectedItem);
   
-      console.log('Success app data', appData[0].data);
+      console.log(selectedUser, selectedItem, 'Success app data', appData[0].data);
         
       if (messageFromServerSuccess.length > 0) {
         const newAvgValue = messageFromServerSuccess[0].success_percentage; 
@@ -127,7 +128,24 @@ const SuccessRate = forwardRef((props, ref) => {
 
   return (
     <Tile className="infrastructure-components cpu-usage">
-      <h5>Success Rate</h5>
+      <h4 className="title">
+        Success Rate
+        <Button
+          hasIconOnly
+          renderIcon={InformationFilled}
+          // iconDescription="indicates number of times the application ran to completion successfully without any errors:."
+          iconDescription="The success rate is measured by the number of times the application runs and completes successfully without an error."
+          kind="ghost"
+          size="sm"
+          className="customButton"
+        />
+      </h4>
+      <p>
+        <ul className="sub-title">
+          <li><strong>User Name:</strong> { `${selectedUser || 'For All User Name'}`}</li>
+          <li><strong>Application Name:</strong> { `${selectedItem || 'For All Application Name'}`}</li>
+        </ul>
+      </p>
       <div className="cpu-usage-chart">
         <GaugeChart data={data} options={options} />
       </div>

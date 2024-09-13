@@ -1,8 +1,9 @@
 import React, { forwardRef, useEffect, useImperativeHandle, useRef, useState } from "react";
-import { Tile } from "@carbon/react";
+import { Button, Tile } from "@carbon/react";
 import { MeterChart } from "@carbon/charts-react";
 import { useStoreContext } from "../../../store";
 import NoData from "../../common/NoData/NoData";
+import { InformationFilled } from "@carbon/icons-react";
 
 const getColorByValue = (value) => {
   if (value >= 4) return "#00bfae"; // Excellent
@@ -19,7 +20,7 @@ const getStatusText = (value) => {
 const options = (color, statusText) => ({
   theme: "g90",
   resizable: true,
-  height: '80%',
+  height: '60%',
   width: '100%',
   meter: {
     proportional: {
@@ -27,7 +28,7 @@ const options = (color, statusText) => ({
       totalFormatter: e => statusText,
       breakdownFormatter: e => `The rating of the application is ${e.datasetsTotal.toFixed(2)} out of 5`
     },
-    height: '70%',
+    height: '60%',
     width: '150%'
     },
     color: {
@@ -144,8 +145,25 @@ const UserSatisfaction = forwardRef(({ selectedItem, selectedUser, startDate, en
   }, [messageFromServerUser, state.status]);
 
   return (
-    <Tile className="infrastructure-components accuracy">
-      <h5>Application Rating</h5>
+    <Tile className="infrastructure-components accuracy p-0">
+      {/* <h5>Application Rating</h5> */}
+      <h4 className="title">
+        Application Rating
+        <Button
+          hasIconOnly
+          renderIcon={InformationFilled}
+          iconDescription="Application rating is the average rating provided by users for an application."
+          kind="ghost"
+          size="sm"
+          className="customButton"
+        />
+      </h4>
+      <p>
+        <ul className="sub-title">
+          <li><strong>User Name:</strong> { `${selectedUser || 'For All User Name'}`}</li>
+          <li><strong>Application Name:</strong> { `${selectedItem || 'For All Application Name'}`}</li>
+        </ul>
+      </p>
       <div className="cpu-usage-chart">
         {avg > 0 ? (
           <MeterChart data={data} options={chartOptions} />
@@ -157,11 +175,7 @@ const UserSatisfaction = forwardRef(({ selectedItem, selectedUser, startDate, en
         {avg > 0 ? (
           <>
             <div className="label">
-              {selectedUser && selectedItem ? (
-                `Average rating of ${selectedItem} is`
-              ) : (
-                `Average rating of ${selectedUser} Application is`
-              )}
+             Average rating of application
             </div>
             <h3 className="data">{avg}/5</h3>
           </>
