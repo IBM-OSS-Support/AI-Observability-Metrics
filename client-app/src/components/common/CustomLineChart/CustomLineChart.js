@@ -82,7 +82,7 @@ const defaultOptions = {
       enabled: true
     }
   },
-  height: "95%"
+  height: "90%"
 }
 
 function Metrics(props) {

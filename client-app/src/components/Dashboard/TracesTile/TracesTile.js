@@ -10,6 +10,7 @@ const defaultData = {
   users: 0,
   operations: 0,
   models: 0,
+  appCount: 0,
 };
 
 const TracesTile = () => {
@@ -22,9 +23,10 @@ const TracesTile = () => {
 
     const operationsQuery = `SELECT * FROM operations`;
     const performanceQuery = `SELECT * FROM performance`; // Adjust the query as needed
+    const maintenanceQuery = `SELECT * FROM maintenance`;
 
     try {
-      const [operationsResponse, performanceResponse] = await Promise.all([
+      const [operationsResponse, performanceResponse, maintenanceResponse] = await Promise.all([
         fetch(apiUrl, {
           method: "POST",
           headers: {
@@ -39,35 +41,46 @@ const TracesTile = () => {
           },
           body: JSON.stringify({ query: performanceQuery }),
         }),
+        fetch(apiUrl, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ query: maintenanceQuery }),
+        }),
       ]);
 
-      if (!operationsResponse.ok || !performanceResponse.ok) {
+      if (!operationsResponse.ok || !performanceResponse.ok || !maintenanceResponse.ok) {
         throw new Error("Network response was not ok");
       }
 
-      const [operationsData, performanceData] = await Promise.all([
+      const [operationsData, performanceData, maintenanceData] = await Promise.all([
         operationsResponse.json(),
         performanceResponse.json(),
+        maintenanceResponse.json(),
       ]);
 
       console.log("Operations Data:", operationsData);
       console.log("Performance Data:", performanceData);
+      console.log("Mintenance Data:", maintenanceData);
 
-      return { operationsData, performanceData };
+      return { operationsData, performanceData, maintenanceData };
     } catch (error) {
       console.error("Error fetching trace data:", error);
-      return { operationsData: [], performanceData: [] };
+      return { operationsData: [], performanceData: [], maintenanceData: [], };
     }
   };
 
   useEffect(() => {
-    fetchTraceData().then(({ operationsData, performanceData }) => {
-      if (operationsData.length > 0 || performanceData.length > 0) {
+    fetchTraceData().then(({ operationsData, performanceData, maintenanceData }) => {
+      if (operationsData.length > 0 || performanceData.length > 0 || maintenanceData.length > 0) {
         // Process operations data
         const appsCount = new Set(operationsData.map(item => item.application_name)).size;
         const usersSet = new Set(operationsData.flatMap(item => item.tags.filter(tag => tag.key === 'user').map(tag => tag.value)));
         const modelsSet = new Set(operationsData.flatMap(item => item.tags.filter(tag => tag.key === 'model').map(tag => tag.value)));
         const operationsCount = operationsData.length;
+
+        const totalAppCount = maintenanceData.length
 
         // Process performance data
         const latencies = performanceData.map(item => {
@@ -90,6 +103,7 @@ const TracesTile = () => {
           users: usersSet.size,
           operations: operationsCount,
           models: modelsSet.size,
+          appCount: totalAppCount,
         });
       } else {
         setData(defaultData);
@@ -105,11 +119,11 @@ const TracesTile = () => {
           Quick Summary
         </h5>
         <div className="types">
-          <Tooltip className="button-tooltip" align="top" label={'Your Total AI Applications'}>
+          <Tooltip className="button-tooltip" align="top" label={'Your Total No of Application Name'}>
             <Button className="type" kind="ghost">
               <div className="title">
                 <div className="indicator engines" />
-                <span>Total AI applications</span>
+                <span>Total No of Application Names</span>
               </div>
               <h2>{data.apps}</h2>
               {/* <h2>{moment.duration(data.avgLatency).asSeconds().toFixed(1)} s</h2> */}
@@ -119,18 +133,19 @@ const TracesTile = () => {
             <Button className="type" kind="ghost">
               <div className="title">
                 <div className="indicator buckets" />
-                <span>Users</span>
+                <span>Total No of User Names</span>
               </div>
               <h2>{formatCount(data.users)}</h2>
             </Button>
           </Tooltip>
-          <Tooltip className="button-tooltip" align="top" label={'Total Number of Operations done throughout'}>
+          <Tooltip className="button-tooltip" align="top" label={'Total Number of Applications executed throughout'}>
             <Button className="type" kind="ghost">
               <div className="title">
                 <div className="indicator catalogs" />
-                <span>Total operations</span>
+                <span>Total Applications Executed</span>
               </div>
-              <h2>{formatCount(data.operations)}</h2>
+              <h2>{formatCount(data.appCount)}</h2>
+              {/* <h2>{formatCount(data.operations)}</h2> */}
             </Button>
           </Tooltip>
           <Tooltip className="button-tooltip" align="top" label={'Total Number of Models Used in'}>

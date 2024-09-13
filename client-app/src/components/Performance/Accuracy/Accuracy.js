@@ -150,7 +150,16 @@ const Accuracy = forwardRef(
 
     return (
       <Tile className="infrastructure-components accuracy">
-        <h5>{`${selectedUser || 'All User'}'s ${selectedItem || 'all Applications'} Accuracy Score is ${avg}`}</h5>
+        {/* <h5>{`${selectedUser || 'All User'}'s ${selectedItem || 'all Applications'} Accuracy Score is ${avg}`}</h5> */}
+        <h4 className="title">
+          Accuracy Score
+        </h4>
+        <p>
+          <ul className="sub-title">
+            <li><strong>User Name:</strong> { `${selectedUser || 'For All User Name'}`}</li>
+            <li><strong>Application Name:</strong> { `${selectedItem || 'For All Application Name'}`}</li>
+          </ul>
+        </p>
         <div className="cpu-usage-chart">
           {avg > 0 ? (
             <MeterChart data={data} options={chartOptions} />
