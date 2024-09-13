@@ -134,9 +134,18 @@ const TokenPerSession1 = forwardRef(({ selectedItem, selectedUser, selectedTimes
     <>
     {messageFromServerToken.length > 0 ? (
       <Tile>
-        <h5>
+        {/* <h5>
           {`Average Token per Session of the ${selectedUser || 'All User'}'s ${selectedItem || 'all Applications'}`}
-        </h5>
+        </h5> */}
+          <h4 className="title">
+            Average Token per Session
+          </h4>
+          <p>
+            <ul className="sub-title">
+              <li><strong>User Name:</strong> { `${selectedUser || 'For All User Name'}`}</li>
+              <li><strong>Application Name:</strong> { `${selectedItem || 'For All Application Name'}`}</li>
+            </ul>
+          </p>
         <StackedBarChart data={data} options={options} />
         <div className="cpu-usage-data pt-1">
           <div className="label">Average Tokens per Session</div>

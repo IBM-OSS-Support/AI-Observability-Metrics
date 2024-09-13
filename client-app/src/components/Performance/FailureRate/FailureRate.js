@@ -1,8 +1,9 @@
 import React, { forwardRef, useEffect, useImperativeHandle, useState } from "react";
-import { Tile } from "@carbon/react";
+import { Button, Tile } from "@carbon/react";
 import { GaugeChart } from "@carbon/charts-react";
 import { getAppData } from "../../../appData";
 import { useStoreContext } from "../../../store";
+import { InformationFilled } from "@carbon/icons-react";
 
 const options = {
   theme: "g90",
@@ -43,7 +44,7 @@ const defaultMessage = [
   }
 ];
 
-const FailureRate = forwardRef((props, ref) => {
+const FailureRate = forwardRef(({selectedUser, selectedItem}, ref) => {
   const [data, setData] = useState(defaultData);
   const [avg, setAvg] = useState(0);
   const [messageFromServerFailure, setMessageFromServerFailure] = useState(defaultMessage);
@@ -118,7 +119,23 @@ const FailureRate = forwardRef((props, ref) => {
 
   return (
     <Tile className="infrastructure-components cpu-usage">
-      <h5>Failure Rate</h5>
+      <h4 className="title">
+        Failure Rate
+        <Button
+          hasIconOnly
+          renderIcon={InformationFilled}
+          iconDescription="Failure rate can be defined as the anticipated number of times that an item fails in a specified period of time."
+          kind="ghost"
+          size="sm"
+          className="customButton"
+        />
+      </h4>
+      <p>
+        <ul className="sub-title">
+          <li><strong>User Name:</strong> { `${selectedUser || 'For All User Name'}`}</li>
+          <li><strong>Application Name:</strong> { `${selectedItem || 'For All Application Name'}`}</li>
+        </ul>
+      </p>
       <div className="cpu-usage-chart">
         <GaugeChart data={data} options={options} />
       </div>

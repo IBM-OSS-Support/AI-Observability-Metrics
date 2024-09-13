@@ -74,12 +74,15 @@ const Filter = ({ onFilterChange }) => {
   useEffect(() => {
     const handleScroll = () => {
       const filterTitle = document.getElementById('filter-title');
+      const filterWrapper = document.getElementById('filter-wrapper');
       if (window.scrollY > 50) { // Adjust this number based on when you want to display the title
         filterTitle.classList.remove('hidden');
         filterTitle.classList.add('visible');
+        filterWrapper.classList.add('scroll')
       } else {
         filterTitle.classList.remove('visible');
         filterTitle.classList.add('hidden');
+        filterWrapper.classList.remove('scroll')
       }
     };
 
@@ -159,7 +162,7 @@ const Filter = ({ onFilterChange }) => {
   };
 
   return (
-    <div className="header-filter-wrapper">
+    <div className="header-filter-wrapper" id='filter-wrapper'>
       <div className="filter-title hidden" id="filter-title">
         Filter
       </div>

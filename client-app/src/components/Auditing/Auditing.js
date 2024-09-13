@@ -173,7 +173,13 @@ const Auditing = () => {
             />
           </Column>
           <Column max={8} xlg={8} lg={8} md={4} sm={4} className="content-tile">
-            <FailureRate ref={failureRateRef} />
+            <FailureRate 
+              ref={failureRateRef} 
+              selectedItem={selectedDeployment}
+              selectedUser={selectedUser}
+              startDate={startDate}
+              endDate={endDate}
+            />
           </Column>
           
           <Column
@@ -184,18 +190,24 @@ const Auditing = () => {
             sm={4}
             className="content-tile"
           >
-            <Tile className="chart-tile">
-              <UserSatisfaction
-                ref={userSatisfactionRef}
-                startDate={startDate}
-                endDate={endDate}
-                selectedUser={selectedUser}
-                selectedItem={selectedDeployment}
-              />
-            </Tile>
+          <Tile className="chart-tile">
+            <AdoptionRate
+              ref={adoptionRateRef}
+              selectedItem={selectedDeployment}
+              selectedUser={selectedUser}
+              startDate={startDate}
+              endDate={endDate}
+            />
+          </Tile>
           </Column>
           <Column max={8} xlg={8} lg={8} md={4} sm={4} className="content-tile">
-            <SuccessRate ref={successRateRef} />
+            <SuccessRate 
+              ref={successRateRef} 
+              selectedItem={selectedDeployment}
+              selectedUser={selectedUser}
+              startDate={startDate}
+              endDate={endDate}
+            />
           </Column>
 
           <Column
@@ -206,15 +218,15 @@ const Auditing = () => {
             sm={4}
             className="content-tile-adoption"
           >
-            <Tile className="chart-tile-adoption">
-              <AdoptionRate
-                ref={adoptionRateRef}
-                selectedItem={selectedDeployment}
-                selectedUser={selectedUser}
-                startDate={startDate}
-                endDate={endDate}
-              />
-            </Tile>
+          <Tile className="chart-tile-adoption">
+            <UserSatisfaction
+              ref={userSatisfactionRef}
+              startDate={startDate}
+              endDate={endDate}
+              selectedUser={selectedUser}
+              selectedItem={selectedDeployment}
+            />
+          </Tile>
           </Column>
 
           <Column
@@ -226,7 +238,13 @@ const Auditing = () => {
             className="content-tile-safetyscore"
           >
             <Tile className="chart-tile-safetyscore">
-              <SafetyScoreTable ref={safetyScoreTableRef} />
+              <SafetyScoreTable 
+                ref={safetyScoreTableRef} 
+                selectedItem={selectedDeployment}
+                selectedUser={selectedUser}
+                startDate={startDate}
+                endDate={endDate}
+              />
             </Tile>
           </Column>
 

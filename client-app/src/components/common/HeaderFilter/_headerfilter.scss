@@ -47,11 +47,15 @@
 
 .header-filter-wrapper {
   position: sticky;
-  top: 8%;
+  top: calc(0px + 47px);
   z-index: 1000;
   background-color: #161616; /* Adjust to match your theme */
   padding: 15px 20px; /* Add padding around the filter bar */
-  box-shadow: 0 2px 4px rgba(177, 177, 177, 0.1);
+  width: calc(100% + 2rem);
+  margin-left: -1rem;
+  &.scroll {
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+  }
 }
 
 .header-filter {

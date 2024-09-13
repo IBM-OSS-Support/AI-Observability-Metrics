@@ -131,12 +131,6 @@ const CallCountGraph = forwardRef(({ selectedItem, selectedUser, selectedTimesta
         <NoData />
       ) : (
         <>
-          {/* <h5> */}
-            {/* {`${selectedUser || 'All User'}'s ${selectedItem || 'all Applications'} Call Count is ${call_count_number}`} */}
-            {/* Total Call Count of
-            {selectedUser && selectedItem ? ` ${selectedUser}'s ${selectedItem} ` : selectedUser ? selectedUser === 'all' ? ` of ${selectedUser} ` : ` ${selectedUser}'s ` : selectedItem ? ` ${selectedItem}'s ` : ' of all '}  */}
-          {/* </h5> */}
-
           <h4 className="title">
             Call Count
           </h4>
