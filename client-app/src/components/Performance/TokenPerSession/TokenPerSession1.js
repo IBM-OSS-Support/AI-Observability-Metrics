@@ -7,7 +7,7 @@ import NoData from "../../common/NoData/NoData";
 
 const options = {
   theme: "g100",
-  title: "Average Token per Session",
+  title: "",
   axes: {
     left: {
       mapsTo: "value",
@@ -38,7 +38,7 @@ const options = {
     },
     groupLabel: 'count of',
   },
-  height: "100%",
+  height: "95%",
   color: {
     scale: {
       Dataset1: "#5281d8"
@@ -134,6 +134,9 @@ const TokenPerSession1 = forwardRef(({ selectedItem, selectedUser, selectedTimes
     <>
     {messageFromServerToken.length > 0 ? (
       <Tile>
+        <h5>
+          {`Average Token per Session of the ${selectedUser || 'All User'}'s ${selectedItem || 'all Applications'}`}
+        </h5>
         <StackedBarChart data={data} options={options} />
         <div className="cpu-usage-data pt-1">
           <div className="label">Average Tokens per Session</div>

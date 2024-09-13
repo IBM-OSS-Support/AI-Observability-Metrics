@@ -32,3 +32,19 @@
 .content-tile {
   height: 20rem;
 }
+
+.title {
+  font-weight: 600;
+}
+
+.sub-title {
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-start;
+  list-style: none;
+  
+  li {
+    font-size: 14px;
+    margin-right: 8px;
+  }
+}

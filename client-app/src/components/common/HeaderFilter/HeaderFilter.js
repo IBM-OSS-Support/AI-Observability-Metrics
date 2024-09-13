@@ -20,9 +20,12 @@ const Filter = ({ onFilterChange }) => {
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
   const [lastEndDate, setLastEndDate] = useState(null);
-  const [datePickerKey, setDatePickerKey] = useState(0); // Add a key state to force DatePicker rerender
+  const [datePickerKey, setDatePickerKey] = useState(0);
 
   const uniqueId = `header-filter-${Math.random().toString(36).substr(2, 9)}`;
+
+  const userComboBoxRef = useRef(null);
+  const appComboBoxRef = useRef(null);
 
   const fetchFilterData = useCallback(async () => {
     const apiUrl = process.env.REACT_APP_BACKEND_API_URL;
@@ -52,6 +55,40 @@ const Filter = ({ onFilterChange }) => {
   useEffect(() => {
     fetchFilterData();
   }, [fetchFilterData]);
+
+  useEffect(() => {
+    const hideCloseIcon = (ref) => {
+      if (ref.current) {
+        const clearButtons = ref.current.querySelectorAll('.bx--list-box__selection--clear');
+        clearButtons.forEach(button => {
+          button.style.display = 'none';
+        });
+      }
+    };
+
+    hideCloseIcon(userComboBoxRef);
+    hideCloseIcon(appComboBoxRef);
+  }, [userComboBoxRef.current, appComboBoxRef.current]);
+
+  // Scroll effect to display title
+  useEffect(() => {
+    const handleScroll = () => {
+      const filterTitle = document.getElementById('filter-title');
+      if (window.scrollY > 50) { // Adjust this number based on when you want to display the title
+        filterTitle.classList.remove('hidden');
+        filterTitle.classList.add('visible');
+      } else {
+        filterTitle.classList.remove('visible');
+        filterTitle.classList.add('hidden');
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, []);
 
   const users = messageFromServerFilter.length > 0
     ? [...new Set(messageFromServerFilter.map(app => app.app_user))]
@@ -88,19 +125,19 @@ const Filter = ({ onFilterChange }) => {
       const [start, end] = dateRange;
       setStartDate(start || null);
       setEndDate(end || null);
+      setLastEndDate(end || null); 
+
       onFilterChange(selectedItem, selectedItemUser, start || null, end || null);
     }
   };
 
   const handleClearAll = () => {
     setLastEndDate(endDate);
-
     setSelectedItem(null);
     setSelectedItemUser(null);
     setStartDate(null);
     setEndDate(null);
     setFilteredApplications([]);
-
     onFilterChange(null, null, null, null);
 
     // Force re-render of DatePicker to hide the open calendar
@@ -115,66 +152,81 @@ const Filter = ({ onFilterChange }) => {
 
   const applicationOptions = filteredApplications.length > 0 ? filteredApplications : ["Select a user first"];
 
+  const handleKeyDown = (event, isSelected) => {
+    if (event.key === 'Backspace' && isSelected) {
+      event.preventDefault();
+    }
+  };
+
   return (
-    <div className="header-filter flex">
-      <ComboBox
-        key={`user-${selectedItemUser}`} // Ensures re-render
-        id={`${uniqueId}-user`}
-        selectedItem={selectedItemUser}
-        onChange={handleSelectUser}
-        items={users}
-        placeholder="Choose User Name"
-        size="md"
-      />
-      <ComboBox
-        key={`app-${selectedItem}`} // Ensures re-render
-        id={`${uniqueId}-app`}
-        selectedItem={selectedItem}
-        onChange={handleSelectApplication}
-        items={applicationOptions}
-        placeholder="Choose Application Name"
-        size="md"
-      />
-      <DatePicker
-        key={datePickerKey} // Add key to force re-render
-        id={`${uniqueId}-date`}
-        datePickerType="range"
-        onChange={handleDateChange}
-        value={[startDate, endDate]}
-        dateFormat="d/m/Y"
-        size="md"
-      >
-        <DatePickerInput
-          id={`${uniqueId}-start`}
-          placeholder="Timestamp Start Date"
-          labelText=""
-          pattern="\d{1,2}/\d{1,2}/\d{4}"
-          value={startDate ? new Date(startDate).toLocaleDateString() : ""}
-          onChange={() => {}}
-          onKeyDown={(e) => e.preventDefault()}
-          readOnly
-          onClick={handleStartDateClick}
+    <div className="header-filter-wrapper">
+      <div className="filter-title hidden" id="filter-title">
+        Filter
+      </div>
+      <div className="header-filter flex">
+        <ComboBox
+          ref={userComboBoxRef}
+          key={`user-${selectedItemUser}`} 
+          id={`${uniqueId}-user`}
+          selectedItem={selectedItemUser}
+          onChange={handleSelectUser}
+          items={users}
+          placeholder="Choose User Name"
+          size="md"
+          onKeyDown={(e) => handleKeyDown(e, !!selectedItemUser)} 
         />
-        <DatePickerInput
-          id={`${uniqueId}-end`}
-          placeholder="Timestamp End Date"
-          labelText=""
-          pattern="\d{1,2}/\d{1,2}/\d{4}"
-          value={endDate ? new Date(endDate).toLocaleDateString() : ""}
-          onChange={() => {}}
-          onKeyDown={(e) => e.preventDefault()}
-          readOnly
+        <ComboBox
+          ref={appComboBoxRef}
+          key={`app-${selectedItem}`} 
+          id={`${uniqueId}-app`}
+          selectedItem={selectedItem}
+          onChange={handleSelectApplication}
+          items={applicationOptions}
+          placeholder="Choose Application Name"
+          size="md"
+          onKeyDown={(e) => handleKeyDown(e, !!selectedItem)} 
         />
-      </DatePicker>
-      {(selectedItem || selectedItemUser || startDate || endDate) && (
-        <Button
-          kind="danger--ghost"
-          onClick={handleClearAll}
-          className="clear-all-button"
+        <DatePicker
+          key={datePickerKey}
+          id={`${uniqueId}-date`}
+          datePickerType="range"
+          onChange={handleDateChange}
+          value={[startDate, endDate]}
+          dateFormat="d/m/Y"
+          size="md"
         >
-          Clear All
-        </Button>
-      )}
+          <DatePickerInput
+            id={`${uniqueId}-start`}
+            placeholder="Timestamp Start Date"
+            labelText=""
+            pattern="\d{1,2}/\d{1,2}/\d{4}"
+            value={startDate ? new Date(startDate).toLocaleDateString() : ""}
+            onChange={() => {}}
+            onKeyDown={(e) => e.preventDefault()}
+            readOnly
+            onClick={handleStartDateClick}
+          />
+          <DatePickerInput
+            id={`${uniqueId}-end`}
+            placeholder="Timestamp End Date"
+            labelText=""
+            pattern="\d{1,2}/\d{1,2}/\d{4}"
+            value={endDate ? new Date(endDate).toLocaleDateString() : ""}
+            onChange={() => {}}
+            onKeyDown={(e) => e.preventDefault()}
+            readOnly
+          />
+        </DatePicker>
+        {(selectedItem || selectedItemUser || startDate || endDate) && (
+          <Button
+            kind="danger--ghost"
+            onClick={handleClearAll}
+            className="clear-all-button"
+          >
+            Clear All
+          </Button>
+        )}
+      </div>
     </div>
   );
 };
