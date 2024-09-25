@@ -17,6 +17,7 @@ from langchain.chains import RetrievalQA
 from langchain_community.document_loaders import TextLoader
 from metrics import safety_score, log_app, maintenance, session, embeddings, user_satisfaction, accuracy
 import time
+import uuid
 
 logging.basicConfig()
 logger = logging.getLogger()
@@ -112,6 +113,10 @@ def run_anthropic_model(user, question):
     )
     return response
 
+def generate_unique_id(app_user, app_name, length=16):
+    random_uuid = str(uuid.uuid4()).replace('-', '')[:length]  # Remove hyphens and slice to the desired length
+    unique_id = f"{app_user}_{app_name}_{random_uuid}"
+    return unique_id
 
 def gather_metrics(app_data, question, status):
     json_obj = []

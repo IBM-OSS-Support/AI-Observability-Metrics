@@ -1,4 +1,4 @@
-from ibmroja import run_chat_model, inject_roja_instrumentation, gather_metrics
+from ibmroja import run_chat_model, inject_roja_instrumentation, gather_metrics, generate_unique_id
 from flask_server import flask_utils
 import subprocess
 import json
@@ -19,8 +19,7 @@ data = {
     "accuracy": 6
 }
 
-#app_data= json.dumps(data, indent=4)
-
+flask_utils.send_app_id_data({"app_id":generate_unique_id(data["user"],data["app_name"],length=16)})
 
 inject_roja_instrumentation(data)
 #question = "What are the seven wonders of the ancient world?"

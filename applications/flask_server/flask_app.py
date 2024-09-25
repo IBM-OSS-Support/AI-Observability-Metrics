@@ -42,12 +42,26 @@ def upload_additional():
     try:
         logging.debug("Received request: /additional_metrics")
         data = request.get_json()
+        with open("application_id", "r") as file:
+            content = file.read()
+        data["application-id"] = content
         postgres.upload_to_postgres_with_message(data)
         return jsonify({"message": "additional metrics JSON received successfully"}), 200
     except Exception as e:
         logging.exception(f'Error processing request: {str(e)}')
         return f'Error: {str(e)}', 500
     
+@app.route('/application_id', methods=['POST'])
+def create_application_id():
+    try:
+        logging.debug("Received request: /application_id")
+        data = request.get_json()
+        with open("application_id", "w") as file:
+            file.write(data["app_id"])
+        return jsonify({"message": "application_id JSON received successfully"}), 200
+    except Exception as e:
+        logging.exception(f'Error processing request: {str(e)}')
+        return f'Error: {str(e)}', 500
 
 @app.route('/anthropic_metrics', methods=['POST'])
 def upload_anthropic():
@@ -116,7 +130,9 @@ def upload_through_rest_spans():
         }
 
         file_path = '/tmp/spans.json'
-
+        with open("application_id", "r") as file:
+            content = file.read()
+        data["application-id"] = content
         # Open the file in write mode and use json.dump() to write the data
         #with open(file_path, 'w') as file:
         #    json.dump(data, file)
@@ -140,7 +156,9 @@ def upload_through_rest_metrics():
             "token-cost":0,
             "metrics":jdata
         }
-
+        with open("application_id", "r") as file:
+            content = file.read()
+        data["application-id"] = content
         #file_path = '/tmp/metrics.json'
 
         # Open the file in write mode and use json.dump() to write the data
