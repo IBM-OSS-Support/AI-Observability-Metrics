@@ -36,7 +36,7 @@ OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')
 ANTHROPIC_API_KEY = os.getenv('ANTHROPIC_API_KEY')
 
 def inject_roja_instrumentation(app_data):
-    print(API_URL,GRAPHSIGNAL_API_KEY,app_data["app_id"])
+    print(API_URL,GRAPHSIGNAL_API_KEY,app_data["app-id"])
     graphsignal.configure(api_url=API_URL,api_key=GRAPHSIGNAL_API_KEY, deployment=app_data["app-id"]) # to send to IBM ROJA server
     graphsignal.set_context_tag('user', app_data["user"])
     pass
@@ -120,10 +120,10 @@ def generate_unique_id(app_user, app_name, length=16):
 
 def gather_metrics(app_data, question, status):
     json_obj = []
-    json_obj.append(safety_score.calculate_safety_score(app_data["user"], app_data["app_name"], question))
-    json_obj.append(log_app.log_prompt_info(app_data["user"], app_data["app_name"], question, status))
+    json_obj.append(safety_score.calculate_safety_score(app_data["user"], app_data["app-id"], question))
+    json_obj.append(log_app.log_prompt_info(app_data["user"], app_data["app-id"], question, status))
     #json_obj.append(maintenance.get_maintenance_info(app_data["user"], app_data["app_name"]))
     #json_obj.append(session.get_session_info(app_data["user"], app_data["app_name"]))
-    json_obj.append(user_satisfaction.prepare_user_satisfaction(app_data["user"], app_data["app_name"],question,app_data["rating"],app_data["comment"]))
-    json_obj.append(accuracy.prepare_accuracy(app_data["user"], app_data["app_name"], app_data["accuracy"]))
+    json_obj.append(user_satisfaction.prepare_user_satisfaction(app_data["user"], app_data["app-id"],question,app_data["rating"],app_data["comment"]))
+    json_obj.append(accuracy.prepare_accuracy(app_data["user"], app_data["app-id"], app_data["accuracy"]))
     return json_obj

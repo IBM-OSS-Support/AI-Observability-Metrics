@@ -42,6 +42,7 @@ def upload_additional():
     try:
         logging.debug("Received request: /additional_metrics")
         data = request.get_json()
+        print("application-name: ", data["application-name"])
         #with open("application_id", "r") as file:
         #    content = file.read()
         #data["application-id"] = content
@@ -128,7 +129,7 @@ def upload_through_rest_spans():
             "application-name": extract_application_name(jdata),
             "spans":request.get_json()
         }
-
+        print("application-name: ", data["application-name"])
         file_path = '/tmp/spans.json'
         #with open("application_id", "r") as file:
         #    content = file.read()
@@ -156,6 +157,7 @@ def upload_through_rest_metrics():
             "token-cost":0,
             "metrics":jdata
         }
+        print("application-name: ", data["application-name"])
         #with open("application_id", "r") as file:
         #    content = file.read()
         #data["application-id"] = content

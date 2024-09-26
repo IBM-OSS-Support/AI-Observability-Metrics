@@ -451,39 +451,6 @@ def process_spans(message,conn,json_object):
                     insert_metric_sql = "INSERT INTO operations (span_id, operation, exceptions, usage, config, tags, start_us, end_us, latency_ns, application_name, app_user, app_id, timestamp) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
                     cursor.execute(insert_metric_sql, (json.dumps(span["span_id"]), op, json.dumps(span["exceptions"]), json.dumps(span["usage"]), json.dumps(span["config"]), json.dumps(span["tags"]), start_us, end_us, latency_ns, json_object["application-name"], json_object["app-user"], json_object["application-name"], current_timestamp))
 
-
-    create_table_sql = """
-    CREATE TABLE IF NOT EXISTS operations_combined (
-            id SERIAL PRIMARY KEY,
-            span_id TEXT,
-            operation TEXT,
-            exceptions JSONB,
-            usage JSONB,
-            config JSONB,
-            tags JSONB,
-            start_us BIGINT,
-            end_us BIGINT,
-            latency_us BIGINT,
-            application_name TEXT,
-            app_user TEXT,
-            app_id TEXT,
-            timestamp TIMESTAMP
-    )
-    """
-    cursor.execute(create_table_sql)
-    for span in json_object["spans"]:
-        start_us = span.get("start_us", 0)
-        end_us = span.get("end_us", 0)
-        latency_ns = span.get("latency_ns", 0)
-        if "tags" in span:
-            for tag in span["tags"]:
-                if "key" in tag and tag["key"] == "operation":
-                    op = tag["value"]
-
-                    insert_metric_sql = "INSERT INTO operations (span_id, operation, exceptions, usage, config, tags, start_us, end_us, latency_ns, application_name, app_user, app_id, timestamp) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
-                    cursor.execute(insert_metric_sql, (json.dumps(span["span_id"]), op, json.dumps(span["exceptions"]), json.dumps(span["usage"]), json.dumps(span["config"]), json.dumps(span["tags"]), start_us, end_us, latency_ns, json_object["application-name"], json_object["app-user"], json_object["application-name"], current_timestamp))
-
-
     conn.commit()
     cursor.close()
     conn.close()
