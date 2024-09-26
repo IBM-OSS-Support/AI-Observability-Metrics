@@ -65,6 +65,7 @@ const MaintenanceTable = forwardRef(
         });
 
         const result = await response.json();
+        
         setMessageFromServerLog(result);
         setOriginalRows(result); // Store original data
         setTotalItems(result.length);

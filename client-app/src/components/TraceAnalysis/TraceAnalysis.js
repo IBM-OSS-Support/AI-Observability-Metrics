@@ -25,6 +25,16 @@ const defaultNodeHeaders = [
 
 const TraceAnalysis = () => {
   const { appName } = useParams();
+
+  if (appName) {
+    // Decode the URI components to handle special characters
+    const decodedAppDetails = decodeURIComponent(appName);
+    // Split the params to get applicationName and appId
+    var [applicationName, appId] = decodedAppDetails.split("&").map(part => part.trim());
+    console.log('application name :', applicationName , 'app ID :', appId);
+    
+    }
+
   const [rowsLibraries, setRowsLibraries] = useState([]);
   const [rowsNode, setRowsNode] = useState([]);
   const [headersLibraries, setHeadersLibraries] = useState([]);
@@ -36,8 +46,10 @@ const TraceAnalysis = () => {
     const apiUrl = process.env.REACT_APP_BACKEND_API_URL; // Replace with actual API endpoint
 
     // SQL query to fetch the required data
-    const q = `
-      SELECT * FROM operations`;
+    const q = `SELECT * FROM operations WHERE app_id = '${appId}'`;
+
+      console.log('q in trace analysis', q);
+      
 
     try {
       const response = await fetch(apiUrl, {
@@ -60,12 +72,13 @@ const TraceAnalysis = () => {
       return null;
     }
   };
+  
 
   // Fetch trace data on mount
   useEffect(() => {
     fetchTraceData().then((data) => {
       if (data) {
-        const appData = data.find((item) => item.application_name === appName);
+        const appData = data.find((item) => item.app_id === appId);
         if (appData) {
           // Set headers and rows for Libraries section
           setHeadersLibraries(defaultLibraryHeaders);
@@ -89,19 +102,19 @@ const TraceAnalysis = () => {
             },
           ]);
         } else {
-          console.log(`No data found for application_name: ${appName}`);
+          console.log(`No data found for application_name: ${applicationName}`);
         }
       }
     });
-  }, [appName]);
+  }, [applicationName]);
 
   return (
     <>
       <PageContainer
         className="trace-analysis-container"
         header={{
-          title: `Application trace : ${appName}`,
-          subtitle: "Trace analysis for your application.",
+          title: `Application trace : ${applicationName}`,
+          subtitle: `Application run id : ${appId}`,
         }}
       >
         <div className="trace-analysis-section">
