@@ -406,6 +406,7 @@ def process_spans(message,conn,json_object):
             exceptions JSONB,
             usage JSONB,
             config JSONB,
+            payloads JSONB,
             tags JSONB,
             start_us BIGINT,
             end_us BIGINT,
@@ -426,8 +427,8 @@ def process_spans(message,conn,json_object):
                 if "key" in tag and tag["key"] == "operation":
                     op = tag["value"]
 
-                    insert_metric_sql = "INSERT INTO operations (span_id, operation, exceptions, usage, config, tags, start_us, end_us, latency_ns, application_name, app_user, app_id, timestamp) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
-                    cursor.execute(insert_metric_sql, (json.dumps(span["span_id"]), op, json.dumps(span["exceptions"]), json.dumps(span["usage"]), json.dumps(span["config"]), json.dumps(span["tags"]), start_us, end_us, latency_ns, json_object["application-name"], json_object["app-user"], json_object["application-name"], current_timestamp))
+                    insert_metric_sql = "INSERT INTO operations (span_id, operation, exceptions, usage, config, payloads, tags, start_us, end_us, latency_ns, application_name, app_user, app_id, timestamp) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
+                    cursor.execute(insert_metric_sql, (json.dumps(span["span_id"]), op, json.dumps(span["exceptions"]), json.dumps(span["usage"]), json.dumps(span["config"]), json.dumps(span["payloads"]), json.dumps(span["tags"]), start_us, end_us, latency_ns, json_object["application-name"], json_object["app-user"], json_object["application-name"], current_timestamp))
 
     conn.commit()
     cursor.close()
