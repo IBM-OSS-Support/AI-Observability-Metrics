@@ -38,7 +38,7 @@ def upload_additional():
     try:
         logging.debug("Received request: /additional_metrics")
         data = request.get_json()
-        logging.debug("application-name: ", data["application-name"])
+        logging.debug("application-name: %s", data["application-name"])
         postgres.upload_to_postgres_with_message(data)
         return jsonify({"message": "additional metrics JSON received successfully"}), 200
     except Exception as e:
@@ -71,7 +71,7 @@ def upload_through_rest_spans():
             "application-name": extract_application_name(jdata),
             "spans":request.get_json()
         }
-        logging.debug("application-name: ", data["application-name"])
+        logging.debug("application-name: %s", data["application-name"])
         postgres.upload_to_postgres_with_message(data)
         return jsonify({"message": "spans JSON received successfully"}), 200
     except Exception as e:
@@ -92,7 +92,7 @@ def upload_through_rest_metrics():
             "token-cost":0,
             "metrics":jdata
         }
-        logging.debug("application-name: ", data["application-name"])
+        logging.debug("application-name: %s", data["application-name"])
         #with open("application_id", "r") as file:
         #    content = file.read()
         #data["application-id"] = content
