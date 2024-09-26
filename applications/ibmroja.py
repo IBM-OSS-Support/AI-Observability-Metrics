@@ -36,8 +36,8 @@ OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')
 ANTHROPIC_API_KEY = os.getenv('ANTHROPIC_API_KEY')
 
 def inject_roja_instrumentation(app_data):
-    print(API_URL,GRAPHSIGNAL_API_KEY,app_data["app_name"])
-    graphsignal.configure(api_url=API_URL,api_key=GRAPHSIGNAL_API_KEY, deployment=app_data["app_name"]) # to send to IBM ROJA server
+    print(API_URL,GRAPHSIGNAL_API_KEY,app_data["app_id"])
+    graphsignal.configure(api_url=API_URL,api_key=GRAPHSIGNAL_API_KEY, deployment=app_data["app-id"]) # to send to IBM ROJA server
     graphsignal.set_context_tag('user', app_data["user"])
     pass
 

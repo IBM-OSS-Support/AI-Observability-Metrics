@@ -18,8 +18,9 @@ data = {
     "comment": "N/A",
     "accuracy": 6
 }
+data["app-id"] = generate_unique_id(data["user"],data["app_name"])
 
-flask_utils.send_app_id_data({"app_id":generate_unique_id(data["user"],data["app_name"],length=16)})
+#flask_utils.send_app_id_data({"app_id":generate_unique_id(data["user"],data["app_name"],length=16)})
 
 inject_roja_instrumentation(data)
 #question = "What are the seven wonders of the ancient world?"

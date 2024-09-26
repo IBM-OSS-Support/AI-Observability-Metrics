@@ -50,7 +50,8 @@ data = {
     "comment": "Expected a more concise answer",
     "accuracy": random.randint(5, 10)  # Random accuracy between 5 and 10
 }
-flask_utils.send_app_id_data({"app_id":generate_unique_id(data["user"],data["app_name"],length=16)})
+data["app-id"] = generate_unique_id(data["user"],data["app_name"])
+#flask_utils.send_app_id_data({"app_id":generate_unique_id(data["user"],data["app_name"],length=16)})
 inject_roja_instrumentation(data)
 
 # Run chat model
