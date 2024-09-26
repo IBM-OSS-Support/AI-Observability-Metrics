@@ -73,8 +73,6 @@ def process_anthropic_metrics(message, conn, json_object):
     # Get the current timestamp
     current_timestamp = datetime.datetime.now()
 
-    #print(json_object)
-
     # SQL command to insert the JSON data along with 'application-name', 'tag', and timestamp
     insert_metric_sql = "INSERT INTO accuracy (json_object, application_name, app_user, timestamp) VALUES (%s, %s, %s, %s)"
     cursor.execute(insert_metric_sql, (json.dumps(json_object), json_object["application-name"], json_object["app-user"], current_timestamp))
@@ -100,8 +98,6 @@ def process_accuracy(message,conn,json_object):
 
     # Get the current timestamp
     current_timestamp = datetime.datetime.now()
-
-    #print(json_object)
 
     # SQL command to insert the JSON data along with 'application-name', 'tag', and timestamp
     insert_metric_sql = "INSERT INTO accuracy (accuracy_score, application_name, app_user, app_id, timestamp) VALUES (%s, %s, %s, %s, %s)"
@@ -130,8 +126,6 @@ def process_user_satisfaction(message,conn,json_object):
     # Get the current timestamp
     current_timestamp = datetime.datetime.now()
 
-    #print(json_object)
-
     # SQL command to insert the JSON data along with 'application-name', 'tag', and timestamp
     insert_metric_sql = "INSERT INTO user_satisfaction (rating, comment, application_name, app_user, app_id, timestamp) VALUES (%s, %s, %s, %s, %s, %s)"
     cursor.execute(insert_metric_sql, (json.dumps(json_object["rating"]), json_object["comment"],json_object["application-name"], json_object["app-user"], json_object["application-name"], current_timestamp))
@@ -159,8 +153,6 @@ def process_embedding(message,conn,json_object):
     # Get the current timestamp
     current_timestamp = datetime.datetime.now()
 
-    #print(json_object)
-
     # SQL command to insert the JSON data along with 'application-name', 'tag', and timestamp
     insert_metric_sql = "INSERT INTO embeddings (embedding, model, usage, application_name, app_user, timestamp) VALUES (%s, %s, %s, %s, %s, %s)"
     cursor.execute(insert_metric_sql, (json.dumps(json_object["data"]), json_object["model"], json.dumps(json_object["usage"]),json_object["application-name"], json_object["app-user"], current_timestamp))
@@ -185,8 +177,6 @@ def process_session_info(message,conn,json_object):
 
     # Get the current timestamp
     current_timestamp = datetime.datetime.now()
-
-    #print(json_object)
 
     # SQL command to insert the JSON data along with 'application-name', 'tag', and timestamp
     insert_metric_sql = "INSERT INTO session_info (sessions, application_name, app_user, timestamp) VALUES (%s, %s, %s, %s)"
@@ -216,8 +206,6 @@ def process_log_history(message,conn,json_object):
     # Get the current timestamp
     current_timestamp = datetime.datetime.now()
 
-    #print(json_object)
-
     def extract_completion_status(json_object):
         status = "unknown"
         finish_reason = "unknown"
@@ -234,13 +222,6 @@ def process_log_history(message,conn,json_object):
     completion_status, finish_reason = extract_completion_status(json_object)
     
     status = json_object["status"]
-    '''
-    if status == "success":
-        if completion_status == "failure":
-            status = "failure"
-        else:
-            status = "success"
-    '''
     print(type(status), type(finish_reason))
     # SQL command to insert the JSON data along with 'application-name', 'tag', and timestamp
     insert_metric_sql = "INSERT INTO log_history (log, status, finish_reason, application_name, app_user, app_id, timestamp) VALUES (%s, %s, %s, %s, %s, %s, %s)"
@@ -284,7 +265,6 @@ def process_metrics(message,conn,json_object):
     
     json_system_objects = get_system_objects(json_object["metrics"])
     print(type(json_system_objects), type(json_object))
-    #print(json_system_objects, json_object)
 
     # SQL command to insert the JSON data along with 'application-name', 'tag', and timestamp
     insert_metric_sql = "INSERT INTO system (process_cpu_usage, process_memory, virtual_memory, node_memory_used, application_name, app_user, app_id, timestamp) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"
@@ -310,7 +290,6 @@ def process_metrics(message,conn,json_object):
             for item in data_obj:
                 if "scope" in item and item["scope"] == "usage" and "name" in item:
                     json_new["data"].append(item)
-        #print(json_new)
         return json_new
 
 
@@ -329,7 +308,6 @@ def process_metrics(message,conn,json_object):
 
     token_cost = calculate_token_cost(json_usage_objects)
 
-    #print(json_token_objects)
     # SQL command to insert the JSON data along with 'application-name', 'tag', and timestamp
     insert_metric_sql = "INSERT INTO token_usage (usage, token_cost, application_name, app_user, app_id, timestamp) VALUES (%s, %s, %s, %s, %s, %s)"
     cursor.execute(insert_metric_sql, (json.dumps(json_usage_objects), token_cost, json_object["application-name"], json_object["app-user"], json_object["application-name"], current_timestamp))
