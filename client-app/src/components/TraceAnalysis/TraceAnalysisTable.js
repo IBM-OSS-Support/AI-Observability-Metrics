@@ -281,27 +281,50 @@ const TraceAnalysisTable = () => {
               break;
             }
             case "data": {
-              o[h.key] = {
-                displayType: h.key,
-                items: (r.data_samples || []).map((d) => ({
-                  id: d.data_name,
-                  name: d.data_name,
-                  onClick: () =>
-                    setModal({
-                      name: "DataModal",
-                      props: {
-                        name: d.data_name,
-                        modalLabel: d.data_name,
-                        modalHeading: d.data_name,
-                        data: JSON.parse(atob(d.content_bytes)),
-                        primaryButtonText: "Close",
-                        onRequestSubmit: closeModal,
-                      },
-                    }),
-                })),
-              };
+              if (r.payloads && r.payloads.length > 0) {
+                o[h.key] = {
+                  displayType: h.key,
+                  items: r.payloads.map((d) => ({
+                    id: d.name,
+                    name: d.name,
+                    onClick: () =>
+                      setModal({
+                        name: "DataModal",
+                        props: {
+                          name: d.name,
+                          modalLabel: d.name,
+                          modalHeading: d.name,
+                          data: JSON.parse(atob(d.content_base64)),
+                          primaryButtonText: "Close",
+                          onRequestSubmit: closeModal,
+                        },
+                      }),
+                  })),
+                };
+              } else {
+                o[h.key] = {
+                  displayType: h.key,
+                  items: (r.data_samples || []).map((d) => ({
+                    id: d.data_name,
+                    name: d.data_name,
+                    onClick: () =>
+                      setModal({
+                        name: "DataModal",
+                        props: {
+                          name: d.data_name,
+                          modalLabel: d.data_name,
+                          modalHeading: d.data_name,
+                          data: JSON.parse(atob(d.content_bytes)),
+                          primaryButtonText: "Close",
+                          onRequestSubmit: closeModal,
+                        },
+                      }),
+                  })),
+                };
+              }
               break;
             }
+            
             case "latency": {
               o[h.key] = `${moment
                 .duration(r.latency)

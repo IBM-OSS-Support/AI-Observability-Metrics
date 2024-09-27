@@ -101,7 +101,7 @@ const Filter = ({ onFilterChange }) => {
     const selectedUser = event.selectedItem;
     setSelectedItemUser(selectedUser);
 
-    if (!selectedUser) {
+    if (!selectedUser) {  
       setSelectedItem(null);
       setStartDate(null);
       setEndDate(null);
@@ -113,6 +113,7 @@ const Filter = ({ onFilterChange }) => {
         .map(app => app.application_name);
 
       setFilteredApplications([...new Set(appsForUser)]);
+      setSelectedItem(null);
       onFilterChange(selectedItem, selectedUser, startDate, endDate);
     }
   }, [selectedItem, selectedItemUser, messageFromServerFilter, startDate, endDate, onFilterChange]);
