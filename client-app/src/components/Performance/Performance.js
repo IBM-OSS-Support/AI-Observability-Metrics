@@ -36,10 +36,8 @@ import Accuracy from "./Accuracy/Accuracy";
 const Performance = () => {
   const [selectedDeployment, setSelectedDeployment] = useState(null);
   const [selectedUser, setSelectedUser] = useState('all');
-  const [selectedTimestampRange, setSelectedTimestampRange] = useState('last7days'); // Default value
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
-  const [numberOfDaysSelected, setNumberOfDaysSelected] = useState(null);
 
   const tokenPerSessionRef = useRef();
   const cpuUsageRef = useRef();
@@ -66,31 +64,27 @@ const Performance = () => {
     }
   }, []); 
 
-  const handleFilterChange = (selectedItem, selectedUser, selectedTimestampRange, startDate, endDate, numberOfDaysSelected) => {
+  const handleFilterChange = (selectedItem, selectedUser, startDate, endDate) => {
     setSelectedDeployment(selectedItem);
     setSelectedUser(selectedUser);
-    setSelectedTimestampRange(selectedTimestampRange);
     setStartDate(startDate);
     setEndDate(endDate);
-    setNumberOfDaysSelected(numberOfDaysSelected);
     console.log('Selected Deployment:', selectedItem);
     console.log('Selected User:', selectedUser);
-    console.log('Selected Timestamp Range:', selectedTimestampRange);
     console.log('Selected startDate:', startDate);
     console.log('Selected endDate:', endDate);
-    console.log('Selected numberOfDaysSelected:', numberOfDaysSelected);
 
     if (cpuUsageRef.current) {
-      cpuUsageRef.current.sendMessageToServerCPU(selectedItem, selectedUser, selectedTimestampRange);
+      cpuUsageRef.current.sendMessageToServerCPU(selectedItem, selectedUser);
     }
     if (callCountRef.current) {
-      callCountRef.current.sendMessageToServerCallCount(selectedItem, selectedUser, selectedTimestampRange, startDate, endDate);
+      callCountRef.current.sendMessageToServerCallCount(selectedItem, selectedUser, startDate, endDate);
     }
     if (tokenPerSessionRef.current) {
-      tokenPerSessionRef.current.sendMessageToServerToken(selectedItem, selectedUser, selectedTimestampRange);
+      tokenPerSessionRef.current.sendMessageToServerToken(selectedItem, selectedUser);
     }
     if (latencyRef.current) {
-      latencyRef.current.fetchLatencyData(selectedItem, selectedUser, selectedTimestampRange, startDate, endDate);
+      latencyRef.current.fetchLatencyData(selectedItem, selectedUser, startDate, endDate);
     }
     if (accuracyRef.current) {
       accuracyRef.current.fetchAccuracyData(selectedItem, selectedUser, startDate, endDate);

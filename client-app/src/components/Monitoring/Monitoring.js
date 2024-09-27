@@ -21,39 +21,46 @@ import FrequencyOfUse from "./FrequencyOfUse/FrequencyOfUse";
 import FrequencyOfUseTable from "./FrequencyOfUseTable/FrequencyOfUseTable";
 
 const Monitoring = () => {
-	
   const logTableRef = useRef();
   const frequencyOfUseRef = useRef();
 
   const [selectedDeployment, setSelectedDeployment] = useState(null);
-  const [selectedUser, setSelectedUser] = useState('');
-  const [selectedTimestampRange, setSelectedTimestampRange] = useState('last7days'); // Default value
+  const [selectedUser, setSelectedUser] = useState("");
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
-  const [numberOfDaysSelected, setNumberOfDaysSelected] = useState(null);
 
-  const handleFilterChange = (selectedItem, selectedUser, selectedTimestampRange, startDate, endDate, numberOfDaysSelected) => {
+  const handleFilterChange = (
+    selectedItem,
+    selectedUser,
+    startDate,
+    endDate
+  ) => {
     setSelectedDeployment(selectedItem);
     setSelectedUser(selectedUser);
-    setSelectedTimestampRange(selectedTimestampRange);
     setStartDate(startDate);
     setEndDate(endDate);
-    setNumberOfDaysSelected(numberOfDaysSelected);
-    console.log('Selected Deployment:', selectedItem);
-    console.log('Selected User:', selectedUser);
-    console.log('Selected Timestamp Range:', selectedTimestampRange);
-    console.log('Selected startDate:', startDate);
-    console.log('Selected endDate:', endDate);
-    console.log('Selected numberOfDaysSelected:', numberOfDaysSelected);
-    
+    console.log("Selected Deployment:", selectedItem);
+    console.log("Selected User:", selectedUser);
+    console.log("Selected startDate:", startDate);
+    console.log("Selected endDate:", endDate);
+
     if (logTableRef.current) {
-      logTableRef.current.fetchLogTableData(selectedItem, selectedUser, startDate, endDate);
+      logTableRef.current.fetchLogTableData(
+        selectedItem,
+        selectedUser,
+        startDate,
+        endDate
+      );
     }
     if (frequencyOfUseRef.current) {
-      frequencyOfUseRef.current.fetchFrequencyData(selectedItem, selectedUser, startDate, endDate);
+      frequencyOfUseRef.current.fetchFrequencyData(
+        selectedItem,
+        selectedUser,
+        startDate,
+        endDate
+      );
     }
   };
-
 
   useEffect(() => {
     if (logTableRef.current) {
@@ -62,10 +69,9 @@ const Monitoring = () => {
     if (frequencyOfUseRef.current) {
       frequencyOfUseRef.current.fetchFrequencyData();
     }
-  }, []);   
+  }, []);
 
-
-	return(
+  return (
     <PageContainer
       className="monitoring-container"
       header={{
@@ -73,10 +79,22 @@ const Monitoring = () => {
         subtitle: "Traceability data",
       }}
     >
-      <Filter onFilterChange={handleFilterChange}/>
-      <LogTable ref={logTableRef} selectedItem={selectedDeployment} selectedUser={selectedUser} startDate={startDate} endDate={endDate}/>
+      <Filter onFilterChange={handleFilterChange} />
+      <Grid fullWidth narrow id="body" className="page-content body">
+        <Column max={16} xlg={16} lg={16} md={4} sm={4} className="content-tile">
+          <Tile className="chart-tile">
+            <LogTable
+              ref={logTableRef}
+              selectedItem={selectedDeployment}
+              selectedUser={selectedUser}
+              startDate={startDate}
+              endDate={endDate}
+            />
+          </Tile>
+        </Column>
+      </Grid>
     </PageContainer>
-	);
-}
+  );
+};
 
 export default Monitoring;

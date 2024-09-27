@@ -1,6 +1,7 @@
 import React, { forwardRef, useImperativeHandle, useState, useEffect } from 'react';
 import CustomDataTable from '../../common/CustomDataTable';
 import { Pagination } from '@carbon/react';
+import NoData from '../../common/NoData/NoData';
 
 const LogTable = forwardRef(({ selectedItem, selectedUser, startDate, endDate }, ref) => {
   const [messageFromServerLogTable, setMessageFromServerLogTable] = useState([]);
@@ -53,12 +54,14 @@ const LogTable = forwardRef(({ selectedItem, selectedUser, startDate, endDate },
         return new Date(utcDate.getTime() + istOffset);
       };
 
-      let filteredData = data;
+      
       if (startDate && endDate) {
-        filteredData = data.filter((row) => {
+       var filteredData = data.filter((row) => {
           const rowTimestamp = convertUTCToIST(row.timestamp);
           return rowTimestamp >= startDate && rowTimestamp <= endDate;
         });
+      } else {
+        filteredData = data;
       }
 
       const formattedData = filteredData.map((row) => ({
@@ -103,7 +106,11 @@ const LogTable = forwardRef(({ selectedItem, selectedUser, startDate, endDate },
   const currentRows = getCurrentPageData();
   
   return (
-    <div>
+    <>
+    {currentRows.length === 0 ? (
+        <NoData />
+      ) : (
+        <div>
       <CustomDataTable headers={headersLogTable} rows={currentRows} />
 
       {/* Add pagination component */}
@@ -115,6 +122,9 @@ const LogTable = forwardRef(({ selectedItem, selectedUser, startDate, endDate },
         pageSizes={[5, 10, 20, 30, 40, 50]} // Options for rows per page
       />
     </div>
+      )}
+    </>
+    
   );
 });
 

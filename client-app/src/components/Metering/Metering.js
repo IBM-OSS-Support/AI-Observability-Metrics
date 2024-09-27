@@ -26,30 +26,24 @@ const Performance = () => {
 
   const [selectedDeployment, setSelectedDeployment] = useState(null);
   const [selectedUser, setSelectedUser] = useState('');
-  const [selectedTimestampRange, setSelectedTimestampRange] = useState('last7days'); // Default value
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
-  const [numberOfDaysSelected, setNumberOfDaysSelected] = useState(null);
 
 
   const costGraphRef = useRef();
 
-  const handleFilterChange = (selectedItem, selectedUser, selectedTimestampRange, startDate, endDate, numberOfDaysSelected) => {
+  const handleFilterChange = (selectedItem, selectedUser, startDate, endDate) => {
     setSelectedDeployment(selectedItem);
     setSelectedUser(selectedUser);
-    setSelectedTimestampRange(selectedTimestampRange);
     setStartDate(startDate);
     setEndDate(endDate);
-    setNumberOfDaysSelected(numberOfDaysSelected);
     console.log('Selected Deployment:', selectedItem);
     console.log('Selected User:', selectedUser);
-    console.log('Selected Timestamp Range:', selectedTimestampRange);
     console.log('Selected startDate:', startDate);
     console.log('Selected endDate:', endDate);
-    console.log('Selected numberOfDaysSelected:', numberOfDaysSelected);
     
     if (costGraphRef.current) {
-      costGraphRef.current.sendMessageToServerCost(selectedItem, selectedUser, selectedTimestampRange, startDate, endDate);
+      costGraphRef.current.sendMessageToServerCost(selectedItem, selectedUser, startDate, endDate);
     }
   };
 
