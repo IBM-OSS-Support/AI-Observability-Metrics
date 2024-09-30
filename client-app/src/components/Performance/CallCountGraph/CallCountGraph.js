@@ -87,8 +87,6 @@ const CallCountGraph = forwardRef(({ selectedItem, selectedUser, startDate, endD
         callCount = callCount;
       }
 
-      console.log('timestamp', timestamp);
-      console.log('startDate :', startDate, 'endDate :', endDate);
       
       
 
@@ -123,7 +121,7 @@ const CallCountGraph = forwardRef(({ selectedItem, selectedUser, startDate, endD
     title: ''
   };
 
-  console.log(startDateFormatted, endDateFormatted, "111122223333", startDate, endDate, selectedItem, selectedUser);
+  console.log(startDateFormatted, endDateFormatted, "Dates", startDate, endDate, selectedItem, selectedUser);
   
 
   return (
