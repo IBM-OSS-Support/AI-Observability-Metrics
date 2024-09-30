@@ -146,7 +146,7 @@ const Filter = ({ onFilterChange }) => {
     onFilterChange(null, null, null, null);
 
     // Force re-render of DatePicker to hide the open calendar
-    // setDatePickerKey(prevKey => prevKey + 1);
+    setDatePickerKey(prevKey => prevKey + 1);
   };
 
   // const handleStartDateClick = () => {
