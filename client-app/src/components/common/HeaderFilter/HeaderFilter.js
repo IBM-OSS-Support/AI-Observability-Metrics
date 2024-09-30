@@ -203,7 +203,7 @@ const Filter = ({ onFilterChange }) => {
           datePickerType="range"
           onChange={handleDateChange}
           value={[startDate, endDate]}
-          dateFormat="d/m/Y"
+          dateFormat="Y-m-d"
           size="md"
         >
           <DatePickerInput
