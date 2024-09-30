@@ -17,7 +17,7 @@ import { getIntervals, getLatencyData } from "../helper";
 import moment from "moment";
 import NoData from "../../common/NoData/NoData";
 
-const LatencyGraph = forwardRef(({ selectedItem, selectedUser, selectedTimestampRange, startDate, endDate }, ref) => {
+const LatencyGraph = forwardRef(({ selectedItem, selectedUser, startDate, endDate }, ref) => {
   const [messageFromServerLatency, setMessageFromServerLatency] = useState('');
 
   useImperativeHandle(ref, () => ({

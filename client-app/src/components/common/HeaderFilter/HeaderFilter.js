@@ -164,6 +164,8 @@ const Filter = ({ onFilterChange }) => {
   const handleKeyDown = (event, isSelected) => {
     if (event.key === 'Backspace' && isSelected) {
       event.preventDefault();
+      console.log('called handleKeyDown');
+      
     }
   };
 
