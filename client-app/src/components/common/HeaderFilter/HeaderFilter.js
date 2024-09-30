@@ -1,14 +1,3 @@
-/* ******************************************************************************
- * IBM Confidential
- *
- * OCO Source Materials
- *
- *  Copyright IBM Corp. 2023  All Rights Reserved.
- *
- * The source code for this program is not published or otherwise divested
- * of its trade secrets, irrespective of what has been deposited with
- * the U.S. Copyright Office.
- ****************************************************************************** */
 import React, { useEffect, useState, useCallback, useRef } from 'react';
 import { ComboBox, DatePicker, DatePickerInput, Button } from "@carbon/react";
 
@@ -75,7 +64,7 @@ const Filter = ({ onFilterChange }) => {
     const handleScroll = () => {
       const filterTitle = document.getElementById('filter-title');
       const filterWrapper = document.getElementById('filter-wrapper');
-      if (window.scrollY > 50) { // Adjust this number based on when you want to display the title
+      if (window.scrollY > 50) {
         filterTitle.classList.remove('hidden');
         filterTitle.classList.add('visible');
         filterWrapper.classList.add('scroll')
@@ -136,8 +125,6 @@ const Filter = ({ onFilterChange }) => {
   };
 
   const handleClearAll = () => {
-    // setLastEndDate(endDate);
-
     setSelectedItem(null);
     setSelectedItemUser(null);
     setStartDate(null);
@@ -149,23 +136,14 @@ const Filter = ({ onFilterChange }) => {
     setDatePickerKey(prevKey => prevKey + 1);
   };
 
-  // const handleStartDateClick = () => {
-  //   if (startDate === null && lastEndDate !== null) {
-  //     console.log('handleStartDateClick', endDate);
-  //     setEndDate(lastEndDate);
-  //   }
-  // };
-
   console.log('End date inside filter component', endDate);
   
-
   const applicationOptions = filteredApplications.length > 0 ? filteredApplications : ["Select a user first"];
 
   const handleKeyDown = (event, isSelected) => {
     if (event.key === 'Backspace' && isSelected) {
       event.preventDefault();
       console.log('called handleKeyDown');
-      
     }
   };
 
