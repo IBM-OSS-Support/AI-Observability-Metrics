@@ -5,8 +5,9 @@ import React, {
   useState,
 } from "react";
 import CustomDataTable from "../common/CustomDataTable";
-import { Pagination, Tile } from "@carbon/react";
+import { DataTableSkeleton, Pagination, Tile } from "@carbon/react";
 import NoData from "../common/NoData/NoData";
+import { useStoreContext } from "../../store";
 
 const defaultHeadersLog = [
   { key: "app_user", header: "User", checked: true },
@@ -32,6 +33,8 @@ const MaintenanceTable = forwardRef(
     const [currentPage, setCurrentPage] = useState(1);
     const [rowsPerPage, setRowsPerPage] = useState(5);
     const [totalItems, setTotalItems] = useState(0);
+    const { state } = useStoreContext();
+    const [loading, setLoading] = useState(true); // Add loading state
 
     useImperativeHandle(ref, () => ({
       sendMessageToServerLog,
@@ -65,11 +68,14 @@ const MaintenanceTable = forwardRef(
         });
 
         const result = await response.json();
+        
         setMessageFromServerLog(result);
         setOriginalRows(result); // Store original data
         setTotalItems(result.length);
       } catch (error) {
         console.error("Error fetching data from API:", error);
+      }finally {
+        setLoading(false); // Stop loading
       }
     };
 
@@ -131,10 +137,17 @@ const MaintenanceTable = forwardRef(
     };
 
     const currentRows = getCurrentPageData(); // No setRows inside render
+    console.log('State', state.status);
+    
 
     return (
       <>
-        {currentRows.length > 0 ? (
+        {loading ? (
+          <DataTableSkeleton
+            rowCount={rowsPerPage} // Render skeleton rows equal to the page size
+            columnCount={headersLog.length} // Use the length of headers for column count
+          />
+        ) : currentRows.length > 0 ? (
           <div>
             <CustomDataTable headers={headersLog} rows={currentRows} />
 

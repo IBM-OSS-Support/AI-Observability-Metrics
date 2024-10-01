@@ -1,4 +1,4 @@
-from ibmroja import run_chat_model, inject_roja_instrumentation, gather_metrics
+from ibmroja import run_chat_model, inject_roja_instrumentation, gather_metrics, generate_unique_id
 from flask_server import flask_utils
 import subprocess
 import json
@@ -18,12 +18,10 @@ data = {
     "comment": "N/A",
     "accuracy": 6
 }
-
-#app_data= json.dumps(data, indent=4)
-
+data["app-id"] = generate_unique_id(data["user"],data["app_name"])
 
 inject_roja_instrumentation(data)
-#question = "What are the seven wonders of the ancient world?"
+
 question = "Where can I get orange?"
 status = run_chat_model(data["user"],question)
 jsonlist = gather_metrics(data, question, status)

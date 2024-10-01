@@ -40,9 +40,7 @@ const CallCountGraph = forwardRef(({ selectedItem, selectedUser, selectedTimesta
       query += ` WHERE application_name = '${selectedItem}' AND app_user = '${selectedUser}'`;
     }
 
-    if (startDate && endDate) {
-      query += ` WHERE timestamp >= '${startDate}' AND timestamp <= '${endDate}'`;
-    }
+    
 
     try {
       const apiUrl = process.env.REACT_APP_BACKEND_API_URL;
@@ -90,6 +88,11 @@ const CallCountGraph = forwardRef(({ selectedItem, selectedUser, selectedTimesta
       } else if (typeof callCount === 'number') {
         callCount = callCount;
       }
+
+      console.log('timestamp', timestamp);
+      console.log('startDate :', startDate, 'endDate :', endDate);
+      
+      
 
       if (timestamp >= startDate && timestamp <= endDate) {
         result.push({

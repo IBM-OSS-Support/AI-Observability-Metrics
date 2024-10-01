@@ -1,5 +1,5 @@
 import random
-from ibmroja import run_chat_model, inject_roja_instrumentation, gather_metrics
+from ibmroja import run_chat_model, inject_roja_instrumentation, gather_metrics, generate_unique_id
 from flask_server import flask_utils
 import subprocess
 import json
@@ -50,7 +50,7 @@ data = {
     "comment": "Expected a more concise answer",
     "accuracy": random.randint(5, 10)  # Random accuracy between 5 and 10
 }
-
+data["app-id"] = generate_unique_id(data["user"],data["app_name"])
 inject_roja_instrumentation(data)
 
 # Run chat model

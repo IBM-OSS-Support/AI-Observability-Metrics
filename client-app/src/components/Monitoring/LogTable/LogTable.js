@@ -1,6 +1,7 @@
 import React, { forwardRef, useImperativeHandle, useState, useEffect } from 'react';
 import CustomDataTable from '../../common/CustomDataTable';
 import { Pagination } from '@carbon/react';
+import NoData from '../../common/NoData/NoData';
 
 const LogTable = forwardRef(({ selectedItem, selectedUser, startDate, endDate }, ref) => {
   const [messageFromServerLogTable, setMessageFromServerLogTable] = useState([]);
@@ -15,17 +16,17 @@ const LogTable = forwardRef(({ selectedItem, selectedUser, startDate, endDate },
 
   // Function to fetch data from the API
   const fetchLogTableData = async (selectedItem, selectedUser, startDate, endDate) => {
-    let query = 'SELECT id, application_name, app_user, timestamp FROM maintenance';
+    let query = 'SELECT app_id, id, application_name, app_user, timestamp FROM maintenance where app_id is not null';
 
     // Add filtering logic based on selectedItem, selectedUser, startDate, and endDate
     if (selectedItem && !selectedUser) {
-      query += ` WHERE application_name = '${selectedItem}'`;
+      query += ` AND application_name = '${selectedItem}'`;
     }
     if (selectedUser && !selectedItem) {
-      query += ` WHERE app_user = '${selectedUser}'`;
+      query += ` AND app_user = '${selectedUser}'`;
     }
     if (selectedUser && selectedItem) {
-      query += ` WHERE application_name = '${selectedItem}' AND app_user = '${selectedUser}'`;
+      query += ` AND application_name = '${selectedItem}' AND app_user = '${selectedUser}'`;
     }
 
     const apiUrl = process.env.REACT_APP_BACKEND_API_URL;
@@ -44,6 +45,8 @@ const LogTable = forwardRef(({ selectedItem, selectedUser, startDate, endDate },
       }
 
       const data = await response.json();
+      console.log('data in traceability', data);
+      
 
       const convertUTCToIST = (utcDateString) => {
         const utcDate = new Date(utcDateString);
@@ -51,18 +54,20 @@ const LogTable = forwardRef(({ selectedItem, selectedUser, startDate, endDate },
         return new Date(utcDate.getTime() + istOffset);
       };
 
-      let filteredData = data;
+      
       if (startDate && endDate) {
-        filteredData = data.filter((row) => {
+       var filteredData = data.filter((row) => {
           const rowTimestamp = convertUTCToIST(row.timestamp);
           return rowTimestamp >= startDate && rowTimestamp <= endDate;
         });
+      } else {
+        filteredData = data;
       }
 
       const formattedData = filteredData.map((row) => ({
         ...row,
         application_name: (
-          <a href={`#/trace-analysis/${row.application_name}`}>
+          <a href={`#/trace-analysis/${encodeURIComponent(row.application_name)} & ${encodeURIComponent(row.app_id)}`}>
             {row.application_name}
           </a>
         ),
@@ -79,6 +84,7 @@ const LogTable = forwardRef(({ selectedItem, selectedUser, startDate, endDate },
   useEffect(() => {
     setHeadersLogTable([
       { key: 'id', header: 'ID' },
+      { key: 'app_id', header: 'APP ID' },
       { key: 'app_user', header: 'User' },
       { key: 'application_name', header: 'Application Name' },
       { key: 'timestamp', header: 'Timestamp' },
@@ -100,7 +106,11 @@ const LogTable = forwardRef(({ selectedItem, selectedUser, startDate, endDate },
   const currentRows = getCurrentPageData();
   
   return (
-    <div>
+    <>
+    {currentRows.length === 0 ? (
+        <NoData />
+      ) : (
+        <div>
       <CustomDataTable headers={headersLogTable} rows={currentRows} />
 
       {/* Add pagination component */}
@@ -112,6 +122,9 @@ const LogTable = forwardRef(({ selectedItem, selectedUser, startDate, endDate },
         pageSizes={[5, 10, 20, 30, 40, 50]} // Options for rows per page
       />
     </div>
+      )}
+    </>
+    
   );
 });
 

@@ -5,10 +5,6 @@ import json
 import logging
 from flask_cors import CORS
 from dotenv import load_dotenv
-
-
-#/root/roja-project/roja-metric-poc/applications/kafka_roja
-#sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import postgres
 
 load_dotenv()
@@ -42,12 +38,12 @@ def upload_additional():
     try:
         logging.debug("Received request: /additional_metrics")
         data = request.get_json()
+        logging.debug("application-name: %s", data["application-name"])
         postgres.upload_to_postgres_with_message(data)
         return jsonify({"message": "additional metrics JSON received successfully"}), 200
     except Exception as e:
         logging.exception(f'Error processing request: {str(e)}')
         return f'Error: {str(e)}', 500
-    
 
 @app.route('/anthropic_metrics', methods=['POST'])
 def upload_anthropic():
@@ -58,45 +54,6 @@ def upload_anthropic():
         postgres.upload_to_postgres_with_message(data)
         print("Data which is sent is: ", data)
         return jsonify({"message": "Anthropic metrics JSON received successfully"}), 200
-    except Exception as e:
-        logging.exception(f'Error processing request: {str(e)}')
-        return f'Error: {str(e)}', 500
-
-
-@app.route('/api/v1/scores/', methods=['POST'])
-def upload_through_rest_scores():
-    
-    try:
-        logging.debug("Received request: /api/v1/scores/")
-        data = request.get_json()
-
-        file_path = '/tmp/scores.json'
-
-        # Open the file in write mode and use json.dump() to write the data
-        #with open(file_path, 'w') as file:
-        #    json.dump(data, file)
-        postgres.upload_to_postgres_with_message(data)
-        return jsonify({"message": "scores JSON received successfully"}), 200
-    except Exception as e:
-        logging.exception(f'Error processing request: {str(e)}')
-        return f'Error: {str(e)}', 500
-
-@app.route('/api/v1/logs/', methods=['POST'])
-def upload_through_rest_logs():
-    
-    try:
-        logging.debug("Received request: /api/v1/logs/")
-        data = {
-            "kafka-topic":"logs",
-            "logs":request.get_json()
-        }
-        #file_path = '/tmp/logs.json'
-
-        # Open the file in write mode and use json.dump() to write the data
-        #with open(file_path, 'w') as file:
-        #    json.dump(data, file)
-        #postgres.upload_to_postgres_with_message(data)
-        return jsonify({"message": "logs JSON received successfully"}), 200
     except Exception as e:
         logging.exception(f'Error processing request: {str(e)}')
         return f'Error: {str(e)}', 500
@@ -114,12 +71,7 @@ def upload_through_rest_spans():
             "application-name": extract_application_name(jdata),
             "spans":request.get_json()
         }
-
-        file_path = '/tmp/spans.json'
-
-        # Open the file in write mode and use json.dump() to write the data
-        #with open(file_path, 'w') as file:
-        #    json.dump(data, file)
+        logging.debug("application-name: %s", data["application-name"])
         postgres.upload_to_postgres_with_message(data)
         return jsonify({"message": "spans JSON received successfully"}), 200
     except Exception as e:
@@ -140,7 +92,10 @@ def upload_through_rest_metrics():
             "token-cost":0,
             "metrics":jdata
         }
-
+        logging.debug("application-name: %s", data["application-name"])
+        #with open("application_id", "r") as file:
+        #    content = file.read()
+        #data["application-id"] = content
         #file_path = '/tmp/metrics.json'
 
         # Open the file in write mode and use json.dump() to write the data
