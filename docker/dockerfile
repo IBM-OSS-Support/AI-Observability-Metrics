@@ -57,7 +57,7 @@ RUN sed -i "s/local\s\+all\s\+postgres\s\+peer/local all postgres md5/" /etc/pos
     sed -i "s/local\s\+all\s\+all\s\+peer/local all all md5/" /etc/postgresql/*/main/pg_hba.conf
 
 # Expose necessary ports
-EXPOSE 3000 5000 5432 8080 3001 80 
+EXPOSE 3000 5000 5432 3001
 
 COPY /docker/commands.sh /app/commands.sh
 ENTRYPOINT ["/app/commands.sh"]
