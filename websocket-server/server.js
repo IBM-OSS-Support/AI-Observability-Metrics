@@ -17,7 +17,22 @@ const client = new Client({
   port: process.env.DB_PORT,
 });
 
-client.connect();
+// Connect to the database and log a success message
+client.connect()
+  .then(() => {
+    console.log('Connected to PostgreSQL database successfully.');
+  })
+  .catch(err => {
+    console.log('Connection details:');
+    console.log(`User: ${client.user}`);
+    console.log(`Host: ${client.host}`);
+    console.log(`Database: ${client.database}`);
+    console.log(`Port: ${client.port}`);
+    // For security reasons, avoid printing passwords directly in production.
+    console.log(`Password: ${client.password ? '****' : 'Not set'}`);
+    console.error('Failed to connect to the PostgreSQL database:', err.stack);
+  });
+
 
 // Function to get local IP addresses
 function getLocalIPAddresses() {
@@ -41,6 +56,7 @@ app.post('/data', async (req, res) => {
     console.log("Data retrieved successfully. Query: ", query);
   } catch (error) {
     console.error('Error executing query:', error.stack);
+    console.log("Error with query: ", query);
     res.status(500).send('Error executing query');
   }
 });

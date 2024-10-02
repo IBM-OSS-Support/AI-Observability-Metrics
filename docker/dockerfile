@@ -4,16 +4,18 @@ ENV DEBIAN_FRONTEND=noninteractive
 ENV DB_NAME=roja_postgres
 ENV DB_USER=roja_user
 ENV DB_PASSWORD=roja_user
-ENV DB_HOST=localhost
+ENV DB_HOST=9.20.196.69
 ENV DB_PORT=5432
 ENV EXPERIMENT_NAME="watsonx_insurance_claims_experiment"
 ENV GRAPHSIGNAL_API_KEY="7e6ff4494810b4cb37255d369cfae983"
 ENV OPENAI_API_KEY="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"
-ENV API_URL="http://localhost:3001"
+ENV API_URL=http://localhost:3001
 ENV OPENAI_ORG_ID="org-zvKGqHl0adRlJbe7lpb7n1wX"
-ENV FLASK_SERVER_URL="http://127.0.0.1:3001"
-ENV REACT_APP_BACKEND_API_URL=http://9.20.193.59:5000/data
+ENV FLASK_SERVER_URL=http://127.0.0.1:3001
+ENV REACT_APP_BACKEND_API_URL=http://9.20.196.69:5000/data
 ENV FLASK_APP=flask_app.py 
+ENV SERVER_PORT=5000
+ENV REACT_APP_SERVER_URL=http://server:3001
 # Set the working directory
 WORKDIR /app
 
@@ -44,20 +46,20 @@ RUN cd /app/applications/flask_server &&  pip install --no-cache-dir -r requirem
 RUN  cd /app/websocket-server && npm install
 
 # Start PostgreSQL service and create the user and database
-RUN service postgresql start && \
-    sleep 5 && \
-    su - postgres -c "psql -c \"CREATE USER $DB_USER WITH PASSWORD '$DB_PASSWORD';\"" && \
-    su - postgres -c "psql -c \"CREATE DATABASE $DB_NAME OWNER $DB_USER;\"" && \
-    su - postgres -c "psql -c \"ALTER USER postgres WITH PASSWORD '$DB_PASSWORD';\"" && \
-    service postgresql stop && \
-    rm -rf /var/lib/apt/lists/*
+#RUN service postgresql start && \
+#    sleep 5 && \
+#    su - postgres -c "psql -c \"CREATE USER $DB_USER WITH PASSWORD '$DB_PASSWORD';\"" && \
+#    su - postgres -c "psql -c \"CREATE DATABASE $DB_NAME OWNER $DB_USER;\"" && \
+#    su - postgres -c "psql -c \"ALTER USER postgres WITH PASSWORD '$DB_PASSWORD';\"" && \
+#    service postgresql stop && \
+#    rm -rf /var/lib/apt/lists/*
 
 # Modify the pg_hba.conf file to use md5 authentication instead of peer
 RUN sed -i "s/local\s\+all\s\+postgres\s\+peer/local all postgres md5/" /etc/postgresql/*/main/pg_hba.conf && \
     sed -i "s/local\s\+all\s\+all\s\+peer/local all all md5/" /etc/postgresql/*/main/pg_hba.conf
 
 # Expose necessary ports
-EXPOSE 3000 5000 5432 3001
+EXPOSE 3000 5000 3001 5432
 
 COPY /docker/commands.sh /app/commands.sh
 ENTRYPOINT ["/app/commands.sh"]
