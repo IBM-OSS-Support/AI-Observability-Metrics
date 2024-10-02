@@ -410,7 +410,7 @@ def process_spans(message,conn,json_object):
             tags JSONB,
             start_us BIGINT,
             end_us BIGINT,
-            latency_us BIGINT,
+            latency_ns BIGINT,
             application_name TEXT,
             app_user TEXT,
             app_id TEXT,
