@@ -29,7 +29,7 @@ const Filter = ({ onFilterChange }) => {
 
   const fetchFilterData = useCallback(async () => {
     const apiUrl = process.env.REACT_APP_BACKEND_API_URL;
-    const query = 'SELECT application_name, app_user, timestamp FROM maintenance ORDER BY app_user ASC';
+    const query = 'SELECT application_name, app_user, timestamp FROM log_history ORDER BY app_user ASC';
 
     try {
       const response = await fetch(apiUrl, {

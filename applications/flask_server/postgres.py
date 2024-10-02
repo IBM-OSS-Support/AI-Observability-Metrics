@@ -87,7 +87,7 @@ def process_accuracy(message,conn,json_object):
     create_table_sql = """
     CREATE TABLE IF NOT EXISTS accuracy (
             id SERIAL PRIMARY KEY,
-            accuracy_score INTEGER,
+            accuracy_score INTEGER NULL,
             application_name TEXT,
             app_user TEXT,
             app_id TEXT UNIQUE,
@@ -101,8 +101,16 @@ def process_accuracy(message,conn,json_object):
 
     # SQL command to insert the JSON data along with 'application-name', 'tag', and timestamp
     insert_metric_sql = "INSERT INTO accuracy (accuracy_score, application_name, app_user, app_id, timestamp) VALUES (%s, %s, %s, %s, %s)"
-    cursor.execute(insert_metric_sql, (json.dumps(json_object["accuracy"]), json_object["application-name"], json_object["app-user"], json_object["application-name"], current_timestamp))
-
+    cursor.execute(
+        insert_metric_sql, 
+        (
+            json.dumps(json_object.get("accuracy", -1)),
+            json_object.get("application-name", None),
+            json_object.get("app-user", None),
+            json_object.get("application-name", None),  # Assuming you're using "application-name" as "app_id"
+            current_timestamp  # Make sure current_timestamp is defined
+        )
+    )
     conn.commit()
     cursor.close()
     conn.close()
@@ -113,8 +121,8 @@ def process_user_satisfaction(message,conn,json_object):
     create_table_sql = """
     CREATE TABLE IF NOT EXISTS user_satisfaction (
             id SERIAL PRIMARY KEY,
-            rating INTEGER,
-            comment TEXT,
+            rating INTEGER NULL,
+            comment TEXT NULL,
             application_name TEXT,
             app_user TEXT,
             app_id TEXT,
@@ -128,8 +136,17 @@ def process_user_satisfaction(message,conn,json_object):
 
     # SQL command to insert the JSON data along with 'application-name', 'tag', and timestamp
     insert_metric_sql = "INSERT INTO user_satisfaction (rating, comment, application_name, app_user, app_id, timestamp) VALUES (%s, %s, %s, %s, %s, %s)"
-    cursor.execute(insert_metric_sql, (json.dumps(json_object["rating"]), json_object["comment"],json_object["application-name"], json_object["app-user"], json_object["application-name"], current_timestamp))
-
+    cursor.execute(
+        insert_metric_sql, 
+        (
+            json.dumps(json_object.get("rating", -1)),      # Handling "rating"
+            json_object.get("comment", None),                 # Handling "comment"
+            json_object.get("application-name", None),        # Handling "application_name"
+            json_object.get("app-user", None),                # Handling "app_user"
+            json_object.get("application-name", None),        # Assuming "application-name" is also used as "app_id"
+            current_timestamp                                 # Ensure current_timestamp is defined
+        )
+    )
     conn.commit()
     cursor.close()
     conn.close()
@@ -192,9 +209,9 @@ def process_log_history(message,conn,json_object):
     create_table_sql = """
     CREATE TABLE IF NOT EXISTS log_history (
             id SERIAL PRIMARY KEY,
-            log JSONB,
-            status TEXT,
-            finish_reason TEXT, 
+            log JSONB NULL,
+            status TEXT NULL,
+            finish_reason TEXT NULL, 
             application_name TEXT,
             app_user TEXT,
             app_id TEXT UNIQUE,
@@ -225,8 +242,18 @@ def process_log_history(message,conn,json_object):
     print(type(status), type(finish_reason))
     # SQL command to insert the JSON data along with 'application-name', 'tag', and timestamp
     insert_metric_sql = "INSERT INTO log_history (log, status, finish_reason, application_name, app_user, app_id, timestamp) VALUES (%s, %s, %s, %s, %s, %s, %s)"
-    cursor.execute(insert_metric_sql, (json.dumps(json_object), status, finish_reason, json_object["application-name"], json_object["app-user"], json_object["application-name"], current_timestamp))
-
+    cursor.execute(
+        insert_metric_sql, 
+        (
+            json.dumps(json_object),                               # Log is being inserted as a JSON object
+            status,                                                # Assuming 'status' is defined elsewhere
+            finish_reason,                                         # Assuming 'finish_reason' is defined elsewhere
+            json_object.get("application-name", None),             # Handling "application_name"
+            json_object.get("app-user", None),                     # Handling "app_user"
+            json_object.get("application-name", None),             # Assuming "application-name" is also used as "app_id"
+            current_timestamp                                      # Ensure current_timestamp is defined
+        )
+    )
     conn.commit()
     cursor.close()
     conn.close()
@@ -239,10 +266,10 @@ def process_metrics(message,conn,json_object):
     create_table_sql = """
     CREATE TABLE IF NOT EXISTS system (
             id SERIAL PRIMARY KEY,
-            process_cpu_usage JSONB,
-            process_memory JSONB,
-            virtual_memory JSONB,
-            node_memory_used JSONB,
+            process_cpu_usage JSONB NULL,
+            process_memory JSONB NULL,
+            virtual_memory JSONB NULL,
+            node_memory_used JSONB NULL,
             application_name TEXT,
             app_user TEXT,
             app_id TEXT UNIQUE,
@@ -268,13 +295,24 @@ def process_metrics(message,conn,json_object):
 
     # SQL command to insert the JSON data along with 'application-name', 'tag', and timestamp
     insert_metric_sql = "INSERT INTO system (process_cpu_usage, process_memory, virtual_memory, node_memory_used, application_name, app_user, app_id, timestamp) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"
-    cursor.execute(insert_metric_sql, (json.dumps(json_system_objects["process_cpu_usage"]), json.dumps(json_system_objects["process_memory"]), json.dumps(json_system_objects["virtual_memory"]), json.dumps(json_system_objects["node_memory_used"]), json_object["application-name"], json_object["app-user"], json_object["application-name"],current_timestamp))
-
+    cursor.execute(
+        insert_metric_sql, 
+        (
+            json.dumps(json_system_objects.get("process_cpu_usage", None)),
+            json.dumps(json_system_objects.get("process_memory", None)),
+            json.dumps(json_system_objects.get("virtual_memory", None)),
+            json.dumps(json_system_objects.get("node_memory_used", None)),
+            json_object.get("application-name", None),
+            json_object.get("app-user", None),
+            json_object.get("application-name", None),  # Assuming you want to use "application-name" as "app_id"
+            current_timestamp  # Make sure current_timestamp is defined
+        )
+    )
     create_table_sql = """
     CREATE TABLE IF NOT EXISTS token_usage (
             id SERIAL PRIMARY KEY,
-            usage JSONB,
-            token_cost NUMERIC(10,10),
+            usage JSONB NULL,
+            token_cost NUMERIC(10,10) NULL,
             application_name TEXT,
             app_user TEXT,
             app_id TEXT UNIQUE,
@@ -310,12 +348,21 @@ def process_metrics(message,conn,json_object):
 
     # SQL command to insert the JSON data along with 'application-name', 'tag', and timestamp
     insert_metric_sql = "INSERT INTO token_usage (usage, token_cost, application_name, app_user, app_id, timestamp) VALUES (%s, %s, %s, %s, %s, %s)"
-    cursor.execute(insert_metric_sql, (json.dumps(json_usage_objects), token_cost, json_object["application-name"], json_object["app-user"], json_object["application-name"], current_timestamp))
-
+    cursor.execute(
+        insert_metric_sql, 
+        (
+            json.dumps(json_usage_objects),                       # Log the usage as a JSON object
+            token_cost,                                           # Assuming 'token_cost' is defined elsewhere
+            json_object.get("application-name", None),            # Handling "application_name"
+            json_object.get("app-user", None),                    # Handling "app_user"
+            json_object.get("application-name", None),            # Assuming "application-name" is also used as "app_id"
+            current_timestamp                                     # Ensure current_timestamp is defined
+        )
+    )
     create_table_sql = """
     CREATE TABLE IF NOT EXISTS performance (
             id SERIAL PRIMARY KEY,
-            data JSONB,
+            data JSONB NULL,
             application_name TEXT,
             app_user TEXT,
             app_id TEXT UNIQUE,
@@ -336,8 +383,16 @@ def process_metrics(message,conn,json_object):
     json_performance_objects = get_performance_objects(json_object["metrics"])    
 
     insert_metric_sql = "INSERT INTO performance (data, application_name, app_user, app_id, timestamp) VALUES (%s, %s, %s, %s, %s)"
-    cursor.execute(insert_metric_sql, (json.dumps(json_performance_objects), json_object["application-name"], json_object["app-user"], json_object["application-name"], current_timestamp))
-
+    cursor.execute(
+        insert_metric_sql, 
+        (
+            json.dumps(json_performance_objects),                 # Log the performance data as a JSON object
+            json_object.get("application-name", None),            # Handling "application_name"
+            json_object.get("app-user", None),                    # Handling "app_user"
+            json_object.get("application-name", None),            # Assuming "application-name" is also used as "app_id"
+            current_timestamp                                     # Ensure current_timestamp is defined
+        )
+    )
     conn.commit()
     cursor.close()
     conn.close()
@@ -350,7 +405,7 @@ def process_spans(message,conn,json_object):
     '''create_table_sql = """
     CREATE TABLE IF NOT EXISTS maintenance (
             id SERIAL PRIMARY KEY,
-            config JSONB,
+            config JSONB NULL,
             application_name TEXT,
             app_user TEXT,
             app_id TEXT UNIQUE,
@@ -362,14 +417,14 @@ def process_spans(message,conn,json_object):
     create_table_sql = """
     CREATE TABLE IF NOT EXISTS maintenance (
             id SERIAL PRIMARY KEY,
-            graphsignal_library_version TEXT,
-            os_name TEXT,
-            os_version TEXT,
-            runtime_name TEXT,
-            runtime_version TEXT,
-            openai_library_version TEXT,
-            langchain_library_version TEXT,
-            hostname TEXT, 
+            graphsignal_library_version TEXT NULL,
+            os_name TEXT NULL,
+            os_version TEXT NULL,
+            runtime_name TEXT NULL,
+            runtime_version TEXT NULL,
+            openai_library_version TEXT NULL,
+            langchain_library_version TEXT NULL,
+            hostname TEXT NULL, 
             application_name TEXT,
             app_user TEXT,
             app_id TEXT UNIQUE,
@@ -395,22 +450,37 @@ def process_spans(message,conn,json_object):
 
     # SQL command to insert the JSON data along with 'application-name', 'tag', and timestamp
     insert_metric_sql = "INSERT INTO maintenance (graphsignal_library_version, os_name, os_version, runtime_name, runtime_version, openai_library_version, langchain_library_version, hostname, application_name, app_user, app_id, timestamp) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
-    cursor.execute(insert_metric_sql, (config_dict["graphsignal.library.version"], config_dict["os.name"], config_dict["os.version"], config_dict["runtime.name"], config_dict["runtime.version"], config_dict["openai.library.version"], config_dict["langchain.library.version"], socket.gethostname(), json_object["application-name"], json_object["app-user"], json_object["application-name"], current_timestamp))
-    
+    cursor.execute(
+        insert_metric_sql, 
+        (
+            config_dict.get("graphsignal.library.version", None),   # Handle "graphsignal.library.version"
+            config_dict.get("os.name", None),                       # Handle "os.name"
+            config_dict.get("os.version", None),                    # Handle "os.version"
+            config_dict.get("runtime.name", None),                  # Handle "runtime.name"
+            config_dict.get("runtime.version", None),               # Handle "runtime.version"
+            config_dict.get("openai.library.version", None),        # Handle "openai.library.version"
+            config_dict.get("langchain.library.version", None),     # Handle "langchain.library.version"
+            socket.gethostname(),                                   # Get the hostname
+            json_object.get("application-name", None),              # Handle "application-name"
+            json_object.get("app-user", None),                      # Handle "app_user"
+            json_object.get("application-name", None),              # Handle "app_id" (using the same as "application-name")
+            current_timestamp                                       # Ensure current_timestamp is defined
+        )
+    )    
     # operations
     create_table_sql = """
     CREATE TABLE IF NOT EXISTS operations (
             id SERIAL PRIMARY KEY,
-            span_id TEXT,
-            operation TEXT,
-            exceptions JSONB,
-            usage JSONB,
-            config JSONB,
-            payloads JSONB,
-            tags JSONB,
-            start_us BIGINT,
-            end_us BIGINT,
-            latency_ns BIGINT,
+            span_id TEXT NULL,
+            operation TEXT NULL,
+            exceptions JSONB NULL,
+            usage JSONB NULL,
+            config JSONB NULL,
+            payloads JSONB NULL,
+            tags JSONB NULL,
+            start_us BIGINT NULL,
+            end_us BIGINT NULL,
+            latency_ns BIGINT NULL,
             application_name TEXT,
             app_user TEXT,
             app_id TEXT,
@@ -428,8 +498,25 @@ def process_spans(message,conn,json_object):
                     op = tag["value"]
 
                     insert_metric_sql = "INSERT INTO operations (span_id, operation, exceptions, usage, config, payloads, tags, start_us, end_us, latency_ns, application_name, app_user, app_id, timestamp) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
-                    cursor.execute(insert_metric_sql, (json.dumps(span["span_id"]), op, json.dumps(span["exceptions"]), json.dumps(span["usage"]), json.dumps(span["config"]), json.dumps(span["payloads"]), json.dumps(span["tags"]), start_us, end_us, latency_ns, json_object["application-name"], json_object["app-user"], json_object["application-name"], current_timestamp))
-
+                    cursor.execute(
+                        insert_metric_sql, 
+                        (
+                            json.dumps(span.get("span_id", None)),         # Handle "span_id"
+                            op,                                            # Operation (assuming 'op' is defined)
+                            json.dumps(span.get("exceptions", None)),      # Handle "exceptions"
+                            json.dumps(span.get("usage", None)),           # Handle "usage"
+                            json.dumps(span.get("config", None)),          # Handle "config"
+                            json.dumps(span.get("payloads", None)),        # Handle "payloads"
+                            json.dumps(span.get("tags", None)),            # Handle "tags"
+                            start_us,                                      # Start timestamp in microseconds (assuming 'start_us' is defined)
+                            end_us,                                        # End timestamp in microseconds (assuming 'end_us' is defined)
+                            latency_ns,                                    # Latency in nanoseconds (assuming 'latency_ns' is defined)
+                            json_object.get("application-name", None),     # Handle "application-name"
+                            json_object.get("app-user", None),             # Handle "app-user"
+                            json_object.get("application-name", None),     # Handle "app_id" (using the same as "application-name")
+                            current_timestamp                              # Ensure current_timestamp is defined
+                        )
+                    )
     conn.commit()
     cursor.close()
     conn.close()
@@ -440,9 +527,9 @@ def process_auditing_message(message,conn,json_object):
     create_table_sql = """
     CREATE TABLE IF NOT EXISTS auditing (
             id SERIAL PRIMARY KEY,
-            flagged BOOLEAN,
-            categories JSONB,
-            category_scores JSONB,
+            flagged BOOLEAN NULL,
+            categories JSONB NULL,
+            category_scores JSONB NULL,
             application_name TEXT,
             app_user TEXT,
             app_id TEXT UNIQUE,
@@ -458,8 +545,18 @@ def process_auditing_message(message,conn,json_object):
 
     # SQL command to insert the JSON data along with 'application-name', 'tag', and timestamp
     insert_metric_sql = "INSERT INTO auditing (flagged, categories, category_scores, application_name, app_user, app_id, timestamp) VALUES (%s, %s, %s, %s, %s, %s, %s)"
-    cursor.execute(insert_metric_sql, (json.dumps(json_object["flagged"]), json.dumps(json_object["categories"]), json.dumps(json_object["category_scores"]), json_object["application-name"], json_object["app-user"], json_object["application-name"], current_timestamp))
-
+    cursor.execute(
+        insert_metric_sql, 
+        (
+            json.dumps(json_object.get("flagged", None)),           # Handle "flagged"
+            json.dumps(json_object.get("categories", None)),        # Handle "categories"
+            json.dumps(json_object.get("category_scores", None)),   # Handle "category_scores"
+            json_object.get("application-name", None),              # Handle "application-name"
+            json_object.get("app-user", None),                      # Handle "app-user"
+            json_object.get("application-name", None),              # Handle "app_id" (same as "application-name")
+            current_timestamp                                       # Ensure current_timestamp is defined
+        )
+    )
     conn.commit()
     cursor.close()
     conn.close()

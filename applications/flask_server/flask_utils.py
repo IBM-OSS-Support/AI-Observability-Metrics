@@ -1,3 +1,4 @@
+'''
 import requests
 import json
 import os
@@ -35,3 +36,4 @@ def send_anthropic_data(json_data):
 
     # Print the response from the server
     print(response.text)
+'''

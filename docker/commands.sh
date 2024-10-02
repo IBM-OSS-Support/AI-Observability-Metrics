@@ -24,7 +24,7 @@ cd /app/client-app && npm start &
 
 
 #GRAPHSIGNAL_API_KEY="7e6ff4494810b4cb37255d369cfae983" OPENAI_API_KEY="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" API_URL="http://localhost:3001" FLASK_SERVER_URL="http://127.0.0.1:3001" OPENAI_ORG_ID="org-zvKGqHl0adRlJbe7lpb7n1wX" python3 /app/applications/bhoomaiah_app.py 
-python3 /app/applications/random_app.py
+#python3 /app/applications/random_app.py
 #
 sleep infinity
 
