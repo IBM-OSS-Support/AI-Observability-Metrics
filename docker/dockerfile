@@ -9,11 +9,12 @@ ENV DB_PORT=5432
 ENV EXPERIMENT_NAME="watsonx_insurance_claims_experiment"
 ENV GRAPHSIGNAL_API_KEY="7e6ff4494810b4cb37255d369cfae983"
 ENV OPENAI_API_KEY="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"
-ENV API_URL="http://localhost:3001"
+ENV API_URL=http://localhost:3001
 ENV OPENAI_ORG_ID="org-zvKGqHl0adRlJbe7lpb7n1wX"
-ENV FLASK_SERVER_URL="http://127.0.0.1:3001"
-ENV REACT_APP_BACKEND_API_URL=http://9.20.193.59:5000/data
+ENV FLASK_SERVER_URL=http://127.0.0.1:3001
 ENV FLASK_APP=flask_app.py 
+ENV SERVER_PORT=5000
+ENV REACT_APP_SERVER_URL=http://server:3001
 # Set the working directory
 WORKDIR /app
 
@@ -57,7 +58,7 @@ RUN sed -i "s/local\s\+all\s\+postgres\s\+peer/local all postgres md5/" /etc/pos
     sed -i "s/local\s\+all\s\+all\s\+peer/local all all md5/" /etc/postgresql/*/main/pg_hba.conf
 
 # Expose necessary ports
-EXPOSE 3000 5000 5432 8080 3001 80 
+EXPOSE 3000 5000 3001 5432
 
 COPY /docker/commands.sh /app/commands.sh
 ENTRYPOINT ["/app/commands.sh"]
