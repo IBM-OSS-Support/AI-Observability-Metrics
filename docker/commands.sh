@@ -5,7 +5,7 @@ echo $FLASK_SERVER_URL
 echo $API_URL
 
 
-export REACT_APP_BACKEND_API_URL="http://$HOST_IP:5000/data"
+export REACT_APP_BACKEND_API_URL="http://$HOST_IP_FOR_API_SERVER:5000/data"
 echo "Backend API URL set to: $REACT_APP_BACKEND_API_URL"
 
 # Start PostgreSQL
