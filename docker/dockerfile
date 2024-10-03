@@ -1,21 +1,25 @@
 FROM ubuntu:20.04
 ENV DEBIAN_FRONTEND=noninteractive
 
+ENV FLASK_PORT=12000
+ENV POSTGRES_PORT=5432
+ENV SERVER_PORT=15000
+ENV REACT_UI_PORT=3000
+# reactui port is 3000 default, postgres always uses 5432
+
 ENV DB_NAME=roja_postgres
 ENV DB_USER=roja_user
 ENV DB_PASSWORD=roja_user
 ENV DB_HOST=localhost
-ENV DB_PORT=5432
+ENV DB_PORT=${POSTGRES_PORT}
 ENV EXPERIMENT_NAME="watsonx_insurance_claims_experiment"
 ENV GRAPHSIGNAL_API_KEY="7e6ff4494810b4cb37255d369cfae983"
 ENV OPENAI_API_KEY="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"
-ENV API_URL=http://localhost:3001
+ENV API_URL=http://localhost:${FLASK_PORT}
 ENV OPENAI_ORG_ID="org-zvKGqHl0adRlJbe7lpb7n1wX"
-ENV FLASK_SERVER_URL=http://127.0.0.1:3001
+ENV FLASK_SERVER_URL=http://127.0.0.1:${FLASK_PORT}
 ENV FLASK_APP=flask_app.py 
-ENV SERVER_PORT=5000
 ENV HOST_IP_FOR_API_SERVER=localhost
-ENV REACT_APP_SERVER_URL=http://server:3001
 # Set the working directory
 WORKDIR /app
 
@@ -34,7 +38,7 @@ RUN curl -fsSL https://deb.nodesource.com/setup_16.x | bash - && \
     apt-get install -y nodejs
 
 # Stage 1: Build React frontend
-RUN cd client-app && npm install
+RUN cd client-app && npm install && npm install --save-dev cross-env
 
 # Stage 2: Setup Flask backend
 
@@ -58,7 +62,7 @@ RUN sed -i "s/local\s\+all\s\+postgres\s\+peer/local all postgres md5/" /etc/pos
     sed -i "s/local\s\+all\s\+all\s\+peer/local all all md5/" /etc/postgresql/*/main/pg_hba.conf
 
 # Expose necessary ports
-EXPOSE 3000 5000 3001 5432
+EXPOSE ${SERVER_PORT} ${FLASK_PORT} ${POSTGRES_PORT} ${REACT_UI_PORT}
 
 COPY /docker/entrypoint.sh /app/entrypoint.sh
 ENTRYPOINT ["/app/entrypoint.sh"]

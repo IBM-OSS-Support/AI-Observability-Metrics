@@ -7,7 +7,6 @@ import random
 
 def run_ai_model(USER, question):
     try:
-        '''
         llm = ChatOpenAI(temperature=0)
         graphsignal.set_context_tag('user', USER)
         prompt = ChatPromptTemplate.from_messages([
@@ -19,7 +18,6 @@ def run_ai_model(USER, question):
         with graphsignal.trace("run_chat_model") as tr:
             for chunk in runnable.stream({"question": question}):
                 print(chunk, end="", flush=True)
-        '''
         return "success"
     except KeyboardInterrupt:
         return "user_abandoned"

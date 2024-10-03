@@ -4,7 +4,7 @@ const cors = require('cors');
 const os = require('os'); // Import the os module
 
 const app = express();
-const port = process.env.SERVER_PORT || 5000;
+const port = process.env.SERVER_PORT;
 
 app.use(cors());
 app.use(express.json());
