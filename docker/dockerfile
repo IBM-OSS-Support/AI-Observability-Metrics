@@ -23,7 +23,6 @@ WORKDIR /app
 RUN apt-get update && apt-get install -y \
     python3 python3-pip nodejs npm postgresql postgresql-contrib nginx curl
 
-
 # Copy the requirements file into the container
 COPY requirements.txt requirements.txt
 
@@ -61,5 +60,5 @@ RUN sed -i "s/local\s\+all\s\+postgres\s\+peer/local all postgres md5/" /etc/pos
 # Expose necessary ports
 EXPOSE 3000 5000 3001 5432
 
-COPY /docker/commands.sh /app/commands.sh
-ENTRYPOINT ["/app/commands.sh"]
+COPY /docker/entrypoint.sh /app/entrypoint.sh
+ENTRYPOINT ["/app/entrypoint.sh"]
