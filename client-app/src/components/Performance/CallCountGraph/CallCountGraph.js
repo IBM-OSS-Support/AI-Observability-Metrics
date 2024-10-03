@@ -16,7 +16,7 @@ import { getIntervals } from "../helper";
 import moment from "moment";
 import NoData from "../../common/NoData/NoData";
 
-const CallCountGraph = forwardRef(({ selectedItem, selectedUser, selectedTimestampRange, numberOfDaysSelected, startDate, endDate }, ref) => {
+const CallCountGraph = forwardRef(({ selectedItem, selectedUser, startDate, endDate }, ref) => {
   const [messageFromServerCallCount, setMessageFromServerCallCount] = useState('');
   let defaultNumberofDays = 7;
 
@@ -25,10 +25,8 @@ const CallCountGraph = forwardRef(({ selectedItem, selectedUser, selectedTimesta
   }));
 
   // Function to fetch data from the API
-  const sendMessageToServerCallCount = async (selectedItem, selectedUser, selectedTimestampRange, numberOfDaysSelected, startDate, endDate) => {
+  const sendMessageToServerCallCount = async (selectedItem, selectedUser, startDate, endDate) => {
     let query = 'SELECT application_name, data, timestamp FROM performance';
-    defaultNumberofDays = numberOfDaysSelected;
-
     // Add filtering logic based on selectedItem, selectedUser, and selectedTimestampRange
     if (selectedItem && !selectedUser) {
       query += ` WHERE application_name = '${selectedItem}'`;
@@ -66,8 +64,8 @@ const CallCountGraph = forwardRef(({ selectedItem, selectedUser, selectedTimesta
   };
 
   useEffect(() => {
-    sendMessageToServerCallCount(selectedItem, selectedUser, selectedTimestampRange, numberOfDaysSelected, startDate, endDate);
-  }, [selectedItem, selectedUser, selectedTimestampRange, numberOfDaysSelected, startDate, endDate]);
+    sendMessageToServerCallCount(selectedItem, selectedUser, startDate, endDate);
+  }, [selectedItem, selectedUser, startDate, endDate]);
 
   const getCallCountDataInside = (apps, startDate, endDate, selectedItem, selectedUser) => {
     let result = [];
@@ -89,8 +87,6 @@ const CallCountGraph = forwardRef(({ selectedItem, selectedUser, selectedTimesta
         callCount = callCount;
       }
 
-      console.log('timestamp', timestamp);
-      console.log('startDate :', startDate, 'endDate :', endDate);
       
       
 
@@ -125,7 +121,7 @@ const CallCountGraph = forwardRef(({ selectedItem, selectedUser, selectedTimesta
     title: ''
   };
 
-  console.log(startDateFormatted, endDateFormatted, "111122223333", startDate, endDate, selectedItem, selectedUser);
+  console.log(startDateFormatted, endDateFormatted, "Dates", startDate, endDate, selectedItem, selectedUser);
   
 
   return (
