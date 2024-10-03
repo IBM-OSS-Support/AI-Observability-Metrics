@@ -8,7 +8,7 @@ from dotenv import load_dotenv
 import postgres
 
 load_dotenv()
-
+FLASK_PORT = os.getenv('FLASK_PORT')
 app = Flask(__name__)
 CORS(app)
 
@@ -108,4 +108,4 @@ def upload_through_rest_metrics():
         return f'Error: {str(e)}', 500
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=3001)
+    app.run(host='0.0.0.0', port=FLASK_PORT)
