@@ -175,6 +175,7 @@ const Filter = ({ onFilterChange }) => {
           endDate={dateRange[1]}
           onChange={handleDateChange}
           placeholderText="Select date range"
+          onKeyDown={(e) => e.preventDefault()}
         />
         {(selectedItem || selectedItemUser || dateRange[0] || dateRange[1]) && (
           <Button

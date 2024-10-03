@@ -104,6 +104,7 @@
   position: relative;
   padding: 10px;
     border: none;
+    font-size: 14px;
     min-width: 250px;
     background-color: var(--cds-field);
     block-size: 2.5rem;
@@ -123,13 +124,14 @@
     }
 }
 
+
 .react-datepicker {
   font-family: 'IBM Plex Sans', system-ui, -apple-system, BlinkMacSystemFont, '.SFNSText-Regular', sans-serif;
   font-size: 0.9rem;
-  background-color: #262626;
+  background-color: #262626 !important;
   color: initial;
-  border: none;
-  border-radius: 0;
+  border: none !important;
+  border-radius: 0 !important;
   display: inline-block;
   position: relative;
   line-height: initial;
@@ -140,8 +142,8 @@
 }
 
 .react-datepicker__header {
-  background-color: #262626;
-  border-bottom-color: #262626;
+  background-color: #262626 !important;
+  border-bottom-color: #262626 !important;
   border-top-left-radius: 0;
 
   .react-datepicker__current-month,
@@ -155,8 +157,8 @@
 }
 
 .react-datepicker__month {
-  background-color: #262626;
-  border-bottom-color: #262626;
+  background-color: #262626 !important;
+  border-bottom-color: #262626 !important;
   border-top-left-radius: 0;
 
   .react-datepicker__day-name, .react-datepicker__day, .react-datepicker__time-name {
