@@ -92,3 +92,51 @@
   opacity: 1;
   visibility: visible;
 }
+
+.react-datepicker-wrapper {
+  margin: 0 0 8px 8px;
+}
+
+.date-range-selector {
+  position: relative;
+  padding: 10px;
+    border: none;
+    min-width: 250px;
+    background-color: var(--cds-field);
+    block-size: 2.5rem;
+    border-block-end: 1.5px solid var(--cds-border-strong);
+    color: var(--cds-text-primary, #161616);
+    cursor: pointer;
+    inline-size: 100%;
+    max-block-size: 2.5rem;
+    transition: all 70ms cubic-bezier(0.2, 0, 0.38, 0.9);
+
+    &:focus-visible {
+      outline: none;
+    }
+    &:focus {
+      outline: 2px solid var(--cds-focus, #0f62fe);
+      outline-offset: -2px;
+    }
+}
+
+
+
+// .react-datepicker__month-container {
+//   box-shadow: 0 2px 6px var(--cds-shadow, rgba(0, 0, 0, 0.3));
+//     z-index: 99999;
+//     display: flex;
+//     overflow: hidden;
+//     flex-direction: column;
+//     align-items: center;
+//     justify-content: center;
+//     border: none;
+//     color: #fff;
+//     background-color: var(--cds-layer-01, #f4f4f4);
+//     block-size: 21rem;
+//     inline-size: 18rem;
+//     margin-block-start: -0.125rem;
+//     animation: fp-fade-in-down 110ms cubic-bezier(0, 0, 0.38, 0.9);
+// }
+
+

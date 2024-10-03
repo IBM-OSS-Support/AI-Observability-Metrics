@@ -38,9 +38,6 @@ const LatencyGraph = forwardRef(({ selectedItem, selectedUser, startDate, endDat
     if (selectedUser && selectedItem) {
       query += ` WHERE application_name = '${selectedItem}' AND app_user = '${selectedUser}'`;
     }
-    if (startDate && endDate) {
-      query += ` WHERE timestamp >= '${startDate}' AND timestamp <= '${endDate}'`;
-    }
 
     try {
       const apiUrl = process.env.REACT_APP_BACKEND_API_URL;
