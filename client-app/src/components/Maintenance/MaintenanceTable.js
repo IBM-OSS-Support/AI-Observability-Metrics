@@ -137,7 +137,6 @@ const MaintenanceTable = forwardRef(
     };
 
     const currentRows = getCurrentPageData(); // No setRows inside render
-    console.log('State', state.status);
     
 
     return (
@@ -146,6 +145,8 @@ const MaintenanceTable = forwardRef(
           <DataTableSkeleton
             rowCount={rowsPerPage} // Render skeleton rows equal to the page size
             columnCount={headersLog.length} // Use the length of headers for column count
+            showHeader={false}
+            showToolbar={false}
           />
         ) : currentRows.length > 0 ? (
           <div>

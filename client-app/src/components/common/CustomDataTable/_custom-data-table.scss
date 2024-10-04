@@ -414,3 +414,9 @@
     }
   }
 }
+
+.remove-outline {
+  .cds--tag--outline {
+    outline: none;
+  }
+}

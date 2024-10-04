@@ -23,7 +23,6 @@ import NoData from "../../common/NoData/NoData";
 
 const Transactions = ({ component, showColors }) => {
   const navigate = useNavigate();
-  console.log("2.component", component , "navigate", navigate);
 
   const defaultHeaders = useMemo(() => {
     if (component === "audit") {
@@ -203,7 +202,6 @@ const Transactions = ({ component, showColors }) => {
       },
     ];
   }, [component]);
-console.log("defaultHeaders", defaultHeaders);
   const [headers, setHeaders] = useState(
     defaultHeaders.map((h) => Object.assign({}, h))
   );
@@ -224,7 +222,6 @@ console.log("defaultHeaders", defaultHeaders);
   useEffect(() => {
     if (state.status === "success") {
       const data = getAppData();
-      console.log("useEffect:", data);
       const rowData = data.map(({ data }) => {
         const rootSpanId = data.spans?.[0]?.context?.root_span_id;
         const root = (data.spans || []).find((s) => s.span_id === rootSpanId);
@@ -232,12 +229,12 @@ console.log("defaultHeaders", defaultHeaders);
           return {
             deployment: data["application-name"],
             trace: moment(Number(data.upload_ms)).format("YYYY-MM-DD HH:mm:ss"),
-            component : data[""],
-            name : data[""],
+            component: data[""],
+            name: data[""],
             latency: 0,
             start_us: 0,
             end_us: 0,
-          }
+          };
         }
         return root.tags.reduce(
           (res, tag) => {
@@ -288,119 +285,13 @@ console.log("defaultHeaders", defaultHeaders);
   }
   return (
     <div className="traces-container">
-      { component !== "maintenance" && component !== "safetyscore" && component !== "audit" &&
-        // <div className="trace-sections">
-        //   <Accordion align="start">
-        //     <AccordionItem title="Timeline chart (Applications)" open={true}>
-        //       <div className="timeline-chart-wrapper">
-        //         ASD
-        //         <TimelineGraph />
-        //       </div>
-        //     </AccordionItem>
-        //   </Accordion>
-        // </div>
-        <Tile className="nodata-wrap">
-          <NoData />
-        </Tile>
-      
-      }
-      {/* {component !== "audit" &&
-        <div className="trace-sections">
-          <Accordion align="start">
-            <AccordionItem title="Timeline chart (Applications)" open={true}>
-              <div className="timeline-chart-wrapper">
-                <TimelineGraph />
-              </div>
-            </AccordionItem>
-          </Accordion>
-        </div>
-      } */}
-
-      {/* <div className="trace-sections">
-        <CustomDataTable
-          showColors={showColors}
-          headers={headers.filter((h) => h.checked || h.key === "actions")}
-          rows={formatData(rows)}
-          loading={state.status === "loading"}
-          search={{
-            searchText: searchText,
-            persistent: true,
-            placeholder: "Search for queries",
-            onChange: setSearchText,
-          }}
-          filter={{
-            id: "query-history-filter",
-            buttonOverrides: { align: "bottom" },
-            filters,
-            selectedFilters,
-            startDate,
-            setStartDate,
-            endDate,
-            setEndDate,
-            hasDateRange: true,
-            dateLabel: "Created",
-            setSelectedFilters: (newSelectedFilters) => {
-              setSelectedFilters(newSelectedFilters);
-              setPagination((prev) => ({ ...prev, offset: 0 }));
-
-              if (!Object.keys(newSelectedFilters).length) {
-                setInitialSelectedFilters({});
-                return navigate("/");
-              }
-
-              Object.entries(newSelectedFilters).forEach(([key, values]) =>
-                setSearchParams((prev) => {
-                  const newSearchParams = [];
-
-                  prev.forEach((v, k) => {
-                    if (k !== key) {
-                      newSearchParams.push([k, v]);
-                    }
-                  });
-
-                  values.forEach((v) => newSearchParams.push([key, v]));
-
-                  return newSearchParams;
-                })
-              );
-            },
-          }}
-          columnCustomization={{
-            id: "query-history-list-columns",
-            buttonOverrides: { align: "bottom" },
-            columns: headers,
-            setColumns: setHeaders,
-            reset: () =>
-              setHeaders(defaultHeaders.map((h) => Object.assign({}, h))),
-          }}
-          refresh={{
-            label: "Refresh",
-            align: "bottom-right",
-            onClick: () => {},
-          }}
-          primaryButton={{
-            kind: "primary",
-            renderIcon: Download,
-            children: "Export to CSV",
-            onClick: () => {},
-            disabled: true,
-          }}
-          pagination={{
-            totalItems: rows.length,
-            setPagination,
-            ...pagination,
-          }}
-          emptyState={
-            !rows.length && {
-              type: false ? "NotFound" : "NoData",
-              title: "No traces yet.",
-              noDataSubtitle: "All traces from your data are listed here.",
-            }
-          }
-          sortRowHandler={() => {}}
-          tableHeaderClickHandler={() => {}}
-        />
-      </div> */}
+      {component !== "maintenance" &&
+        component !== "safetyscore" &&
+        component !== "audit" && (
+          <Tile className="nodata-wrap">
+            <NoData />
+          </Tile>
+        )}
     </div>
   );
 };

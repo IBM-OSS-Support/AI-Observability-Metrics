@@ -19,6 +19,7 @@ import NoData from "../../common/NoData/NoData";
 
 const LatencyGraph = forwardRef(({ selectedItem, selectedUser, startDate, endDate }, ref) => {
   const [messageFromServerLatency, setMessageFromServerLatency] = useState('');
+  const [loading, setLoading] = useState(true); // Add loading state
 
   useImperativeHandle(ref, () => ({
     fetchLatencyData,
@@ -26,6 +27,7 @@ const LatencyGraph = forwardRef(({ selectedItem, selectedUser, startDate, endDat
 
   // Function to fetch data from the API
   const fetchLatencyData = async (selectedItem, selectedUser, startDate, endDate) => {
+    setLoading(true); // Start loading before making API call
     let query = 'SELECT application_name, data, timestamp FROM performance';
 
     // Add filtering logic based on selectedItem, selectedUser, and selectedTimestampRange
@@ -53,10 +55,14 @@ const LatencyGraph = forwardRef(({ selectedItem, selectedUser, startDate, endDat
         throw new Error("Failed to fetch data");
       }
 
-      const data = await response.json();
-      setMessageFromServerLatency(data); // Assuming the data is in the correct structure
+      var responseData = await response.json();
+      setMessageFromServerLatency(responseData); // Assuming the data is in the correct structure
     } catch (error) {
       console.error("Error fetching data:", error);
+    }finally {
+      if (responseData.length > 0) {
+        setLoading(false); // Stop loading
+      }
     }
   };
 
@@ -107,12 +113,31 @@ const LatencyGraph = forwardRef(({ selectedItem, selectedUser, startDate, endDat
   const latency_number = latencyDataInside.length;
 
   const latencyOptions = {
-    title: '' // 'Latency (in seconds): ' + latency_number,
+    title: '', // 'Latency (in seconds): ' + latency_number,
+    data: {
+      loading: loading
+    },
   };
 
   return (
     <>
-      {latencyDataInside.length > 0 ? (
+      {loading ? (
+        <>
+        <h4 className="title">
+          Latency (in seconds)
+        </h4>
+        <p>
+          <ul className="sub-title">
+            <li><strong>User Name:</strong> { `${selectedUser || 'For All User Name'}`}</li>
+            <li><strong>Application Name:</strong> { `${selectedItem || 'For All Application Name'}`}</li>
+          </ul>
+        </p>
+        <CustomLineChart
+          data={[]}
+          options={latencyOptions}
+        />
+      </>
+      ) : latencyDataInside.length > 0 ? (
         <>
           <h4 className="title">
             Latency (in seconds)

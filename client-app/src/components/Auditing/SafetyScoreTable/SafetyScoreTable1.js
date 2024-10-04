@@ -50,19 +50,14 @@ const SafetyScoreTable = () => {
       };
     }
     sendMessageToServer(messageFromServer);
-    console.log("111websocket: ", messageFromServer);
   }, [websocket]);
 
   useEffect(() => {
     if (messageFromServer.length > 0) {
-      console.log("Inside if-messageFromServer: ", messageFromServer);
       const formattedData = messageFromServer;
       setRowData(formattedData[0]);
     }
   }, [messageFromServer]);
-
-  console.log("messageFromServer", messageFromServer);
-
   useEffect(() => {
     setHeaders([
       { key: "total_records", header: "Total Records" },
@@ -104,57 +99,9 @@ const SafetyScoreTable = () => {
     return formattedRow;
   };
 
-  // const setHeaderRow = () => {
-  //   // Format the data to match the structure expected by CustomDataTable
-  //   const formattedData = messageFromServer.map((data, index) => ({
-  //     id: index.toString(), // Provide a unique identifier for each row if needed
-  //     cells: [
-  //       { key: "total_records", value: { displayType: "number", data: data.total_records } },
-  //       { key: "true_count", value: { displayType: "number", data: data.true_count } },
-  //       { key: "false_count", value: { displayType: "number", data: data.false_count } },
-  //       { key: "true_percentage", value: { displayType: "number", data: data.true_percentage } },
-  //       { key: "false_percentage", value: { displayType: "number", data: data.false_percentage } },
-  //     ],
-  //   }));
-
-  //   // Define headers for the table
-  //   const headers = [
-  //     { key: "total_records", header: "Total Records" },
-  //     { key: "true_count", header: "True Count" },
-  //     { key: "false_count", header: "False Count" },
-  //     { key: "true_percentage", header: "True Percentage" },
-  //     { key: "false_percentage", header: "False Percentage" },
-  //   ];
-
-  //   const Testing1 = formattedData
-  //   // Update state with headers and formatted data
-  //   setHeaders(headers);
-  //   setFormattedData(Testing1);
-  //   console.log('Headers', headers);
-  //   console.log('Formatted data', formattedData);
-  // };
-console.log('safetyscore rowdata :', rowData);
   return (
     <div>
-      {/* <table>
-          <thead>
-            <tr>
-              {messageFromServer && Object.keys(messageFromServer[0]).map((key, index) => (
-                <th key={index}>{key}</th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {messageFromServer && messageFromServer.map((item, index) => (
-              <tr key={index}>
-                {Object.values(item).map((value, index) => (
-                  <td key={index}>{value}</td>
-                ))}
-              </tr>
-            ))}
-          </tbody>
-        </table> */}
-      {console.log("Testing", [rowData])}
+      
       <button onClick={sendMessageToServer}>Load data</button>
       <CustomDataTable
         headers={headers}

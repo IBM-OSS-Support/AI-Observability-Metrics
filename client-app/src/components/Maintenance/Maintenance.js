@@ -27,9 +27,6 @@ const Maintenance = () => {
 
   const maintenanceTableRef = useRef();
   const frequencyOfUseRef = useRef();
-
-  console.log("setEndDate", endDate);
-
   useEffect(() => {
     if (maintenanceTableRef.current) {
       maintenanceTableRef.current.sendMessageToServerLog();
@@ -50,14 +47,6 @@ const Maintenance = () => {
     setSelectedUser(selectedUser);
     setStartDate(startDate);
     setEndDate(endDate);
-
-    console.log("end date inside maintenance", endDate);
-    console.log(
-      "all inside maintenance",
-      startDate,
-      selectedItem,
-      selectedUser
-    );
 
     // Send filter data to table and other components
     if (maintenanceTableRef.current) {

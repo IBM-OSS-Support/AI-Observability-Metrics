@@ -1,7 +1,8 @@
 import React, { forwardRef, useEffect, useImperativeHandle, useState } from "react";
-import { Tile } from "@carbon/react";
+import { CodeSnippetSkeleton, Tile } from "@carbon/react";
 import { GaugeChart } from "@carbon/charts-react";
 import { useStoreContext } from "../../../store";
+import NoData from "../../common/NoData/NoData";
 
 const options = {
   theme: "g90",
@@ -28,26 +29,16 @@ const options = {
   }
 };
 
-const defaultData = [
-  {
-    group: 'value',
-    value: 0
-  }
-];
 
-const defaultMessage = [
-  {
-    process_cpu_usage: { gauge: 0 }
-  }
-];
+const defaultMessage = [];
 
 const CpuUsage = forwardRef(({ selectedItem, selectedUser }, ref) => {
-  const [data, setData] = useState(defaultData);
+  const [data, setData] = useState([]);
   const [latest, setLatest] = useState(0);
   const [avg, setAvg] = useState(0);
   const [messageFromServerCPU, setMessageFromServerCPU] = useState(defaultMessage);
+  const [loading, setLoading] = useState(true); // Add loading state
 
-  console.log("selectedItem, selectedUser", selectedItem, selectedUser);
   
 
   useImperativeHandle(ref, () => ({
@@ -79,10 +70,14 @@ const CpuUsage = forwardRef(({ selectedItem, selectedUser }, ref) => {
         throw new Error("Network response was not ok");
       }
 
-      const data = await response.json();
-      setMessageFromServerCPU(data); // Assuming the data format matches the expected structure
+      var responseData = await response.json();
+      setMessageFromServerCPU(responseData); // Assuming the data format matches the expected structure
     } catch (error) {
       console.error("Error fetching data:", error);
+    }finally {
+      if (responseData.length > 0) {
+        setLoading(false); // Stop loading
+      }
     }
   };
 
@@ -107,45 +102,58 @@ const CpuUsage = forwardRef(({ selectedItem, selectedUser }, ref) => {
   }, [messageFromServerCPU]);
 
   return (
-    <Tile className="infrastructure-components cpu-usage">
-      {/* <h5>
-        Average 
-        {selectedUser && selectedItem 
-          ? ` ${selectedUser}'s ${selectedItem} ` 
-          : selectedUser 
-            ? selectedUser === 'all' ? ` of ${selectedUser} ` : ` ${selectedUser}'s ` 
-            : selectedItem 
-              ? ` ${selectedItem}'s ` 
-              : ' of all '}  
-          CPU Usage
-      </h5> */}
-       <h4 className="title">
-        Average CPU Usage
-      </h4>
-      <p>
-        <ul className="sub-title">
-          <li><strong>User Name:</strong> { `${selectedUser || 'For All User Name'}`}</li>
-          <li><strong>Application Name:</strong> { `${selectedItem || 'For All Application Name'}`}</li>
-        </ul>
-      </p>
-      <div className="cpu-usage-chart">
-        <GaugeChart data={data} options={options} />
-      </div>
-      <div className="cpu-usage-data">
-        <div className="label"> 
-          Last
-          {selectedUser && selectedItem 
-            ? ` ${selectedUser}'s ${selectedItem} ` 
-            : selectedUser 
-              ? selectedUser === 'all' ? ` of ${selectedUser} ` : ` ${selectedUser}'s ` 
-              : selectedItem 
-                ? ` ${selectedItem}'s ` 
-                : ' of all '} 
-           CPU Usage
-        </div>
-        <h3 className="data">{latest} %</h3>
-      </div>
-    </Tile>
+    <>
+    {
+      loading ? (
+        <Tile className="infrastructure-components cpu-usage">
+           <h4 className="title">
+            Average CPU Usage
+          </h4>
+          <CodeSnippetSkeleton type="multi" />
+          <CodeSnippetSkeleton type="multi" />
+        </Tile>
+      ) : (
+         data.length > 0 ? (
+            <Tile className="infrastructure-components cpu-usage">
+           <h4 className="title">
+            Average CPU Usage
+          </h4>
+          <p>
+            <ul className="sub-title">
+              <li><strong>User Name:</strong> { `${selectedUser || 'For All User Name'}`}</li>
+              <li><strong>Application Name:</strong> { `${selectedItem || 'For All Application Name'}`}</li>
+            </ul>
+          </p>
+          <div className="cpu-usage-chart">
+            <GaugeChart data={data} options={options} />
+          </div>
+          <div className="cpu-usage-data">
+            <div className="label"> 
+              Last
+              {selectedUser && selectedItem 
+                ? ` ${selectedUser}'s ${selectedItem} ` 
+                : selectedUser 
+                  ? selectedUser === 'all' ? ` of ${selectedUser} ` : ` ${selectedUser}'s ` 
+                  : selectedItem 
+                    ? ` ${selectedItem}'s ` 
+                    : ' of all '} 
+               CPU Usage
+            </div>
+            <h3 className="data">{latest} %</h3>
+          </div>
+        </Tile>
+          ) : (
+            <Tile className="infrastructure-components cpu-usage">
+           <h4 className="title">
+            Average CPU Usage
+          </h4>
+          <NoData />
+        </Tile>
+          )
+        
+      )
+    }
+    </>
   );
 });
 

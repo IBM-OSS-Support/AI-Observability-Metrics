@@ -1,9 +1,10 @@
 import React, { forwardRef, useEffect, useImperativeHandle, useState } from "react";
-import { Button, Tile } from "@carbon/react";
+import { Button, CodeSnippetSkeleton, Tile } from "@carbon/react";
 import { GaugeChart } from "@carbon/charts-react";
 import { getAppData } from "../../../appData";
 import { useStoreContext } from "../../../store";
 import { InformationFilled } from "@carbon/icons-react";
+import NoData from "../../common/NoData/NoData";
 
 const options = {
   theme: "g90",
@@ -30,28 +31,17 @@ const options = {
   }
 }
 
-const defaultData = [
-  {
-    group: 'value',
-    value: 0
-  }
-];
 
-const defaultMessage = [
-  {
-    success_percentage: 0,
-    total_count: 0
-  }
-];
 
 const SuccessRate = forwardRef(({selectedUser, selectedItem}, ref) => {
-  const [data, setData] = useState(defaultData);
+  const [data, setData] = useState([]);
   const [avg, setAvg] = useState(0);
-  const [messageFromServerSuccess, setMessageFromServerSuccess] = useState(defaultMessage);
+  const [messageFromServerSuccess, setMessageFromServerSuccess] = useState([]);
   const [successNumber, setSuccessNumber] = useState(0);
   
 
   const { state } = useStoreContext();
+  const [loading, setLoading] = useState(true); // Add loading state
 
   useImperativeHandle(ref, () => ({
     sendMessageToServerSuccess,
@@ -93,10 +83,14 @@ const SuccessRate = forwardRef(({selectedUser, selectedItem}, ref) => {
         throw new Error("Network response was not ok");
       }
 
-      const data = await response.json();
-      setMessageFromServerSuccess(data); // Assuming the data format matches the expected structure
+      var responseData = await response.json();
+      setMessageFromServerSuccess(responseData); // Assuming the data format matches the expected structure
     } catch (error) {
       console.error("Error fetching data:", error);
+    }finally {
+      if (responseData.length > 0) {
+        setLoading(false); // Stop loading
+      }
     }
   };
 
@@ -104,14 +98,11 @@ const SuccessRate = forwardRef(({selectedUser, selectedItem}, ref) => {
     if (state.status === 'success') {
       const appData = getAppData(selectedUser, selectedItem);
   
-      console.log(selectedUser, selectedItem, 'Success app data', appData[0].data);
-        
       if (messageFromServerSuccess.length > 0) {
         const newAvgValue = messageFromServerSuccess[0].success_percentage; 
         const newAvgValueToNumber = parseFloat(newAvgValue);
         const newAvg = newAvgValueToNumber.toFixed(2);
         const number = Math.ceil((newAvgValueToNumber * messageFromServerSuccess[0].total_count)/100);
-        console.log('number', number);
         setSuccessNumber(number);
 
         setData([
@@ -121,25 +112,44 @@ const SuccessRate = forwardRef(({selectedUser, selectedItem}, ref) => {
           }
         ]);
         setAvg(newAvg);
-        console.log('New average Success', newAvg);
       }
     }
   }, [messageFromServerSuccess, state]);
 
   return (
-    <Tile className="infrastructure-components cpu-usage">
+    <>
+    {
+      loading ? (
+        <Tile className="infrastructure-components cpu-usage">
       <h4 className="title">
         Success Rate
         <Button
           hasIconOnly
           renderIcon={InformationFilled}
-          // iconDescription="indicates number of times the application ran to completion successfully without any errors:."
           iconDescription="The success rate is measured by the number of times the application runs and completes successfully without an error."
           kind="ghost"
           size="sm"
           className="customButton"
         />
       </h4>
+      <CodeSnippetSkeleton type="multi" />
+      <CodeSnippetSkeleton type="multi" />
+    </Tile>
+      ) : (
+    <Tile className="infrastructure-components cpu-usage">
+      <h4 className="title">
+        Success Rate
+        <Button
+          hasIconOnly
+          renderIcon={InformationFilled}
+          iconDescription="The success rate is measured by the number of times the application runs and completes successfully without an error."
+          kind="ghost"
+          size="sm"
+          className="customButton"
+        />
+      </h4>
+      {data.length > 0 ? (
+      <>
       <p>
         <ul className="sub-title">
           <li><strong>User Name:</strong> { `${selectedUser || 'For All User Name'}`}</li>
@@ -153,7 +163,15 @@ const SuccessRate = forwardRef(({selectedUser, selectedItem}, ref) => {
         <div className="label">Number of jobs succeeded</div>
         <h3 className="data">{successNumber}</h3>
       </div>
+      </>
+      ) : (
+        <NoData />
+      )
+    }
     </Tile>
+      )
+    }
+    </>
   );
 });
 

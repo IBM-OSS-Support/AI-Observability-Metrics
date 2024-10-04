@@ -83,8 +83,6 @@ function TimelineGraph() {
     return [];
   }, [state.metrics]);
 
-  console.log('timelinetData', timelinetData);
-
   return (
     <SimpleBarChart
       data={timelinetData}

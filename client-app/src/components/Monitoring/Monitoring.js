@@ -39,10 +39,6 @@ const Monitoring = () => {
     setSelectedUser(selectedUser);
     setStartDate(startDate);
     setEndDate(endDate);
-    console.log("Selected Deployment:", selectedItem);
-    console.log("Selected User:", selectedUser);
-    console.log("Selected startDate:", startDate);
-    console.log("Selected endDate:", endDate);
 
     if (logTableRef.current) {
       logTableRef.current.fetchLogTableData(
@@ -79,9 +75,10 @@ const Monitoring = () => {
         subtitle: "Traceability data",
       }}
     >
+      <div className="home-container">
       <Filter onFilterChange={handleFilterChange} />
       <Grid fullWidth narrow id="body" className="page-content body">
-        <Column max={16} xlg={16} lg={16} md={4} sm={4} className="content-tile">
+        <Column max={16} xlg={16} lg={16} md={4} sm={4} className="content-tile-monitoring">
           <Tile className="chart-tile">
             <LogTable
               ref={logTableRef}
@@ -93,6 +90,7 @@ const Monitoring = () => {
           </Tile>
         </Column>
       </Grid>
+      </div>
     </PageContainer>
   );
 };

@@ -1,6 +1,6 @@
 import React, { forwardRef, useImperativeHandle, useState, useEffect } from 'react';
 import CustomDataTable from '../../common/CustomDataTable';
-import { Pagination } from '@carbon/react';
+import { DataTableSkeleton, Pagination } from '@carbon/react';
 import NoData from '../../common/NoData/NoData';
 
 const LogTable = forwardRef(({ selectedItem, selectedUser, startDate, endDate }, ref) => {
@@ -9,6 +9,7 @@ const LogTable = forwardRef(({ selectedItem, selectedUser, startDate, endDate },
   const [currentPage, setCurrentPage] = useState(1); // Current page state
   const [rowsPerPage, setRowsPerPage] = useState(5); // Rows per page
   const [totalItems, setTotalItems] = useState(0); // Total number of items
+  const [loading, setLoading] = useState(true); // Add loading state
 
   useImperativeHandle(ref, () => ({
     fetchLogTableData,
@@ -45,7 +46,6 @@ const LogTable = forwardRef(({ selectedItem, selectedUser, startDate, endDate },
       }
 
       const data = await response.json();
-      console.log('data in traceability', data);
       
 
       const convertUTCToIST = (utcDateString) => {
@@ -77,6 +77,8 @@ const LogTable = forwardRef(({ selectedItem, selectedUser, startDate, endDate },
       setTotalItems(formattedData.length); // Set total number of items
     } catch (error) {
       console.error('Error fetching log table data:', error);
+    }finally {
+      setLoading(false); // Stop loading
     }
   };
 
@@ -107,22 +109,33 @@ const LogTable = forwardRef(({ selectedItem, selectedUser, startDate, endDate },
   
   return (
     <>
-    {currentRows.length === 0 ? (
-        <NoData />
+    {
+      loading ? (
+        <DataTableSkeleton
+            rowCount={rowsPerPage} // Render skeleton rows equal to the page size
+            columnCount={headersLogTable.length} // Use the length of headers for column count
+            showHeader={false}
+            showToolbar={false}
+          />
       ) : (
-        <div>
-      <CustomDataTable headers={headersLogTable} rows={currentRows} />
-
-      {/* Add pagination component */}
-      <Pagination
-        totalItems={totalItems}
-        pageSize={rowsPerPage}
-        page={currentPage}
-        onChange={handlePaginationChange} // Use a single handler for both page and pageSize
-        pageSizes={[5, 10, 20, 30, 40, 50]} // Options for rows per page
-      />
-    </div>
-      )}
+        currentRows.length === 0 ? (
+            <NoData />
+          ) : (
+            <>
+          <CustomDataTable headers={headersLogTable} rows={currentRows} />
+    
+          {/* Add pagination component */}
+          <Pagination
+            totalItems={totalItems}
+            pageSize={rowsPerPage}
+            page={currentPage}
+            onChange={handlePaginationChange} // Use a single handler for both page and pageSize
+            pageSizes={[5, 10, 20, 30, 40, 50]} // Options for rows per page
+          />
+        </>
+          )
+      )
+    }
     </>
     
   );

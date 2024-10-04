@@ -28,9 +28,6 @@ export const getIntervals = (start, end, number) => {
     intStart = intStart + step;
     intEnd = intEnd + step;
   }
-
-  console.log("intervals::", intervals);
-  
   return intervals;
 }
 
@@ -38,15 +35,11 @@ export const getCallCountData = ({ apps, startTime, endTime }) => {
   let obj = {};
 
   const intervals = getIntervals(startTime, endTime, 10);
-  console.log('CallCount intervals', intervals);
-  console.log('CallCount apps', apps);
 
   for (const i in intervals) {
     let { start, end } = intervals[i];
     start = moment(start);
     end = moment(end);
-
-    console.log('CallCount - inside for loop - start', start);
 
     for (const appId in apps) {
       const app = apps[appId];
@@ -54,10 +47,7 @@ export const getCallCountData = ({ apps, startTime, endTime }) => {
         return acc + count;
       }, 0);
 
-      console.log('CallCount count', count);
-
       const appTime = moment(app.time);
-      console.log('CallCount - appTime', appTime);
       if (appTime.isSameOrAfter(start) && appTime.isSameOrBefore(end)) {
         if (obj[i]) {
           obj[i].value = obj[i].value + count;
@@ -71,14 +61,12 @@ export const getCallCountData = ({ apps, startTime, endTime }) => {
       }
     }
   }
-  console.log('CallCount - Object', Object.values(obj));
   return Object.values(obj);
 }
 
 export const getLatencyData = ({ apps, startTime, endTime }) => {
   let obj = {};
 
-  console.log('latency starttime', startTime);
 
   const intervals = getIntervals(startTime, endTime, 10);
 

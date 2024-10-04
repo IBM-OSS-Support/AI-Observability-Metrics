@@ -63,7 +63,6 @@ function App() {
   useEffect(() => {
     if (state.status === 'success') {
       const metricsData = getMetricsData();
-      console.log('metricsData', metricsData);
 
       setStore('metrics', metricsData);
     }

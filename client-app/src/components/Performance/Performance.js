@@ -69,10 +69,6 @@ const Performance = () => {
     setSelectedUser(selectedUser);
     setStartDate(startDate);
     setEndDate(endDate);
-    console.log('Selected Deployment:', selectedItem);
-    console.log('Selected User:', selectedUser);
-    console.log('Selected startDate:', startDate);
-    console.log('Selected endDate:', endDate);
 
     if (cpuUsageRef.current) {
       cpuUsageRef.current.sendMessageToServerCPU(selectedItem, selectedUser);

@@ -46,36 +46,48 @@ function formatOperationHierarchy(data) {
   // Step 2: Create a balanced hierarchy
   const hierarchy = [];
   let currentLevel = 1;
-  
-
 
   for (let i = 0; i < sortedData.length; i++) {
     const currentOperation = sortedData[i];
-    console.log('currentOperation', currentOperation);
 
     // Default dataSamples array with 'inputs' and 'outputs'
-  let dataSamples = [
-    { data_name: 'inputs' , content_bytes: 'eyJpbnB1dCI6ICJObyBkYXRhIn0='},
-    { data_name: 'outputs', content_bytes: 'eyJvdXRwdXQiOiAiTm8gZGF0YSJ9'}
-  ];
-
-    
+    let dataSamples = [
+      { data_name: "inputs", content_bytes: "eyJpbnB1dCI6ICJObyBkYXRhIn0=" },
+      { data_name: "outputs", content_bytes: "eyJvdXRwdXQiOiAiTm8gZGF0YSJ9" },
+    ];
 
     // If the operation name contains 'chat_models', add 'generations'
-    if (currentOperation.operation && /\bcompletions\b/.test(currentOperation.operation)) {
-      dataSamples.push({ data_name: 'completions' , content_bytes: 'eyJvdXRwdXQiOiAiTm8gZGF0YSJ9' });
-    } else if (currentOperation.operation && /\bchat_models\b/.test(currentOperation.operation)) {
-      dataSamples.push({ data_name: 'generations' , content_bytes: 'eyJvdXRwdXQiOiAiTm8gZGF0YSJ9'});
-    } else if (currentOperation.operation && /\brunnable\b/.test(currentOperation.operation)) {
-      dataSamples.push({ data_name: 'runnable' , content_bytes: 'eyJvdXRwdXQiOiAiTm8gZGF0YSJ9' });
+    if (
+      currentOperation.operation &&
+      /\bcompletions\b/.test(currentOperation.operation)
+    ) {
+      dataSamples.push({
+        data_name: "completions",
+        content_bytes: "eyJvdXRwdXQiOiAiTm8gZGF0YSJ9",
+      });
+    } else if (
+      currentOperation.operation &&
+      /\bchat_models\b/.test(currentOperation.operation)
+    ) {
+      dataSamples.push({
+        data_name: "generations",
+        content_bytes: "eyJvdXRwdXQiOiAiTm8gZGF0YSJ9",
+      });
+    } else if (
+      currentOperation.operation &&
+      /\brunnable\b/.test(currentOperation.operation)
+    ) {
+      dataSamples.push({
+        data_name: "runnable",
+        content_bytes: "eyJvdXRwdXQiOiAiTm8gZGF0YSJ9",
+      });
     }
-    
 
     // Create a new entry for the current operation
     const operationWithLevel = {
       ...currentOperation,
       level: currentLevel,
-      data_samples : dataSamples,
+      data_samples: dataSamples,
     };
 
     // Push to hierarchy
@@ -133,7 +145,6 @@ function formatData(formattedData, rootStartUs, rootEndUs) {
 
 const TraceAnalysisTable = () => {
   const { appName } = useParams();
-  console.log("appDetails", appName);
 
   if (appName) {
     // Decode the URI components to handle special characters
@@ -142,7 +153,6 @@ const TraceAnalysisTable = () => {
     var [applicationName, appId] = decodedAppDetails
       .split("&")
       .map((part) => part.trim());
-    console.log("application name :", applicationName, "app ID :", appId);
   }
 
   const [rows, setRows] = useState([]);
@@ -169,17 +179,13 @@ const TraceAnalysisTable = () => {
         body: JSON.stringify({ query }),
       });
 
-      console.log("Response in trace table", response);
-
       if (!response.ok) {
         throw new Error("Failed to fetch trace data");
       }
       const data = await response.json();
-      console.log("data in trace table", data);
 
       // Format the data
       const formattedData = formatOperationHierarchy(data);
-      console.log("formattedData", formattedData);
 
       const rootStartUs = Math.min(
         ...formattedData.map((span) => Number(span.start_us))
@@ -188,11 +194,7 @@ const TraceAnalysisTable = () => {
         ...formattedData.map((span) => Number(span.end_us))
       );
 
-      console.log('rootStartUs, rootEndUs', rootStartUs,  rootEndUs);
-      
-
       const processedData = formatData(formattedData, rootStartUs, rootEndUs);
-      console.log("processedData", processedData);
 
       setMessageFromServerTraceTable(processedData);
       setTotalItems(processedData.length);
@@ -206,9 +208,7 @@ const TraceAnalysisTable = () => {
   }, [applicationName]);
 
   // Log messageFromServerTraceTable to the console
-  useEffect(() => {
-    console.log("messageFromServerTraceTable:", messageFromServerTraceTable);
-  }, [messageFromServerTraceTable]);
+  useEffect(() => {}, [messageFromServerTraceTable]);
 
   // Process and format data
   useEffect(() => {
@@ -244,8 +244,6 @@ const TraceAnalysisTable = () => {
 
   function formatRowData(rowData = [], headers) {
     return rowData.reduce((arr, r, i) => {
-      console.log("r in trace", r);
-
       const row = headers.reduce(
         (o, h) => {
           switch (h.key) {
@@ -265,12 +263,6 @@ const TraceAnalysisTable = () => {
                 o[h.key] = {
                   displayType: h.key,
                   data: params ? `model=${params.value}` : "",
-                  // content: params.length > 1 && <>
-                  //   {params.map((param, i) => <span key={i}>
-                  //       {param}
-                  //     </span>)
-                  //   }
-                  // </>
                 };
               } else {
                 o[h.key] = {
@@ -324,7 +316,7 @@ const TraceAnalysisTable = () => {
               }
               break;
             }
-            
+
             case "latency": {
               o[h.key] = `${moment
                 .duration(r.latency)
@@ -374,45 +366,7 @@ const TraceAnalysisTable = () => {
     const endIndex = startIndex + rowsPerPage;
     const { min, max } = calculateSliderRange();
 
-    // Map over the array to format each row
-    // let formattedRows = rows.slice(startIndex, endIndex).map((appData) => {
-    //   // Extract the model value from the tags
-    //   const modelTag = appData.tags.find((tag) => tag.key === "model");
-    //   const model = modelTag ? `model=${modelTag.value}` : "";
-
-    //   return {
-    //     operation: (
-    //       <a href={`#/traces/?operation=${appData.operation}`}>
-    //         {appData.operation}
-    //       </a>
-    //     ),
-    //     id: appData.id,
-    //     latency:
-    //       appData.latency_ns > 0
-    //         ? `${(appData.latency_ns / 10000000000).toFixed(2)} s`
-    //         : "No value",
-    //     timeline: (
-    //       <div className="timeline-column">
-    //         <Slider
-    //           min={0}
-    //           max={1}
-    //           value={[
-    //             appData.start_ns / 100000000000,
-    //             appData.start_ns / 100000000000 +
-    //               appData.latency_ns / 100000000000,
-    //           ]}
-    //           disabled
-    //           hideTextInput
-    //           readOnly
-    //           step={0.1}
-    //         />
-    //       </div>
-    //     ),
-    //     toggletip: model, // Add the extracted model value here
-    //   };
-    // });
-
-    let slicedRows = rows.slice(startIndex, endIndex)
+    let slicedRows = rows.slice(startIndex, endIndex);
 
     let formattedRows = formatRowData(slicedRows, defaultHeaders);
 
@@ -437,7 +391,7 @@ const TraceAnalysisTable = () => {
         onChange={handlePaginationChange} // Use a single handler for both page and pageSize
         pageSizes={[5, 10, 20, 30, 40, 50]} // Options for rows per page
       />
-      {MODALS.map(({ component: Component, string: name }) =>
+      {MODALS.map(({ component: Component, string: name }) => (
         <Fragment key={name}>
           <Component
             open={modal.name === name}
@@ -445,7 +399,7 @@ const TraceAnalysisTable = () => {
             {...modal.props}
           />
         </Fragment>
-      )}
+      ))}
     </div>
   );
 };

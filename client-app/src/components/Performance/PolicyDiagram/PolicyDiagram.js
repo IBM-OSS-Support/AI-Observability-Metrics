@@ -43,7 +43,6 @@ const PolicyDiagram = () => {
   const apps = useMemo(() => {
     if (state.status === "success") {
       const appData = getAppData();
-console.log("Policy diagram appData", appData);
       return appData
         .map(({ data: app }) => {
           const cpu = app.metrics
@@ -71,9 +70,6 @@ console.log("Policy diagram appData", appData);
 
     return [];
   }, [state.status]);
-
-  console.log('Policy diagram apps', apps);
-
   function closeModal() {
     setModal((prev) => ({
       ...prev,

@@ -21,9 +21,13 @@ const CostGraph = forwardRef(({ selectedItem, selectedUser, startDate, endDate }
     },
   ];
   const [messageFromServerCost, setMessageFromServerCost] = useState(defaultMessage);
+  const [loading, setLoading] = useState(true); // Add loading state
 
   const costGraphOptions = {
     title: "Token Cost",
+    data: {
+      loading: loading
+    },
   };
 
   useImperativeHandle(ref, () => ({
@@ -43,7 +47,6 @@ const CostGraph = forwardRef(({ selectedItem, selectedUser, startDate, endDate }
     if (selectedUser && selectedItem) {
       query += ` WHERE application_name = '${selectedItem}' AND app_user = '${selectedUser}'`;
     }
-    console.log('q', query);
     try {
       const apiUrl = process.env.REACT_APP_BACKEND_API_URL; // Use API URL instead of WebSocket URL
       const response = await fetch(apiUrl, {
@@ -54,36 +57,17 @@ const CostGraph = forwardRef(({ selectedItem, selectedUser, startDate, endDate }
         body: JSON.stringify({ query: query }),
       });
 
-      const result = await response.json();
-      setMessageFromServerCost(result);
+      var responseData = await response.json();
+      setMessageFromServerCost(responseData);
     } catch (error) {
       console.error('Error fetching data from API:', error);
+    }finally {
+      if (responseData.length > 0) {
+        setLoading(false); // Stop loading
+      }
     }
   }, []);
 
-  console.log("Token Cost messageFromServer", messageFromServerCost);
-
-  // starts
-
-  // const getIntervals = (start, end, number) => {
-  //   const interval = end - start;
-  //   const step = Math.round(interval / number);
-  //   const intervals = {};
-
-  //   let intStart = start;
-  //   let intEnd = start + step;
-  //   while (intEnd <= end) {
-  //     intervals[`${intStart}-${intEnd}`] = {
-  //       start: intStart,
-  //       end: intEnd,
-  //     };
-
-  //     intStart = intStart + step;
-  //     intEnd = intEnd + step;
-  //   }
-
-  //   return intervals;
-  // };
 
   const getCostGraphData = (apps, startDate, endDate) => {
     let result = [];
@@ -107,7 +91,7 @@ const CostGraph = forwardRef(({ selectedItem, selectedUser, startDate, endDate }
           }
         }
 
-        // Filter out NaN values
+        
         if (isNaN(tokenCost)) {
           continue; 
         }
@@ -132,17 +116,22 @@ const CostGraph = forwardRef(({ selectedItem, selectedUser, startDate, endDate }
   };
 
   const costGraphData = getCostGraphData(messageFromServerCost, startDate, endDate);
-  console.log("costGraphData", costGraphData);
 
-  //ends
+  
 
   return (
     <>
-    {costGraphData.length === 0 ? (
-        <NoData />
+    {
+      loading ? (
+        <CustomLineChart data={[]} options={costGraphOptions} />
       ) : (
-        <CustomLineChart data={costGraphData} options={costGraphOptions} />
-      )}
+        costGraphData.length > 0 ? (
+          <CustomLineChart data={costGraphData} options={costGraphOptions} />
+        ) : (
+          <NoData />
+        )
+      )
+    }
     </>
   );
 });

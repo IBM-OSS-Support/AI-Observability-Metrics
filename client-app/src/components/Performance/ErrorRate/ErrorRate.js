@@ -73,7 +73,6 @@ function ErrorRate() {
   useEffect(() => {
     const apiUrl = process.env.REACT_APP_WEBSOCKET_URL;
     const ws = new WebSocket(apiUrl);
-    console.log('ws', ws);
     setWebsocket(ws);
     // Cleanup function to close WebSocket connection on component unmount
     return () => {
@@ -98,12 +97,9 @@ function ErrorRate() {
     if (websocket) {
       websocket.onmessage = (event) => {
         setMessageFromServerError(JSON.parse(event.data));
-        console.log('Error messageFromServer inside useeffect', messageFromServerError);
       };
     }
   }, [websocket]);
-
-  console.log('Error messageFromServer ', messageFromServerError);
 
 
   const callCountData = useMemo(() => {
@@ -147,7 +143,6 @@ function ErrorRate() {
     return [];
   }, [state.metrics]);
 
-console.log('ErrorRate callCountData', callCountData);
 
   return (
     <div>
