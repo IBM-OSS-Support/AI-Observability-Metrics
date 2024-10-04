@@ -20,48 +20,48 @@ import { useStoreContext } from "../../../store";
 
 const options = {
   theme: "g90",
-  title: '',
+  title: "",
   resizable: true,
-  height: '80%',
-  width: '100%',
+  height: "80%",
+  width: "100%",
   gauge: {
-    alignment: 'center',
-    type: 'semi',
-    status: 'danger',
-    arcWidth: 24
+    alignment: "center",
+    type: "semi",
+    status: "danger",
+    arcWidth: 24,
   },
   legend: {
-    enabled: false
+    enabled: false,
   },
   toolbar: {
-    enabled: false
+    enabled: false,
   },
   color: {
     scale: {
-      value: '#136e6d'
-    }
-  }
-}
+      value: "#136e6d",
+    },
+  },
+};
 
 const defaultData = [
   {
-    group: 'value',
-    value: 0
-  }
+    group: "value",
+    value: 0,
+  },
 ];
 
 const defaultMessage = [
   {
-    usage : {counter : 0}
-  }
+    usage: { counter: 0 },
+  },
 ];
 
 const TokenPerSession = () => {
-
   const [data, setData] = useState(defaultData);
   const [avg, setAvg] = useState(0);
   const [websocket, setWebsocket] = useState(null);
-  const [messageFromServerToken, setMessageFromServerToken] = useState(defaultMessage);
+  const [messageFromServerToken, setMessageFromServerToken] =
+    useState(defaultMessage);
 
   const { state } = useStoreContext();
 
@@ -69,7 +69,6 @@ const TokenPerSession = () => {
   useEffect(() => {
     const apiUrl = process.env.REACT_APP_WEBSOCKET_URL;
     const ws = new WebSocket(apiUrl);
-    console.log('ws', ws);
     setWebsocket(ws);
     // Cleanup function to close WebSocket connection on component unmount
     return () => {
@@ -77,15 +76,14 @@ const TokenPerSession = () => {
     };
   }, []);
 
-
-
   // Function to send message to WebSocket server
   const sendMessageToServerToken = () => {
-    var q = 'SELECT usage,application_name,token_cost FROM token_usage WHERE id BETWEEN 9 AND 17';
+    var q =
+      "SELECT usage,application_name,token_cost FROM token_usage WHERE id BETWEEN 9 AND 17";
     if (websocket && websocket.readyState === WebSocket.OPEN) {
       const message = {
-        tab: 'auditing',
-        action: q
+        tab: "auditing",
+        action: q,
       };
       websocket.send(JSON.stringify(message));
     }
@@ -96,83 +94,66 @@ const TokenPerSession = () => {
     if (websocket) {
       websocket.onmessage = (event) => {
         setMessageFromServerToken(JSON.parse(event.data));
-        console.log('Token messageFromServer inside useeffect', messageFromServerToken);
       };
     }
   }, [websocket]);
 
-  
-
   //start
 
-    useEffect(() => {
-      let newData = defaultData;
-      let newAvg = 0;
-      let newAvgValue = 0;
-      if(state.status === 'success') {
-        const appData = getAppData();
-  
-        console.log('Token app data', appData[0].data);
-        
-        if (messageFromServerToken) {
+  useEffect(() => {
+    let newData = defaultData;
+    let newAvg = 0;
+    let newAvgValue = 0;
+    if (state.status === "success") {
+      const appData = getAppData();
 
-          const cpuUsages = messageFromServerToken
-            .map(d => {
-              if (d.usage.token_count) {
-                
-                const cpuUsage = d.usage.token_count.counter;
-                let gauge = 0;
-                console.log('CPUUsage in Token', cpuUsage);
-                if (cpuUsage) {
-                  gauge = cpuUsage
-                }
-                return gauge
-              }
-            });
+      if (messageFromServerToken) {
+        const cpuUsages = messageFromServerToken.map((d) => {
+          if (d.usage.token_count) {
+            const cpuUsage = d.usage.token_count.counter;
+            let gauge = 0;
+            if (cpuUsage) {
+              gauge = cpuUsage;
+            }
+            return gauge;
+          }
+        });
 
-          const filteredCpuUsages = cpuUsages.filter(value => typeof value === 'number');
+        const filteredCpuUsages = cpuUsages.filter(
+          (value) => typeof value === "number"
+        );
 
-          console.log('CPUUsages in Token',cpuUsages);
-          console.log('filteredCpuUsages in Token',filteredCpuUsages);
-        newAvgValue = filteredCpuUsages.reduce((s, g) => s + +g, 0) / filteredCpuUsages.length;
+        newAvgValue =
+          filteredCpuUsages.reduce((s, g) => s + +g, 0) /
+          filteredCpuUsages.length;
         newAvg = newAvgValue.toFixed(2);
         newData = [
           {
-            group: 'value',
-            value: newAvgValue || 0
-          }
+            group: "value",
+            value: newAvgValue || 0,
+          },
         ];
-        
       }
-  
+
       setData(newData);
       setAvg(newAvg);
-      console.log('New average', newAvg);
-    }}, messageFromServerToken);
-
-
-    console.log('Token messageFromServer', messageFromServerToken);
-    console.log('Token messageFromServer Type', typeof(messageFromServerToken[0].usage.token_count));
-    if (messageFromServerToken.length == 37) {
-      console.log('Token messageFromServer.usage.data', typeof(messageFromServerToken[16].usage.token_count));
     }
+  }, messageFromServerToken);
+
   //end
 
   // Render
   return (
-    <Tile className="infrastructure-components cpu-usage" >
+    <Tile className="infrastructure-components cpu-usage">
       <h5>Average Token per Session</h5>
-          <button onClick={sendMessageToServerToken}>Load graph</button>
-        <div className="cpu-usage-chart">
-          <GaugeChart
-            data={data}
-            options={options}
-          />
-        </div>
-        <div className="cpu-usage-data">
-          <div className="label">Average Token per Session</div>
-          <h3 className="data">{avg} %</h3>
-        </div>
+      <button onClick={sendMessageToServerToken}>Load graph</button>
+      <div className="cpu-usage-chart">
+        <GaugeChart data={data} options={options} />
+      </div>
+      <div className="cpu-usage-data">
+        <div className="label">Average Token per Session</div>
+        <h3 className="data">{avg} %</h3>
+      </div>
     </Tile>
   );
 };

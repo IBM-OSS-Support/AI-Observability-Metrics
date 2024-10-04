@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import moment from "moment";
-import { Button, Tile, Tooltip } from "@carbon/react";
+import { Button, CodeSnippetSkeleton, Tile, Tooltip } from "@carbon/react";
 import { useStoreContext } from "../../../store";
 import { formatCount } from "../../../utils/data-utils";
 
@@ -16,9 +16,12 @@ const defaultData = {
 const TracesTile = () => {
   const [data, setData] = useState(defaultData);
   const { state } = useStoreContext();
+  const [loading, setLoading] = useState(true); // Add loading state
+
 
   // API Call to fetch trace data
   const fetchTraceData = async () => {
+    setLoading(true); // Start loading before making API call
     const apiUrl = process.env.REACT_APP_BACKEND_API_URL; // Replace with actual API endpoint
 
     const operationsQuery = `SELECT * FROM operations`;
@@ -54,20 +57,21 @@ const TracesTile = () => {
         throw new Error("Network response was not ok");
       }
 
-      const [operationsData, performanceData, maintenanceData] = await Promise.all([
+      var [operationsData, performanceData, maintenanceData] = await Promise.all([
         operationsResponse.json(),
         performanceResponse.json(),
         maintenanceResponse.json(),
       ]);
 
-      console.log("Operations Data:", operationsData);
-      console.log("Performance Data:", performanceData);
-      console.log("Mintenance Data:", maintenanceData);
 
       return { operationsData, performanceData, maintenanceData };
     } catch (error) {
       console.error("Error fetching trace data:", error);
       return { operationsData: [], performanceData: [], maintenanceData: [], };
+    }finally {
+      if (operationsData.length > 0 && performanceData.length > 0 && maintenanceData.length > 0) {
+        setLoading(false); // Stop loading
+      }
     }
   };
 
@@ -86,7 +90,6 @@ const TracesTile = () => {
         const latencies = performanceData.map(item => {
           const startUs = item.start_us ? Number(item.start_us) : NaN;
           const endUs = item.end_us ? Number(item.end_us) : NaN;
-          console.log(`Processing item: start_us=${startUs}, end_us=${endUs}`);
 
           if (isNaN(startUs) || isNaN(endUs)) {
             console.warn(`Invalid start_us or end_us: start_us=${startUs}, end_us=${endUs}`);
@@ -111,6 +114,8 @@ const TracesTile = () => {
     });
   }, []);
 
+  
+
   return (
     <Tile className="infrastructure-components">
       <div className="infrastructure-components-content">
@@ -118,7 +123,14 @@ const TracesTile = () => {
           {/* AI applications <span className="count">({data.apps})</span> */}
           Quick Summary
         </h5>
-        <div className="types">
+        {loading ? (
+          <>
+          <CodeSnippetSkeleton type="multi" />
+          <CodeSnippetSkeleton type="multi" />
+          <CodeSnippetSkeleton type="multi" />
+          </>
+        ) : (
+          <div className="types">
           <Tooltip className="button-tooltip" align="top" label={'Your Total No of Application Name'}>
             <Button className="type" kind="ghost">
               <div className="title">
@@ -158,6 +170,8 @@ const TracesTile = () => {
             </Button>
           </Tooltip>
         </div>
+        )}
+        
       </div>
       {/* <Button kind="ghost" className="bottom-link" href="#/traces">
         <span>Go to application tracing</span>

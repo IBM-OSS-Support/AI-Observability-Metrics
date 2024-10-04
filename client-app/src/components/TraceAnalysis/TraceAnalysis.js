@@ -10,9 +10,22 @@ import TraceAnalysisTable from "./TraceAnalysisTable";
 const MODALS = [{ component: DataModal, string: "DataModal" }];
 
 const defaultLibraryHeaders = [
-  { key: "graphsignal_library_version", header: "Graphsignal Library Version", checked: true, required: true },
-  { key: "langchain_library_version", header: "Langchain Library Version", checked: true },
-  { key: "openai_library_version", header: "Openai Library Version", checked: true },
+  {
+    key: "graphsignal_library_version",
+    header: "Graphsignal Library Version",
+    checked: true,
+    required: true,
+  },
+  {
+    key: "langchain_library_version",
+    header: "Langchain Library Version",
+    checked: true,
+  },
+  {
+    key: "openai_library_version",
+    header: "Openai Library Version",
+    checked: true,
+  },
 ];
 
 const defaultNodeHeaders = [
@@ -20,7 +33,12 @@ const defaultNodeHeaders = [
   { key: "os_name", header: "OS", checked: true, required: true },
   { key: "os_version", header: "OS Version", checked: true, required: true },
   { key: "runtime_name", header: "Runtime", checked: true, required: true },
-  { key: "runtime_version", header: "Runtime Version", checked: true, required: true },
+  {
+    key: "runtime_version",
+    header: "Runtime Version",
+    checked: true,
+    required: true,
+  },
 ];
 
 const TraceAnalysis = () => {
@@ -30,10 +48,10 @@ const TraceAnalysis = () => {
     // Decode the URI components to handle special characters
     const decodedAppDetails = decodeURIComponent(appName);
     // Split the params to get applicationName and appId
-    var [applicationName, appId] = decodedAppDetails.split("&").map(part => part.trim());
-    console.log('application name :', applicationName , 'app ID :', appId);
-    
-    }
+    var [applicationName, appId] = decodedAppDetails
+      .split("&")
+      .map((part) => part.trim());
+  }
 
   const [rowsLibraries, setRowsLibraries] = useState([]);
   const [rowsNode, setRowsNode] = useState([]);
@@ -47,10 +65,6 @@ const TraceAnalysis = () => {
 
     // SQL query to fetch the required data
     const q = `SELECT * FROM operations WHERE app_id = '${appId}'`;
-
-      console.log('q in trace analysis', q);
-      
-
     try {
       const response = await fetch(apiUrl, {
         method: "POST",
@@ -65,14 +79,12 @@ const TraceAnalysis = () => {
       }
 
       const data = await response.json();
-      console.log('data in trace analysis', data);
       return data;
     } catch (error) {
       console.error("Error fetching trace data:", error);
       return null;
     }
   };
-  
 
   // Fetch trace data on mount
   useEffect(() => {
@@ -84,9 +96,15 @@ const TraceAnalysis = () => {
           setHeadersLibraries(defaultLibraryHeaders);
           setRowsLibraries([
             {
-              graphsignal_library_version: (appData.config.find(ver => ver.key === 'graphsignal.library.version')).value,
-              langchain_library_version: (appData.config.find(ver => ver.key === 'langchain.library.version')).value,
-              openai_library_version: (appData.config.find(ver => ver.key === 'openai.library.version')).value,
+              graphsignal_library_version: appData.config.find(
+                (ver) => ver.key === "graphsignal.library.version"
+              ).value,
+              langchain_library_version: appData.config.find(
+                (ver) => ver.key === "langchain.library.version"
+              ).value,
+              openai_library_version: appData.config.find(
+                (ver) => ver.key === "openai.library.version"
+              ).value,
             },
           ]);
 
@@ -94,15 +112,24 @@ const TraceAnalysis = () => {
           setHeadersNode(defaultNodeHeaders);
           setRowsNode([
             {
-              hostname: (appData.tags.find(ver => ver.key === 'hostname')).value,
-              os_name: (appData.config.find(ver => ver.key === 'os.name')).value,
-              os_version: (appData.config.find(ver => ver.key === 'os.version')).value,
-              runtime_name: (appData.config.find(ver => ver.key === 'runtime.name')).value,
-              runtime_version: (appData.config.find(ver => ver.key === 'runtime.version')).value,
+              hostname: appData.tags.find((ver) => ver.key === "hostname")
+                .value,
+              os_name: appData.config.find((ver) => ver.key === "os.name")
+                .value,
+              os_version: appData.config.find((ver) => ver.key === "os.version")
+                .value,
+              runtime_name: appData.config.find(
+                (ver) => ver.key === "runtime.name"
+              ).value,
+              runtime_version: appData.config.find(
+                (ver) => ver.key === "runtime.version"
+              ).value,
             },
           ]);
         } else {
-          console.log(`No data found for application_name: ${applicationName}`);
+          console.error(
+            `No data found for application_name: ${applicationName}`
+          );
         }
       }
     });
@@ -123,7 +150,10 @@ const TraceAnalysis = () => {
         <div className="trace-analysis-section">
           <Accordion align="start">
             <AccordionItem title="Libraries" open>
-              <CustomDataTable headers={headersLibraries} rows={rowsLibraries} />
+              <CustomDataTable
+                headers={headersLibraries}
+                rows={rowsLibraries}
+              />
             </AccordionItem>
           </Accordion>
         </div>

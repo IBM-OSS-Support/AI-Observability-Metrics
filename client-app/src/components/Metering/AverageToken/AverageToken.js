@@ -62,7 +62,6 @@ const AverageToken = () => {
     let newAvg = 0;
     if(state.status === 'success') {
       const appData = getAppData();
-console.log("appData", appData);
       const cpuUsages = appData
         .filter(d => moment(d.data.upload_ms / 1000).diff(moment(), 'days') <= 7)
         .map(d => {

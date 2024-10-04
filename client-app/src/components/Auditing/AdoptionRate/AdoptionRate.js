@@ -2,11 +2,12 @@ import React, { forwardRef, useEffect, useImperativeHandle, useState } from "rea
 import moment from "moment";
 
 // Components ----------------------------------------------------------------->
-import { Tile } from "@carbon/react";
+import { CodeSnippetSkeleton, Tile } from "@carbon/react";
 import { GaugeChart } from "@carbon/charts-react";
 import { useStoreContext } from "../../../store";
 import { Tooltip, Button } from '@carbon/react';
 import { InformationFilled } from "@carbon/icons-react";
+import NoData from "../../common/NoData/NoData";
 
 const options = {
   theme: "g90",
@@ -33,29 +34,15 @@ const options = {
   }
 }
 
-const defaultData = [
-  {
-    group: 'value',
-    value: 0
-  }
-];
-
-const defaultMessage = [
-  {
-    percentage_usage: 0,
-    total_count: 0
-  }
-];
-
-
 
 const AdoptionRate = forwardRef(({selectedUser, selectedItem}, ref) => {
-  const [data, setData] = useState(defaultData);
+  const [data, setData] = useState([]);
   const [avg, setAvg] = useState(0);
-  const [messageFromServerAdoption, setMessageFromServerAdoption] = useState(defaultMessage);
+  const [messageFromServerAdoption, setMessageFromServerAdoption] = useState([]);
   const [totalNumber, setTotalNumber] = useState(0);
 
   const { state } = useStoreContext();
+  const [loading, setLoading] = useState(true); // Add loading state
 
   useImperativeHandle(ref, () => ({
     sendMessageToServerAdoption,
@@ -131,10 +118,14 @@ const AdoptionRate = forwardRef(({selectedUser, selectedItem}, ref) => {
         body: JSON.stringify({ query: q }),
       });
 
-      const result = await response.json();
-      setMessageFromServerAdoption(result);
+      var responseData = await response.json();
+      setMessageFromServerAdoption(responseData);
     } catch (error) {
       console.error('Error fetching data from API:', error);
+    }finally {
+      if (responseData.length > 0) {
+        setLoading(false); // Stop loading
+      }
     }
   };
 
@@ -143,7 +134,6 @@ const AdoptionRate = forwardRef(({selectedUser, selectedItem}, ref) => {
       const newAvgValue = parseFloat(messageFromServerAdoption[0].percentage_usage) || 0;
       setAvg(newAvgValue.toFixed(2));
       const number = messageFromServerAdoption.length;
-      console.log('Adop number', number);
       setTotalNumber(number)
       setData([
         {
@@ -154,11 +144,12 @@ const AdoptionRate = forwardRef(({selectedUser, selectedItem}, ref) => {
     }
   }, [messageFromServerAdoption]);
 
-  console.log('Adoption messageFromServerAdoption', messageFromServerAdoption);
-
   // Render
   return (
-    <Tile className="infrastructure-components cpu-usage p-0">
+    <>
+    {
+      loading ? (
+        <Tile className="infrastructure-components cpu-usage p-0">
       <h4 className="title">
         Adoption Rate
         <Button
@@ -170,23 +161,50 @@ const AdoptionRate = forwardRef(({selectedUser, selectedItem}, ref) => {
           className="customButton"
         />
       </h4>
-      <p>
-        <ul className="sub-title">
-          <li><strong>User Name:</strong> { `${selectedUser || 'For All User Name'}`}</li>
-          <li><strong>Application Name:</strong> { `${selectedItem || 'For All Application Name'}`}</li>
-        </ul>
-      </p>
-      <div className="cpu-usage-chart">
-        <GaugeChart
-          data={data}
-          options={options}
-        />
-      </div>
-      <div className="cpu-usage-data">
-        <div className="label">Number of Adoption Rate Occured</div>
-        <h3 className="data">{totalNumber}</h3>
-      </div>
+      <CodeSnippetSkeleton type="multi" />
+      <CodeSnippetSkeleton type="multi" />
     </Tile>
+      ) : (
+        <Tile className="infrastructure-components cpu-usage p-0">
+        <h4 className="title">
+          Adoption Rate
+          <Button
+            hasIconOnly
+            renderIcon={InformationFilled}
+            iconDescription="The adoption rate measures how often each user is interacting with or using the system"
+            kind="ghost"
+            size="sm"
+            className="customButton"
+          />
+        </h4>
+        {
+          data.length > 0 ? (
+            <>
+            <p>
+          <ul className="sub-title">
+            <li><strong>User Name:</strong> { `${selectedUser || 'For All User Name'}`}</li>
+            <li><strong>Application Name:</strong> { `${selectedItem || 'For All Application Name'}`}</li>
+          </ul>
+        </p>
+        <div className="cpu-usage-chart">
+          <GaugeChart
+            data={data}
+            options={options}
+          />
+        </div>
+        <div className="cpu-usage-data">
+          <div className="label">Number of Adoption Rate Occured</div>
+          <h3 className="data">{totalNumber}</h3>
+        </div>
+        </>
+          ) : (
+            <NoData />
+          )
+        }
+      </Tile>
+      )
+    }
+    </>
   );
 });
 

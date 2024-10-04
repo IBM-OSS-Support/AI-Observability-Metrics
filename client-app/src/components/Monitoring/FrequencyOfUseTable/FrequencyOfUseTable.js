@@ -66,17 +66,10 @@ const FrequencyOfUseTable = forwardRef((props, ref) => {
   useEffect(() => {
     if (websocket) {
       websocket.onmessage = (event) => {
-        console.log('log data', event.data);
         setMessageFromServerFreqTable(JSON.parse(event.data));
-        console.log('log event data[0]',event.data[4]);
-        // console.log('setRowDataLog', messageFromServerLog[0]);
-        // setRowDataLog(messageFromServerLog);
       };
-      //setMessageFromServerLog(messageFromServerLog);
     }
   }, [websocket]);
-console.log('Frequency table messageFromServer', messageFromServerFreqTable[5]);
-console.log('Frequency table row data', rowDataFreqTable);
 // code starts here
 
 useEffect(() => {
@@ -88,8 +81,6 @@ useEffect(() => {
 }, []);
 
   const arrayFreqTable = Array.isArray(messageFromServerFreqTable) ? messageFromServerFreqTable : [messageFromServerFreqTable];
-
-  console.log('Array log', arrayFreqTable);
 // code ends here
 
   return (

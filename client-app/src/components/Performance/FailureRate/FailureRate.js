@@ -1,9 +1,10 @@
 import React, { forwardRef, useEffect, useImperativeHandle, useState } from "react";
-import { Button, Tile } from "@carbon/react";
+import { Button, CodeSnippetSkeleton, Tile } from "@carbon/react";
 import { GaugeChart } from "@carbon/charts-react";
 import { getAppData } from "../../../appData";
 import { useStoreContext } from "../../../store";
 import { InformationFilled } from "@carbon/icons-react";
+import NoData from "../../common/NoData/NoData";
 
 const options = {
   theme: "g90",
@@ -30,28 +31,17 @@ const options = {
   }
 }
 
-const defaultData = [
-  {
-    group: 'value',
-    value: 0
-  }
-];
 
-const defaultMessage = [
-  {
-    failure_percentage: 0,
-    total_count: 0
-  }
-];
 
 const FailureRate = forwardRef(({selectedUser, selectedItem}, ref) => {
-  const [data, setData] = useState(defaultData);
+  const [data, setData] = useState([]);
   const [avg, setAvg] = useState(0);
-  const [messageFromServerFailure, setMessageFromServerFailure] = useState(defaultMessage);
+  const [messageFromServerFailure, setMessageFromServerFailure] = useState([]);
   const [failureNumber, setFailureNumber] = useState(0);
   
 
   const { state } = useStoreContext();
+  const [loading, setLoading] = useState(true); // Add loading state
 
   useImperativeHandle(ref, () => ({
     sendMessageToServerFailure,
@@ -85,19 +75,20 @@ const FailureRate = forwardRef(({selectedUser, selectedItem}, ref) => {
         throw new Error("Network response was not ok");
       }
 
-      const data = await response.json();
-      setMessageFromServerFailure(data); // Assuming the data format matches the expected structure
+      var responseData = await response.json();
+      setMessageFromServerFailure(responseData); // Assuming the data format matches the expected structure
     } catch (error) {
       console.error("Error fetching data:", error);
+    }finally {
+      if (responseData.length > 0) {
+        setLoading(false); // Stop loading
+      }
     }
   };
 
   useEffect(() => {
     if (state.status === 'success') {
       const appData = getAppData();
-
-      console.log('Failure app data', appData[0].data);
-
       if (messageFromServerFailure.length > 0) {
         const newAvgValue = messageFromServerFailure[0].failure_percentage; 
         const newAvgValueToNumber = parseFloat(newAvgValue);
@@ -112,13 +103,14 @@ const FailureRate = forwardRef(({selectedUser, selectedItem}, ref) => {
           }
         ]);
         setAvg(newAvg);
-        console.log('New average Failure', newAvg);
       }
     }
   }, [messageFromServerFailure, state]);
 
   return (
-    <Tile className="infrastructure-components cpu-usage">
+    <>
+    {loading ? (
+      <Tile className="infrastructure-components cpu-usage">
       <h4 className="title">
         Failure Rate
         <Button
@@ -130,20 +122,47 @@ const FailureRate = forwardRef(({selectedUser, selectedItem}, ref) => {
           className="customButton"
         />
       </h4>
-      <p>
-        <ul className="sub-title">
-          <li><strong>User Name:</strong> { `${selectedUser || 'For All User Name'}`}</li>
-          <li><strong>Application Name:</strong> { `${selectedItem || 'For All Application Name'}`}</li>
-        </ul>
-      </p>
-      <div className="cpu-usage-chart">
-        <GaugeChart data={data} options={options} />
-      </div>
-      <div className="cpu-usage-data">
-        <div className="label">Number of jobs failed</div>
-        <h3 className="data">{failureNumber}</h3>
-      </div>
+      <CodeSnippetSkeleton type="multi" />
+      <CodeSnippetSkeleton type="multi" />
     </Tile>
+    ) : (
+
+      <Tile className="infrastructure-components cpu-usage">
+        <h4 className="title">
+          Failure Rate
+          <Button
+            hasIconOnly
+            renderIcon={InformationFilled}
+            iconDescription="Failure rate can be defined as the anticipated number of times that an item fails in a specified period of time."
+            kind="ghost"
+            size="sm"
+            className="customButton"
+          />
+        </h4>
+        { data.length > 0 ?(
+          <>
+        <p>
+          <ul className="sub-title">
+            <li><strong>User Name:</strong> { `${selectedUser || 'For All User Name'}`}</li>
+            <li><strong>Application Name:</strong> { `${selectedItem || 'For All Application Name'}`}</li>
+          </ul>
+        </p>
+        <div className="cpu-usage-chart">
+          <GaugeChart data={data} options={options} />
+        </div>
+        <div className="cpu-usage-data">
+          <div className="label">Number of jobs failed</div>
+          <h3 className="data">{failureNumber}</h3>
+        </div>
+          </>
+        ) : (
+          <NoData/>
+        )
+        }
+      </Tile>
+    )
+    }
+    </>
   );
 });
 

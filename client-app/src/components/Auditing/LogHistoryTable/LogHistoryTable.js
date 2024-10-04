@@ -46,17 +46,10 @@ const LogHistoryTable = () => {
   useEffect(() => {
     if (websocket) {
       websocket.onmessage = (event) => {
-        console.log('log data', event.data);
         setMessageFromServerLog(JSON.parse(event.data));
-        console.log('log event data[0]',event.data[4]);
-        // console.log('setRowDataLog', messageFromServerLog[0]);
-        // setRowDataLog(messageFromServerLog);
       };
-      //setMessageFromServerLog(messageFromServerLog);
     }
   }, [websocket]);
-console.log('log table messageFromServer', messageFromServerLog[5]);
-console.log('log table row data', rowDataLog);
 // code starts here
 
 useEffect(() => {
@@ -70,14 +63,11 @@ useEffect(() => {
 }, []);
 
   const arrayLog = Array.isArray(messageFromServerLog) ? messageFromServerLog : [messageFromServerLog];
-
-  console.log('Array log', arrayLog);
 // code ends here
 
   return (
     <div>
       <button onClick={sendMessageToServerLog}>Load data</button>
-      {/* Display message received from server */}
       <div>
         <CustomDataTable
         headers={headersLog}

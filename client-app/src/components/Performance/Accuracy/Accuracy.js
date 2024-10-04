@@ -4,7 +4,7 @@ import React, {
   useImperativeHandle,
   useState,
 } from "react";
-import { Tile } from "@carbon/react";
+import { CodeSnippetSkeleton, Tile } from "@carbon/react";
 import { MeterChart } from "@carbon/charts-react";
 import { useStoreContext } from "../../../store";
 import NoData from "../../common/NoData/NoData";
@@ -31,7 +31,9 @@ const options = (color, statusText) => ({
       total: 10,
       totalFormatter: (e) => statusText,
       breakdownFormatter: (e) =>
-        `The accuracy score of the application is ${e.datasetsTotal.toFixed(2)} out of 10`,
+        `The accuracy score of the application is ${e.datasetsTotal.toFixed(
+          2
+        )} out of 10`,
     },
     height: "70%",
     width: "150%",
@@ -62,12 +64,18 @@ const Accuracy = forwardRef(
     const [chartOptions, setChartOptions] = useState(options("#f46666", "Bad")); // Default options
 
     const { state } = useStoreContext();
+    const [loading, setLoading] = useState(true); // Add loading state
 
     useImperativeHandle(ref, () => ({
       fetchAccuracyData,
     }));
 
-    const fetchAccuracyData = async (selectedItem, selectedUser, startDate, endDate) => {
+    const fetchAccuracyData = async (
+      selectedItem,
+      selectedUser,
+      startDate,
+      endDate
+    ) => {
       let query = "SELECT * FROM accuracy";
 
       // Add filtering logic based on selectedItem, selectedUser, and selectedTimestampRange
@@ -95,10 +103,14 @@ const Accuracy = forwardRef(
           throw new Error("Failed to fetch accuracy data");
         }
 
-        const data = await response.json();
-        setMessageFromServerAccuracy(data); // Assuming the data is in the correct format
+        var responseData = await response.json();
+        setMessageFromServerAccuracy(responseData); // Assuming the data is in the correct format
       } catch (error) {
         console.error("Error fetching data:", error);
+      } finally {
+        if (responseData.length > 0) {
+          setLoading(false); // Stop loading
+        }
       }
     };
 
@@ -123,9 +135,7 @@ const Accuracy = forwardRef(
           });
         }
 
-        const accuracyScore = filteredData.map(
-          (d) => d.accuracy_score || 0
-        );
+        const accuracyScore = filteredData.map((d) => d.accuracy_score || 0);
 
         const newAvgValue =
           accuracyScore.reduce((s, g) => s + +g, 0) / accuracyScore.length;
@@ -150,39 +160,51 @@ const Accuracy = forwardRef(
 
     return (
       <Tile className="infrastructure-components accuracy">
-        {/* <h5>{`${selectedUser || 'All User'}'s ${selectedItem || 'all Applications'} Accuracy Score is ${avg}`}</h5> */}
-        <h4 className="title">
-          Accuracy Score
-        </h4>
-        <p>
-          <ul className="sub-title">
-            <li><strong>User Name:</strong> { `${selectedUser || 'For All User Name'}`}</li>
-            <li><strong>Application Name:</strong> { `${selectedItem || 'For All Application Name'}`}</li>
-          </ul>
-        </p>
-        <div className="cpu-usage-chart">
-          {avg > 0 ? (
-            <MeterChart data={data} options={chartOptions} />
-          ) : (
-            <NoData />
-          )}
-        </div>
-        <div className="cpu-usage-data">
-          {avg > 0 ? (
-            <>
-              <div className="label">
-                {selectedUser && selectedItem ? (
-                  `Average accuracy of ${selectedItem || 'All'} is`
-                ) : (
-                  `Average accuracy of ${selectedUser || 'All'} Application is`
-                )}
-              </div>
-              <h3 className="data">{avg}/10</h3>
-            </>
-          ) : (
-            <div className="label"></div>
-          )}
-        </div>
+        <h4 className="title">Accuracy Score</h4>
+        {loading ? (
+          <>
+            <CodeSnippetSkeleton type="multi" />
+            <CodeSnippetSkeleton type="multi" />
+          </>
+        ) : (
+          <>
+            <p>
+              <ul className="sub-title">
+                <li>
+                  <strong>User Name:</strong>{" "}
+                  {`${selectedUser || "For All User Name"}`}
+                </li>
+                <li>
+                  <strong>Application Name:</strong>{" "}
+                  {`${selectedItem || "For All Application Name"}`}
+                </li>
+              </ul>
+            </p>
+            <div className="cpu-usage-chart">
+              {avg > 0 ? (
+                <MeterChart data={data} options={chartOptions} />
+              ) : (
+                <NoData />
+              )}
+            </div>
+            <div className="cpu-usage-data">
+              {avg > 0 ? (
+                <>
+                  <div className="label">
+                    {selectedUser && selectedItem
+                      ? `Average accuracy of ${selectedItem || "All"} is`
+                      : `Average accuracy of ${
+                          selectedUser || "All"
+                        } Application is`}
+                  </div>
+                  <h3 className="data">{avg}/10</h3>
+                </>
+              ) : (
+                <div className="label"></div>
+              )}
+            </div>
+          </>
+        )}
       </Tile>
     );
   }

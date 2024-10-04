@@ -1,9 +1,10 @@
 import React, { forwardRef, useEffect, useImperativeHandle, useState } from "react";
-import { Button, Tile } from "@carbon/react";
+import { Button, CodeSnippetSkeleton, Tile } from "@carbon/react";
 import { GaugeChart } from "@carbon/charts-react";
 import { getAppData } from "../../../appData";
 import { useStoreContext } from "../../../store";
 import { InformationFilled } from "@carbon/icons-react";
+import NoData from "../../common/NoData/NoData";
 
 const options = {
   theme: "g90",
@@ -30,26 +31,16 @@ const options = {
   },
 };
 
-const defaultData = [
-  {
-    group: "value",
-    value: 0,
-  },
-];
 
-const defaultMessage = [
-  {
-    percentage_usage: 0,
-  },
-];
 
 const AbandonmentRate = forwardRef(({selectedUser, selectedItem}, ref) => {
-  const [data, setData] = useState(defaultData);
+  const [data, setData] = useState([]);
   const [avg, setAvg] = useState(0);
-  const [messageFromServerAbandonment, setMessageFromServerAbandonment] = useState(defaultMessage);
+  const [messageFromServerAbandonment, setMessageFromServerAbandonment] = useState([]);
   const [abandonmentNumber, setAbandonmentNumber] = useState(0);
 
   const { state } = useStoreContext();
+  const [loading, setLoading] = useState(true); // Add loading state
 
   useImperativeHandle(ref, () => ({
     sendMessageToServerAbandonment,
@@ -83,10 +74,14 @@ const AbandonmentRate = forwardRef(({selectedUser, selectedItem}, ref) => {
         throw new Error("Network response was not ok");
       }
 
-      const data = await response.json();
-      setMessageFromServerAbandonment(data); // Assuming the data format matches the expected structure
+      var responseData = await response.json();
+      setMessageFromServerAbandonment(responseData); // Assuming the data format matches the expected structure
     } catch (error) {
       console.error("Error fetching data:", error);
+    }finally {
+      if (responseData.length > 0) {
+        setLoading(false); // Stop loading
+      }
     }
   };
 
@@ -107,15 +102,16 @@ const AbandonmentRate = forwardRef(({selectedUser, selectedItem}, ref) => {
           },
         ]);
         setAvg(newAvg);
-        console.log("New average Abandonment", newAvg);
       }
     }
   }, [messageFromServerAbandonment, state]);
 
-  console.log('abandonment data', messageFromServerAbandonment);
 
   return (
-    <Tile className="infrastructure-components cpu-usage">
+    <>
+    {
+      loading ? (
+        <Tile className="infrastructure-components cpu-usage">
       <h4 className="title">
         Abandonment Rate
         <Button
@@ -127,20 +123,46 @@ const AbandonmentRate = forwardRef(({selectedUser, selectedItem}, ref) => {
           className="customButton"
         />
       </h4>
-      <p>
-        <ul className="sub-title">
-          <li><strong>User Name:</strong> { `${selectedUser || 'For All User Name'}`}</li>
-          <li><strong>Application Name:</strong> { `${selectedItem || 'For All Application Name'}`}</li>
-        </ul>
-      </p>
-      <div className="cpu-usage-chart">
-        <GaugeChart data={data} options={options} />
-      </div>
-      <div className="cpu-usage-data">
-        <div className="label">Number of jobs abandoned</div>
-        <h3 className="data">{abandonmentNumber}</h3>
-      </div>
+      <CodeSnippetSkeleton type="multi" />
+      <CodeSnippetSkeleton type="multi" />
     </Tile>
+      ) : (
+        <Tile className="infrastructure-components cpu-usage">
+        <h4 className="title">
+          Abandonment Rate
+          <Button
+            hasIconOnly
+            renderIcon={InformationFilled}
+            iconDescription="The abandon rate is the percentage that a user leaves or quits before completing an intended task."
+            kind="ghost"
+            size="sm"
+            className="customButton"
+          />
+        </h4>
+        {data.length > 0 ? (
+        <>
+        <p>
+          <ul className="sub-title">
+            <li><strong>User Name:</strong> { `${selectedUser || 'For All User Name'}`}</li>
+            <li><strong>Application Name:</strong> { `${selectedItem || 'For All Application Name'}`}</li>
+          </ul>
+        </p>
+        <div className="cpu-usage-chart">
+          <GaugeChart data={data} options={options} />
+        </div>
+        <div className="cpu-usage-data">
+          <div className="label">Number of jobs abandoned</div>
+          <h3 className="data">{abandonmentNumber}</h3>
+        </div>
+        </>
+        ) : (
+          <NoData />
+        )
+      }
+      </Tile>
+      )
+    }
+    </>
   );
 });
 

@@ -617,7 +617,7 @@ const CustomDataTable = ({
                               <div className="data-column">
                                 {
                                   value.items.map((d, i) => 
-                                    <Tag key={i} className="data" type="outline" renderIcon={Document} size="sm" onClick={d.onClick}>
+                                    <Tag key={i} className="data remove-outline" type="outline" renderIcon={Document} size="sm" onClick={d.onClick}>
                                       {d.name}
                                     </Tag>
                                   )

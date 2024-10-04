@@ -13,6 +13,7 @@ import React, { useState } from "react";
 
 import { Tab, TabList, TabPanel, TabPanels, Tabs } from "@carbon/react";
 import PageContainer from "../common/PageContainer";
+import { useLocation, useParams } from "react-router-dom";
 
 import Anomalies from "./Anomalies";
 import Errors from "./Errors";
@@ -22,6 +23,13 @@ import Transactions from "./Transactions";
 
 function Traces() {
   const [tab, setTab] = useState(0);
+  const operation = useLocation();
+  const params = new URLSearchParams(operation.search);
+  const operationName = params.get('operation');
+
+  console.log('operationName =', operationName);
+  
+  
 
   let content;
   switch (tab) {
@@ -47,7 +55,7 @@ function Traces() {
     <PageContainer
       className="traces-container"
       header={{
-        title: "AI applications",
+        title: "AI application : "+operationName,
         subtitle: "Traces information from your AI applications.",
         navigation: (
           <Tabs
@@ -57,11 +65,11 @@ function Traces() {
             }}
           >
             <TabList aria-label="List of tabs">
-              <Tab>Transactions</Tab>
+              {/* <Tab>Transactions</Tab>
               <Tab disabled>Generations</Tab>
               <Tab disabled>Operations</Tab>
               <Tab disabled>Errors</Tab>
-              <Tab disabled>Anomalies</Tab>
+              <Tab disabled>Anomalies</Tab> */}
             </TabList>
           </Tabs>
         ),

@@ -97,8 +97,6 @@ const Auditing = () => {
     }
   };
 
-  console.log('End date in auditing', endDate);
-  
 
   useEffect(() => {
     if (safetyScoreTableRef.current) {
