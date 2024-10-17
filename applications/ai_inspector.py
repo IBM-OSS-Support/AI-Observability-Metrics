@@ -45,7 +45,23 @@ def inject_instrumentation(app_name,app_user,graphsignal_api_key,openai_api_key)
     print(API_URL,GRAPHSIGNAL_API_KEY,APPLICATION_UID,OPENAI_API_KEY)
     graphsignal.configure(api_url=API_URL,api_key=GRAPHSIGNAL_API_KEY, deployment=APPLICATION_UID) # to send to IBM ROJA server
     graphsignal.set_context_tag('user', USER_NAME)
-    pass
+    f = get_decorator(default_value='failure')
+    return f
+
+def get_decorator(default_value='success'):
+    def decorator(func):
+        def new_func(*args, **kwargs):
+            try:
+                func(*args, **kwargs)
+                return default_value
+            except KeyboardInterrupt:  # Handle KeyboardInterrupt separately
+                print("Got KeyboardInterrupt! Returning 'user_abandoned'")
+                return "user_abandoned"
+            except Exception as e:  # Handle all other exceptions
+                print("Got error! ", repr(e))
+                return "failure"  # Return 'failure' for all other exceptions
+        return new_func
+    return decorator
 
 def generate_unique_id(app_user, app_name, length=16):
     random_uuid = str(uuid.uuid4()).replace('-', '')[:length]  # Remove hyphens and slice to the desired length

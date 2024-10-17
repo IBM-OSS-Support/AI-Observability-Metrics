@@ -1,17 +1,17 @@
 from ai_inspector import inject_instrumentation, inject_data
+import graphsignal
 from langchain_openai import ChatOpenAI
 from langchain.prompts import ChatPromptTemplate
 import time
-import graphsignal
 
 GRAPHSIGNAL_API_KEY = "7e6ff4494810b4cb37255d369cfae983"
 OPENAI_API_KEY = "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"
 APPLICATION_NAME = "tahsinapp"
-USER_NAME = "tahsin51"
+USER_NAME = "tahsin61"
 
 user_function = inject_instrumentation(APPLICATION_NAME,USER_NAME,GRAPHSIGNAL_API_KEY,OPENAI_API_KEY)
 
-prompt = "What is the capital of France?"
+question = "What is the capital of France?"
 
 @user_function
 def user_ai_function():
@@ -28,4 +28,4 @@ def user_ai_function():
         for chunk in runnable.stream({"question": question}):
             print(chunk, end="", flush=True)
 
-inject_data(prompt=prompt,status=user_ai_function())
+inject_data(question=question,status=user_ai_function())
