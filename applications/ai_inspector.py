@@ -17,15 +17,34 @@ logger.setLevel(logging.CRITICAL)
 load_dotenv(find_dotenv())
 
 # Load environment variables
-API_URL = os.getenv('API_URL')
-GRAPHSIGNAL_API_KEY = os.getenv('GRAPHSIGNAL_API_KEY')
-OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')
 ANTHROPIC_API_KEY = os.getenv('ANTHROPIC_API_KEY')
 
-def inject_instrumentation(app_data):
-    print(API_URL,GRAPHSIGNAL_API_KEY,app_data["app-id"])
-    graphsignal.configure(api_url=API_URL,api_key=GRAPHSIGNAL_API_KEY, deployment=app_data["app-id"]) # to send to IBM ROJA server
-    graphsignal.set_context_tag('user', app_data["user"])
+API_URL="http://localhost:12000"
+FLASK_SERVER_URL="http://127.0.0.1:12000"
+
+APPLICATION_UID = None
+APPLICATION_NAME = None
+USER_NAME = None
+GRAPHSIGNAL_API_KEY = None
+OPENAI_API_KEY = None
+
+def inject_instrumentation(app_name,app_user,graphsignal_api_key,openai_api_key):
+    global APPLICATION_UID
+    global APPLICATION_NAME
+    global USER_NAME 
+    global GRAPHSIGNAL_API_KEY
+    global OPENAI_API_KEY
+    
+    APPLICATION_NAME = app_name
+    USER_NAME = app_user
+    APPLICATION_UID = generate_unique_id(USER_NAME, APPLICATION_NAME)
+    GRAPHSIGNAL_API_KEY = graphsignal_api_key
+    OPENAI_API_KEY = openai_api_key
+    os.environ["OPENAI_API_KEY"] = openai_api_key
+
+    print(API_URL,GRAPHSIGNAL_API_KEY,APPLICATION_UID,OPENAI_API_KEY)
+    graphsignal.configure(api_url=API_URL,api_key=GRAPHSIGNAL_API_KEY, deployment=APPLICATION_UID) # to send to IBM ROJA server
+    graphsignal.set_context_tag('user', USER_NAME)
     pass
 
 def generate_unique_id(app_user, app_name, length=16):
@@ -33,12 +52,12 @@ def generate_unique_id(app_user, app_name, length=16):
     unique_id = f"{app_user}_{app_name}_{random_uuid}"
     return unique_id
 
-def gather_metrics(app_data, question=None, status="unknown"):
+def gather_metrics(question=None, status="unknown"):
     json_obj = []
     
     # Safely access keys using .get() to handle missing keys
-    user = app_data.get("user", None)
-    app_id = app_data.get("app-id", None)
+    user = USER_NAME #app_data.get("user", None)
+    app_id = APPLICATION_UID #app_data.get("app-id", None)
     
     json_obj.append(calculate_safety_score(user, app_id, question))
     json_obj.append(log_prompt_info(user, app_id, question, status))
@@ -108,7 +127,7 @@ def calculate_safety_score(user, app_name, question):
 
 ## LOGGING
 def log_prompt_info(user, application_name, question, status):
-    client = openai.OpenAI(api_key=os.getenv('OPENAI_API_KEY'))
+    client = openai.OpenAI(api_key=OPENAI_API_KEY)
     '''
     chat_completion = client.chat.completions.create(
             messages=[{
@@ -156,7 +175,7 @@ def prepare_accuracy(user, app_name, accuracy):
 #### SEND DATA TO FLASK ENDPOINTS
 def send_data(json_data):
     # URL of the Flask server
-    flask_server_url = os.getenv('FLASK_SERVER_URL')
+    flask_server_url = FLASK_SERVER_URL
     url = flask_server_url + '/additional_metrics'
 
     # Convert JSON data to string
@@ -170,3 +189,12 @@ def send_data(json_data):
 
     # Print the response from the server
     print(response.text)
+
+def inject_data(question=None,status="unknown"):
+    jsonlist = gather_metrics(question,status)
+    for j in jsonlist:
+        send_data(j)
+    
+    jsonfeedbackdata = gather_user_feedback({},status)
+    for j in jsonfeedbackdata:
+        send_data(j)
