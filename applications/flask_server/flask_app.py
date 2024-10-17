@@ -71,6 +71,9 @@ def upload_through_rest_spans():
             "application-name": extract_application_name(jdata),
             "spans":request.get_json()
         }
+        file_path = '/tmp/spans.json'
+        with open(file_path, 'w') as file:
+            json.dump(data, file, indent=4)
         logging.debug("application-name: %s", data["application-name"])
         postgres.upload_to_postgres_with_message(data)
         return jsonify({"message": "spans JSON received successfully"}), 200
@@ -93,6 +96,9 @@ def upload_through_rest_metrics():
             "metrics":jdata
         }
         logging.debug("application-name: %s", data["application-name"])
+        file_path = '/tmp/metrics.json'
+        with open(file_path, 'w') as file:
+            json.dump(data, file, indent=4)
         #with open("application_id", "r") as file:
         #    content = file.read()
         #data["application-id"] = content
