@@ -10,8 +10,8 @@ cd /app/applications/flask_server  && flask run --host=0.0.0.0 --port=$FLASK_POR
 cd /app/websocket-server && node server.js &
 
 #start client-app
-cd /app/client-app && npm start & 
-python3 /app/applications/random_app.py
+cd /app/client-app && npm start  
+#python3 /app/applications/random_app.py
 #
 sleep infinity
 

@@ -46,7 +46,8 @@ def upload_to_postgres(message):
         'embedding':process_embedding,
         'user_satisfaction':process_user_satisfaction,
         'accuracy':process_accuracy,
-        'anthropic_metrics': process_anthropic_metrics
+        'anthropic_metrics': process_anthropic_metrics,
+        'graphsignallogs': process_graphsignallogs
     }
 
     app_name = json_object["application-name"]
@@ -254,6 +255,73 @@ def process_log_history(message,conn,json_object):
             current_timestamp                                      # Ensure current_timestamp is defined
         )
     )
+    conn.commit()
+    cursor.close()
+    conn.close()
+
+def process_graphsignallogs(message,conn,json_object):
+    cursor = conn.cursor()
+    # Create a table if it does not exist
+    create_table_sql = """
+    CREATE TABLE IF NOT EXISTS log_history (
+            id SERIAL PRIMARY KEY,
+            log JSONB NULL,
+            status TEXT NULL,
+            finish_reason TEXT NULL, 
+            application_name TEXT,
+            app_user TEXT,
+            app_id TEXT UNIQUE,
+            timestamp TIMESTAMP
+    )
+    """
+    cursor.execute(create_table_sql)
+
+    # Get the current timestamp
+    current_timestamp = datetime.datetime.now()
+    logs = json_object.get("logs", None)
+    if logs is None:
+        return 
+    
+    findupload = False
+    status = "success"
+    for log in logs:
+        if "message" in log and "Upload" in log["message"]:
+            findupload = True
+
+        if "level" in log and log["level"] == "ERROR" and message in log and "exception" in log["message"]:
+            status = "user_abandoned"
+    
+    if status == "success" and findupload == False:
+        status = "incomplete"
+
+    if status == "user_abandoned" or status == "incomplete":
+        select_query = "SELECT 1 FROM log_history WHERE app_id = %s LIMIT 1;"
+        cursor.execute(select_query, (json_object.get("application-name", "invalid"),))
+        entry_exists = cursor.fetchone()
+
+        if entry_exists:
+            # Entry exists, update the status field
+            update_query = """
+                UPDATE log_history
+                SET status = %s, timestamp = %s
+                WHERE app_id = %s
+            """
+            cursor.execute(update_query, (status, current_timestamp, (json_object.get("application-name", "invalid"))))
+            #print(f"Entry with app_id {(json_object.get("application-name", "invalid")} has been updated.")
+        else:
+            # SQL command to insert the JSON data along with 'application-name', 'tag', and timestamp
+            insert_metric_sql = "INSERT INTO log_history (log, status, application_name, app_user, app_id, timestamp) VALUES (%s, %s, %s, %s, %s, %s, %s)"
+            cursor.execute(
+                insert_metric_sql, 
+                (
+                    json.dumps(json_object),                               # Log is being inserted as a JSON object
+                    status,                                                # Assuming 'status' is defined elsewhere
+                    json_object.get("application-name", None),             # Handling "application_name"
+                    json_object.get("app-user", None),                     # Handling "app_user"
+                    json_object.get("application-name", None),             # Assuming "application-name" is also used as "app_id"
+                    current_timestamp                                      # Ensure current_timestamp is defined
+                )
+            )
     conn.commit()
     cursor.close()
     conn.close()
@@ -488,6 +556,7 @@ def process_spans(message,conn,json_object):
     )
     """
     cursor.execute(create_table_sql)
+    status = "success"
     for span in json_object["spans"]:
         start_us = span.get("start_us", 0)
         end_us = span.get("end_us", 0)
@@ -498,12 +567,13 @@ def process_spans(message,conn,json_object):
                     op = tag["value"]
 
                     insert_metric_sql = "INSERT INTO operations (span_id, operation, exceptions, usage, config, payloads, tags, start_us, end_us, latency_ns, application_name, app_user, app_id, timestamp) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
+                    exceptions = span.get("exceptions", [])
                     cursor.execute(
                         insert_metric_sql, 
                         (
                             json.dumps(span.get("span_id", None)),         # Handle "span_id"
                             op,                                            # Operation (assuming 'op' is defined)
-                            json.dumps(span.get("exceptions", None)),      # Handle "exceptions"
+                            json.dumps(exceptions),      # Handle "exceptions"
                             json.dumps(span.get("usage", None)),           # Handle "usage"
                             json.dumps(span.get("config", None)),          # Handle "config"
                             json.dumps(span.get("payloads", None)),        # Handle "payloads"
@@ -517,6 +587,52 @@ def process_spans(message,conn,json_object):
                             current_timestamp                              # Ensure current_timestamp is defined
                         )
                     )
+                    if len(exceptions) > 0:
+                        status = "failure"
+
+    
+    
+    create_table_sql = """
+    CREATE TABLE IF NOT EXISTS log_history (
+            id SERIAL PRIMARY KEY,
+            log JSONB NULL,
+            status TEXT NULL,
+            finish_reason TEXT NULL, 
+            application_name TEXT,
+            app_user TEXT,
+            app_id TEXT UNIQUE,
+            timestamp TIMESTAMP
+    )
+    """
+    cursor.execute(create_table_sql)
+    
+    select_query = "SELECT 1 FROM log_history WHERE app_id = %s LIMIT 1;"
+    cursor.execute(select_query, (json_object.get("application-name", "invalid"),))
+    entry_exists = cursor.fetchone()
+
+    if entry_exists:
+            # Entry exists, update the status field
+        update_query = """
+                UPDATE log_history
+                SET status = %s, timestamp = %s
+                WHERE app_id = %s
+            """
+        cursor.execute(update_query, (status, current_timestamp, (json_object.get("application-name", "invalid"))))
+    else:
+        insert_metric_sql = "INSERT INTO log_history (log, status, application_name, app_user, app_id, timestamp) VALUES (%s, %s, %s, %s, %s, %s)"
+        cursor.execute(
+            insert_metric_sql, 
+            (
+                json.dumps(json_object),                               # Log is being inserted as a JSON object
+                status,                                                # Assuming 'status' is defined elsewhere
+                json_object.get("application-name", None),             # Handling "application_name"
+                json_object.get("app-user", None),                     # Handling "app_user"
+                json_object.get("application-name", None),             # Assuming "application-name" is also used as "app_id"
+                current_timestamp                                      # Ensure current_timestamp is defined
+            )
+        )
+
+
     conn.commit()
     cursor.close()
     conn.close()

@@ -43,8 +43,9 @@ def inject_instrumentation(app_name,app_user,graphsignal_api_key,openai_api_key)
     os.environ["OPENAI_API_KEY"] = openai_api_key
 
     print(API_URL,GRAPHSIGNAL_API_KEY,APPLICATION_UID,OPENAI_API_KEY)
-    graphsignal.configure(api_url=API_URL,api_key=GRAPHSIGNAL_API_KEY, deployment=APPLICATION_UID) # to send to IBM ROJA server
+    graphsignal.configure(api_url=API_URL,api_key=GRAPHSIGNAL_API_KEY, deployment=APPLICATION_UID, debug_mode=True) # to send to IBM ROJA server
     graphsignal.set_context_tag('user', USER_NAME)
+    #graphsignal.logs
     f = get_decorator(default_value='failure')
     return f
 

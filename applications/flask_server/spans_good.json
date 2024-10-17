@@ -1,0 +1,271 @@
+{
+    "kafka-topic": "spans",
+    "app-user": "tahsin61",
+    "application-name": "tahsin61_tahsinapp_82501f2d7a4e41d2",
+    "spans": [
+        {
+            "span_id": "7090405514ff",
+            "root_span_id": "3b0ad6e311e5",
+            "parent_span_id": "792bc4ae9e52",
+            "start_us": 1729193156370295,
+            "end_us": 1729193162696700,
+            "latency_ns": 6326404209,
+            "tags": [
+                {
+                    "key": "deployment",
+                    "value": "tahsin61_tahsinapp_82501f2d7a4e41d2"
+                },
+                {
+                    "key": "operation",
+                    "value": "openai.chat.completions.create"
+                },
+                {
+                    "key": "hostname",
+                    "value": "Mds-MacBook-Pro.local"
+                },
+                {
+                    "key": "user",
+                    "value": "tahsin61"
+                },
+                {
+                    "key": "chain_id",
+                    "value": "a305776c-d118-4400-83c3-ee1f367de2ca"
+                },
+                {
+                    "key": "model_type",
+                    "value": "chat"
+                },
+                {
+                    "key": "library",
+                    "value": "openai"
+                },
+                {
+                    "key": "api_provider",
+                    "value": "openai"
+                },
+                {
+                    "key": "endpoint",
+                    "value": "https://api.openai.com/v1/chat/completions"
+                },
+                {
+                    "key": "model",
+                    "value": "gpt-3.5-turbo"
+                }
+            ],
+            "exceptions": [],
+            "payloads": [
+                {
+                    "name": "input",
+                    "content_type": "application/json",
+                    "content_base64": "eyJtZXNzYWdlcyI6IFt7InJvbGUiOiAic3lzdGVtIiwgImNvbnRlbnQiOiAiWW91J3JlIGEgdmVyeSBrbm93bGVkZ2VhYmxlIGhpc3RvcmlhbiB3aG8gcHJvdmlkZXMgYWNjdXJhdGUgYW5kIGVsb3F1ZW50IGFuc3dlcnMgdG8gaGlzdG9yaWNhbCBxdWVzdGlvbnMuIn0sIHsicm9sZSI6ICJ1c2VyIiwgImNvbnRlbnQiOiAibWVzc2FnZXM9W1N5c3RlbU1lc3NhZ2UoY29udGVudD1cIllvdSdyZSBhIHZlcnkga25vd2xlZGdlYWJsZSBoaXN0b3JpYW4gd2hvIHByb3ZpZGVzIGFjY3VyYXRlIGFuZCBlbG9xdWVudCBhbnN3ZXJzIHRvIGhpc3RvcmljYWwgcXVlc3Rpb25zLlwiKSwgSHVtYW5NZXNzYWdlKGNvbnRlbnQ9J0dpdmUgbWUgYSB2ZXJ5IGxvbmcgYW5zd2VyIG9uIGhvdyBjYXJzIGFyZSBtYWRlLicpXSJ9XSwgIm1vZGVsIjogImdwdC0zLjUtdHVyYm8iLCAic3RyZWFtIjogZmFsc2UsICJuIjogMSwgInRlbXBlcmF0dXJlIjogMC4wfQ=="
+                },
+                {
+                    "name": "output",
+                    "content_type": "application/json",
+                    "content_base64": "eyJpZCI6ICJjaGF0Y21wbC1BSlFROGo2RmRUa2wwNlI0TkpzdERlbmwyRmJDWCIsICJjaG9pY2VzIjogW3siZmluaXNoX3JlYXNvbiI6ICJzdG9wIiwgImluZGV4IjogMCwgImxvZ3Byb2JzIjogbnVsbCwgIm1lc3NhZ2UiOiB7ImNvbnRlbnQiOiAiQ2VydGFpbmx5ISBUaGUgcHJvY2VzcyBvZiBtYW51ZmFjdHVyaW5nIGNhcnMgaW52b2x2ZXMgYSBjb21wbGV4IGFuZCBpbnRyaWNhdGUgc2VyaWVzIG9mIHN0ZXBzIHRoYXQgcmVxdWlyZSBwcmVjaXNpb24sIGV4cGVydGlzZSwgYW5kIGFkdmFuY2VkIHRlY2hub2xvZ3kuIEhlcmUgaXMgYSBkZXRhaWxlZCBleHBsYW5hdGlvbiBvZiBob3cgY2FycyBhcmUgbWFkZTpcblxuMS4gRGVzaWduIGFuZCBEZXZlbG9wbWVudDogVGhlIHByb2Nlc3MgYmVnaW5zIHdpdGggdGhlIGRlc2lnbiBhbmQgZGV2ZWxvcG1lbnQgb2YgdGhlIGNhci4gRW5naW5lZXJzIGFuZCBkZXNpZ25lcnMgd29yayB0b2dldGhlciB0byBjcmVhdGUgdGhlIGluaXRpYWwgY29uY2VwdCwgd2hpY2ggaXMgdGhlbiByZWZpbmVkIHRocm91Z2ggY29tcHV0ZXItYWlkZWQgZGVzaWduIChDQUQpIHNvZnR3YXJlLiBUaGlzIHN0YWdlIGludm9sdmVzIGNvbnNpZGVyaW5nIGZhY3RvcnMgc3VjaCBhcyBhZXJvZHluYW1pY3MsIHNhZmV0eSwgZnVuY3Rpb25hbGl0eSwgYW5kIGFlc3RoZXRpY3MuXG5cbjIuIE1hdGVyaWFscyBTZWxlY3Rpb246IE9uY2UgdGhlIGRlc2lnbiBpcyBmaW5hbGl6ZWQsIHRoZSBuZXh0IHN0ZXAgaXMgdG8gc2VsZWN0IHRoZSBtYXRlcmlhbHMgdGhhdCB3aWxsIGJlIHVzZWQgaW4gdGhlIGNvbnN0cnVjdGlvbiBvZiB0aGUgY2FyLiBUaGlzIGluY2x1ZGVzIG1ldGFscyBzdWNoIGFzIHN0ZWVsIGFuZCBhbHVtaW51bSwgYXMgd2VsbCBhcyBwbGFzdGljcywgcnViYmVyLCBnbGFzcywgYW5kIHZhcmlvdXMgb3RoZXIgY29tcG9uZW50cy5cblxuMy4gU3RhbXBpbmc6IFRoZSBtZXRhbCBzaGVldHMgYXJlIHRoZW4gc3RhbXBlZCBpbnRvIHRoZSBkZXNpcmVkIHNoYXBlcyB1c2luZyBsYXJnZSBwcmVzc2VzLiBUaGlzIHByb2Nlc3MgaW52b2x2ZXMgY3V0dGluZywgYmVuZGluZywgYW5kIHNoYXBpbmcgdGhlIG1ldGFsIHRvIGNyZWF0ZSB0aGUgYm9keSBwYW5lbHMsIGZyYW1lLCBhbmQgb3RoZXIgc3RydWN0dXJhbCBjb21wb25lbnRzIG9mIHRoZSBjYXIuXG5cbjQuIFdlbGRpbmc6IFRoZSBzdGFtcGVkIG1ldGFsIHBpZWNlcyBhcmUgdGhlbiB3ZWxkZWQgdG9nZXRoZXIgdG8gZm9ybSB0aGUgYmFzaWMgc3RydWN0dXJlIG9mIHRoZSBjYXIuIFRoaXMgaW52b2x2ZXMgdXNpbmcgaGlnaC1wb3dlcmVkIHdlbGRpbmcgbWFjaGluZXMgdG8gam9pbiB0aGUgbWV0YWwgcGllY2VzIHNlY3VyZWx5IGFuZCBlbnN1cmUgc3RydWN0dXJhbCBpbnRlZ3JpdHkuXG5cbjUuIFBhaW50aW5nOiBPbmNlIHRoZSBib2R5IG9mIHRoZSBjYXIgaXMgYXNzZW1ibGVkLCBpdCBnb2VzIHRocm91Z2ggYSBwYWludGluZyBwcm9jZXNzLiBUaGlzIGludm9sdmVzIGFwcGx5aW5nIG11bHRpcGxlIGxheWVycyBvZiBwYWludCwgaW5jbHVkaW5nIGEgcHJpbWVyLCBiYXNlIGNvYXQsIGFuZCBjbGVhciBjb2F0LCB0byBwcm90ZWN0IHRoZSBtZXRhbCBmcm9tIGNvcnJvc2lvbiBhbmQgZ2l2ZSB0aGUgY2FyIGl0cyBmaW5hbCBjb2xvciBhbmQgZmluaXNoLlxuXG42LiBBc3NlbWJseTogVGhlIHZhcmlvdXMgY29tcG9uZW50cyBvZiB0aGUgY2FyLCBzdWNoIGFzIHRoZSBlbmdpbmUsIHRyYW5zbWlzc2lvbiwgc3VzcGVuc2lvbiwgYW5kIGludGVyaW9yIGNvbXBvbmVudHMsIGFyZSB0aGVuIGFzc2VtYmxlZCB0b2dldGhlciBvbiB0aGUgcHJvZHVjdGlvbiBsaW5lLiBUaGlzIHByb2Nlc3MgaW52b2x2ZXMgcHJlY2lzZSBjb29yZGluYXRpb24gYW5kIHRpbWluZyB0byBlbnN1cmUgdGhhdCBhbGwgdGhlIHBhcnRzIGZpdCB0b2dldGhlciBjb3JyZWN0bHkuXG5cbjcuIFF1YWxpdHkgQ29udHJvbDogVGhyb3VnaG91dCB0aGUgbWFudWZhY3R1cmluZyBwcm9jZXNzLCBxdWFsaXR5IGNvbnRyb2wgY2hlY2tzIGFyZSBjb25kdWN0ZWQgdG8gZW5zdXJlIHRoYXQgZWFjaCBjYXIgbWVldHMgdGhlIHJlcXVpcmVkIHN0YW5kYXJkcyBmb3Igc2FmZXR5LCBwZXJmb3JtYW5jZSwgYW5kIHJlbGlhYmlsaXR5LiBUaGlzIGluY2x1ZGVzIHJpZ29yb3VzIHRlc3Rpbmcgb2YgY29tcG9uZW50cywgc3lzdGVtcywgYW5kIHRoZSBmaW5pc2hlZCB2ZWhpY2xlLlxuXG44LiBGaW5hbCBJbnNwZWN0aW9uOiBCZWZvcmUgdGhlIGNhcnMgYXJlIHJlYWR5IHRvIGJlIHNoaXBwZWQgdG8gZGVhbGVyc2hpcHMsIHRoZXkgdW5kZXJnbyBhIGZpbmFsIGluc3BlY3Rpb24gdG8gY2hlY2sgZm9yIGFueSBkZWZlY3RzIG9yIGlzc3Vlcy4gVGhpcyBpbmNsdWRlcyB2aXN1YWwgaW5zcGVjdGlvbnMsIHJvYWQgdGVzdHMsIGFuZCBvdGhlciBjaGVja3MgdG8gZW5zdXJlIHRoYXQgdGhlIGNhciBpcyBpbiBwZXJmZWN0IGNvbmRpdGlvbi5cblxuOS4gUGFja2FnaW5nIGFuZCBTaGlwcGluZzogT25jZSB0aGUgY2FycyBoYXZlIHBhc3NlZCBhbGwgdGhlIHF1YWxpdHkgY2hlY2tzLCB0aGV5IGFyZSBwYWNrYWdlZCBmb3Igc2hpcHBpbmcgdG8gZGVhbGVyc2hpcHMgYXJvdW5kIHRoZSB3b3JsZC4gVGhpcyBpbnZvbHZlcyBsb2FkaW5nIHRoZSBjYXJzIG9udG8gdHJhbnNwb3J0IHZlaGljbGVzIG9yIGNvbnRhaW5lcnMgYW5kIGVuc3VyaW5nIHRoYXQgdGhleSBhcmUgc2VjdXJlbHkgcGFja2VkIHRvIHByZXZlbnQgZGFtYWdlIGR1cmluZyB0cmFuc2l0LlxuXG5JbiBjb25jbHVzaW9uLCB0aGUgcHJvY2VzcyBvZiBtYWtpbmcgY2FycyBpcyBhIGhpZ2hseSBzb3BoaXN0aWNhdGVkIGFuZCBpbnRyaWNhdGUgcHJvY2VzcyB0aGF0IGludm9sdmVzIGEgY29tYmluYXRpb24gb2YgZGVzaWduLCBlbmdpbmVlcmluZywgbWFudWZhY3R1cmluZywgYW5kIHF1YWxpdHkgY29udHJvbC4gRWFjaCBzdGVwIGluIHRoZSBwcm9jZXNzIGlzIGVzc2VudGlhbCB0byBlbnN1cmluZyB0aGF0IHRoZSBmaW5hbCBwcm9kdWN0IG1lZXRzIHRoZSBoaWdoZXN0IHN0YW5kYXJkcyBvZiBzYWZldHksIHBlcmZvcm1hbmNlLCBhbmQgcmVsaWFiaWxpdHkuIiwgInJvbGUiOiAiYXNzaXN0YW50IiwgImZ1bmN0aW9uX2NhbGwiOiBudWxsLCAidG9vbF9jYWxscyI6IG51bGwsICJyZWZ1c2FsIjogbnVsbH19XSwgImNyZWF0ZWQiOiAxNzI5MTkzMTU2LCAibW9kZWwiOiAiZ3B0LTMuNS10dXJiby0wMTI1IiwgIm9iamVjdCI6ICJjaGF0LmNvbXBsZXRpb24iLCAic3lzdGVtX2ZpbmdlcnByaW50IjogbnVsbCwgInVzYWdlIjogeyJjb21wbGV0aW9uX3Rva2VucyI6IDU0NCwgInByb21wdF90b2tlbnMiOiA2OCwgInRvdGFsX3Rva2VucyI6IDYxMiwgInByb21wdF90b2tlbnNfZGV0YWlscyI6IHsiY2FjaGVkX3Rva2VucyI6IDB9LCAiY29tcGxldGlvbl90b2tlbnNfZGV0YWlscyI6IHsicmVhc29uaW5nX3Rva2VucyI6IDB9fX0="
+                }
+            ],
+            "usage": [
+                {
+                    "payload_name": "input",
+                    "name": "token_count",
+                    "value": 68
+                },
+                {
+                    "payload_name": "output",
+                    "name": "token_count",
+                    "value": 544
+                }
+            ],
+            "config": [
+                {
+                    "key": "graphsignal.library.version",
+                    "value": "0.15.1"
+                },
+                {
+                    "key": "os.name",
+                    "value": "Darwin"
+                },
+                {
+                    "key": "os.version",
+                    "value": "23.6.0"
+                },
+                {
+                    "key": "runtime.name",
+                    "value": "Python"
+                },
+                {
+                    "key": "runtime.version",
+                    "value": "3.11.4"
+                },
+                {
+                    "key": "openai.library.version",
+                    "value": "1.14.0"
+                },
+                {
+                    "key": "langchain.library.version",
+                    "value": "0.1.11"
+                }
+            ]
+        },
+        {
+            "span_id": "792bc4ae9e52",
+            "root_span_id": "3b0ad6e311e5",
+            "parent_span_id": "3b0ad6e311e5",
+            "start_us": 1729193156369700,
+            "end_us": 1729193162698670,
+            "latency_ns": 6328969458,
+            "tags": [
+                {
+                    "key": "deployment",
+                    "value": "tahsin61_tahsinapp_82501f2d7a4e41d2"
+                },
+                {
+                    "key": "operation",
+                    "value": "langchain.chat_models.openai.ChatOpenAI"
+                },
+                {
+                    "key": "hostname",
+                    "value": "Mds-MacBook-Pro.local"
+                },
+                {
+                    "key": "user",
+                    "value": "tahsin61"
+                },
+                {
+                    "key": "chain_id",
+                    "value": "a305776c-d118-4400-83c3-ee1f367de2ca"
+                },
+                {
+                    "key": "library",
+                    "value": "langchain"
+                },
+                {
+                    "key": "model_type",
+                    "value": "chat"
+                }
+            ],
+            "exceptions": [],
+            "payloads": [
+                {
+                    "name": "input",
+                    "content_type": "application/json",
+                    "content_base64": "eyJtZXNzYWdlcyI6IFt7ImNvbnRlbnQiOiAiWW91J3JlIGEgdmVyeSBrbm93bGVkZ2VhYmxlIGhpc3RvcmlhbiB3aG8gcHJvdmlkZXMgYWNjdXJhdGUgYW5kIGVsb3F1ZW50IGFuc3dlcnMgdG8gaGlzdG9yaWNhbCBxdWVzdGlvbnMuIn0sIHsiY29udGVudCI6ICJtZXNzYWdlcz1bU3lzdGVtTWVzc2FnZShjb250ZW50PVwiWW91J3JlIGEgdmVyeSBrbm93bGVkZ2VhYmxlIGhpc3RvcmlhbiB3aG8gcHJvdmlkZXMgYWNjdXJhdGUgYW5kIGVsb3F1ZW50IGFuc3dlcnMgdG8gaGlzdG9yaWNhbCBxdWVzdGlvbnMuXCIpLCBIdW1hbk1lc3NhZ2UoY29udGVudD0nR2l2ZSBtZSBhIHZlcnkgbG9uZyBhbnN3ZXIgb24gaG93IGNhcnMgYXJlIG1hZGUuJyldIn1dfQ=="
+                },
+                {
+                    "name": "output",
+                    "content_type": "application/json",
+                    "content_base64": "eyJjaG9pY2VzIjogW3sibWVzc2FnZSI6IHsiY29udGVudCI6ICJDZXJ0YWlubHkhIFRoZSBwcm9jZXNzIG9mIG1hbnVmYWN0dXJpbmcgY2FycyBpbnZvbHZlcyBhIGNvbXBsZXggYW5kIGludHJpY2F0ZSBzZXJpZXMgb2Ygc3RlcHMgdGhhdCByZXF1aXJlIHByZWNpc2lvbiwgZXhwZXJ0aXNlLCBhbmQgYWR2YW5jZWQgdGVjaG5vbG9neS4gSGVyZSBpcyBhIGRldGFpbGVkIGV4cGxhbmF0aW9uIG9mIGhvdyBjYXJzIGFyZSBtYWRlOlxuXG4xLiBEZXNpZ24gYW5kIERldmVsb3BtZW50OiBUaGUgcHJvY2VzcyBiZWdpbnMgd2l0aCB0aGUgZGVzaWduIGFuZCBkZXZlbG9wbWVudCBvZiB0aGUgY2FyLiBFbmdpbmVlcnMgYW5kIGRlc2lnbmVycyB3b3JrIHRvZ2V0aGVyIHRvIGNyZWF0ZSB0aGUgaW5pdGlhbCBjb25jZXB0LCB3aGljaCBpcyB0aGVuIHJlZmluZWQgdGhyb3VnaCBjb21wdXRlci1haWRlZCBkZXNpZ24gKENBRCkgc29mdHdhcmUuIFRoaXMgc3RhZ2UgaW52b2x2ZXMgY29uc2lkZXJpbmcgZmFjdG9ycyBzdWNoIGFzIGFlcm9keW5hbWljcywgc2FmZXR5LCBmdW5jdGlvbmFsaXR5LCBhbmQgYWVzdGhldGljcy5cblxuMi4gTWF0ZXJpYWxzIFNlbGVjdGlvbjogT25jZSB0aGUgZGVzaWduIGlzIGZpbmFsaXplZCwgdGhlIG5leHQgc3RlcCBpcyB0byBzZWxlY3QgdGhlIG1hdGVyaWFscyB0aGF0IHdpbGwgYmUgdXNlZCBpbiB0aGUgY29uc3RydWN0aW9uIG9mIHRoZSBjYXIuIFRoaXMgaW5jbHVkZXMgbWV0YWxzIHN1Y2ggYXMgc3RlZWwgYW5kIGFsdW1pbnVtLCBhcyB3ZWxsIGFzIHBsYXN0aWNzLCBydWJiZXIsIGdsYXNzLCBhbmQgdmFyaW91cyBvdGhlciBjb21wb25lbnRzLlxuXG4zLiBTdGFtcGluZzogVGhlIG1ldGFsIHNoZWV0cyBhcmUgdGhlbiBzdGFtcGVkIGludG8gdGhlIGRlc2lyZWQgc2hhcGVzIHVzaW5nIGxhcmdlIHByZXNzZXMuIFRoaXMgcHJvY2VzcyBpbnZvbHZlcyBjdXR0aW5nLCBiZW5kaW5nLCBhbmQgc2hhcGluZyB0aGUgbWV0YWwgdG8gY3JlYXRlIHRoZSBib2R5IHBhbmVscywgZnJhbWUsIGFuZCBvdGhlciBzdHJ1Y3R1cmFsIGNvbXBvbmVudHMgb2YgdGhlIGNhci5cblxuNC4gV2VsZGluZzogVGhlIHN0YW1wZWQgbWV0YWwgcGllY2VzIGFyZSB0aGVuIHdlbGRlZCB0b2dldGhlciB0byBmb3JtIHRoZSBiYXNpYyBzdHJ1Y3R1cmUgb2YgdGhlIGNhci4gVGhpcyBpbnZvbHZlcyB1c2luZyBoaWdoLXBvd2VyZWQgd2VsZGluZyBtYWNoaW5lcyB0byBqb2luIHRoZSBtZXRhbCBwaWVjZXMgc2VjdXJlbHkgYW5kIGVuc3VyZSBzdHJ1Y3R1cmFsIGludGVncml0eS5cblxuNS4gUGFpbnRpbmc6IE9uY2UgdGhlIGJvZHkgb2YgdGhlIGNhciBpcyBhc3NlbWJsZWQsIGl0IGdvZXMgdGhyb3VnaCBhIHBhaW50aW5nIHByb2Nlc3MuIFRoaXMgaW52b2x2ZXMgYXBwbHlpbmcgbXVsdGlwbGUgbGF5ZXJzIG9mIHBhaW50LCBpbmNsdWRpbmcgYSBwcmltZXIsIGJhc2UgY29hdCwgYW5kIGNsZWFyIGNvYXQsIHRvIHByb3RlY3QgdGhlIG1ldGFsIGZyb20gY29ycm9zaW9uIGFuZCBnaXZlIHRoZSBjYXIgaXRzIGZpbmFsIGNvbG9yIGFuZCBmaW5pc2guXG5cbjYuIEFzc2VtYmx5OiBUaGUgdmFyaW91cyBjb21wb25lbnRzIG9mIHRoZSBjYXIsIHN1Y2ggYXMgdGhlIGVuZ2luZSwgdHJhbnNtaXNzaW9uLCBzdXNwZW5zaW9uLCBhbmQgaW50ZXJpb3IgY29tcG9uZW50cywgYXJlIHRoZW4gYXNzZW1ibGVkIHRvZ2V0aGVyIG9uIHRoZSBwcm9kdWN0aW9uIGxpbmUuIFRoaXMgcHJvY2VzcyBpbnZvbHZlcyBwcmVjaXNlIGNvb3JkaW5hdGlvbiBhbmQgdGltaW5nIHRvIGVuc3VyZSB0aGF0IGFsbCB0aGUgcGFydHMgZml0IHRvZ2V0aGVyIGNvcnJlY3RseS5cblxuNy4gUXVhbGl0eSBDb250cm9sOiBUaHJvdWdob3V0IHRoZSBtYW51ZmFjdHVyaW5nIHByb2Nlc3MsIHF1YWxpdHkgY29udHJvbCBjaGVja3MgYXJlIGNvbmR1Y3RlZCB0byBlbnN1cmUgdGhhdCBlYWNoIGNhciBtZWV0cyB0aGUgcmVxdWlyZWQgc3RhbmRhcmRzIGZvciBzYWZldHksIHBlcmZvcm1hbmNlLCBhbmQgcmVsaWFiaWxpdHkuIFRoaXMgaW5jbHVkZXMgcmlnb3JvdXMgdGVzdGluZyBvZiBjb21wb25lbnRzLCBzeXN0ZW1zLCBhbmQgdGhlIGZpbmlzaGVkIHZlaGljbGUuXG5cbjguIEZpbmFsIEluc3BlY3Rpb246IEJlZm9yZSB0aGUgY2FycyBhcmUgcmVhZHkgdG8gYmUgc2hpcHBlZCB0byBkZWFsZXJzaGlwcywgdGhleSB1bmRlcmdvIGEgZmluYWwgaW5zcGVjdGlvbiB0byBjaGVjayBmb3IgYW55IGRlZmVjdHMgb3IgaXNzdWVzLiBUaGlzIGluY2x1ZGVzIHZpc3VhbCBpbnNwZWN0aW9ucywgcm9hZCB0ZXN0cywgYW5kIG90aGVyIGNoZWNrcyB0byBlbnN1cmUgdGhhdCB0aGUgY2FyIGlzIGluIHBlcmZlY3QgY29uZGl0aW9uLlxuXG45LiBQYWNrYWdpbmcgYW5kIFNoaXBwaW5nOiBPbmNlIHRoZSBjYXJzIGhhdmUgcGFzc2VkIGFsbCB0aGUgcXVhbGl0eSBjaGVja3MsIHRoZXkgYXJlIHBhY2thZ2VkIGZvciBzaGlwcGluZyB0byBkZWFsZXJzaGlwcyBhcm91bmQgdGhlIHdvcmxkLiBUaGlzIGludm9sdmVzIGxvYWRpbmcgdGhlIGNhcnMgb250byB0cmFuc3BvcnQgdmVoaWNsZXMgb3IgY29udGFpbmVycyBhbmQgZW5zdXJpbmcgdGhhdCB0aGV5IGFyZSBzZWN1cmVseSBwYWNrZWQgdG8gcHJldmVudCBkYW1hZ2UgZHVyaW5nIHRyYW5zaXQuXG5cbkluIGNvbmNsdXNpb24sIHRoZSBwcm9jZXNzIG9mIG1ha2luZyBjYXJzIGlzIGEgaGlnaGx5IHNvcGhpc3RpY2F0ZWQgYW5kIGludHJpY2F0ZSBwcm9jZXNzIHRoYXQgaW52b2x2ZXMgYSBjb21iaW5hdGlvbiBvZiBkZXNpZ24sIGVuZ2luZWVyaW5nLCBtYW51ZmFjdHVyaW5nLCBhbmQgcXVhbGl0eSBjb250cm9sLiBFYWNoIHN0ZXAgaW4gdGhlIHByb2Nlc3MgaXMgZXNzZW50aWFsIHRvIGVuc3VyaW5nIHRoYXQgdGhlIGZpbmFsIHByb2R1Y3QgbWVldHMgdGhlIGhpZ2hlc3Qgc3RhbmRhcmRzIG9mIHNhZmV0eSwgcGVyZm9ybWFuY2UsIGFuZCByZWxpYWJpbGl0eS4ifX1dfQ=="
+                }
+            ],
+            "usage": [],
+            "config": [
+                {
+                    "key": "graphsignal.library.version",
+                    "value": "0.15.1"
+                },
+                {
+                    "key": "os.name",
+                    "value": "Darwin"
+                },
+                {
+                    "key": "os.version",
+                    "value": "23.6.0"
+                },
+                {
+                    "key": "runtime.name",
+                    "value": "Python"
+                },
+                {
+                    "key": "runtime.version",
+                    "value": "3.11.4"
+                },
+                {
+                    "key": "openai.library.version",
+                    "value": "1.14.0"
+                },
+                {
+                    "key": "langchain.library.version",
+                    "value": "0.1.11"
+                }
+            ]
+        },
+        {
+            "span_id": "3b0ad6e311e5",
+            "root_span_id": "3b0ad6e311e5",
+            "start_us": 1729193156365295,
+            "end_us": 1729193162699584,
+            "latency_ns": 6334288792,
+            "tags": [
+                {
+                    "key": "deployment",
+                    "value": "tahsin61_tahsinapp_82501f2d7a4e41d2"
+                },
+                {
+                    "key": "operation",
+                    "value": "langchain.schema.runnable.RunnableSequence"
+                },
+                {
+                    "key": "hostname",
+                    "value": "Mds-MacBook-Pro.local"
+                },
+                {
+                    "key": "user",
+                    "value": "tahsin61"
+                },
+                {
+                    "key": "chain_id",
+                    "value": "a305776c-d118-4400-83c3-ee1f367de2ca"
+                },
+                {
+                    "key": "library",
+                    "value": "langchain"
+                }
+            ],
+            "exceptions": [],
+            "payloads": [
+                {
+                    "name": "inputs",
+                    "content_type": "application/json",
+                    "content_base64": "eyJpbnB1dCI6ICIifQ=="
+                },
+                {
+                    "name": "outputs",
+                    "content_type": "application/json",
+                    "content_base64": "eyJxdWVzdGlvbiI6IHsibWVzc2FnZXMiOiBbeyJjb250ZW50IjogIllvdSdyZSBhIHZlcnkga25vd2xlZGdlYWJsZSBoaXN0b3JpYW4gd2hvIHByb3ZpZGVzIGFjY3VyYXRlIGFuZCBlbG9xdWVudCBhbnN3ZXJzIHRvIGhpc3RvcmljYWwgcXVlc3Rpb25zLiIsICJhZGRpdGlvbmFsX2t3YXJncyI6IHt9LCAicmVzcG9uc2VfbWV0YWRhdGEiOiB7fSwgInR5cGUiOiAic3lzdGVtIiwgIm5hbWUiOiBudWxsLCAiaWQiOiBudWxsfSwgeyJjb250ZW50IjogIkdpdmUgbWUgYSB2ZXJ5IGxvbmcgYW5zd2VyIG9uIGhvdyBjYXJzIGFyZSBtYWRlLiIsICJhZGRpdGlvbmFsX2t3YXJncyI6IHt9LCAicmVzcG9uc2VfbWV0YWRhdGEiOiB7fSwgInR5cGUiOiAiaHVtYW4iLCAibmFtZSI6IG51bGwsICJpZCI6IG51bGwsICJleGFtcGxlIjogZmFsc2V9XX0sICJ0ZXh0IjogIkNlcnRhaW5seSEgVGhlIHByb2Nlc3Mgb2YgbWFudWZhY3R1cmluZyBjYXJzIGludm9sdmVzIGEgY29tcGxleCBhbmQgaW50cmljYXRlIHNlcmllcyBvZiBzdGVwcyB0aGF0IHJlcXVpcmUgcHJlY2lzaW9uLCBleHBlcnRpc2UsIGFuZCBhZHZhbmNlZCB0ZWNobm9sb2d5LiBIZXJlIGlzIGEgZGV0YWlsZWQgZXhwbGFuYXRpb24gb2YgaG93IGNhcnMgYXJlIG1hZGU6XG5cbjEuIERlc2lnbiBhbmQgRGV2ZWxvcG1lbnQ6IFRoZSBwcm9jZXNzIGJlZ2lucyB3aXRoIHRoZSBkZXNpZ24gYW5kIGRldmVsb3BtZW50IG9mIHRoZSBjYXIuIEVuZ2luZWVycyBhbmQgZGVzaWduZXJzIHdvcmsgdG9nZXRoZXIgdG8gY3JlYXRlIHRoZSBpbml0aWFsIGNvbmNlcHQsIHdoaWNoIGlzIHRoZW4gcmVmaW5lZCB0aHJvdWdoIGNvbXB1dGVyLWFpZGVkIGRlc2lnbiAoQ0FEKSBzb2Z0d2FyZS4gVGhpcyBzdGFnZSBpbnZvbHZlcyBjb25zaWRlcmluZyBmYWN0b3JzIHN1Y2ggYXMgYWVyb2R5bmFtaWNzLCBzYWZldHksIGZ1bmN0aW9uYWxpdHksIGFuZCBhZXN0aGV0aWNzLlxuXG4yLiBNYXRlcmlhbHMgU2VsZWN0aW9uOiBPbmNlIHRoZSBkZXNpZ24gaXMgZmluYWxpemVkLCB0aGUgbmV4dCBzdGVwIGlzIHRvIHNlbGVjdCB0aGUgbWF0ZXJpYWxzIHRoYXQgd2lsbCBiZSB1c2VkIGluIHRoZSBjb25zdHJ1Y3Rpb24gb2YgdGhlIGNhci4gVGhpcyBpbmNsdWRlcyBtZXRhbHMgc3VjaCBhcyBzdGVlbCBhbmQgYWx1bWludW0sIGFzIHdlbGwgYXMgcGxhc3RpY3MsIHJ1YmJlciwgZ2xhc3MsIGFuZCB2YXJpb3VzIG90aGVyIGNvbXBvbmVudHMuXG5cbjMuIFN0YW1waW5nOiBUaGUgbWV0YWwgc2hlZXRzIGFyZSB0aGVuIHN0YW1wZWQgaW50byB0aGUgZGVzaXJlZCBzaGFwZXMgdXNpbmcgbGFyZ2UgcHJlc3Nlcy4gVGhpcyBwcm9jZXNzIGludm9sdmVzIGN1dHRpbmcsIGJlbmRpbmcsIGFuZCBzaGFwaW5nIHRoZSBtZXRhbCB0byBjcmVhdGUgdGhlIGJvZHkgcGFuZWxzLCBmcmFtZSwgYW5kIG90aGVyIHN0cnVjdHVyYWwgY29tcG9uZW50cyBvZiB0aGUgY2FyLlxuXG40LiBXZWxkaW5nOiBUaGUgc3RhbXBlZCBtZXRhbCBwaWVjZXMgYXJlIHRoZW4gd2VsZGVkIHRvZ2V0aGVyIHRvIGZvcm0gdGhlIGJhc2ljIHN0cnVjdHVyZSBvZiB0aGUgY2FyLiBUaGlzIGludm9sdmVzIHVzaW5nIGhpZ2gtcG93ZXJlZCB3ZWxkaW5nIG1hY2hpbmVzIHRvIGpvaW4gdGhlIG1ldGFsIHBpZWNlcyBzZWN1cmVseSBhbmQgZW5zdXJlIHN0cnVjdHVyYWwgaW50ZWdyaXR5LlxuXG41LiBQYWludGluZzogT25jZSB0aGUgYm9keSBvZiB0aGUgY2FyIGlzIGFzc2VtYmxlZCwgaXQgZ29lcyB0aHJvdWdoIGEgcGFpbnRpbmcgcHJvY2Vzcy4gVGhpcyBpbnZvbHZlcyBhcHBseWluZyBtdWx0aXBsZSBsYXllcnMgb2YgcGFpbnQsIGluY2x1ZGluZyBhIHByaW1lciwgYmFzZSBjb2F0LCBhbmQgY2xlYXIgY29hdCwgdG8gcHJvdGVjdCB0aGUgbWV0YWwgZnJvbSBjb3Jyb3Npb24gYW5kIGdpdmUgdGhlIGNhciBpdHMgZmluYWwgY29sb3IgYW5kIGZpbmlzaC5cblxuNi4gQXNzZW1ibHk6IFRoZSB2YXJpb3VzIGNvbXBvbmVudHMgb2YgdGhlIGNhciwgc3VjaCBhcyB0aGUgZW5naW5lLCB0cmFuc21pc3Npb24sIHN1c3BlbnNpb24sIGFuZCBpbnRlcmlvciBjb21wb25lbnRzLCBhcmUgdGhlbiBhc3NlbWJsZWQgdG9nZXRoZXIgb24gdGhlIHByb2R1Y3Rpb24gbGluZS4gVGhpcyBwcm9jZXNzIGludm9sdmVzIHByZWNpc2UgY29vcmRpbmF0aW9uIGFuZCB0aW1pbmcgdG8gZW5zdXJlIHRoYXQgYWxsIHRoZSBwYXJ0cyBmaXQgdG9nZXRoZXIgY29ycmVjdGx5LlxuXG43LiBRdWFsaXR5IENvbnRyb2w6IFRocm91Z2hvdXQgdGhlIG1hbnVmYWN0dXJpbmcgcHJvY2VzcywgcXVhbGl0eSBjb250cm9sIGNoZWNrcyBhcmUgY29uZHVjdGVkIHRvIGVuc3VyZSB0aGF0IGVhY2ggY2FyIG1lZXRzIHRoZSByZXF1aXJlZCBzdGFuZGFyZHMgZm9yIHNhZmV0eSwgcGVyZm9ybWFuY2UsIGFuZCByZWxpYWJpbGl0eS4gVGhpcyBpbmNsdWRlcyByaWdvcm91cyB0ZXN0aW5nIG9mIGNvbXBvbmVudHMsIHN5c3RlbXMsIGFuZCB0aGUgZmluaXNoZWQgdmVoaWNsZS5cblxuOC4gRmluYWwgSW5zcGVjdGlvbjogQmVmb3JlIHRoZSBjYXJzIGFyZSByZWFkeSB0byBiZSBzaGlwcGVkIHRvIGRlYWxlcnNoaXBzLCB0aGV5IHVuZGVyZ28gYSBmaW5hbCBpbnNwZWN0aW9uIHRvIGNoZWNrIGZvciBhbnkgZGVmZWN0cyBvciBpc3N1ZXMuIFRoaXMgaW5jbHVkZXMgdmlzdWFsIGluc3BlY3Rpb25zLCByb2FkIHRlc3RzLCBhbmQgb3RoZXIgY2hlY2tzIHRvIGVuc3VyZSB0aGF0IHRoZSBjYXIgaXMgaW4gcGVyZmVjdCBjb25kaXRpb24uXG5cbjkuIFBhY2thZ2luZyBhbmQgU2hpcHBpbmc6IE9uY2UgdGhlIGNhcnMgaGF2ZSBwYXNzZWQgYWxsIHRoZSBxdWFsaXR5IGNoZWNrcywgdGhleSBhcmUgcGFja2FnZWQgZm9yIHNoaXBwaW5nIHRvIGRlYWxlcnNoaXBzIGFyb3VuZCB0aGUgd29ybGQuIFRoaXMgaW52b2x2ZXMgbG9hZGluZyB0aGUgY2FycyBvbnRvIHRyYW5zcG9ydCB2ZWhpY2xlcyBvciBjb250YWluZXJzIGFuZCBlbnN1cmluZyB0aGF0IHRoZXkgYXJlIHNlY3VyZWx5IHBhY2tlZCB0byBwcmV2ZW50IGRhbWFnZSBkdXJpbmcgdHJhbnNpdC5cblxuSW4gY29uY2x1c2lvbiwgdGhlIHByb2Nlc3Mgb2YgbWFraW5nIGNhcnMgaXMgYSBoaWdobHkgc29waGlzdGljYXRlZCBhbmQgaW50cmljYXRlIHByb2Nlc3MgdGhhdCBpbnZvbHZlcyBhIGNvbWJpbmF0aW9uIG9mIGRlc2lnbiwgZW5naW5lZXJpbmcsIG1hbnVmYWN0dXJpbmcsIGFuZCBxdWFsaXR5IGNvbnRyb2wuIEVhY2ggc3RlcCBpbiB0aGUgcHJvY2VzcyBpcyBlc3NlbnRpYWwgdG8gZW5zdXJpbmcgdGhhdCB0aGUgZmluYWwgcHJvZHVjdCBtZWV0cyB0aGUgaGlnaGVzdCBzdGFuZGFyZHMgb2Ygc2FmZXR5LCBwZXJmb3JtYW5jZSwgYW5kIHJlbGlhYmlsaXR5LiJ9"
+                }
+            ],
+            "usage": [],
+            "config": [
+                {
+                    "key": "graphsignal.library.version",
+                    "value": "0.15.1"
+                },
+                {
+                    "key": "os.name",
+                    "value": "Darwin"
+                },
+                {
+                    "key": "os.version",
+                    "value": "23.6.0"
+                },
+                {
+                    "key": "runtime.name",
+                    "value": "Python"
+                },
+                {
+                    "key": "runtime.version",
+                    "value": "3.11.4"
+                },
+                {
+                    "key": "openai.library.version",
+                    "value": "1.14.0"
+                },
+                {
+                    "key": "langchain.library.version",
+                    "value": "0.1.11"
+                }
+            ]
+        }
+    ]
+}
