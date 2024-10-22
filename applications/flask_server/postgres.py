@@ -304,14 +304,14 @@ def process_graphsignallogs(message,conn,json_object):
     
     if status == "success" and findupload == False:
         status = "incomplete"
-        print("status=incomplete")
-
+        #print("status=incomplete")
+    print("in process_graphsignallogs: status: ", status)
     if status != "success":
-        print("in process_graphsignallogs: status: ", status)
+        #print("in process_graphsignallogs: status: ", status)
         select_query = "SELECT 1 FROM log_history WHERE app_id = %s LIMIT 1;"
         cursor.execute(select_query, (json_object.get("application-name", "invalid"),))
         entry_exists = cursor.fetchone()
-        print("entry_exists: ", entry_exists)
+        #print("entry_exists: ", entry_exists)
         if entry_exists:
             # Entry exists, update the status field
             update_query = """
@@ -320,7 +320,7 @@ def process_graphsignallogs(message,conn,json_object):
                 WHERE app_id = %s
             """
             cursor.execute(update_query, (status, current_timestamp, (json_object.get("application-name", "invalid"))))
-            print("entry_exists executed: ", update_query)
+            #print("entry_exists executed: ", update_query)
             #print(f"Entry with app_id {(json_object.get("application-name", "invalid")} has been updated.")
         else:
             # SQL command to insert the JSON data along with 'application-name', 'tag', and timestamp
@@ -336,7 +336,7 @@ def process_graphsignallogs(message,conn,json_object):
                     current_timestamp                                      # Ensure current_timestamp is defined
                 )
             )
-            print("insert_metric_sql: ", insert_metric_sql)
+            #print("insert_metric_sql: ", insert_metric_sql)
     conn.commit()
     cursor.close()
     conn.close()
@@ -374,7 +374,7 @@ def process_metrics(message,conn,json_object):
         return json_new
     
     json_system_objects = get_system_objects(json_object["metrics"])
-    print(type(json_system_objects), type(json_object))
+    #print(type(json_system_objects), type(json_object))
 
     # SQL command to insert the JSON data along with 'application-name', 'tag', and timestamp
     insert_metric_sql = "INSERT INTO system (process_cpu_usage, process_memory, virtual_memory, node_memory_used, application_name, app_user, app_id, timestamp) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"
@@ -406,7 +406,7 @@ def process_metrics(message,conn,json_object):
 
     def get_usage_objects(data_obj):
         json_new = {"data":[]}
-        print("get usage objects")
+        #print("get usage objects")
         if isinstance(data_obj, list):
             for item in data_obj:
                 if "scope" in item and item["scope"] == "usage" and "name" in item:
@@ -657,11 +657,11 @@ def process_spans(message,conn,json_object):
     # code to query moderation api
     auditing_json = None
     if "payloads" in json_span_first_object:
-        print("inside payloads")
+        #print("inside payloads")
         for payload in json_span_first_object["payloads"]:
-            print("inside first_span")
+            #print("inside first_span")
             if "name" in payload and payload["name"] == "input":
-                print("tahsin inside input")
+                #print("tahsin inside input")
                 input = json.dumps(payload.get("content_base64", None))
                 decoded_bytes = base64.b64decode(input)
                 decoded_str = decoded_bytes.decode('utf-8')
@@ -722,7 +722,7 @@ def parse_moderation_response(json_obj):
 
 def calculate_safety_score(user, app_name, question):
     # Define the data payload
-    print("calling calculate_safety_score: ", question)
+    #print("calling calculate_safety_score: ", question)
     result_info = {}
     if question is not None:
         data = {
