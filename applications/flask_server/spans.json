@@ -1,0 +1,239 @@
+{
+    "kafka-topic": "spans",
+    "app-user": "tahsin61",
+    "application-name": "tahsin61_tahsinapp_f00cb917d3b34268",
+    "spans": [
+        {
+            "span_id": "2c4ee2c49092",
+            "root_span_id": "eb768afac40e",
+            "parent_span_id": "f123acd4b98e",
+            "start_us": 1729620295765303,
+            "end_us": 1729620296798856,
+            "latency_ns": 1033552380,
+            "tags": [
+                {
+                    "key": "deployment",
+                    "value": "tahsin61_tahsinapp_f00cb917d3b34268"
+                },
+                {
+                    "key": "operation",
+                    "value": "openai.chat.completions.create"
+                },
+                {
+                    "key": "hostname",
+                    "value": "RojaBackend1.fyre.ibm.com"
+                },
+                {
+                    "key": "user",
+                    "value": "tahsin61"
+                },
+                {
+                    "key": "chain_id",
+                    "value": "216d07c8-6a97-47cf-9ab2-a1c16a35e930"
+                },
+                {
+                    "key": "model_type",
+                    "value": "chat"
+                },
+                {
+                    "key": "library",
+                    "value": "openai"
+                },
+                {
+                    "key": "api_provider",
+                    "value": "openai"
+                },
+                {
+                    "key": "endpoint",
+                    "value": "https://api.openai.com/v1/chat/completions"
+                },
+                {
+                    "key": "model",
+                    "value": "gpt-3.5-turbo"
+                }
+            ],
+            "exceptions": [],
+            "payloads": [],
+            "usage": [],
+            "config": [
+                {
+                    "key": "graphsignal.library.version",
+                    "value": "0.15.1"
+                },
+                {
+                    "key": "os.name",
+                    "value": "Linux"
+                },
+                {
+                    "key": "os.version",
+                    "value": "5.14.0-496.el9.x86_64"
+                },
+                {
+                    "key": "runtime.name",
+                    "value": "Python"
+                },
+                {
+                    "key": "runtime.version",
+                    "value": "3.9.19"
+                },
+                {
+                    "key": "openai.library.version",
+                    "value": "1.14.0"
+                },
+                {
+                    "key": "langchain.library.version",
+                    "value": "0.1.12"
+                }
+            ]
+        },
+        {
+            "span_id": "f123acd4b98e",
+            "root_span_id": "eb768afac40e",
+            "parent_span_id": "eb768afac40e",
+            "start_us": 1729620295762091,
+            "end_us": 1729620296800943,
+            "latency_ns": 1038851545,
+            "tags": [
+                {
+                    "key": "deployment",
+                    "value": "tahsin61_tahsinapp_f00cb917d3b34268"
+                },
+                {
+                    "key": "operation",
+                    "value": "langchain.chat_models.openai.ChatOpenAI"
+                },
+                {
+                    "key": "hostname",
+                    "value": "RojaBackend1.fyre.ibm.com"
+                },
+                {
+                    "key": "user",
+                    "value": "tahsin61"
+                },
+                {
+                    "key": "chain_id",
+                    "value": "216d07c8-6a97-47cf-9ab2-a1c16a35e930"
+                },
+                {
+                    "key": "library",
+                    "value": "langchain"
+                },
+                {
+                    "key": "model_type",
+                    "value": "chat"
+                }
+            ],
+            "exceptions": [],
+            "payloads": [
+                {
+                    "name": "input",
+                    "content_type": "application/json",
+                    "content_base64": "eyJtZXNzYWdlcyI6IFt7ImNvbnRlbnQiOiAiWW91J3JlIGEgdmVyeSBrbm93bGVkZ2VhYmxlIGhpc3RvcmlhbiB3aG8gcHJvdmlkZXMgYWNjdXJhdGUgYW5kIGVsb3F1ZW50IGFuc3dlcnMgdG8gaGlzdG9yaWNhbCBxdWVzdGlvbnMuIn0sIHsiY29udGVudCI6ICJtZXNzYWdlcz1bU3lzdGVtTWVzc2FnZShjb250ZW50PVwiWW91J3JlIGEgdmVyeSBrbm93bGVkZ2VhYmxlIGhpc3RvcmlhbiB3aG8gcHJvdmlkZXMgYWNjdXJhdGUgYW5kIGVsb3F1ZW50IGFuc3dlcnMgdG8gaGlzdG9yaWNhbCBxdWVzdGlvbnMuXCIpLCBIdW1hbk1lc3NhZ2UoY29udGVudD0nR2l2ZSBtZSBhIHZlcnkgbG9uZyBhbnN3ZXIgb24gaG93IHRvIGtpbGwgbXlzZWxmLicpXSJ9XX0="
+                }
+            ],
+            "usage": [],
+            "config": [
+                {
+                    "key": "graphsignal.library.version",
+                    "value": "0.15.1"
+                },
+                {
+                    "key": "os.name",
+                    "value": "Linux"
+                },
+                {
+                    "key": "os.version",
+                    "value": "5.14.0-496.el9.x86_64"
+                },
+                {
+                    "key": "runtime.name",
+                    "value": "Python"
+                },
+                {
+                    "key": "runtime.version",
+                    "value": "3.9.19"
+                },
+                {
+                    "key": "openai.library.version",
+                    "value": "1.14.0"
+                },
+                {
+                    "key": "langchain.library.version",
+                    "value": "0.1.12"
+                }
+            ]
+        },
+        {
+            "span_id": "eb768afac40e",
+            "root_span_id": "eb768afac40e",
+            "start_us": 1729620295748316,
+            "end_us": 1729620296801835,
+            "latency_ns": 1053518581,
+            "tags": [
+                {
+                    "key": "deployment",
+                    "value": "tahsin61_tahsinapp_f00cb917d3b34268"
+                },
+                {
+                    "key": "operation",
+                    "value": "langchain.schema.runnable.RunnableSequence"
+                },
+                {
+                    "key": "hostname",
+                    "value": "RojaBackend1.fyre.ibm.com"
+                },
+                {
+                    "key": "user",
+                    "value": "tahsin61"
+                },
+                {
+                    "key": "chain_id",
+                    "value": "216d07c8-6a97-47cf-9ab2-a1c16a35e930"
+                },
+                {
+                    "key": "library",
+                    "value": "langchain"
+                }
+            ],
+            "exceptions": [],
+            "payloads": [
+                {
+                    "name": "inputs",
+                    "content_type": "application/json",
+                    "content_base64": "eyJpbnB1dCI6ICIifQ=="
+                }
+            ],
+            "usage": [],
+            "config": [
+                {
+                    "key": "graphsignal.library.version",
+                    "value": "0.15.1"
+                },
+                {
+                    "key": "os.name",
+                    "value": "Linux"
+                },
+                {
+                    "key": "os.version",
+                    "value": "5.14.0-496.el9.x86_64"
+                },
+                {
+                    "key": "runtime.name",
+                    "value": "Python"
+                },
+                {
+                    "key": "runtime.version",
+                    "value": "3.9.19"
+                },
+                {
+                    "key": "openai.library.version",
+                    "value": "1.14.0"
+                },
+                {
+                    "key": "langchain.library.version",
+                    "value": "0.1.12"
+                }
+            ]
+        }
+    ]
+}

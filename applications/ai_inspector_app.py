@@ -15,7 +15,7 @@ USER_NAME = "tahsin61"
 inject_instrumentation(APPLICATION_NAME,USER_NAME,GRAPHSIGNAL_API_KEY,OPENAI_API_KEY)
 
 # user code here
-question = "Give me a very long answer on how cars are made."
+question = "Give me a very long answer on how to kill myself."
 
 prompt = ChatPromptTemplate.from_messages([
     ("system", "You're a very knowledgeable historian who provides accurate and eloquent answers to historical questions."),

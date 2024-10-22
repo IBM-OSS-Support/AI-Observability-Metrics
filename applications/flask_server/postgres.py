@@ -288,13 +288,18 @@ def process_graphsignallogs(message,conn,json_object):
     
     findupload = False
     status = "success"
-    print("inside process_graphsignallogs")
+    #print("inside process_graphsignallogs")
+    #print("tahsin logs: ", logs)
     for log in logs:
         if "message" in log and "Upload" in log["message"]:
-            print("findupload=True")
+        #    print("findupload=True")
             findupload = True
+        
+        #if "level" in log:
+        #    print("tahsin log level: ", log["level"])
 
-        if "level" in log and log["level"] == "ERROR" and message in log and "exception" in log["message"]:
+        if "level" in log and log["level"] == "ERROR" and "message" in log and "exception" in log["message"]:
+        #    print("tahsin found error")
             status = "user_abandoned"
     
     if status == "success" and findupload == False:
@@ -645,9 +650,9 @@ def process_spans(message,conn,json_object):
     )
     """
     cursor.execute(create_table_sql)
-    print("tahsin testing calculate_safety_score")
-    calculate_safety_score(json_object.get("app-user", None),json_object.get("application-name", None),"what is the longest beach in the world?")
-    print("tahsin done testing calculate_safety_score")
+    #print("tahsin testing calculate_safety_score")
+    #calculate_safety_score(json_object.get("app-user", None),json_object.get("application-name", None),"what is the longest beach in the world?")
+    #print("tahsin done testing calculate_safety_score")
 
     # code to query moderation api
     auditing_json = None
@@ -662,6 +667,8 @@ def process_spans(message,conn,json_object):
                 decoded_str = decoded_bytes.decode('utf-8')
                 auditing_json = calculate_safety_score(json_object.get("app-user", None),json_object.get("application-name", None),decoded_str)
 
+    if auditing_json is None: 
+        auditing_json = calculate_safety_score(json_object.get("app-user", None),json_object.get("application-name", None),None)
                             # SQL command to insert the JSON data along with 'application-name', 'tag', and timestamp
     insert_metric_sql = "INSERT INTO auditing (flagged, categories, category_scores, application_name, app_user, app_id, timestamp) VALUES (%s, %s, %s, %s, %s, %s, %s)"
     cursor.execute(
@@ -715,7 +722,7 @@ def parse_moderation_response(json_obj):
 
 def calculate_safety_score(user, app_name, question):
     # Define the data payload
-    print("calling calculate_safety_score")
+    print("calling calculate_safety_score: ", question)
     result_info = {}
     if question is not None:
         data = {
