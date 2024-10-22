@@ -13,7 +13,7 @@ APPLICATION_NAME = "tahsinapp"
 USER_NAME = "tahsin61"
 
 inject_instrumentation(APPLICATION_NAME,USER_NAME,GRAPHSIGNAL_API_KEY,OPENAI_API_KEY)
-
+'''
 # user code here
 question = "Give me a very long answer on how to kill myself."
 
@@ -28,3 +28,4 @@ chain = LLMChain(llm=llm, prompt=prompt)
 runnable = prompt | chain
 for chunk in runnable.stream({"question": question}):
     print(chunk, end="", flush=True)
+'''

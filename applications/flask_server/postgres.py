@@ -324,7 +324,7 @@ def process_graphsignallogs(message,conn,json_object):
             #print(f"Entry with app_id {(json_object.get("application-name", "invalid")} has been updated.")
         else:
             # SQL command to insert the JSON data along with 'application-name', 'tag', and timestamp
-            insert_metric_sql = "INSERT INTO log_history (log, status, application_name, app_user, app_id, timestamp) VALUES (%s, %s, %s, %s, %s, %s, %s)"
+            insert_metric_sql = "INSERT INTO log_history (log, status, application_name, app_user, app_id, timestamp) VALUES (%s, %s, %s, %s, %s, %s)"
             cursor.execute(
                 insert_metric_sql, 
                 (

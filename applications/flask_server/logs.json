@@ -1,7 +1,7 @@
 {
     "kafka-topic": "graphsignallogs",
-    "app-user": "tahsin61_tahsinapp_44a0bf19878f4c70",
-    "application-name": "tahsin61_tahsinapp_44a0bf19878f4c70",
+    "app-user": "tahsin61_tahsinapp_3aedae72e736475e",
+    "application-name": "tahsin61_tahsinapp_3aedae72e736475e",
     "logs": [
         {
             "scope": "tracer",
@@ -9,16 +9,16 @@
             "tags": [
                 {
                     "key": "deployment",
-                    "value": "tahsin61_tahsinapp_44a0bf19878f4c70"
+                    "value": "tahsin61_tahsinapp_3aedae72e736475e"
                 },
                 {
                     "key": "hostname",
-                    "value": "Mds-MacBook-Pro.local"
+                    "value": "RojaBackend1.fyre.ibm.com"
                 }
             ],
             "level": "DEBUG",
             "message": "Initializing recorder for module: (default)",
-            "create_ts": 1729196921
+            "create_ts": 1729622133
         },
         {
             "scope": "tracer",
@@ -26,16 +26,16 @@
             "tags": [
                 {
                     "key": "deployment",
-                    "value": "tahsin61_tahsinapp_44a0bf19878f4c70"
+                    "value": "tahsin61_tahsinapp_3aedae72e736475e"
                 },
                 {
                     "key": "hostname",
-                    "value": "Mds-MacBook-Pro.local"
+                    "value": "RojaBackend1.fyre.ibm.com"
                 }
             ],
             "level": "DEBUG",
             "message": "Error initializing NVML, skipping GPU usage",
-            "create_ts": 1729196921
+            "create_ts": 1729622133
         },
         {
             "scope": "tracer",
@@ -43,16 +43,16 @@
             "tags": [
                 {
                     "key": "deployment",
-                    "value": "tahsin61_tahsinapp_44a0bf19878f4c70"
+                    "value": "tahsin61_tahsinapp_3aedae72e736475e"
                 },
                 {
                     "key": "hostname",
-                    "value": "Mds-MacBook-Pro.local"
+                    "value": "RojaBackend1.fyre.ibm.com"
                 }
             ],
             "level": "DEBUG",
             "message": "Initializing recorder for module: openai",
-            "create_ts": 1729196921
+            "create_ts": 1729622133
         },
         {
             "scope": "tracer",
@@ -60,16 +60,16 @@
             "tags": [
                 {
                     "key": "deployment",
-                    "value": "tahsin61_tahsinapp_44a0bf19878f4c70"
+                    "value": "tahsin61_tahsinapp_3aedae72e736475e"
                 },
                 {
                     "key": "hostname",
-                    "value": "Mds-MacBook-Pro.local"
+                    "value": "RojaBackend1.fyre.ibm.com"
                 }
             ],
             "level": "DEBUG",
             "message": "Initializing recorder for module: langchain",
-            "create_ts": 1729196921
+            "create_ts": 1729622133
         },
         {
             "scope": "tracer",
@@ -77,50 +77,16 @@
             "tags": [
                 {
                     "key": "deployment",
-                    "value": "tahsin61_tahsinapp_44a0bf19878f4c70"
+                    "value": "tahsin61_tahsinapp_3aedae72e736475e"
                 },
                 {
                     "key": "hostname",
-                    "value": "Mds-MacBook-Pro.local"
+                    "value": "RojaBackend1.fyre.ibm.com"
                 }
             ],
             "level": "DEBUG",
             "message": "Tracer configured",
-            "create_ts": 1729196921
-        },
-        {
-            "scope": "tracer",
-            "name": "python-tracer-0.15.1",
-            "tags": [
-                {
-                    "key": "deployment",
-                    "value": "tahsin61_tahsinapp_44a0bf19878f4c70"
-                },
-                {
-                    "key": "hostname",
-                    "value": "Mds-MacBook-Pro.local"
-                }
-            ],
-            "level": "DEBUG",
-            "message": "Cannot instrument create.",
-            "create_ts": 1729196921
-        },
-        {
-            "scope": "tracer",
-            "name": "python-tracer-0.15.1",
-            "tags": [
-                {
-                    "key": "deployment",
-                    "value": "tahsin61_tahsinapp_44a0bf19878f4c70"
-                },
-                {
-                    "key": "hostname",
-                    "value": "Mds-MacBook-Pro.local"
-                }
-            ],
-            "level": "DEBUG",
-            "message": "Cannot instrument create.",
-            "create_ts": 1729196921
+            "create_ts": 1729622133
         }
     ]
 }
