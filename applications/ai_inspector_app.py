@@ -14,6 +14,7 @@ USER_NAME = "tahsin61"
 
 inject_instrumentation(APPLICATION_NAME,USER_NAME,GRAPHSIGNAL_API_KEY,OPENAI_API_KEY)
 
+# user code here
 question = "Give me a very long answer on how cars are made."
 
 prompt = ChatPromptTemplate.from_messages([
@@ -21,16 +22,9 @@ prompt = ChatPromptTemplate.from_messages([
     ("human", "{question}")
     ])
 
-#def user_ai_function():
-    # user code begins
 print("Running user code")
 llm = ChatOpenAI(temperature=0)
 chain = LLMChain(llm=llm, prompt=prompt)
 runnable = prompt | chain
-#with graphsignal.trace("run_chat_model") as tr:
 for chunk in runnable.stream({"question": question}):
     print(chunk, end="", flush=True)
-    #sys.exit("Exiting the application prematurely due to some error.")
-    #
-
-#inject_data(question=question,status=user_ai_function())
