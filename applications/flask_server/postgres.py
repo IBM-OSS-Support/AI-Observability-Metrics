@@ -288,8 +288,6 @@ def process_graphsignallogs(message,conn,json_object):
     
     findupload = False
     status = "success"
-    #print("inside process_graphsignallogs")
-    #print("tahsin logs: ", logs)
     for log in logs:
         if "message" in log and "Upload" in log["message"]:
         #    print("findupload=True")
@@ -305,11 +303,12 @@ def process_graphsignallogs(message,conn,json_object):
     if status == "success" and findupload == False:
         status = "incomplete"
         #print("status=incomplete")
+
     print("in process_graphsignallogs: status: ", status)
     if status != "success":
         #print("in process_graphsignallogs: status: ", status)
         select_query = "SELECT 1 FROM log_history WHERE app_id = %s LIMIT 1;"
-        cursor.execute(select_query, (json_object.get("application-name", "invalid"),))
+        cursor.execute(select_query, (json_object.get("app_id", "invalid"),))
         entry_exists = cursor.fetchone()
         #print("entry_exists: ", entry_exists)
         if entry_exists:

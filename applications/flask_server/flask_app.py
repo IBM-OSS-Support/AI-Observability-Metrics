@@ -35,7 +35,7 @@ def extract_application_user(data_obj):
 
 def extract_application_user_from_app_name(data_obj):
     app_name = extract_application_name(data_obj)
-    splits = app_name.split('-')
+    splits = app_name.split('_')
     if len(splits) > 0:
         return splits[0]
 
