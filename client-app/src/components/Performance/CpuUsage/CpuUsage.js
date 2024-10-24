@@ -29,7 +29,6 @@ const options = {
   }
 };
 
-
 const defaultMessage = [];
 
 const CpuUsage = forwardRef(({ selectedItem, selectedUser }, ref) => {
@@ -37,15 +36,12 @@ const CpuUsage = forwardRef(({ selectedItem, selectedUser }, ref) => {
   const [latest, setLatest] = useState(0);
   const [avg, setAvg] = useState(0);
   const [messageFromServerCPU, setMessageFromServerCPU] = useState(defaultMessage);
-  const [loading, setLoading] = useState(true); // Add loading state
-
-  
+  const [loading, setLoading] = useState(true);
 
   useImperativeHandle(ref, () => ({
     sendMessageToServerCPU,
   }));
 
-  // Function to fetch data from the API
   const sendMessageToServerCPU = async (selectedItem, selectedUser) => {
     let query = 'SELECT process_cpu_usage FROM system';
 
@@ -63,96 +59,74 @@ const CpuUsage = forwardRef(({ selectedItem, selectedUser }, ref) => {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ query }), // Sending query as body
+        body: JSON.stringify({ query }),
       });
 
       if (!response.ok) {
         throw new Error("Network response was not ok");
       }
 
-      var responseData = await response.json();
-      setMessageFromServerCPU(responseData); // Assuming the data format matches the expected structure
+      const responseData = await response.json();
+      setMessageFromServerCPU(responseData);
     } catch (error) {
       console.error("Error fetching data:", error);
-    }finally {
-      if (responseData.length > 0) {
-        setLoading(false); // Stop loading
-      }
+    } finally {
+      setLoading(false);
     }
   };
 
   useEffect(() => {
     if (messageFromServerCPU && messageFromServerCPU.length > 0) {
-      const cpuUsages = messageFromServerCPU.map(d => d.process_cpu_usage.gauge || 0);
-      
-      // Calculate the latest CPU usage (most recent value)
-      const latestUsage = cpuUsages[cpuUsages.length - 1] || 0;
-      const lastUsage = latestUsage.toFixed(2);
-      setLatest(lastUsage);
+      const cpuUsages = messageFromServerCPU.map(d => d.process_cpu_usage?.gauge || 0);
 
-      // Calculate the average CPU usage
+      const latestUsage = cpuUsages[cpuUsages.length - 1] || 0;
+      setLatest(latestUsage.toFixed(2));
+
       const total = cpuUsages.reduce((sum, gauge) => sum + gauge, 0);
-      const newAvgValue = cpuUsages.length > 0 ? total / cpuUsages.length : 0;
-      const newAvg = newAvgValue.toFixed(2);
+      const newAvg = cpuUsages.length > 0 ? (total / cpuUsages.length).toFixed(2) : 0;
       setAvg(newAvg);
 
-      // Update chart data to reflect the latest value
-      setData([{ group: 'value', value: newAvgValue }]);
+      setData([{ group: 'value', value: parseFloat(newAvg) }]);
     }
   }, [messageFromServerCPU]);
 
   return (
     <>
-    {
-      loading ? (
-        <Tile className="infrastructure-components cpu-usage">
-           <h4 className="title">
-            Average CPU Usage
-          </h4>
-          <CodeSnippetSkeleton type="multi" />
-          <CodeSnippetSkeleton type="multi" />
-        </Tile>
-      ) : (
-         data.length > 0 ? (
+      {
+        loading ? (
+          <Tile className="infrastructure-components cpu-usage">
+            <h4 className="title">Average CPU Usage</h4>
+            <CodeSnippetSkeleton type="multi" />
+            <CodeSnippetSkeleton type="multi" />
+          </Tile>
+        ) : (
+          data.length > 0 ? (
             <Tile className="infrastructure-components cpu-usage">
-           <h4 className="title">
-            Average CPU Usage
-          </h4>
-          <p>
-            <ul className="sub-title">
-              <li><strong>User Name:</strong> { `${selectedUser || 'For All User Name'}`}</li>
-              <li><strong>Application Name:</strong> { `${selectedItem || 'For All Application Name'}`}</li>
-            </ul>
-          </p>
-          <div className="cpu-usage-chart">
-            <GaugeChart data={data} options={options} />
-          </div>
-          <div className="cpu-usage-data">
-            <div className="label"> 
-              Last
-              {selectedUser && selectedItem 
-                ? ` ${selectedUser}'s ${selectedItem} ` 
-                : selectedUser 
-                  ? selectedUser === 'all' ? ` of ${selectedUser} ` : ` ${selectedUser}'s ` 
-                  : selectedItem 
-                    ? ` ${selectedItem}'s ` 
-                    : ' of all '} 
-               CPU Usage
-            </div>
-            <h3 className="data">{latest} %</h3>
-          </div>
-        </Tile>
+              <h4 className="title">Average CPU Usage</h4>
+              <p>
+                <ul className="sub-title">
+                  <li><strong>User Name:</strong> {selectedUser || 'For All User Name'}</li>
+                  <li><strong>Application Name:</strong> {selectedItem || 'For All Application Name'}</li>
+                </ul>
+              </p>
+              <div className="cpu-usage-chart">
+                <GaugeChart data={data} options={options} />
+              </div>
+              <div className="cpu-usage-data">
+                <div className="label">
+                  Last {selectedUser && selectedItem ? `${selectedUser}'s ${selectedItem}` : selectedUser ? (selectedUser === 'all' ? ' of all users' : `${selectedUser}'s`) : selectedItem ? `${selectedItem}'s` : ' of all '} CPU Usage
+                </div>
+                <h3 className="data">{latest} %</h3>
+              </div>
+            </Tile>
           ) : (
             <Tile className="infrastructure-components cpu-usage">
-           <h4 className="title">
-            Average CPU Usage
-          </h4>
-          <NoData />
-        </Tile>
+              <h4 className="title">Average CPU Usage</h4>
+              <NoData />
+            </Tile>
           )
-        
-      )
-    }
+        )
+      }
     </>
   );
 });

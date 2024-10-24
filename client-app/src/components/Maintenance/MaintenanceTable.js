@@ -46,35 +46,59 @@ const MaintenanceTable = forwardRef(
       startDate,
       endDate
     ) => {
-      let query = "SELECT * FROM operations";
-
-      // Build the query based on filters (selectedItem, selectedUser)
-      if (selectedItem && !selectedUser) {
-        query += ` WHERE application_name = '${selectedItem}'`;
-      }
-      if (selectedUser && !selectedItem) {
-        query += ` WHERE app_user = '${selectedUser}'`;
-      }
-      if (selectedUser && selectedItem) {
-        query += ` WHERE application_name = '${selectedItem}' AND app_user = '${selectedUser}'`;
-      }
-
+      // Initial query with LIMIT 500
+      let initialQuery = "SELECT * FROM operations LIMIT 500";
+      
       try {
         const apiUrl = process.env.REACT_APP_BACKEND_API_URL;
-        const response = await fetch(apiUrl, {
+        
+        // Perform the initial query with LIMIT 500
+        let response = await fetch(apiUrl, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ query }),
+          body: JSON.stringify({ query: initialQuery }),
         });
-
-        const result = await response.json();
-        
+    
+        let result = await response.json();
+    
         setMessageFromServerLog(result);
         setOriginalRows(result); // Store original data
         setTotalItems(result.length);
+        
+        // After the initial response, set a timeout for the full query
+        setTimeout(async () => {
+          // Full query (without limit)
+          let query = "SELECT * FROM operations";
+          
+          // Build the query based on filters (selectedItem, selectedUser)
+          if (selectedItem && !selectedUser) {
+            query += ` WHERE application_name = '${selectedItem}'`;
+          }
+          if (selectedUser && !selectedItem) {
+            query += ` WHERE app_user = '${selectedUser}'`;
+          }
+          if (selectedUser && selectedItem) {
+            query += ` WHERE application_name = '${selectedItem}' AND app_user = '${selectedUser}'`;
+          }
+    
+          // Fetch data again with the full query after the delay
+          response = await fetch(apiUrl, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ query }),
+          });
+    
+          result = await response.json();
+    
+          setMessageFromServerLog(result);
+          setOriginalRows(result); // Update original data with full results
+          setTotalItems(result.length);
+    
+        }, 5000); // Delay for 5 seconds (5000 ms), adjust as needed
+    
       } catch (error) {
         console.error("Error fetching data from API:", error);
-      }finally {
+      } finally {
         setLoading(false); // Stop loading
       }
     };

@@ -79,9 +79,11 @@ const AbandonmentRate = forwardRef(({selectedUser, selectedItem}, ref) => {
     } catch (error) {
       console.error("Error fetching data:", error);
     }finally {
-      if (responseData.length > 0) {
+      if (Array.isArray(responseData) && responseData.length > 0) {
         setLoading(false); // Stop loading
-      }
+      }else {
+        setLoading(false); // Stop loading in case of empty data or error
+    }
     }
   };
 

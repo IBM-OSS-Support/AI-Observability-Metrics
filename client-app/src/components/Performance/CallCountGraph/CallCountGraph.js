@@ -12,7 +12,6 @@
 import React, { forwardRef, useEffect, useImperativeHandle, useState } from "react";
 import CustomLineChart from "../../common/CustomLineChart";
 import { useStoreContext } from "../../../store";
-import { getIntervals } from "../helper";
 import moment from "moment";
 import NoData from "../../common/NoData/NoData";
 
@@ -31,43 +30,45 @@ const CallCountGraph = forwardRef(({ selectedItem, selectedUser, startDate, endD
     let query = 'SELECT application_name, data, timestamp FROM performance';
     // Add filtering logic based on selectedItem, selectedUser, and selectedTimestampRange
     if (selectedItem && !selectedUser) {
-      query += ` WHERE application_name = '${selectedItem}'`;
+        query += ` WHERE application_name = '${selectedItem}'`;
     }
     if (selectedUser && !selectedItem) {
-      query += ` WHERE app_user = '${selectedUser}'`;
+        query += ` WHERE app_user = '${selectedUser}'`;
     }
     if (selectedUser && selectedItem) {
-      query += ` WHERE application_name = '${selectedItem}' AND app_user = '${selectedUser}'`;
+        query += ` WHERE application_name = '${selectedItem}' AND app_user = '${selectedUser}'`;
     }
 
-    
-
+    let responseData; // Declare responseData outside the try block
     try {
-      const apiUrl = process.env.REACT_APP_BACKEND_API_URL;
-      const response = await fetch(apiUrl, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ query }),
-      });
+        const apiUrl = process.env.REACT_APP_BACKEND_API_URL;
+        const response = await fetch(apiUrl, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ query }),
+        });
 
-      if (!response.ok) {
-        throw new Error("Failed to fetch data");
-      }
+        if (!response.ok) {
+            throw new Error("Failed to fetch data");
+        }
 
-      var responseData = await response.json();
-      setMessageFromServerCallCount(responseData); // Assuming the data is in the correct structure
+        responseData = await response.json();
+        setMessageFromServerCallCount(responseData); // Assuming the data is in the correct structure
     } catch (error) {
-      console.error("Error fetching data:", error);
-    }finally {
-      if (responseData.length > 0) {
-        setLoading(false); // Stop loading
-      }
+        console.error("Error fetching data:", error);
+    } finally {
+        if (Array.isArray(responseData) && responseData.length > 0) {
+            setLoading(false); // Stop loading if responseData is an array and has elements
+        } else {
+            setLoading(false); // Stop loading in case of empty data or error
+        }
     }
 
     return defaultNumberofDays;
-  };
+};
+
 
   useEffect(() => {
     sendMessageToServerCallCount(selectedItem, selectedUser, startDate, endDate);
