@@ -77,23 +77,16 @@ const CpuUsage = forwardRef(({ selectedItem, selectedUser }, ref) => {
 
   useEffect(() => {
     if (messageFromServerCPU && messageFromServerCPU.length > 0) {
-      const cpuUsages = messageFromServerCPU.map(d => {
-        if (d.process_cpu_usage && d.process_cpu_usage.gauge != null) {
-          return d.process_cpu_usage.gauge;
-        }
-        return 0; // Default to 0 if gauge is not available
-      });
+      const cpuUsages = messageFromServerCPU.map(d => d.process_cpu_usage?.gauge || 0);
 
-      if (cpuUsages.length > 0) {
-        const latestUsage = cpuUsages[cpuUsages.length - 1];
-        setLatest(latestUsage.toFixed(2));
+      const latestUsage = cpuUsages[cpuUsages.length - 1] || 0;
+      setLatest(latestUsage.toFixed(2));
 
-        const total = cpuUsages.reduce((sum, gauge) => sum + gauge, 0);
-        const newAvg = (total / cpuUsages.length).toFixed(2);
-        setAvg(newAvg);
+      const total = cpuUsages.reduce((sum, gauge) => sum + gauge, 0);
+      const newAvg = cpuUsages.length > 0 ? (total / cpuUsages.length).toFixed(2) : 0;
+      setAvg(newAvg);
 
-        setData([{ group: 'value', value: parseFloat(newAvg) }]);
-      }
+      setData([{ group: 'value', value: parseFloat(newAvg) }]);
     }
   }, [messageFromServerCPU]);
   
