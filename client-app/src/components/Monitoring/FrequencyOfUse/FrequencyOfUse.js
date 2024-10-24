@@ -53,10 +53,10 @@ const defaultMessage = [
 
 const FrequencyOfUse = forwardRef(
   ({ selectedItem, selectedUser, startDate, endDate }, ref) => {
-    const [data, setData] = useState(defaultData);
+    const [data, setData] = useState('');
     const [avg, setAvg] = useState(0);
     const [messageFromServerFrequency, setMessageFromServerFrequency] =
-      useState(defaultMessage);
+      useState('');
 
     const { state } = useStoreContext();
     const [loading, setLoading] = useState(true); // Add loading state
@@ -160,9 +160,11 @@ ORDER BY
       } catch (error) {
         console.error("Error fetching frequency data:", error);
       } finally {
-        if (responseData.length > 0) {
+        if (Array.isArray(responseData) && responseData.length > 0) {
           setLoading(false); // Stop loading
-        }
+        }else {
+          setLoading(false); // Stop loading in case of empty data or error
+      }
       }
     };
 

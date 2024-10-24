@@ -20,7 +20,7 @@ const CostGraph = forwardRef(({ selectedItem, selectedUser, startDate, endDate }
       token_cost: 0,
     },
   ];
-  const [messageFromServerCost, setMessageFromServerCost] = useState(defaultMessage);
+  const [messageFromServerCost, setMessageFromServerCost] = useState('');
   const [loading, setLoading] = useState(true); // Add loading state
 
   const costGraphOptions = {
@@ -62,9 +62,11 @@ const CostGraph = forwardRef(({ selectedItem, selectedUser, startDate, endDate }
     } catch (error) {
       console.error('Error fetching data from API:', error);
     }finally {
-      if (responseData.length > 0) {
+      if (Array.isArray(responseData) && responseData.length > 0) {
         setLoading(false); // Stop loading
-      }
+      }else {
+        setLoading(false); // Stop loading in case of empty data or error
+    }
     }
   }, []);
 
