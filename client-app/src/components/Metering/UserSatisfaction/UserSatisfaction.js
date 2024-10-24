@@ -108,9 +108,11 @@ const UserSatisfaction = forwardRef(
       } catch (error) {
         console.error("Error fetching user satisfaction data:", error);
       } finally {
-        if (responseData.length > 0) {
+        if (Array.isArray(responseData) && responseData.length > 0) {
           setLoading(false); // Stop loading
-        }
+        }else {
+          setLoading(false); // Stop loading in case of empty data or error
+      }
       }
     };
 
