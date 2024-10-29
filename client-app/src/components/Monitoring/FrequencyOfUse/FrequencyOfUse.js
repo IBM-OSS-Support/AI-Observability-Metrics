@@ -45,21 +45,13 @@ const defaultData = [
   },
 ];
 
-const defaultMessage = [
-  {
-    percentage_usage: 0,
-  },
-];
-
 const FrequencyOfUse = forwardRef(
   ({ selectedItem, selectedUser, startDate, endDate }, ref) => {
-    const [data, setData] = useState('');
+    const [data, setData] = useState(defaultData);
     const [avg, setAvg] = useState(0);
-    const [messageFromServerFrequency, setMessageFromServerFrequency] =
-      useState('');
-
+    const [messageFromServerFrequency, setMessageFromServerFrequency] = useState([]);
     const { state } = useStoreContext();
-    const [loading, setLoading] = useState(true); // Add loading state
+    const [loading, setLoading] = useState(true);
 
     useImperativeHandle(ref, () => ({
       fetchFrequencyData,
@@ -68,82 +60,104 @@ const FrequencyOfUse = forwardRef(
     // Function to fetch data from the API
     const fetchFrequencyData = async () => {
       const apiUrl = process.env.REACT_APP_BACKEND_API_URL;
-      let query = `WITH operation_counts AS ( SELECT operation, COUNT(*) AS operation_count FROM operations GROUP BY operation ), total_count AS ( SELECT COUNT(*) AS total FROM operations ) SELECT oc.operation, oc.operation_count, (oc.operation_count * 100.0 / tc.total) AS percentage_usage FROM operation_counts oc, total_count tc ORDER BY percentage_usage DESC`;
+      let query = `
+        WITH operation_counts AS (
+          SELECT operation, COUNT(*) AS operation_count
+          FROM operations
+          GROUP BY operation
+        ), total_count AS (
+          SELECT COUNT(*) AS total
+          FROM operations
+        )
+        SELECT 
+          oc.operation, 
+          oc.operation_count, 
+          (oc.operation_count * 100.0 / tc.total) AS percentage_usage
+        FROM 
+          operation_counts oc, 
+          total_count tc
+        ORDER BY 
+          percentage_usage DESC;
+      `;
 
       // Add filtering logic based on selectedItem, selectedUser, startDate, and endDate
       if (selectedItem && !selectedUser) {
-        query = `WITH operation_counts AS (
-    SELECT operation, COUNT(*) AS operation_count
-    FROM operations
-    WHERE application_name = '${selectedItem}'  
-    GROUP BY operation
-),
-total_count AS (
-    SELECT COUNT(*) AS total
-    FROM operations
-    WHERE application_name = '${selectedItem}'  
-)
-SELECT 
-    oc.operation, 
-    oc.operation_count, 
-    (oc.operation_count * 100.0 / tc.total) AS percentage_usage
-FROM 
-    operation_counts oc, 
-    total_count tc
-ORDER BY 
-    percentage_usage DESC`;
+        query = `
+          WITH operation_counts AS (
+            SELECT operation, COUNT(*) AS operation_count
+            FROM operations
+            WHERE application_name = '${selectedItem}'  
+            GROUP BY operation
+          ),
+          total_count AS (
+            SELECT COUNT(*) AS total
+            FROM operations
+            WHERE application_name = '${selectedItem}'  
+          )
+          SELECT 
+            oc.operation, 
+            oc.operation_count, 
+            (oc.operation_count * 100.0 / tc.total) AS percentage_usage
+          FROM 
+            operation_counts oc, 
+            total_count tc
+          ORDER BY 
+            percentage_usage DESC;
+        `;
       }
       if (selectedUser && !selectedItem) {
-        query = `WITH operation_counts AS (
-    SELECT operation, COUNT(*) AS operation_count
-    FROM operations
-    WHERE app_user = '${selectedUser}'  
-    GROUP BY operation
-),
-total_count AS (
-    SELECT COUNT(*) AS total
-    FROM operations
-    WHERE app_user = '${selectedUser}' 
-)
-SELECT 
-    oc.operation, 
-    oc.operation_count, 
-    (oc.operation_count * 100.0 / tc.total) AS percentage_usage
-FROM 
-    operation_counts oc, 
-    total_count tc
-ORDER BY 
-    percentage_usage DESC`;
+        query = `
+          WITH operation_counts AS (
+            SELECT operation, COUNT(*) AS operation_count
+            FROM operations
+            WHERE app_user = '${selectedUser}'  
+            GROUP BY operation
+          ),
+          total_count AS (
+            SELECT COUNT(*) AS total
+            FROM operations
+            WHERE app_user = '${selectedUser}' 
+          )
+          SELECT 
+            oc.operation, 
+            oc.operation_count, 
+            (oc.operation_count * 100.0 / tc.total) AS percentage_usage
+          FROM 
+            operation_counts oc, 
+            total_count tc
+          ORDER BY 
+            percentage_usage DESC;
+        `;
       }
       if (selectedUser && selectedItem) {
-        query = `WITH operation_counts AS (
-    SELECT operation, COUNT(*) AS operation_count
-    FROM operations
-    WHERE application_name = '${selectedItem}' 
-    AND app_user = '${selectedUser}'  
-    GROUP BY operation
-),
-total_count AS (
-    SELECT COUNT(*) AS total
-    FROM operations
-    WHERE application_name = '${selectedItem}' 
-    AND app_user = '${selectedUser}' 
-)
-SELECT 
-    oc.operation, 
-    oc.operation_count, 
-    (oc.operation_count * 100.0 / tc.total) AS percentage_usage
-FROM 
-    operation_counts oc, 
-    total_count tc
-ORDER BY 
-    percentage_usage DESC`;
+        query = `
+          WITH operation_counts AS (
+            SELECT operation, COUNT(*) AS operation_count
+            FROM operations
+            WHERE application_name = '${selectedItem}' 
+            AND app_user = '${selectedUser}'  
+            GROUP BY operation
+          ),
+          total_count AS (
+            SELECT COUNT(*) AS total
+            FROM operations
+            WHERE application_name = '${selectedItem}' 
+            AND app_user = '${selectedUser}' 
+          )
+          SELECT 
+            oc.operation, 
+            oc.operation_count, 
+            (oc.operation_count * 100.0 / tc.total) AS percentage_usage
+          FROM 
+            operation_counts oc, 
+            total_count tc
+          ORDER BY 
+            percentage_usage DESC;
+        `;
       }
 
-      console.log("query =", query);
-
       try {
-        const response = await fetch(`${apiUrl}`, {
+        const response = await fetch(apiUrl, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -155,16 +169,13 @@ ORDER BY
           throw new Error("Failed to fetch data from API");
         }
 
-        var responseData = await response.json();
+        const responseData = await response.json();
         setMessageFromServerFrequency(responseData);
       } catch (error) {
         console.error("Error fetching frequency data:", error);
+        setMessageFromServerFrequency([]);
       } finally {
-        if (Array.isArray(responseData) && responseData.length > 0) {
-          setLoading(false); // Stop loading
-        }else {
-          setLoading(false); // Stop loading in case of empty data or error
-      }
+        setLoading(false);
       }
     };
 
@@ -173,27 +184,21 @@ ORDER BY
       let newData = defaultData;
       let newAvg = 0;
 
-      if (state.status === "success") {
-        const appData = getAppData();
-
-        if (messageFromServerFrequency) {
-          const newAvgValue = parseFloat(
-            messageFromServerFrequency[0].percentage_usage
-          );
-
-          newAvg = newAvgValue.toFixed(2);
-          newData = [
-            {
-              group: "value",
-              value: newAvgValue || 0,
-            },
-          ];
-
-          setData(newData);
-          setAvg(newAvg);
-        }
+      if (state.status === "success" && Array.isArray(messageFromServerFrequency) && messageFromServerFrequency.length > 0) {
+        const newAvgValue = parseFloat(messageFromServerFrequency[0]?.percentage_usage || 0);
+        newAvg = newAvgValue.toFixed(2);
+        newData = [
+          {
+            group: "value",
+            value: newAvgValue,
+          },
+        ];
       }
+
+      setData(newData);
+      setAvg(newAvg);
     }, [messageFromServerFrequency, state.status]);
+
     // Render the component
     return (
       <>
@@ -231,12 +236,10 @@ ORDER BY
                 <p>
                   <ul className="sub-title">
                     <li>
-                      <strong>User Name:</strong>{" "}
-                      {`${selectedUser || "For All User Name"}`}
+                      <strong>User Name:</strong> {selectedUser || "For All User Names"}
                     </li>
                     <li>
-                      <strong>Application Name:</strong>{" "}
-                      {`${selectedItem || "For All Application Name"}`}
+                      <strong>Application Name:</strong> {selectedItem || "For All Application Names"}
                     </li>
                   </ul>
                 </p>
