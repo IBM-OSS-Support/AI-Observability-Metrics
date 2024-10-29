@@ -96,6 +96,7 @@ const CpuUsage = forwardRef(({ selectedItem, selectedUser }, ref) => {
       }
     }
   }, [messageFromServerCPU]);
+  
 
   return (
     <>
