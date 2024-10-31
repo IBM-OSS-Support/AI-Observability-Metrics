@@ -1,209 +1,189 @@
 import React, { useEffect, useState } from "react";
-import { Button, Tile, Tooltip, SkeletonText, SkeletonPlaceholder } from "@carbon/react";
-import CountUp from 'react-countup'; // Import CountUp
+import moment from "moment";
+import { Button, CodeSnippetSkeleton, Tile, Tooltip } from "@carbon/react";
 import { useStoreContext } from "../../../store";
 import { formatCount } from "../../../utils/data-utils";
 
-const defaultData = { apps: 0, avgLatency: 0, users: 0, operations: 0, models: 0, appCount: 0 };
+const defaultData = {
+  apps: 0,
+  avgLatency: 0,
+  users: 0,
+  operations: 0,
+  models: 0,
+  appCount: 0,
+};
 
 const TracesTile = () => {
   const [data, setData] = useState(defaultData);
-  const [loading, setLoading] = useState(true);
-  const [loadingMore, setLoadingMore] = useState(false);
-  const [operationsData, setOperationsData] = useState([]);
-  const [performanceData, setPerformanceData] = useState([]);
-  const [maintenanceData, setMaintenanceData] = useState([]);
-  const [totalCounts, setTotalCounts] = useState({ operations: 0, performance: 0, maintenance: 0 });
   const { state } = useStoreContext();
+  const [loading, setLoading] = useState(true); // Add loading state
 
-  const fetchTotalCounts = async () => {
-    const apiUrl = process.env.REACT_APP_BACKEND_API_URL;
 
-    const queries = [
-      { query: `SELECT COUNT(*) as count FROM operations` },
-      { query: `SELECT COUNT(*) as count FROM performance` },
-      { query: `SELECT COUNT(*) as count FROM maintenance` }
-    ];
+  // API Call to fetch trace data
+  const fetchTraceData = async () => {
+  setLoading(true);
+  const apiUrl = process.env.REACT_APP_BACKEND_API_URL;
 
-    try {
-      const [operationsResponse, performanceResponse, maintenanceResponse] = await Promise.all(queries.map(query =>
-        fetch(apiUrl, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(query),
-        })
-      ));
+  const operationsQuery = `SELECT * FROM operations WHERE timestamp >= NOW() - INTERVAL '7 DAY'`;
+  const performanceQuery = `SELECT * FROM performance WHERE timestamp >= NOW() - INTERVAL '7 DAY'`;
+  const maintenanceQuery = `SELECT * FROM maintenance WHERE timestamp >= NOW() - INTERVAL '7 DAY'`;
+  const logQuery = `SELECT * FROM log_history WHERE timestamp >= NOW() - INTERVAL '7 DAY'`;
 
-      if (!operationsResponse.ok || !performanceResponse.ok || !maintenanceResponse.ok) {
-        throw new Error("Network response was not ok");
-      }
+  try {
+    const [operationsResponse, performanceResponse, maintenanceResponse, logResponse] = await Promise.all([
+      fetch(apiUrl, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ query: operationsQuery }),
+      }),
+      fetch(apiUrl, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ query: performanceQuery }),
+      }),
+      fetch(apiUrl, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ query: maintenanceQuery }),
+      }),
+      fetch(apiUrl, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ query: logQuery }),
+      }),
+    ]);
 
-      const [operationsCount, performanceCount, maintenanceCount] = await Promise.all([
-        operationsResponse.json(),
-        performanceResponse.json(),
-        maintenanceResponse.json(),
-      ]);
-
-      setTotalCounts({
-        operations: operationsCount[0].count,
-        performance: performanceCount[0].count,
-        maintenance: maintenanceCount[0].count
-      });
-    } catch (error) {
-      console.error("Error fetching total counts:", error);
+    if (!operationsResponse.ok || !performanceResponse.ok || !maintenanceResponse.ok || !logResponse.ok) {
+      throw new Error("One of the network responses was not ok");
     }
-  };
 
-  const fetchTraceData = async (limit, offset) => {
-    const apiUrl = process.env.REACT_APP_BACKEND_API_URL;
+    const [operationsData, performanceData, maintenanceData, logData] = await Promise.all([
+      operationsResponse.json(),
+      performanceResponse.json(),
+      maintenanceResponse.json(),
+      logResponse.json(),
+    ]);
 
-    const queries = [
-      { query: `SELECT * FROM operations LIMIT ${limit} OFFSET ${offset}` },
-      { query: `SELECT * FROM performance LIMIT ${limit} OFFSET ${offset}` },
-      { query: `SELECT * FROM maintenance LIMIT ${limit} OFFSET ${offset}` }
-    ];
+    return { operationsData, performanceData, maintenanceData, logData };
+  } catch (error) {
+    console.error("Error fetching trace data:", error);
+    // Return default empty arrays if there's an error
+    return {
+      operationsData: [],
+      performanceData: [],
+      maintenanceData: [],
+      logData: [],
+    };
+  } finally {
+    setLoading(false);
+  }
+};
 
-    try {
-      const [operationsResponse, performanceResponse, maintenanceResponse] = await Promise.all(queries.map(query =>
-        fetch(apiUrl, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(query),
-        })
-      ));
 
-      if (!operationsResponse.ok || !performanceResponse.ok || !maintenanceResponse.ok) {
-        throw new Error("Network response was not ok");
-      }
+  
+  
+  useEffect(() => {
+    fetchTraceData().then(({ operationsData, performanceData, maintenanceData, logData }) => {
+      if (operationsData.length > 0 || performanceData.length > 0 || maintenanceData.length > 0 || logData.length > 0) {
+        // Process operations data
+        const appsCount = new Set(logData.map(item => item.application_name)).size;
+        const usersSet = new Set(logData.map(item => item.app_user)).size;
+        // const usersSet = new Set(operationsData.flatMap(item => item.tags.filter(tag => tag.key === 'user').map(tag => tag.value)));
+        const modelsSet = new Set(operationsData.flatMap(item => item.tags.filter(tag => tag.key === 'model').map(tag => tag.value)));
+        const operationsCount = operationsData.length;
 
-      const [newOperationsData, newPerformanceData, newMaintenanceData] = await Promise.all([
-        operationsResponse.json(),
-        performanceResponse.json(),
-        maintenanceResponse.json(),
-      ]);
+        const totalAppCount = maintenanceData.length
 
-      setOperationsData(prevData => [...prevData, ...newOperationsData]);
-      setPerformanceData(prevData => [...prevData, ...newPerformanceData]);
-      setMaintenanceData(prevData => [...prevData, ...newMaintenanceData]);
-
-      const appsCount = new Set([...operationsData, ...newOperationsData].map(item => item.application_name)).size;
-      const usersSet = new Set([...operationsData, ...newOperationsData].flatMap(item => item.tags.filter(tag => tag.key === 'user').map(tag => tag.value)));
-      const modelsSet = new Set([...operationsData, ...newOperationsData].flatMap(item => item.tags.filter(tag => tag.key === 'model').map(tag => tag.value)));
-      const operationsCount = [...operationsData, ...newOperationsData].length;
-      const totalAppCount = [...maintenanceData, ...newMaintenanceData].length;
-
-      const latencies = [
-        ...performanceData, 
-        ...newPerformanceData.map(item => {
+        // Process performance data
+        const latencies = performanceData.map(item => {
           const startUs = item.start_us ? Number(item.start_us) : NaN;
           const endUs = item.end_us ? Number(item.end_us) : NaN;
-          if (isNaN(startUs) || isNaN(endUs)) return NaN;
+
+          if (isNaN(startUs) || isNaN(endUs)) {
+            console.warn(`Invalid start_us or end_us: start_us=${startUs}, end_us=${endUs}`);
+            return NaN;
+          }
           return (endUs - startUs) / 1000; // Latency in seconds
-        }).filter(latency => !isNaN(latency))
-      ];
+        }).filter(latency => !isNaN(latency));
 
-      const avgLatency = latencies.length > 0 ? latencies.reduce((sum, latency) => sum + latency, 0) / latencies.length : 0;
+        const avgLatency = latencies.length > 0 ? latencies.reduce((sum, latency) => sum + latency, 0) / latencies.length : 0;
 
-      setData({
-        apps: appsCount,
-        avgLatency,
-        users: usersSet.size,
-        operations: operationsCount,
-        models: modelsSet.size,
-        appCount: totalAppCount,
-      });
-
-      setLoading(false);
-      setLoadingMore(false);
-    } catch (error) {
-      console.error("Error fetching trace data:", error);
-      setLoading(false);
-      setLoadingMore(false);
-    }
-  };
-
-  useEffect(() => {
-    const loadInitialData = async () => {
-      await fetchTotalCounts();
-      fetchTraceData(500, 0); // Initial load of first 500 items
-    };
-
-    loadInitialData();
+        setData({
+          apps: appsCount,
+          avgLatency,
+          users: usersSet,
+          operations: operationsCount,
+          models: modelsSet.size,
+          appCount: totalAppCount,
+        });
+      } else {
+        setData(defaultData);
+      }
+    });
   }, []);
 
-  useEffect(() => {
-    if (operationsData.length < totalCounts.operations || performanceData.length < totalCounts.performance || maintenanceData.length < totalCounts.maintenance) {
-      if (!loadingMore) {
-        setLoadingMore(true);
-        fetchTraceData(500, operationsData.length);
-      }
-    }
-  }, [operationsData.length, performanceData.length, maintenanceData.length, totalCounts]);
-
-  console.log(operationsData.length, performanceData.length, maintenanceData.length, totalCounts);
   
 
   return (
     <Tile className="infrastructure-components">
       <div className="infrastructure-components-content">
-        <h5>Quick Summary</h5>
-        <div className="types">
-          {loading ? (
-            <>
-              <SkeletonPlaceholder className="type-placeholder" />
-              <SkeletonText width="70%" />
-              <SkeletonText width="50%" />
-            </>
-          ) : (
-            <>
-              <Tooltip className="button-tooltip" align="top" label={'Your Total No of Application Name'}>
-                <Button className="type" kind="ghost">
-                  <div className="title">
-                    <div className="indicator engines" />
-                    <span>Total No of Application Names</span>
-                  </div>
-                  <h2>
-                    <CountUp end={data.apps} duration={2.5} />
-                  </h2>
-                </Button>
-              </Tooltip>
-              <Tooltip className="button-tooltip" align="top" label={'Total Number of Users you have'}>
-                <Button className="type" kind="ghost">
-                  <div className="title">
-                    <div className="indicator buckets" />
-                    <span>Total No of User Names</span>
-                  </div>
-                  <h2>
-                    <CountUp end={data.users} duration={2.5} />
-                  </h2>
-                </Button>
-              </Tooltip>
-              <Tooltip className="button-tooltip" align="top" label={'Total Number of Models Used in'}>
-                <Button className="type" kind="ghost">
-                  <div className="title">
-                    <div className="indicator databases" />
-                    <span>Models used</span>
-                  </div>
-                  <h2>
-                    <CountUp end={data.models} duration={2.5} />
-                  </h2>
-                </Button>
-              </Tooltip>
-              <Tooltip className="button-tooltip" align="top" label={'Total Number of Applications executed throughout'}>
-                <Button className="type" kind="ghost">
-                  <div className="title">
-                    <div className="indicator catalogs" />
-                    <span>Total Applications Executed</span>
-                  </div>
-                  <h2>
-                    <CountUp end={data.appCount} duration={2.5} />
-                  </h2>
-                </Button>
-              </Tooltip>
-            </>
-          )}
+        <h5>
+          {/* AI applications <span className="count">({data.apps})</span> */}
+          Quick Summary (Last 7 days)
+        </h5>
+        {loading ? (
+          <>
+          <CodeSnippetSkeleton type="multi" />
+          <CodeSnippetSkeleton type="multi" />
+          <CodeSnippetSkeleton type="multi" />
+          </>
+        ) : (
+          <div className="types">
+          <Tooltip className="button-tooltip" align="top" label={'Your Total No of Application Name'}>
+            <Button className="type" kind="ghost">
+              <div className="title">
+                <div className="indicator engines" />
+                <span>Total No of Application Names</span>
+              </div>
+              <h2>{data.apps}</h2>
+              {/* <h2>{moment.duration(data.avgLatency).asSeconds().toFixed(1)} s</h2> */}
+            </Button>
+          </Tooltip>
+          <Tooltip className="button-tooltip" align="top" label={'Total Number of Users you have'}>
+            <Button className="type" kind="ghost">
+              <div className="title">
+                <div className="indicator buckets" />
+                <span>Total No of User Names</span>
+              </div>
+              <h2>{data.users}</h2>
+            </Button>
+          </Tooltip>
+          <Tooltip className="button-tooltip" align="top" label={'Total Number of Applications executed throughout'}>
+            <Button className="type" kind="ghost">
+              <div className="title">
+                <div className="indicator catalogs" />
+                <span>Total Applications Executed</span>
+              </div>
+              <h2>{formatCount(data.appCount)}</h2>
+              {/* <h2>{formatCount(data.operations)}</h2> */}
+            </Button>
+          </Tooltip>
+          <Tooltip className="button-tooltip" align="top" label={'Total Number of Models Used in'}>
+            <Button className="type" kind="ghost">
+              <div className="title">
+                <div className="indicator databases" />
+                <span>Models used</span>
+              </div>
+              <h2>{formatCount(data.models)}</h2>
+            </Button>
+          </Tooltip>
         </div>
+        )}
+        
       </div>
+      {/* <Button kind="ghost" className="bottom-link" href="#/traces">
+        <span>Go to application tracing</span>
+      </Button> */}
     </Tile>
   );
 };
