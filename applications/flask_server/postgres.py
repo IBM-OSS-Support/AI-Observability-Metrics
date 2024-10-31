@@ -6,6 +6,10 @@ import json
 import time
 import socket
 
+# auditing
+import requests
+import base64
+
 # Set up basic logging
 #logging.basicConfig(level=logging.CRITICAL)
 logging.basicConfig(level=logging.DEBUG)
@@ -38,7 +42,6 @@ def upload_to_postgres(message):
     conn = create_db_connection()
 
     topic_processing_functions = {
-        'auditing': process_auditing_message,
         'spans': process_spans,
         'metrics': process_metrics,
         'log_history': process_log_history,
@@ -46,7 +49,8 @@ def upload_to_postgres(message):
         'embedding':process_embedding,
         'user_satisfaction':process_user_satisfaction,
         'accuracy':process_accuracy,
-        'anthropic_metrics': process_anthropic_metrics
+        'anthropic_metrics': process_anthropic_metrics,
+        'graphsignallogs': process_graphsignallogs
     }
 
     app_name = json_object["application-name"]
@@ -258,6 +262,84 @@ def process_log_history(message,conn,json_object):
     cursor.close()
     conn.close()
 
+def process_graphsignallogs(message,conn,json_object):
+    print(json_object)
+    cursor = conn.cursor()
+    # Create a table if it does not exist
+    create_table_sql = """
+    CREATE TABLE IF NOT EXISTS log_history (
+            id SERIAL PRIMARY KEY,
+            log JSONB NULL,
+            status TEXT NULL,
+            finish_reason TEXT NULL, 
+            application_name TEXT,
+            app_user TEXT,
+            app_id TEXT UNIQUE,
+            timestamp TIMESTAMP
+    )
+    """
+    cursor.execute(create_table_sql)
+
+    # Get the current timestamp
+    current_timestamp = datetime.datetime.now()
+    logs = json_object.get("logs", None)
+    if logs is None:
+        return 
+    
+    findupload = False
+    status = "success"
+    for log in logs:
+        if "message" in log and "Upload" in log["message"]:
+        #    print("findupload=True")
+            findupload = True
+        
+        #if "level" in log:
+        #    print("tahsin log level: ", log["level"])
+
+        if "level" in log and log["level"] == "ERROR" and "message" in log and "exception" in log["message"]:
+        #    print("tahsin found error")
+            status = "user_abandoned"
+    
+    if status == "success" and findupload == False:
+        status = "incomplete"
+        #print("status=incomplete")
+
+    print("in process_graphsignallogs: status: ", status)
+    if status != "success":
+        #print("in process_graphsignallogs: status: ", status)
+        select_query = "SELECT 1 FROM log_history WHERE app_id = %s LIMIT 1;"
+        cursor.execute(select_query, (json_object.get("app_id", "invalid"),))
+        entry_exists = cursor.fetchone()
+        #print("entry_exists: ", entry_exists)
+        if entry_exists:
+            # Entry exists, update the status field
+            update_query = """
+                UPDATE log_history
+                SET status = %s, timestamp = %s
+                WHERE app_id = %s
+            """
+            cursor.execute(update_query, (status, current_timestamp, (json_object.get("application-name", "invalid"))))
+            #print("entry_exists executed: ", update_query)
+            #print(f"Entry with app_id {(json_object.get("application-name", "invalid")} has been updated.")
+        else:
+            # SQL command to insert the JSON data along with 'application-name', 'tag', and timestamp
+            insert_metric_sql = "INSERT INTO log_history (log, status, application_name, app_user, app_id, timestamp) VALUES (%s, %s, %s, %s, %s, %s)"
+            cursor.execute(
+                insert_metric_sql, 
+                (
+                    json.dumps(json_object),                               # Log is being inserted as a JSON object
+                    status,                                                # Assuming 'status' is defined elsewhere
+                    json_object.get("application-name", None),             # Handling "application_name"
+                    json_object.get("app-user", None),                     # Handling "app_user"
+                    json_object.get("application-name", None),             # Assuming "application-name" is also used as "app_id"
+                    current_timestamp                                      # Ensure current_timestamp is defined
+                )
+            )
+            #print("insert_metric_sql: ", insert_metric_sql)
+    conn.commit()
+    cursor.close()
+    conn.close()
+
 def process_metrics(message,conn,json_object):
     
     cursor = conn.cursor()
@@ -291,7 +373,7 @@ def process_metrics(message,conn,json_object):
         return json_new
     
     json_system_objects = get_system_objects(json_object["metrics"])
-    print(type(json_system_objects), type(json_object))
+    #print(type(json_system_objects), type(json_object))
 
     # SQL command to insert the JSON data along with 'application-name', 'tag', and timestamp
     insert_metric_sql = "INSERT INTO system (process_cpu_usage, process_memory, virtual_memory, node_memory_used, application_name, app_user, app_id, timestamp) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"
@@ -323,7 +405,7 @@ def process_metrics(message,conn,json_object):
 
     def get_usage_objects(data_obj):
         json_new = {"data":[]}
-        print("get usage objects")
+        #print("get usage objects")
         if isinstance(data_obj, list):
             for item in data_obj:
                 if "scope" in item and item["scope"] == "usage" and "name" in item:
@@ -488,6 +570,7 @@ def process_spans(message,conn,json_object):
     )
     """
     cursor.execute(create_table_sql)
+    status = "success"
     for span in json_object["spans"]:
         start_us = span.get("start_us", 0)
         end_us = span.get("end_us", 0)
@@ -498,12 +581,13 @@ def process_spans(message,conn,json_object):
                     op = tag["value"]
 
                     insert_metric_sql = "INSERT INTO operations (span_id, operation, exceptions, usage, config, payloads, tags, start_us, end_us, latency_ns, application_name, app_user, app_id, timestamp) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
+                    exceptions = span.get("exceptions", [])
                     cursor.execute(
                         insert_metric_sql, 
                         (
                             json.dumps(span.get("span_id", None)),         # Handle "span_id"
                             op,                                            # Operation (assuming 'op' is defined)
-                            json.dumps(span.get("exceptions", None)),      # Handle "exceptions"
+                            json.dumps(exceptions),      # Handle "exceptions"
                             json.dumps(span.get("usage", None)),           # Handle "usage"
                             json.dumps(span.get("config", None)),          # Handle "config"
                             json.dumps(span.get("payloads", None)),        # Handle "payloads"
@@ -517,10 +601,143 @@ def process_spans(message,conn,json_object):
                             current_timestamp                              # Ensure current_timestamp is defined
                         )
                     )
+                    if len(exceptions) > 0:
+                        status = "failure"
+
+    
+    
+    create_table_sql = """
+    CREATE TABLE IF NOT EXISTS log_history (
+            id SERIAL PRIMARY KEY,
+            log JSONB NULL,
+            status TEXT NULL,
+            finish_reason TEXT NULL, 
+            application_name TEXT,
+            app_user TEXT,
+            app_id TEXT UNIQUE,
+            timestamp TIMESTAMP
+    )
+    """
+    cursor.execute(create_table_sql)
+    
+    select_query = "SELECT 1 FROM log_history WHERE app_id = %s LIMIT 1;"
+    cursor.execute(select_query, (json_object.get("application-name", "invalid"),))
+    print("in process_spans: status: ", status)
+    insert_metric_sql = "INSERT INTO log_history (log, status, application_name, app_user, app_id, timestamp) VALUES (%s, %s, %s, %s, %s, %s)"
+    cursor.execute(
+        insert_metric_sql, 
+        (
+            json.dumps(json_object),                               # Log is being inserted as a JSON object
+            status,                                                # Assuming 'status' is defined elsewhere
+            json_object.get("application-name", None),             # Handling "application_name"
+            json_object.get("app-user", None),                     # Handling "app_user"
+            json_object.get("application-name", None),             # Assuming "application-name" is also used as "app_id"
+            current_timestamp                                      # Ensure current_timestamp is defined
+        )
+    )
+
+    create_table_sql = """
+    CREATE TABLE IF NOT EXISTS auditing (
+            id SERIAL PRIMARY KEY,
+            flagged BOOLEAN NULL,
+            categories JSONB NULL,
+            category_scores JSONB NULL,
+            application_name TEXT,
+            app_user TEXT,
+            app_id TEXT UNIQUE,
+            timestamp TIMESTAMP
+    )
+    """
+    cursor.execute(create_table_sql)
+    #print("tahsin testing calculate_safety_score")
+    #calculate_safety_score(json_object.get("app-user", None),json_object.get("application-name", None),"what is the longest beach in the world?")
+    #print("tahsin done testing calculate_safety_score")
+
+    # code to query moderation api
+    auditing_json = None
+    if "payloads" in json_span_first_object:
+        #print("inside payloads")
+        for payload in json_span_first_object["payloads"]:
+            #print("inside first_span")
+            if "name" in payload and payload["name"] == "input":
+                #print("tahsin inside input")
+                input = json.dumps(payload.get("content_base64", None))
+                decoded_bytes = base64.b64decode(input)
+                decoded_str = decoded_bytes.decode('utf-8')
+                auditing_json = calculate_safety_score(json_object.get("app-user", None),json_object.get("application-name", None),decoded_str)
+
+    if auditing_json is None: 
+        auditing_json = calculate_safety_score(json_object.get("app-user", None),json_object.get("application-name", None),None)
+                            # SQL command to insert the JSON data along with 'application-name', 'tag', and timestamp
+    insert_metric_sql = "INSERT INTO auditing (flagged, categories, category_scores, application_name, app_user, app_id, timestamp) VALUES (%s, %s, %s, %s, %s, %s, %s)"
+    cursor.execute(
+    insert_metric_sql, 
+        (
+        json.dumps(auditing_json.get("flagged", None)),           # Handle "flagged"
+        json.dumps(auditing_json.get("categories", None)),        # Handle "categories"
+        json.dumps(auditing_json.get("category_scores", None)),   # Handle "category_scores"
+        auditing_json.get("application-name", None),              # Handle "application-name"
+        auditing_json.get("app-user", None),                      # Handle "app-user"
+        auditing_json.get("application-name", None),              # Handle "app_id" (same as "application-name")
+        current_timestamp                                       # Ensure current_timestamp is defined
+        )
+    )
+
+
     conn.commit()
     cursor.close()
     conn.close()
 
+##### AUDITING
+OPENAI_API_KEY = "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"
+
+def get_moderation_response(data, url):
+    # Make the POST request
+    headers = {
+        "Content-Type": "application/json",
+        "Authorization": f"Bearer {OPENAI_API_KEY}"
+    }
+    response = requests.post(url, headers=headers, json=data)
+
+    json_obj = None
+    # Check if the request was successful (status code 200)
+    if response.status_code == 200:
+        print("Moderation successful.")
+        print("Response:")
+        print(response.json())
+        json_obj = response.json()
+    else:
+        print("Moderation failed. Status code:", response.status_code)
+    return json_obj
+
+def parse_moderation_response(json_obj):
+    if json_obj is None:
+        return None
+    
+    if 'results' not in json_obj or len(json_obj['results']) == 0:
+        return None
+    
+    return json_obj['results'][0]
+
+def calculate_safety_score(user, app_name, question):
+    # Define the data payload
+    #print("calling calculate_safety_score: ", question)
+    result_info = {}
+    if question is not None:
+        data = {
+            "input": question
+        }
+        response_json = get_moderation_response(data, "https://api.openai.com/v1/moderations")
+        result_info = parse_moderation_response(response_json)
+    result_info["kafka-topic"] = "auditing"
+    result_info["app-user"] = user
+    result_info["application-name"] = app_name
+
+    if question is None:
+        result_info["flagged"] = False
+    return result_info
+
+'''
 def process_auditing_message(message,conn,json_object):
     cursor = conn.cursor()
     # Create a table if it does not exist
@@ -560,7 +777,7 @@ def process_auditing_message(message,conn,json_object):
     conn.commit()
     cursor.close()
     conn.close()
-
+'''
 def create_db_connection():
     try:
         # Get database connection parameters from environment variables

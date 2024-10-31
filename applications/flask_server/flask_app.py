@@ -33,13 +33,21 @@ def extract_application_user(data_obj):
                         return tag.get('value')
     return None
 
+def extract_application_user_from_app_name(data_obj):
+    app_name = extract_application_name(data_obj)
+    splits = app_name.split('_')
+    if len(splits) > 0:
+        return splits[0]
+
+    return "unknown"
+
 @app.route('/additional_metrics', methods=['POST'])
 def upload_additional():
     try:
         logging.debug("Received request: /additional_metrics")
         data = request.get_json()
         logging.debug("application-name: %s", data["application-name"])
-        postgres.upload_to_postgres_with_message(data)
+        #postgres.upload_to_postgres_with_message(data)
         return jsonify({"message": "additional metrics JSON received successfully"}), 200
     except Exception as e:
         logging.exception(f'Error processing request: {str(e)}')
@@ -71,6 +79,9 @@ def upload_through_rest_spans():
             "application-name": extract_application_name(jdata),
             "spans":request.get_json()
         }
+        file_path = 'spans.json'
+        with open(file_path, 'w') as file:
+            json.dump(data, file, indent=4)
         logging.debug("application-name: %s", data["application-name"])
         postgres.upload_to_postgres_with_message(data)
         return jsonify({"message": "spans JSON received successfully"}), 200
@@ -93,6 +104,9 @@ def upload_through_rest_metrics():
             "metrics":jdata
         }
         logging.debug("application-name: %s", data["application-name"])
+        file_path = 'metrics.json'
+        with open(file_path, 'w') as file:
+            json.dump(data, file, indent=4)
         #with open("application_id", "r") as file:
         #    content = file.read()
         #data["application-id"] = content
@@ -103,6 +117,29 @@ def upload_through_rest_metrics():
         #    json.dump(data, file)
         postgres.upload_to_postgres_with_message(data)
         return jsonify({"message": "metrics JSON received successfully"}), 200
+    except Exception as e:
+        logging.exception(f'Error processing request: {str(e)}')
+        return f'Error: {str(e)}', 500
+
+@app.route('/api/v1/logs/', methods=['POST'])
+def upload_through_rest_logs():
+    
+    try:
+        print("in /api/v1/logs/")
+        logging.debug("Received request: /api/v1/logs/")
+        jdata = request.get_json()
+        data = {
+            "kafka-topic":"graphsignallogs",
+            "app-user":extract_application_user_from_app_name(jdata),
+            "application-name": extract_application_name(jdata),
+            "logs":request.get_json()
+        }
+        file_path = 'logs.json'
+        with open(file_path, 'w') as file:
+            json.dump(data, file, indent=4)
+        logging.debug("application-name: %s", data["application-name"])
+        postgres.upload_to_postgres_with_message(data)
+        return jsonify({"message": "spans JSON received successfully"}), 200
     except Exception as e:
         logging.exception(f'Error processing request: {str(e)}')
         return f'Error: {str(e)}', 500

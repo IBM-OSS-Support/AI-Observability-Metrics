@@ -1,0 +1,404 @@
+{
+    "kafka-topic": "metrics",
+    "app-user": "tahsin61",
+    "application-name": "tahsin61_tahsinapp_edeff66165b1441c",
+    "token-cost": 0,
+    "metrics": [
+        {
+            "scope": "performance",
+            "name": "latency",
+            "tags": [
+                {
+                    "key": "deployment",
+                    "value": "tahsin61_tahsinapp_edeff66165b1441c"
+                },
+                {
+                    "key": "operation",
+                    "value": "openai.chat.completions.create"
+                },
+                {
+                    "key": "hostname",
+                    "value": "Mds-MacBook-Pro.local"
+                },
+                {
+                    "key": "user",
+                    "value": "tahsin61"
+                },
+                {
+                    "key": "chain_id",
+                    "value": "81cd1f84-2323-4d10-8b0d-391a22d37609"
+                },
+                {
+                    "key": "model_type",
+                    "value": "chat"
+                },
+                {
+                    "key": "library",
+                    "value": "openai"
+                },
+                {
+                    "key": "api_provider",
+                    "value": "openai"
+                },
+                {
+                    "key": "endpoint",
+                    "value": "https://api.openai.com/v1/chat/completions"
+                },
+                {
+                    "key": "model",
+                    "value": "gpt-3.5-turbo"
+                }
+            ],
+            "type": "histogram",
+            "is_time": true,
+            "is_size": false,
+            "histogram": {
+                "bins": [
+                    160000000
+                ],
+                "counts": [
+                    1
+                ]
+            },
+            "update_ts": 1729193037
+        },
+        {
+            "scope": "performance",
+            "name": "call_count",
+            "tags": [
+                {
+                    "key": "deployment",
+                    "value": "tahsin61_tahsinapp_edeff66165b1441c"
+                },
+                {
+                    "key": "operation",
+                    "value": "openai.chat.completions.create"
+                },
+                {
+                    "key": "hostname",
+                    "value": "Mds-MacBook-Pro.local"
+                },
+                {
+                    "key": "user",
+                    "value": "tahsin61"
+                },
+                {
+                    "key": "chain_id",
+                    "value": "81cd1f84-2323-4d10-8b0d-391a22d37609"
+                },
+                {
+                    "key": "model_type",
+                    "value": "chat"
+                },
+                {
+                    "key": "library",
+                    "value": "openai"
+                },
+                {
+                    "key": "api_provider",
+                    "value": "openai"
+                },
+                {
+                    "key": "endpoint",
+                    "value": "https://api.openai.com/v1/chat/completions"
+                },
+                {
+                    "key": "model",
+                    "value": "gpt-3.5-turbo"
+                }
+            ],
+            "type": "counter",
+            "is_time": false,
+            "is_size": false,
+            "counter": 1,
+            "update_ts": 1729193037
+        },
+        {
+            "scope": "performance",
+            "name": "exception_count",
+            "tags": [
+                {
+                    "key": "deployment",
+                    "value": "tahsin61_tahsinapp_edeff66165b1441c"
+                },
+                {
+                    "key": "operation",
+                    "value": "openai.chat.completions.create"
+                },
+                {
+                    "key": "hostname",
+                    "value": "Mds-MacBook-Pro.local"
+                },
+                {
+                    "key": "user",
+                    "value": "tahsin61"
+                },
+                {
+                    "key": "chain_id",
+                    "value": "81cd1f84-2323-4d10-8b0d-391a22d37609"
+                },
+                {
+                    "key": "model_type",
+                    "value": "chat"
+                },
+                {
+                    "key": "library",
+                    "value": "openai"
+                },
+                {
+                    "key": "api_provider",
+                    "value": "openai"
+                },
+                {
+                    "key": "endpoint",
+                    "value": "https://api.openai.com/v1/chat/completions"
+                },
+                {
+                    "key": "model",
+                    "value": "gpt-3.5-turbo"
+                }
+            ],
+            "type": "counter",
+            "is_time": false,
+            "is_size": false,
+            "counter": 1,
+            "update_ts": 1729193037
+        },
+        {
+            "scope": "performance",
+            "name": "latency",
+            "tags": [
+                {
+                    "key": "deployment",
+                    "value": "tahsin61_tahsinapp_edeff66165b1441c"
+                },
+                {
+                    "key": "operation",
+                    "value": "langchain.chat_models.openai.ChatOpenAI"
+                },
+                {
+                    "key": "hostname",
+                    "value": "Mds-MacBook-Pro.local"
+                },
+                {
+                    "key": "user",
+                    "value": "tahsin61"
+                },
+                {
+                    "key": "chain_id",
+                    "value": "81cd1f84-2323-4d10-8b0d-391a22d37609"
+                },
+                {
+                    "key": "library",
+                    "value": "langchain"
+                },
+                {
+                    "key": "model_type",
+                    "value": "chat"
+                }
+            ],
+            "type": "histogram",
+            "is_time": true,
+            "is_size": false,
+            "histogram": {
+                "bins": [
+                    160000000
+                ],
+                "counts": [
+                    1
+                ]
+            },
+            "update_ts": 1729193037
+        },
+        {
+            "scope": "performance",
+            "name": "call_count",
+            "tags": [
+                {
+                    "key": "deployment",
+                    "value": "tahsin61_tahsinapp_edeff66165b1441c"
+                },
+                {
+                    "key": "operation",
+                    "value": "langchain.chat_models.openai.ChatOpenAI"
+                },
+                {
+                    "key": "hostname",
+                    "value": "Mds-MacBook-Pro.local"
+                },
+                {
+                    "key": "user",
+                    "value": "tahsin61"
+                },
+                {
+                    "key": "chain_id",
+                    "value": "81cd1f84-2323-4d10-8b0d-391a22d37609"
+                },
+                {
+                    "key": "library",
+                    "value": "langchain"
+                },
+                {
+                    "key": "model_type",
+                    "value": "chat"
+                }
+            ],
+            "type": "counter",
+            "is_time": false,
+            "is_size": false,
+            "counter": 1,
+            "update_ts": 1729193037
+        },
+        {
+            "scope": "performance",
+            "name": "exception_count",
+            "tags": [
+                {
+                    "key": "deployment",
+                    "value": "tahsin61_tahsinapp_edeff66165b1441c"
+                },
+                {
+                    "key": "operation",
+                    "value": "langchain.chat_models.openai.ChatOpenAI"
+                },
+                {
+                    "key": "hostname",
+                    "value": "Mds-MacBook-Pro.local"
+                },
+                {
+                    "key": "user",
+                    "value": "tahsin61"
+                },
+                {
+                    "key": "chain_id",
+                    "value": "81cd1f84-2323-4d10-8b0d-391a22d37609"
+                },
+                {
+                    "key": "library",
+                    "value": "langchain"
+                },
+                {
+                    "key": "model_type",
+                    "value": "chat"
+                }
+            ],
+            "type": "counter",
+            "is_time": false,
+            "is_size": false,
+            "counter": 1,
+            "update_ts": 1729193037
+        },
+        {
+            "scope": "performance",
+            "name": "latency",
+            "tags": [
+                {
+                    "key": "deployment",
+                    "value": "tahsin61_tahsinapp_edeff66165b1441c"
+                },
+                {
+                    "key": "operation",
+                    "value": "langchain.schema.runnable.RunnableSequence"
+                },
+                {
+                    "key": "hostname",
+                    "value": "Mds-MacBook-Pro.local"
+                },
+                {
+                    "key": "user",
+                    "value": "tahsin61"
+                },
+                {
+                    "key": "chain_id",
+                    "value": "81cd1f84-2323-4d10-8b0d-391a22d37609"
+                },
+                {
+                    "key": "library",
+                    "value": "langchain"
+                }
+            ],
+            "type": "histogram",
+            "is_time": true,
+            "is_size": false,
+            "histogram": {
+                "bins": [
+                    170000000
+                ],
+                "counts": [
+                    1
+                ]
+            },
+            "update_ts": 1729193037
+        },
+        {
+            "scope": "performance",
+            "name": "call_count",
+            "tags": [
+                {
+                    "key": "deployment",
+                    "value": "tahsin61_tahsinapp_edeff66165b1441c"
+                },
+                {
+                    "key": "operation",
+                    "value": "langchain.schema.runnable.RunnableSequence"
+                },
+                {
+                    "key": "hostname",
+                    "value": "Mds-MacBook-Pro.local"
+                },
+                {
+                    "key": "user",
+                    "value": "tahsin61"
+                },
+                {
+                    "key": "chain_id",
+                    "value": "81cd1f84-2323-4d10-8b0d-391a22d37609"
+                },
+                {
+                    "key": "library",
+                    "value": "langchain"
+                }
+            ],
+            "type": "counter",
+            "is_time": false,
+            "is_size": false,
+            "counter": 1,
+            "update_ts": 1729193037
+        },
+        {
+            "scope": "performance",
+            "name": "exception_count",
+            "tags": [
+                {
+                    "key": "deployment",
+                    "value": "tahsin61_tahsinapp_edeff66165b1441c"
+                },
+                {
+                    "key": "operation",
+                    "value": "langchain.schema.runnable.RunnableSequence"
+                },
+                {
+                    "key": "hostname",
+                    "value": "Mds-MacBook-Pro.local"
+                },
+                {
+                    "key": "user",
+                    "value": "tahsin61"
+                },
+                {
+                    "key": "chain_id",
+                    "value": "81cd1f84-2323-4d10-8b0d-391a22d37609"
+                },
+                {
+                    "key": "library",
+                    "value": "langchain"
+                }
+            ],
+            "type": "counter",
+            "is_time": false,
+            "is_size": false,
+            "counter": 1,
+            "update_ts": 1729193037
+        }
+    ]
+}

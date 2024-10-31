@@ -1,0 +1,257 @@
+{
+    "kafka-topic": "spans",
+    "app-user": "tahsin61",
+    "application-name": "tahsin61_tahsinapp_edeff66165b1441c",
+    "spans": [
+        {
+            "span_id": "a4eee15eb054",
+            "root_span_id": "609471efed44",
+            "parent_span_id": "60c7ce0874d8",
+            "start_us": 1729193036990343,
+            "end_us": 1729193037155140,
+            "latency_ns": 164796834,
+            "tags": [
+                {
+                    "key": "deployment",
+                    "value": "tahsin61_tahsinapp_edeff66165b1441c"
+                },
+                {
+                    "key": "operation",
+                    "value": "openai.chat.completions.create"
+                },
+                {
+                    "key": "hostname",
+                    "value": "Mds-MacBook-Pro.local"
+                },
+                {
+                    "key": "user",
+                    "value": "tahsin61"
+                },
+                {
+                    "key": "chain_id",
+                    "value": "81cd1f84-2323-4d10-8b0d-391a22d37609"
+                },
+                {
+                    "key": "model_type",
+                    "value": "chat"
+                },
+                {
+                    "key": "library",
+                    "value": "openai"
+                },
+                {
+                    "key": "api_provider",
+                    "value": "openai"
+                },
+                {
+                    "key": "endpoint",
+                    "value": "https://api.openai.com/v1/chat/completions"
+                },
+                {
+                    "key": "model",
+                    "value": "gpt-3.5-turbo"
+                }
+            ],
+            "exceptions": [
+                {
+                    "exc_type": "AuthenticationError",
+                    "message": "Error code: 401 - {'error': {'message': 'Incorrect API key provided: sk-JluNu****************************************VSdd. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'param': None, 'code': 'invalid_api_key'}}",
+                    "stack_trace": "  File \"/opt/homebrew/lib/python3.11/site-packages/graphsignal/recorders/instrumentation.py\", line 135, in wrapper\n    ret = func(*args, **kwargs)\n          ^^^^^^^^^^^^^^^^^^^^^\n  File \"/opt/homebrew/lib/python3.11/site-packages/openai/_utils/_utils.py\", line 275, in wrapper\n    return func(*args, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^\n  File \"/opt/homebrew/lib/python3.11/site-packages/openai/resources/chat/completions.py\", line 667, in create\n    return self._post(\n           ^^^^^^^^^^^\n  File \"/opt/homebrew/lib/python3.11/site-packages/openai/_base_client.py\", line 1208, in post\n    return cast(ResponseT, self.request(cast_to, opts, stream=stream, stream_cls=stream_cls))\n                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/opt/homebrew/lib/python3.11/site-packages/openai/_base_client.py\", line 897, in request\n    return self._request(\n           ^^^^^^^^^^^^^^\n  File \"/opt/homebrew/lib/python3.11/site-packages/openai/_base_client.py\", line 988, in _request\n    raise self._make_status_error_from_response(err.response) from None\n"
+                }
+            ],
+            "payloads": [],
+            "usage": [],
+            "config": [
+                {
+                    "key": "graphsignal.library.version",
+                    "value": "0.15.1"
+                },
+                {
+                    "key": "os.name",
+                    "value": "Darwin"
+                },
+                {
+                    "key": "os.version",
+                    "value": "23.6.0"
+                },
+                {
+                    "key": "runtime.name",
+                    "value": "Python"
+                },
+                {
+                    "key": "runtime.version",
+                    "value": "3.11.4"
+                },
+                {
+                    "key": "openai.library.version",
+                    "value": "1.14.0"
+                },
+                {
+                    "key": "langchain.library.version",
+                    "value": "0.1.11"
+                }
+            ]
+        },
+        {
+            "span_id": "60c7ce0874d8",
+            "root_span_id": "609471efed44",
+            "parent_span_id": "609471efed44",
+            "start_us": 1729193036990162,
+            "end_us": 1729193037158505,
+            "latency_ns": 168342417,
+            "tags": [
+                {
+                    "key": "deployment",
+                    "value": "tahsin61_tahsinapp_edeff66165b1441c"
+                },
+                {
+                    "key": "operation",
+                    "value": "langchain.chat_models.openai.ChatOpenAI"
+                },
+                {
+                    "key": "hostname",
+                    "value": "Mds-MacBook-Pro.local"
+                },
+                {
+                    "key": "user",
+                    "value": "tahsin61"
+                },
+                {
+                    "key": "chain_id",
+                    "value": "81cd1f84-2323-4d10-8b0d-391a22d37609"
+                },
+                {
+                    "key": "library",
+                    "value": "langchain"
+                },
+                {
+                    "key": "model_type",
+                    "value": "chat"
+                }
+            ],
+            "exceptions": [
+                {
+                    "exc_type": "AuthenticationError",
+                    "message": "Error code: 401 - {'error': {'message': 'Incorrect API key provided: sk-JluNu****************************************VSdd. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'param': None, 'code': 'invalid_api_key'}}",
+                    "stack_trace": "  File \"/opt/homebrew/lib/python3.11/site-packages/langchain_core/language_models/chat_models.py\", line 424, in generate\n    self._generate_with_cache(\n  File \"/opt/homebrew/lib/python3.11/site-packages/langchain_core/language_models/chat_models.py\", line 608, in _generate_with_cache\n    result = self._generate(\n             ^^^^^^^^^^^^^^^\n  File \"/opt/homebrew/lib/python3.11/site-packages/langchain_openai/chat_models/base.py\", line 462, in _generate\n    response = self.client.create(messages=message_dicts, **params)\n               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/opt/homebrew/lib/python3.11/site-packages/graphsignal/recorders/instrumentation.py\", line 153, in wrapper\n    raise exc\n  File \"/opt/homebrew/lib/python3.11/site-packages/graphsignal/recorders/instrumentation.py\", line 135, in wrapper\n    ret = func(*args, **kwargs)\n          ^^^^^^^^^^^^^^^^^^^^^\n  File \"/opt/homebrew/lib/python3.11/site-packages/openai/_utils/_utils.py\", line 275, in wrapper\n    return func(*args, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^\n  File \"/opt/homebrew/lib/python3.11/site-packages/openai/resources/chat/completions.py\", line 667, in create\n    return self._post(\n           ^^^^^^^^^^^\n  File \"/opt/homebrew/lib/python3.11/site-packages/openai/_base_client.py\", line 1208, in post\n    return cast(ResponseT, self.request(cast_to, opts, stream=stream, stream_cls=stream_cls))\n                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/opt/homebrew/lib/python3.11/site-packages/openai/_base_client.py\", line 897, in request\n    return self._request(\n           ^^^^^^^^^^^^^^\n  File \"/opt/homebrew/lib/python3.11/site-packages/openai/_base_client.py\", line 988, in _request\n    raise self._make_status_error_from_response(err.response) from None\n"
+                }
+            ],
+            "payloads": [
+                {
+                    "name": "input",
+                    "content_type": "application/json",
+                    "content_base64": "eyJtZXNzYWdlcyI6IFt7ImNvbnRlbnQiOiAiWW91J3JlIGEgdmVyeSBrbm93bGVkZ2VhYmxlIGhpc3RvcmlhbiB3aG8gcHJvdmlkZXMgYWNjdXJhdGUgYW5kIGVsb3F1ZW50IGFuc3dlcnMgdG8gaGlzdG9yaWNhbCBxdWVzdGlvbnMuIn0sIHsiY29udGVudCI6ICJtZXNzYWdlcz1bU3lzdGVtTWVzc2FnZShjb250ZW50PVwiWW91J3JlIGEgdmVyeSBrbm93bGVkZ2VhYmxlIGhpc3RvcmlhbiB3aG8gcHJvdmlkZXMgYWNjdXJhdGUgYW5kIGVsb3F1ZW50IGFuc3dlcnMgdG8gaGlzdG9yaWNhbCBxdWVzdGlvbnMuXCIpLCBIdW1hbk1lc3NhZ2UoY29udGVudD0nR2l2ZSBtZSBhIHZlcnkgbG9uZyBhbnN3ZXIgb24gaG93IGNhcnMgYXJlIG1hZGUuJyldIn1dfQ=="
+                }
+            ],
+            "usage": [],
+            "config": [
+                {
+                    "key": "graphsignal.library.version",
+                    "value": "0.15.1"
+                },
+                {
+                    "key": "os.name",
+                    "value": "Darwin"
+                },
+                {
+                    "key": "os.version",
+                    "value": "23.6.0"
+                },
+                {
+                    "key": "runtime.name",
+                    "value": "Python"
+                },
+                {
+                    "key": "runtime.version",
+                    "value": "3.11.4"
+                },
+                {
+                    "key": "openai.library.version",
+                    "value": "1.14.0"
+                },
+                {
+                    "key": "langchain.library.version",
+                    "value": "0.1.11"
+                }
+            ]
+        },
+        {
+            "span_id": "609471efed44",
+            "root_span_id": "609471efed44",
+            "start_us": 1729193036985604,
+            "end_us": 1729193037159930,
+            "latency_ns": 174325958,
+            "tags": [
+                {
+                    "key": "deployment",
+                    "value": "tahsin61_tahsinapp_edeff66165b1441c"
+                },
+                {
+                    "key": "operation",
+                    "value": "langchain.schema.runnable.RunnableSequence"
+                },
+                {
+                    "key": "hostname",
+                    "value": "Mds-MacBook-Pro.local"
+                },
+                {
+                    "key": "user",
+                    "value": "tahsin61"
+                },
+                {
+                    "key": "chain_id",
+                    "value": "81cd1f84-2323-4d10-8b0d-391a22d37609"
+                },
+                {
+                    "key": "library",
+                    "value": "langchain"
+                }
+            ],
+            "exceptions": [
+                {
+                    "exc_type": "AuthenticationError",
+                    "message": "Error code: 401 - {'error': {'message': 'Incorrect API key provided: sk-JluNu****************************************VSdd. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'param': None, 'code': 'invalid_api_key'}}",
+                    "stack_trace": "  File \"/opt/homebrew/lib/python3.11/site-packages/langchain_core/runnables/base.py\", line 1527, in _transform_stream_with_config\n    chunk: Output = context.run(next, iterator)  # type: ignore\n                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/opt/homebrew/lib/python3.11/site-packages/langchain_core/runnables/base.py\", line 2411, in _transform\n    for output in final_pipeline:\n  File \"/opt/homebrew/lib/python3.11/site-packages/langchain_core/runnables/base.py\", line 1068, in transform\n    yield from self.stream(final, config, **kwargs)\n  File \"/opt/homebrew/lib/python3.11/site-packages/langchain_core/runnables/base.py\", line 577, in stream\n    yield self.invoke(input, config, **kwargs)\n          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/opt/homebrew/lib/python3.11/site-packages/langchain/chains/base.py\", line 163, in invoke\n    raise e\n  File \"/opt/homebrew/lib/python3.11/site-packages/langchain/chains/base.py\", line 153, in invoke\n    self._call(inputs, run_manager=run_manager)\n  File \"/opt/homebrew/lib/python3.11/site-packages/langchain/chains/llm.py\", line 103, in _call\n    response = self.generate([inputs], run_manager=run_manager)\n               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/opt/homebrew/lib/python3.11/site-packages/langchain/chains/llm.py\", line 115, in generate\n    return self.llm.generate_prompt(\n           ^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/opt/homebrew/lib/python3.11/site-packages/langchain_core/language_models/chat_models.py\", line 571, in generate_prompt\n    return self.generate(prompt_messages, stop=stop, callbacks=callbacks, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/opt/homebrew/lib/python3.11/site-packages/langchain_core/language_models/chat_models.py\", line 434, in generate\n    raise e\n  File \"/opt/homebrew/lib/python3.11/site-packages/langchain_core/language_models/chat_models.py\", line 424, in generate\n    self._generate_with_cache(\n  File \"/opt/homebrew/lib/python3.11/site-packages/langchain_core/language_models/chat_models.py\", line 608, in _generate_with_cache\n    result = self._generate(\n             ^^^^^^^^^^^^^^^\n  File \"/opt/homebrew/lib/python3.11/site-packages/langchain_openai/chat_models/base.py\", line 462, in _generate\n    response = self.client.create(messages=message_dicts, **params)\n               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/opt/homebrew/lib/python3.11/site-packages/graphsignal/recorders/instrumentation.py\", line 153, in wrapper\n    raise exc\n  File \"/opt/homebrew/lib/python3.11/site-packages/graphsignal/recorders/instrumentation.py\", line 135, in wrapper\n    ret = func(*args, **kwargs)\n          ^^^^^^^^^^^^^^^^^^^^^\n  File \"/opt/homebrew/lib/python3.11/site-packages/openai/_utils/_utils.py\", line 275, in wrapper\n    return func(*args, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^\n  File \"/opt/homebrew/lib/python3.11/site-packages/openai/resources/chat/completions.py\", line 667, in create\n    return self._post(\n           ^^^^^^^^^^^\n  File \"/opt/homebrew/lib/python3.11/site-packages/openai/_base_client.py\", line 1208, in post\n    return cast(ResponseT, self.request(cast_to, opts, stream=stream, stream_cls=stream_cls))\n                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/opt/homebrew/lib/python3.11/site-packages/openai/_base_client.py\", line 897, in request\n    return self._request(\n           ^^^^^^^^^^^^^^\n  File \"/opt/homebrew/lib/python3.11/site-packages/openai/_base_client.py\", line 988, in _request\n    raise self._make_status_error_from_response(err.response) from None\n"
+                }
+            ],
+            "payloads": [
+                {
+                    "name": "inputs",
+                    "content_type": "application/json",
+                    "content_base64": "eyJpbnB1dCI6ICIifQ=="
+                }
+            ],
+            "usage": [],
+            "config": [
+                {
+                    "key": "graphsignal.library.version",
+                    "value": "0.15.1"
+                },
+                {
+                    "key": "os.name",
+                    "value": "Darwin"
+                },
+                {
+                    "key": "os.version",
+                    "value": "23.6.0"
+                },
+                {
+                    "key": "runtime.name",
+                    "value": "Python"
+                },
+                {
+                    "key": "runtime.version",
+                    "value": "3.11.4"
+                },
+                {
+                    "key": "openai.library.version",
+                    "value": "1.14.0"
+                },
+                {
+                    "key": "langchain.library.version",
+                    "value": "0.1.11"
+                }
+            ]
+        }
+    ]
+}
