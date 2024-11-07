@@ -118,6 +118,8 @@ const CostGraph = forwardRef(({ selectedItem, selectedUser, startDate, endDate }
   };
 
   const costGraphData = getCostGraphData(messageFromServerCost, startDate, endDate);
+  console.log('costGraphData =', costGraphData);
+  
 
   
 
