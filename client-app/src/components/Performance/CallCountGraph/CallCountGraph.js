@@ -59,15 +59,11 @@ const CallCountGraph = forwardRef(({ selectedItem, selectedUser, startDate, endD
     } catch (error) {
         console.error("Error fetching data:", error);
     } finally {
-        if (Array.isArray(responseData) && responseData.length > 0) {
-            setLoading(false); // Stop loading if responseData is an array and has elements
-        } else {
-            setLoading(false); // Stop loading in case of empty data or error
-        }
+        setLoading(false); // Stop loading in all cases
     }
 
     return defaultNumberofDays;
-};
+  };
 
 
   useEffect(() => {
@@ -77,38 +73,31 @@ const CallCountGraph = forwardRef(({ selectedItem, selectedUser, startDate, endD
   const getCallCountDataInside = (apps, startDate, endDate, selectedItem, selectedUser) => {
     let result = [];
 
+    // Ensure startDate and endDate are valid dates
+    const start = startDate ? new Date(startDate) : null;
+    const end = endDate ? new Date(endDate) : null;
+
     for (const appId in apps) {
       const app = apps[appId];
+      
       const convertUTCToIST = (utcDateString) => {
         const utcDate = new Date(utcDateString);
         const istOffset = 5.5 * 60 * 60 * 1000; // IST is UTC+5:30
-        return new Date(utcDate.getTime() + istOffset); // Returns a Date object in IST
+        return new Date(utcDate.getTime() + istOffset);
       };
 
       const timestamp = convertUTCToIST(app.timestamp);
-      let callCount = app.data.call_count.counter;
+      let callCount = app.data?.call_count?.counter || 0;
 
-      if (Array.isArray(callCount)) {
-        callCount = callCount > 0 ? callCount / 100000000 : 0;
-      } else if (typeof callCount === 'number') {
-        callCount = callCount;
-      }
-
-      
-      
-
-      if (timestamp >= startDate && timestamp <= endDate) {
-        result.push({
-          group: 'Dataset 1',
-          key: app.timestamp,
-          value: callCount,
-        });
-      } else if (!startDate && !endDate) {
-        result.push({
-          group: 'Dataset 1',
-          key: app.timestamp,
-          value: callCount,
-        });
+      if (typeof callCount === 'number') {
+        // Check if the timestamp is within the start and end date range
+        if ((!start || timestamp >= start) && (!end || timestamp <= end)) {
+          result.push({
+            group: 'Dataset 1',
+            key: app.timestamp,
+            value: callCount,
+          });
+        }
       }
     }
 
@@ -116,7 +105,13 @@ const CallCountGraph = forwardRef(({ selectedItem, selectedUser, startDate, endD
   };
 
   const { state } = useStoreContext();
-  const CallCountDataInside = getCallCountDataInside(messageFromServerCallCount, startDate, endDate, selectedItem, selectedUser);
+  const CallCountDataInside = getCallCountDataInside(
+    messageFromServerCallCount,
+    startDate,
+    endDate,
+    selectedItem,
+    selectedUser
+  );
   const call_count_number = CallCountDataInside.length;
 
   const formatDate = (date) => moment(date).format('YYYY-MM-DD');
@@ -124,12 +119,14 @@ const CallCountGraph = forwardRef(({ selectedItem, selectedUser, startDate, endD
   const endDateFormatted = endDate ? formatDate(endDate) : '';
   
   const callCountOptions = {
-    // title: `Total Call Count of ${selectedUser || 'all user'}'s ${selectedItem || 'all applications'}: ${call_count_number} in ${startDateFormatted} to ${endDateFormatted} these days`,
     title: '',
     data: {
       loading: loading
     },
   };
+
+  console.log("startDate, endDate", startDate, endDate);
+  console.log('CallCountDataInside =', CallCountDataInside);
   
 
   return (

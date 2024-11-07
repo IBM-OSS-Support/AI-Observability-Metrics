@@ -11,9 +11,7 @@
  ****************************************************************************** */
 import React, { forwardRef, useEffect, useImperativeHandle, useState } from "react";
 import CustomLineChart from "../../common/CustomLineChart";
-import { latencyOptions } from "../constants";
 import { useStoreContext } from "../../../store";
-import { getIntervals, getLatencyData } from "../helper";
 import moment from "moment";
 import NoData from "../../common/NoData/NoData";
 
@@ -41,6 +39,7 @@ const LatencyGraph = forwardRef(({ selectedItem, selectedUser, startDate, endDat
       query += ` WHERE application_name = '${selectedItem}' AND app_user = '${selectedUser}'`;
     }
 
+    let responseData;
     try {
       const apiUrl = process.env.REACT_APP_BACKEND_API_URL;
       const response = await fetch(apiUrl, {
@@ -55,16 +54,12 @@ const LatencyGraph = forwardRef(({ selectedItem, selectedUser, startDate, endDat
         throw new Error("Failed to fetch data");
       }
 
-      var responseData = await response.json();
-      setMessageFromServerLatency(responseData); // Assuming the data is in the correct structure
+      responseData = await response.json();
+      setMessageFromServerLatency(responseData);
     } catch (error) {
       console.error("Error fetching data:", error);
-    }finally {
-      if (Array.isArray(responseData) && responseData.length > 0) {
-        setLoading(false); // Stop loading
-      }else {
-        setLoading(false); // Stop loading in case of empty data or error
-    }
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -74,31 +69,25 @@ const LatencyGraph = forwardRef(({ selectedItem, selectedUser, startDate, endDat
 
   const getLatencyDataInside = (apps, startDate, endDate) => {
     const result = [];
+    const start = startDate ? new Date(startDate) : null;
+    const end = endDate ? new Date(endDate) : null;
 
     for (const appId in apps) {
       const app = apps[appId];
       const convertUTCToIST = (utcDateString) => {
         const utcDate = new Date(utcDateString);
-        const istOffset = 5.5 * 60 * 60 * 1000; // IST is UTC+5:30
-        return new Date(utcDate.getTime() + istOffset); // Returns a Date object in IST
+        const istOffset = 5.5 * 60 * 60 * 1000;
+        return new Date(utcDate.getTime() + istOffset);
       };
 
       const timestamp = convertUTCToIST(app.timestamp);
+      let latency = app.data?.latency?.histogram?.bins || 0;
 
-      let latency = app.data.latency.histogram.bins;
-      if (Array.isArray(app.data.latency.histogram.bins)) {
-        latency = latency > 0 ? latency / 100000000 : 0;
-      } else if (typeof latency === 'number') {
-        latency = latency;
+      if (Array.isArray(latency)) {
+        latency = latency.reduce((sum, bin) => sum + bin, 0) / 100000000 || 0;
       }
 
-      if (timestamp >= startDate && timestamp <= endDate) {
-        result.push({
-          group: 'Dataset 1',
-          key: app.timestamp,
-          value: latency,
-        });
-      } else if (!startDate && !endDate) {
+      if ((!start || timestamp >= start) && (!end || timestamp <= end)) {
         result.push({
           group: 'Dataset 1',
           key: app.timestamp,
@@ -112,12 +101,11 @@ const LatencyGraph = forwardRef(({ selectedItem, selectedUser, startDate, endDat
 
   const { state } = useStoreContext();
   const latencyDataInside = getLatencyDataInside(messageFromServerLatency, startDate, endDate);
-  const latency_number = latencyDataInside.length;
 
   const latencyOptions = {
-    title: '', // 'Latency (in seconds): ' + latency_number,
+    title: '',
     data: {
-      loading: loading
+      loading: loading,
     },
   };
 
@@ -125,35 +113,25 @@ const LatencyGraph = forwardRef(({ selectedItem, selectedUser, startDate, endDat
     <>
       {loading ? (
         <>
-        <h4 className="title">
-          Latency (in seconds)
-        </h4>
-        <p>
-          <ul className="sub-title">
-            <li><strong>User Name:</strong> { `${selectedUser || 'For All User Name'}`}</li>
-            <li><strong>Application Name:</strong> { `${selectedItem || 'For All Application Name'}`}</li>
-          </ul>
-        </p>
-        <CustomLineChart
-          data={[]}
-          options={latencyOptions}
-        />
-      </>
-      ) : latencyDataInside.length > 0 ? (
-        <>
-          <h4 className="title">
-            Latency (in seconds)
-          </h4>
+          <h4 className="title">Latency (in seconds)</h4>
           <p>
             <ul className="sub-title">
-              <li><strong>User Name:</strong> { `${selectedUser || 'For All User Name'}`}</li>
-              <li><strong>Application Name:</strong> { `${selectedItem || 'For All Application Name'}`}</li>
+              <li><strong>User Name:</strong> {`${selectedUser || 'For All User Name'}`}</li>
+              <li><strong>Application Name:</strong> {`${selectedItem || 'For All Application Name'}`}</li>
             </ul>
           </p>
-          <CustomLineChart
-            data={latencyDataInside}
-            options={latencyOptions}
-          />
+          <CustomLineChart data={[]} options={latencyOptions} />
+        </>
+      ) : latencyDataInside.length > 0 ? (
+        <>
+          <h4 className="title">Latency (in seconds)</h4>
+          <p>
+            <ul className="sub-title">
+              <li><strong>User Name:</strong> {`${selectedUser || 'For All User Name'}`}</li>
+              <li><strong>Application Name:</strong> {`${selectedItem || 'For All Application Name'}`}</li>
+            </ul>
+          </p>
+          <CustomLineChart data={latencyDataInside} options={latencyOptions} />
         </>
       ) : (
         <NoData />

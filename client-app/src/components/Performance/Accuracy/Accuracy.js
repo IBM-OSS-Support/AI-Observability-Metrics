@@ -162,49 +162,46 @@ const Accuracy = forwardRef(
 
     return (
       <Tile className="infrastructure-components accuracy">
-        <h4 className="title">Accuracy Score</h4>
         {loading ? (
           <>
+            <h4 className="title">Accuracy Score</h4>
             <CodeSnippetSkeleton type="multi" />
             <CodeSnippetSkeleton type="multi" />
           </>
         ) : (
           <>
-            <p>
-              <ul className="sub-title">
-                <li>
-                  <strong>User Name:</strong>{" "}
-                  {`${selectedUser || "For All User Name"}`}
-                </li>
-                <li>
-                  <strong>Application Name:</strong>{" "}
-                  {`${selectedItem || "For All Application Name"}`}
-                </li>
-              </ul>
-            </p>
-            <div className="cpu-usage-chart">
-              {avg > 0 ? (
+          {avg > 0 ? (
+            <>
+              <h4 className="title">Accuracy Score</h4>
+              <p>
+                <ul className="sub-title">
+                  <li>
+                    <strong>User Name:</strong>{" "}
+                    {`${selectedUser || "For All User Name"}`}
+                  </li>
+                  <li>
+                    <strong>Application Name:</strong>{" "}
+                    {`${selectedItem || "For All Application Name"}`}
+                  </li>
+                </ul>
+              </p>
+              <div className="cpu-usage-chart">
                 <MeterChart data={data} options={chartOptions} />
-              ) : (
-                <NoData />
-              )}
-            </div>
-            <div className="cpu-usage-data">
-              {avg > 0 ? (
-                <>
-                  <div className="label">
-                    {selectedUser && selectedItem
-                      ? `Average accuracy of ${selectedItem || "All"} is`
-                      : `Average accuracy of ${
-                          selectedUser || "All"
-                        } Application is`}
-                  </div>
-                  <h3 className="data">{avg}/10</h3>
-                </>
-              ) : (
-                <div className="label"></div>
-              )}
-            </div>
+              </div>
+              <div className="cpu-usage-data">
+                <div className="label">
+                  {selectedUser && selectedItem
+                    ? `Average accuracy of ${selectedItem || "All"} is`
+                    : `Average accuracy of ${
+                        selectedUser || "All"
+                      } Application is`}
+                </div>
+                <h3 className="data">{avg}/10</h3>
+              </div>
+            </>
+          ) : (
+            <NoData />
+          )}
           </>
         )}
       </Tile>
