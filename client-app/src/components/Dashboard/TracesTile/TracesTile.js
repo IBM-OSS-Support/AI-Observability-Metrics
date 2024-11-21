@@ -24,10 +24,10 @@ const TracesTile = () => {
   setLoading(true);
   const apiUrl = process.env.REACT_APP_BACKEND_API_URL;
 
-  const operationsQuery = `SELECT * FROM operations WHERE timestamp >= NOW() - INTERVAL '7 DAY'`;
-  const performanceQuery = `SELECT * FROM performance WHERE timestamp >= NOW() - INTERVAL '7 DAY'`;
-  const maintenanceQuery = `SELECT * FROM maintenance WHERE timestamp >= NOW() - INTERVAL '7 DAY'`;
-  const logQuery = `SELECT * FROM log_history WHERE timestamp >= NOW() - INTERVAL '7 DAY'`;
+  const operationsQuery = `SELECT * FROM operations WHERE timestamp >= NOW() - INTERVAL '30 DAY'`;
+  const performanceQuery = `SELECT * FROM performance WHERE timestamp >= NOW() - INTERVAL '30 DAY'`;
+  const maintenanceQuery = `SELECT * FROM maintenance WHERE timestamp >= NOW() - INTERVAL '30 DAY'`;
+  const logQuery = `SELECT * FROM log_history WHERE timestamp >= NOW() - INTERVAL '30 DAY'`;
 
   try {
     const [operationsResponse, performanceResponse, maintenanceResponse, logResponse] = await Promise.all([
@@ -129,7 +129,7 @@ const TracesTile = () => {
       <div className="infrastructure-components-content">
         <h5>
           {/* AI applications <span className="count">({data.apps})</span> */}
-          Quick Summary (Last 7 days)
+          Quick Summary (Last 30 days)
         </h5>
         {loading ? (
           <>
