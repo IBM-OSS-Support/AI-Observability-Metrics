@@ -22,7 +22,7 @@ const LatencyGraph = forwardRef(({ selectedItem, selectedUser, startDate, endDat
   useImperativeHandle(ref, () => ({
     fetchLatencyData,
   }));
-
+  
   // Function to fetch data from the API
   const fetchLatencyData = async (selectedItem, selectedUser, startDate, endDate) => {
     setLoading(true); // Start loading before making API call
@@ -120,7 +120,11 @@ const LatencyGraph = forwardRef(({ selectedItem, selectedUser, startDate, endDat
               <li><strong>Application Name:</strong> {`${selectedItem || 'For All Application Name'}`}</li>
             </ul>
           </p>
-          <CustomLineChart data={[]} options={latencyOptions} />
+          <CustomLineChart 
+            data={[]} 
+            options={latencyOptions} 
+            key={JSON.stringify(latencyDataInside)} // Add a unique key if needed
+          />
         </>
       ) : latencyDataInside.length > 0 ? (
         <>
