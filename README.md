@@ -2,8 +2,9 @@
 
 <!-- ABOUT THE PROJECT -->
 ## About The Project
-In this project, we are building an `AI Observability Metrics extension `that leverages **Graphsignal** to collect important metrics on the application. These metrics can be visualized on a web browser user interface and then assessed to gain valuable insights on the execution. The seamless integration of Graphsignal with Visual Studio Code will allow developers to fine-tune their AI applications and by identifying bottlenecks- enhance their overall performance.
-![Ai-Observability+graphsignal](doc/media/AiObservability-graphsigna.png)
+In this project, we are building an `AI Observability Metrics extension `that leverages **Graphsignal** to collect important metrics on the application, providing key metrics through a redesigned, user-friendly web interface powered by the Carbon Design System. It features advanced filters, zooming for detailed analysis, and new metrics like GPU/CPU usage,* add more about new Metics*. These metrics can be visualized on a web browser user interface and then assessed to gain valuable insights on the execution. The seamless integration of Graphsignal with Visual Studio Code will allow developers to fine-tune their AI applications and by identifying bottlenecks- enhance their overall performance.
+
+![Ai-Observability+graphsignal](doc/media/AiObservability-graphsignal.png)
 
 
 ### Reasons to Choose AI Observability Metrics
@@ -25,29 +26,34 @@ To get a local copy up and running follow the steps.
 
 ### Prerequisites
 
-For using `AI Observer`, you need:
+For using `AI Observability Metrics`, you need:
 - **OS:** Mac
 - **DISK SPACE:** Minimum 30GB
 - **Terminal:**  Homebrew (for Mac)
 - **IDE:** [Visual Studio Code](https://code.visualstudio.com/download)
 - **Docker:** installed ([for Mac](https://docs.docker.com/desktop/install/mac-install/) )
-- **Python3:** If not already installed, run `brew install python3`. After completion, run `pip3 -V`ensure successful installation. 
+- **Python3:** If not already installed, run `brew install python3`. After completion, run `pip3 -V`ensure successful installation.
+
+**add dependency pacakges**
 
 
-### How to install AI Observer on macOS
-Under VSCode extensions, search for `AI Observer` extension and click install. This will install all the necessary libraries and components required for execution your AI Application. 
+### How to install AI Observability Metrics on macOS
+Under VSCode extensions, search for `AI Observability Metrics` extension and click install. This will install all the necessary libraries and components required for execution your AI Application. 
 
+Here is a walkthrough of how to install the script on macOS:
 
- Here is a walkthrough of how to install the script on macOS:
-    
-1.Navigate to `ai_observer.py`. Define the following variables in lines 9-12.
+1.Navigate to `<your_code.py>`. Define the following variables
             
+```
+GRAPHSIGNAL_API_KEY = "GRAPHSIGNAL_API_KEY_HERE"
 
-i.```GRAPHSIGNAL_API_KEY = "GRAPHSIGNAL_API_KEY_HERE"```
-ii. ```OPENAI_API_KEY = "OPENAI_API_KEY_HERE" ```
-iii.```APPLICATION_NAME = "APPLICATION_NAME_HERE" ```
-iv. ```USER_NAME = "USER_NAME_HERE"```
+OPENAI_API_KEY = "OPENAI_API_KEY_HERE"
 
+APPLICATION_NAME = "APPLICATION_NAME_HERE"
+
+USER_NAME = "USER_NAME_HERE"
+```
+for example : Navigate to `ai_observer.py`. Define the following variables in lines 9-12.
 
 Note: You can also define these variables within `ai_observer_app.py` in lines 3-6. See recording for details.
 
@@ -57,7 +63,7 @@ Note: You can also define these variables within `ai_observer_app.py` in lines 3
     `python3 ai_observer_app.py`
     
 
-Here is a walkthrough of how to use the AI Observer tool:
+Here is a walkthrough of how to use the AI Observability Metrics tool:
 
 ***add gif here***
 
