@@ -6,8 +6,8 @@ import uuid
 import sys
 
 # define variables here
-GRAPHSIGNAL_API_KEY = None 
-OPENAI_API_KEY = None 
+GRAPHSIGNAL_API_KEY = "7e6ff4494810b4cb37255d369cfae983" 
+OPENAI_API_KEY = "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" 
 APPLICATION_NAME = None 
 USER_NAME = None 
 # define variables end

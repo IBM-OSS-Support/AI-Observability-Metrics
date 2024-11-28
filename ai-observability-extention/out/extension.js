@@ -41,23 +41,24 @@ function activate(context) {
         terminal.sendText(uninstall);
         const pythonInstallCmd = 'pip3 install graphsignal==0.15.1 python-dotenv==1.0.1 requests requests-oauthlib==1.4.0 openai==1.14.0';
         terminal.sendText(pythonInstallCmd);
-        const pullImage = 'docker pull ibmcom/db2';
+        const pullImage = 'docker pull --platform linux/amd64 ghcr.io/ibm-developers/ai-observability-metrics:1.0';
         terminal.sendText(pullImage);
-        const dockerInstallCmd = 'docker run -itd --memory="2g" --restart unless-stopped -p 5432:5432 -p 15000:15000 -p 12000:12000 -p 3000:3000 imagename:latest';
+        const dockerInstallCmd = 'docker run --name ai-observability-metrics -itd --memory="2g" --restart unless-stopped -p 5432:5432 -p 15000:15000 -p 12000:12000 -p 3000:3000 ghcr.io/ibm-developers/ai-observability-metrics:1.0';
+        //const dockerInstallCmd = 'docker run --name ai-observability-metrics-docker -itd --memory="2g" --restart unless-stopped -p 5432:5432 -p 15000:15000 -p 12000:12000 -p 3000:3000 imagename:latest'
         terminal.sendText(dockerInstallCmd);
         const folder = vscode.workspace.workspaceFolders
             ? vscode.workspace.workspaceFolders[0].uri.fsPath
             : undefined;
-        const original_ai_observer_file = path.join(context.extensionPath, 'out', 'ai_observer.py');
-        const original_ai_observer_app = path.join(context.extensionPath, 'out', 'ai_observer_app.py');
+        const original_ai_observability_metrics_file = path.join(context.extensionPath, 'out', 'ai_observability_metrics.py');
+        const original_ai_observability_metrics_app = path.join(context.extensionPath, 'out', 'ai_observability_metrics_app.py');
         const readme = path.join(context.extensionPath, 'out', 'README.md');
         let appfilepath;
         let aitargetpath;
         let readmePath;
         if (folder) {
-            appfilepath = path.join(folder, 'ai_observer_app.py');
-            // copy ai_observer.py
-            aitargetpath = path.join(folder, 'ai_observer.py');
+            appfilepath = path.join(folder, 'ai_observability_metrics_app.py');
+            // copy ai_observability_metrics.py
+            aitargetpath = path.join(folder, 'ai_observability_metrics.py');
             // config
             readmePath = path.join(folder, 'README.md');
             // proceed with creating the file...
@@ -66,8 +67,8 @@ function activate(context) {
             vscode.window.showErrorMessage('No folder is open in the workspace.');
             return;
         }
-        fs.copyFileSync(original_ai_observer_file, aitargetpath);
-        fs.copyFileSync(original_ai_observer_app, appfilepath);
+        fs.copyFileSync(original_ai_observability_metrics_file, aitargetpath);
+        fs.copyFileSync(original_ai_observability_metrics_app, appfilepath);
         fs.copyFileSync(readme, readmePath);
         const document = await vscode.workspace.openTextDocument(readmePath);
         await vscode.window.showTextDocument(document);
