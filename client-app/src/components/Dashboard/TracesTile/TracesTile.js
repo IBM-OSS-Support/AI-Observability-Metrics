@@ -90,7 +90,7 @@ const TracesTile = () => {
         const usersSet = new Set(logData.map(item => item.app_user)).size;
         // const usersSet = new Set(operationsData.flatMap(item => item.tags.filter(tag => tag.key === 'user').map(tag => tag.value)));
         const modelsSet = new Set(operationsData.flatMap(item => item.tags.filter(tag => tag.key === 'model').map(tag => tag.value)));
-        const operationsCount = operationsData.length;
+        const operationsCount = logData.map(item => item.application_name).length;
 
         const totalAppCount = maintenanceData.length
 
