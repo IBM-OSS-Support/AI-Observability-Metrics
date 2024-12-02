@@ -17,8 +17,10 @@ In this project, we are building an `AI Observability Metrics extension `that le
 AI Observability Metrics uses the Graphsignal opensource library, which has very low overhead and is optimized for enterprise software development workflows and performs well across a range of observability tasks (e.g. usage analysis, code optimization and model evaluation), making it an easy and lightweight.
 
 The workflow diagram of AI Observability Metrics is provided below.
+<p align="center">
+  <img src="doc/media/workflow.png" />
+</p>
 
-![Workflow](doc/media/workflow.png){ width=60% }
 <!-- GETTING STARTED -->
 ## Getting Started 
 Following are the instructions to setting up AI Observability Metrics locally.
