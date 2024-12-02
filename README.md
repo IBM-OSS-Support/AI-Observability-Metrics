@@ -18,7 +18,7 @@ AI Observability Metrics uses the Graphsignal opensource library, which has very
 
 The workflow diagram of AI Observability Metrics is provided below.
 <p align="center">
-  <img src="doc/media/workflow.png" />
+  <img src="doc/media/workflow.png" alt="header" width="600" height="500"  />
 </p>
 
 <!-- GETTING STARTED -->
