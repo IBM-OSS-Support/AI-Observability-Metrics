@@ -31,14 +31,16 @@ For using `AI Observability Metrics`, you need:
 - **DISK SPACE:** Minimum 30GB
 - **Terminal:**  Homebrew (for Mac)
 - **IDE:** [Visual Studio Code](https://code.visualstudio.com/download)
-- **Docker:** installed ([for Mac](https://docs.docker.com/desktop/install/mac-install/) )
+- **Docker:** installed [for Mac](https://docs.docker.com/desktop/install/mac-install/)
 - **Python3:** If not already installed, run `brew install python3`. After completion, run `pip3 -V`ensure successful installation.
-
-**add dependency pacakges**
+- **Graphsignal API Key:** To get an API key, sign up for a [free account](graphsignal.com]). The key can then be found in your account's Settings / API Keys page.
+- **OpenAI API Key:** To obtain an API Key, login [here](https://platform.openai.com/account/api-keys). Under "API keys", click "Create new secret key".**
 
 
 ### How to install AI Observability Metrics on macOS
-Under VSCode extensions, search for `AI Observability Metrics` extension and click install. This will install all the necessary libraries and components required for execution your AI Application. 
+Under VSCode extensions, search for `AI Observability Metrics` extension and click install. This will install all the necessary libraries and components required for execution your AI Application.Allow around 2 minutes for installation to complete.
+
+
 
 Here is a walkthrough of how to install the script on macOS:
 
