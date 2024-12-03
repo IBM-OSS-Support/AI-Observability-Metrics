@@ -1,0 +1,11 @@
+from ai_observability_metrics import inject_instrumentation, APPLICATION_NAME, USER_NAME, GRAPHSIGNAL_API_KEY, OPENAI_API_KEY
+
+APPLICATION_NAME = None 
+USER_NAME = None 
+
+inject_instrumentation(APPLICATION_NAME,USER_NAME,GRAPHSIGNAL_API_KEY,OPENAI_API_KEY)
+
+
+# INSERT CODE HERE
+
+
