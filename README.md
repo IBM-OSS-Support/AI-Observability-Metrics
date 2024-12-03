@@ -78,7 +78,7 @@ After your application and run to completion, you can view your metrics by openi
 `localhost:3000`
 
 ### How to Contribute
-Refer to this Guildlines to contribute to our project.
+Refer to this [Guildlines](https://github.com/IBM-OSS-Support/AI-Observability-Metrics/blob/main/doc/CONTRIBUTING.md) to contribute to our project.
 ## Next Steps 
 * Enhanced integration to handle multiple users and executions simultaneously 
 * Extend functionality to Windows 
