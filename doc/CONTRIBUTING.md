@@ -21,7 +21,11 @@ git clone  https://github.com/IBM-OSS-Support/AI-Observability-Metrics.git
 ```bash
   $ cd AI-Observability-Metrics
 ```
-3. Install the NPM dependencies:
+3. Prerequisites
+
+- **Python3:** If not already installed, run `brew install python3`. After completion, run `pip3 -V`ensure successful installation.
+- **Graphsignal API Key:** To get an API key, sign up for a [free account](graphsignal.com]). The key can then be found in your account's Settings / API Keys page.
+- **OpenAI API Key:** To obtain an API Key, login [here](https://platform.openai.com/account/api-keys). Under "API keys", click "Create new secret key".**
 
 **add here**
 
@@ -31,12 +35,9 @@ git clone  https://github.com/IBM-OSS-Support/AI-Observability-Metrics.git
 
 ### Build the extension
 
-You can package the extension as a *.vsix archive:
-  ```bash
-  $ npx @vscode/vsce package
-  ```
+**add here**
 
-It will generate a vscode-granite-`<version>`.vsix
+It will generate a AI Observability Metrics`<version>`.vsix
 
 You can then install it in VS Code by following these [instructions](https://code.visualstudio.com/docs/editor/extension-marketplace#_install-from-a-vsix).
 
@@ -66,7 +67,5 @@ If you find a bug or something that seems wrong, please report it! When submitti
 2. **Include steps to reproduce the issue** (if applicable).
 3. **Include your environment details**, such as the operating system, version of the project you're using, etc.
 
-## Getting Started
 
-If you want to get started with local development, follow the link 
-[setup.md](setup.md).
+
