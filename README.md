@@ -1,84 +1,30 @@
-![Tittle](doc/media/AiObservability-title.png)
+# README
 
-<!-- ABOUT THE PROJECT -->
-## About The Project
-In this project, we are building an `AI Observability Metrics extension `that leverages **Graphsignal** to collect important metrics on the application, providing key metrics through a redesigned, user-friendly web interface powered by the Carbon Design System. It features advanced filters, zooming for detailed analysis, and new metrics like GPU/CPU usage,* add more about new Metics*. These metrics can be visualized on a web browser user interface and then assessed to gain valuable insights on the execution. The seamless integration of Graphsignal with Visual Studio Code will allow developers to fine-tune their AI applications and by identifying bottlenecks- enhance their overall performance.
+# PRE-REQUISITES:
 
-![Ai-Observability+graphsignal](doc/media/AiObservability-graphsignal.png)
-
-
-### Reasons to Choose AI Observability Metrics
-
-- **Lightweight:** This tool is very lightweight and resource friendly solution that requires almost no setup to get started. 
-- **Cost:** Many of these tools are paid solutions which require investment by the organization. For larger organizations, this would often include paid support and maintenance contracts which can be extremely costly and slow to negotiate.
-
-### Workflow of AI Observability Metrics
-
-AI Observability Metrics uses the Graphsignal opensource library, which has very low overhead and is optimized for enterprise software development workflows and performs well across a range of observability tasks (e.g. usage analysis, code optimization and model evaluation), making it an easy and lightweight.
-
-The workflow diagram of AI Observability Metrics is provided below.
-<p align="center">
-  <img src="doc/media/workflow.png" alt="header" width="600" height="500"  />
-</p>
-
-<!-- GETTING STARTED -->
-## Getting Started 
-Following are the instructions to setting up AI Observability Metrics locally.
-To get a local copy up and running follow the steps.
-
-### Prerequisites
-
-For using `AI Observability Metrics`, you need:
-- **OS:** Mac
-- **DISK SPACE:** Minimum 30GB
-- **Terminal:**  Homebrew (for Mac)
-- **IDE:** [Visual Studio Code](https://code.visualstudio.com/download)
-- **Docker:** installed [for Mac](https://docs.docker.com/desktop/install/mac-install/)
-- **Python3:** If not already installed, run `brew install python3`. After completion, run `pip3 -V`ensure successful installation.
-- **Graphsignal API Key:** To get an API key, sign up for a [free account](graphsignal.com]). The key can then be found in your account's Settings / API Keys page.
-- **OpenAI API Key:** To obtain an API Key, login [here](https://platform.openai.com/account/api-keys). Under "API keys", click "Create new secret key".**
+To get started with ai_observability_metrics, you will need the following:
+1. Graphsignal API Key: To get an API key, sign up for a free account at graphsignal.com. The key can then be found in your account's Settings / API Keys page.
+2. OpenAI API Key: To obtain an API Key, login at https://platform.openai.com/account/api-keys. Under "API keys", click "Create new secret key".
+3. Docker: Docker needs to be pre-installed. 
+   a. See: https://docs.docker.com/desktop/install/mac-install/
+   b. Visit https://code.visualstudio.com/docs/containers/overview to install the docker extension
+4. Python3: Ensure python3 is installed. 
+   In command line terminal, Run: "brew install python3". After completion, run "pip3 -V" to ensure successful installation. 
 
 
-### How to install AI Observability Metrics on macOS
-Under VSCode extensions, search for `AI Observability Metrics` extension and click install. This will install all the necessary libraries and components required for execution your AI Application.Allow around 2 minutes for installation to complete.
+# INSTALLATION
+Under VSCode Extensions, search for "ai_observability_metrics" extension and click install. This will instal all the necessary libraries and components required for executing your AI Application. Allow around 2 minutes for installation to complete. 
 
+# GET STARTED: 
+1. Navigate to "ai_observability_metrics.py". Define the following variables in lines 9-12.
+   a. GRAPHSIGNAL_API_KEY = "GRAPHSIGNAL_API_KEY_HERE"
+   b. OPENAI_API_KEY = "OPENAI_API_KEY_HERE"
+   c. APPLICATION_NAME = "APPLICATION_NAME_HERE"
+   d. USER_NAME = "USERNAME_HERE"
+   NOTE: You can also set these variables in lines 2-5 in "ai_observability_metrics_app.py". Variable names have to be the same. 
+2. In "ai_observability_metrics_app.py" locate the "# INSERT CODE HERE" tag. You can start implementing the ai app after this line. 
+3. When you are ready to run, run "python3 ai_observability_metrics_app.py" in the visual studio code command line. 
 
+# VISUALIZATION
+After running your application, navigate to your web browser and visit localhost:3000 and view metrics from your application. 
 
-Here is a walkthrough of how to install the script on macOS:
-
-1.Navigate to `<your_code.py>`. Define the following variables
-            
-```
-GRAPHSIGNAL_API_KEY = "GRAPHSIGNAL_API_KEY_HERE"
-
-OPENAI_API_KEY = "OPENAI_API_KEY_HERE"
-
-APPLICATION_NAME = "APPLICATION_NAME_HERE"
-
-USER_NAME = "USER_NAME_HERE"
-```
-for example : Navigate to `ai_observer.py`. Define the following variables in lines 9-12.
-
-Note: You can also define these variables within `ai_observer_app.py` in lines 3-6. See recording for details.
-
-2. In `ai_observer_app.py` locate the `# INSERT CODE HERE"` tag. You can start implementing your code after this line.
-3. Run your code using the following command:
- 
-    `python3 ai_observer_app.py`
-    
-
-Here is a walkthrough of how to use the AI Observability Metrics tool:
-
-***add gif here***
-
- 
- ### Visualization
-After your application and run to completion, you can view your metrics by opening any web browser and visiting 
-
-`localhost:3000`
-
-### How to Contribute
-Refer to this [Guildlines](https://github.com/IBM-OSS-Support/AI-Observability-Metrics/blob/main/doc/CONTRIBUTING.md) to contribute to our project.
-## Next Steps 
-* Enhanced integration to handle multiple users and executions simultaneously 
-* Extend functionality to Windows 
