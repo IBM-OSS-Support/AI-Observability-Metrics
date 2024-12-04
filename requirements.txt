@@ -9,9 +9,7 @@ psycopg2-binary
 Flask-Cors
 kafka-python
 python-dateutil
-openai==1.14.0
 langchain==0.1.12
 langchain-openai==0.0.8
 langchain-community==0.0.28
-anthropic==0.30.0
-openpyxl
+openai==1.14.0
