@@ -8,3 +8,4 @@ applications/*.xlsx
 .vscode
 applications/metrics/jsons/
 flask_server/*.json
+.DS_Store
