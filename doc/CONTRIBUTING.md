@@ -11,7 +11,7 @@ Contributions are essential for keeping this extension great. We try to keep it 
   * Docker:  installed [for Mac](https://docs.docker.com/desktop/install/mac-install/)
   * Python3: If not already installed, run `brew install python3`. After completion, run `pip3 -V`ensure successful installation.
 
-  ### Steps
+### Steps
 1. Fork and clone this repository
 ```
 git clone  https://github.com/IBM-OSS-Support/AI-Observability-Metrics.git
@@ -19,19 +19,13 @@ git clone  https://github.com/IBM-OSS-Support/AI-Observability-Metrics.git
 
 2. Change to the directory:
 ```bash
-  $ cd AI-Observability-Metrics
+  $ cd AI-Observability-Metrics/ai-observability-extension
 ```
-3. Prerequisites
-
-- **Python3:** If not already installed, run `brew install python3`. After completion, run `pip3 -V`ensure successful installation.
-- **Graphsignal API Key:** To get an API key, sign up for a [free account](graphsignal.com]). The key can then be found in your account's Settings / API Keys page.
-- **OpenAI API Key:** To obtain an API Key, login [here](https://platform.openai.com/account/api-keys). Under "API keys", click "Create new secret key".**
-
 **add here**
 
-4. To run the extension, open the Debugging tab in VSCode.
+3. To run the extension, open the Debugging tab in VSCode.
 
-5. Select and run 'Launch Extension' at the top left:
+4. Select and run 'Launch Extension' at the top left:
 
 ### Build the extension
 
