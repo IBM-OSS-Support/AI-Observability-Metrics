@@ -130,7 +130,11 @@ const CostGraph = forwardRef(({ selectedItem, selectedUser, startDate, endDate }
         <CustomLineChart data={[]} options={costGraphOptions} />
       ) : (
         costGraphData.length > 0 ? (
-          <CustomLineChart data={costGraphData} options={costGraphOptions} />
+          <CustomLineChart 
+            data={costGraphData} 
+            options={costGraphOptions} 
+            key={JSON.stringify(costGraphData)} // Add a unique key if needed
+          />
         ) : (
           <NoData />
         )

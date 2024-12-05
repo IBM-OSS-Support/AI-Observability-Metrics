@@ -155,7 +155,11 @@ const CallCountGraph = forwardRef(({ selectedItem, selectedUser, startDate, endD
               <li><strong>Application Name:</strong> {`${selectedItem || 'For All Application Name'}`}</li>
             </ul>
           </p>
-          <CustomLineChart data={CallCountDataInside} options={callCountOptions}  />
+          <CustomLineChart 
+            data={CallCountDataInside} 
+            options={callCountOptions} 
+            key={JSON.stringify(CallCountDataInside)} // Add a unique key if needed
+          />
         </>
       ) : (
         <NoData />

@@ -135,7 +135,11 @@ const LatencyGraph = forwardRef(({ selectedItem, selectedUser, startDate, endDat
               <li><strong>Application Name:</strong> {`${selectedItem || 'For All Application Name'}`}</li>
             </ul>
           </p>
-          <CustomLineChart data={latencyDataInside} options={latencyOptions} />
+          <CustomLineChart 
+            data={latencyDataInside} 
+            options={latencyOptions} 
+            key={JSON.stringify(latencyDataInside)} // Add a unique key if needed
+          />
         </>
       ) : (
         <NoData />
