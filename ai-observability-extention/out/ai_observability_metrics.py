@@ -6,8 +6,8 @@ import uuid
 import sys
 
 # define variables here
-GRAPHSIGNAL_API_KEY = "7e6ff4494810b4cb37255d369cfae983" 
-OPENAI_API_KEY = "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" 
+GRAPHSIGNAL_API_KEY = None 
+OPENAI_API_KEY = None
 APPLICATION_NAME = None 
 USER_NAME = None 
 # define variables end
@@ -27,16 +27,16 @@ APPLICATION_UID = None
 
 def inject_instrumentation(APPLICATION_NAME,USER_NAME,GRAPHSIGNAL_API_KEY,OPENAI_API_KEY):
     if APPLICATION_NAME is None:
-        sys.exit("APPLICATION_NAME must be set in ai_inspector.py")
+        sys.exit("APPLICATION_NAME must be set in ai_observability_metrics.py")
 
     if USER_NAME is None:
-        sys.exit("USER_NAME must be set in ai_inspector.py")
+        sys.exit("USER_NAME must be set in ai_observability_metrics.py")
     
     if GRAPHSIGNAL_API_KEY is None:
-        sys.exit("GRAPHSIGNAL API KEY must be set in ai_inspector.py")
+        sys.exit("GRAPHSIGNAL API KEY must be set in ai_observability_metrics.py")
     
     if OPENAI_API_KEY is None:
-        sys.exit("OPENAI API KEY must be set in ai_inspector.py")
+        sys.exit("OPENAI API KEY must be set in ai_observability_metrics.py")
     
     APPLICATION_UID = generate_unique_id(USER_NAME, APPLICATION_NAME)
     os.environ["OPENAI_API_KEY"] = OPENAI_API_KEY

@@ -1,21 +1,27 @@
 {
   "name": "rbe",
-  "displayName": "rbe",
-  "description": "rbe",
-  "version": "0.0.1",
+  "displayName": "ai-observability-metrics",
+  "description": "AI Observability Metrics",
+  "version": "0.0.5",
+  "publisher": "ibm-oss-support",
   "engines": {
     "vscode": "^1.92.0"
   },
+  "icon": "out/media/Ai-inspector_logo-new.png",
   "categories": [
     "Other"
   ],
-  "activationEvents": [],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/IBM-OSS-Support/AI-Observability-Metrics.git"
+  },
+  "activationEvents": ["*"],
   "main": "./out/extension.js",
   "contributes": {
     "commands": [
       {
         "command": "rbe.insertCodeTemplate",
-        "title": "Install AI Observer Extension"
+        "title": "Install AI Observability Metrics Extension"
       }
     ]
   },
