@@ -61,5 +61,8 @@ If you find a bug or something that seems wrong, please report it! When submitti
 2. **Include steps to reproduce the issue** (if applicable).
 3. **Include your environment details**, such as the operating system, version of the project you're using, etc.
 
+## Getting Started
+If you want to get started with local development, follow the link [setup.md](https://github.com/IBM-OSS-Support/AI-Observability-Metrics/blob/main/doc/SETUP.md).
+
 
 
