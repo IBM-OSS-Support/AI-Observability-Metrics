@@ -89,7 +89,7 @@ To get a local copy up and running follow the steps.
     Your browser does not support the video tag.
   </video>
 </p>
-https://github.ibm.com/Support-OSS/roja-extention/blob/main/out/media/vid_v3.mov
+https://github.ibm.com/Support-OSS/roja-extention/blob/main/out/media/final_version_ai.mov
 
  
  <h3>Visualization</h3>

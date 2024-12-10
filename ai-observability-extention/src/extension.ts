@@ -29,10 +29,10 @@ async function runInsertCodeTemplateCommand(context: vscode.ExtensionContext) {
         terminal.sendText('pip3 install graphsignal==0.15.1 python-dotenv==1.0.1 requests requests-oauthlib==1.4.0 openai==1.14.0');
 
         // Docker setup
-        terminal.sendText('docker pull ghcr.io/ibm-oss-support/ai_observability_metrics:2.0');
+        terminal.sendText('docker pull ghcr.io/ibm-oss-support/ai_observability_metrics:3.0');
         terminal.show();
         terminal.sendText(
-            'docker run --name ai-observability-metrics -itd --memory="2g" --restart unless-stopped -p 5432:5432 -p 15000:15000 -p 12000:12000 -p 3000:3000 ghcr.io/ibm-oss-support/ai_observability_metrics:2.0'
+            'docker run --name ai-observability-metrics -itd --memory="2g" --restart unless-stopped -p 5432:5432 -p 15000:15000 -p 12000:12000 -p 3000:3000 ghcr.io/ibm-oss-support/ai_observability_metrics:3.0'
         );
 
         // File copying
