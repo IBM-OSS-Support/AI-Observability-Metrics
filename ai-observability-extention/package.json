@@ -2,7 +2,7 @@
   "name": "rbe",
   "displayName": "ai-observability-metrics",
   "description": "AI Observability Metrics",
-  "version": "0.0.5",
+  "version": "0.0.8",
   "publisher": "ibm-oss-support",
   "engines": {
     "vscode": "^1.92.0"
@@ -21,7 +21,7 @@
     "commands": [
       {
         "command": "rbe.insertCodeTemplate",
-        "title": "Install AI Observability Metrics Extension"
+        "title": "Start AI Observability Metrics"
       }
     ]
   },

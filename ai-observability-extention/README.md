@@ -1,5 +1,5 @@
 
-![Tittle](doc/media/AiObservability-title.png)
+![Title](doc/media/AiObservability-title.png)
 
 <!-- ABOUT THE PROJECT -->
 ## About The Project
@@ -41,13 +41,15 @@ For using `AI Observability Metrics`, you need:
 
 
 ### How to install AI Observability Metrics on macOS
-Under VSCode extensions, search for `AI Observability Metrics` extension and click install. This will install all the necessary libraries and components required for execution your AI Application.Allow around 2 minutes for installation to complete.
+1. Under VSCode extensions, search for `AI Observability Metrics` extension and click install. This will install all the necessary libraries and components required for execution your AI Application.Allow around 2 minutes for installation to complete.
+
+2. On your keyboard, press `command ⌘` + `shift ⇧` + `P` and select ```Start AI Observability Metrics```. 
 
 
 
-Here is a walkthrough of how to install the script on macOS:
+Here is a walkthrough of how to execute an application in MacOS:
 
-1.Navigate to `ai_observability_metrics.py`. Define the following variables in lines 9-12.
+1. Navigate to `ai_observability_metrics.py`. Define the following variables in lines 9-12.
             
 ```
 GRAPHSIGNAL_API_KEY = "GRAPHSIGNAL_API_KEY_HERE"
