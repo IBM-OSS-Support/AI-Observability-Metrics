@@ -1,11 +1,6 @@
-
-![Title](doc/media/AiObservability-title.png)
-
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 In this project, we are building an `AI Observability Metrics extension `that leverages **Graphsignal** to collect important metrics on the application, providing key metrics through a redesigned, user-friendly web interface powered by the Carbon Design System. It features advanced filters, zooming for detailed analysis, and new metrics like GPU/CPU usage,* add more about new Metics*. These metrics can be visualized on a web browser user interface and then assessed to gain valuable insights on the execution. The seamless integration of Graphsignal with Visual Studio Code will allow developers to fine-tune their AI applications and by identifying bottlenecks- enhance their overall performance.
-
-![Ai-Observability+graphsignal](doc/media/AiObservability-graphsignal.png)
 
 
 ### Reasons to Choose AI Observability Metrics
@@ -14,14 +9,10 @@ In this project, we are building an `AI Observability Metrics extension `that le
 - **Lightweight:** This tool is very lightweight and resource friendly solution that requires almost no setup to get started. 
 - **Cost:** Many of these tools are paid solutions which require investment by the organization. For larger organizations, this would often include paid support and maintenance contracts which can be extremely costly and slow to negotiate.
 
+
 ### Workflow of AI Observability Metrics
 
-AI Observability Metrics uses the Graphsignal opensource library, which has very low overhead and is optimized for enterprise software development workflows and performs well across a range of observability tasks (e.g. usage analysis, code optimization and model evaluation), making it an easy and lightweight.
-
-The workflow diagram of AI Observability Metrics is provided below.
-<p align="center">
-  <img src="doc/media/workflow.png" alt="header" width="600" height="500"  />
-</p>
+AI Observability Metrics uses the Graphsignal opensource library, which has very low overhead and is optimized for enterprise software development workflows and performs well across a range of observability tasks (e.g. usage analysis, code optimization and model evaluation), making it an easy and lightweight. By leveraging OpenAI API, AI Observability Metrics builds on top of the existing Graphsignal infrastructure to provide various metrics to the user. 
 
 <!-- GETTING STARTED -->
 ## Getting Started 
@@ -68,11 +59,6 @@ Note: You can also define these variables within `ai_observability_metrics_app.p
 3. Run your code using the following command in the visual studio code command line.:
  
     `python3 ai_observability_metrics_app.py`
-    
-
-Here is a walkthrough of how to use the AI Observability Metrics tool:
-
-***add gif here***
 
  
  ### Visualization
@@ -82,6 +68,7 @@ After your application and run to completion, you can view your metrics by openi
 
 ### How to Contribute
 Refer to this [Guildlines](https://github.com/IBM-OSS-Support/AI-Observability-Metrics/blob/main/doc/CONTRIBUTING.md) to contribute to our project.
+
 ## Next Steps 
 * Enhanced integration to handle multiple users and executions simultaneously 
 * Extend functionality to Windows 
