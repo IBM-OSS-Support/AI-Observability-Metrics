@@ -10,6 +10,7 @@ In this project, we are building an `AI Observability Metrics extension `that le
 
 ### Reasons to Choose AI Observability Metrics
 
+- **Additional Metrics:** This tool adds additional metrics on top of Graphsignal's in-built metrics collection capabilities. Along with performance, metering, billing and application trace information, AI Observability Metrics also provides detailed auditing information with regards to Safety Scores, Application success and failure rates as well as detailed information on the AI models used.
 - **Lightweight:** This tool is very lightweight and resource friendly solution that requires almost no setup to get started. 
 - **Cost:** Many of these tools are paid solutions which require investment by the organization. For larger organizations, this would often include paid support and maintenance contracts which can be extremely costly and slow to negotiate.
 
@@ -43,11 +44,11 @@ For using `AI Observability Metrics`, you need:
 ### How to install AI Observability Metrics on macOS
 1. Under VSCode extensions, search for `AI Observability Metrics` extension and click install. This will install all the necessary libraries and components required for execution your AI Application.Allow around 2 minutes for installation to complete.
 
-2. On your keyboard, press `command ⌘` + `shift ⇧` + `P` and select ```Start AI Observability Metrics```. 
+2. If you dont see terminal output after clicking install or need to re-run installation steps, then on your keyboard, press `command ⌘` + `shift ⇧` + `P` and select ```Start AI Observability Metrics```. 
 
+3. You should now see terminal output for the installation steps for the extension. 
 
-
-Here is a walkthrough of how to execute an application in MacOS:
+### How to execute an application in MacOS:
 
 1. Navigate to `ai_observability_metrics.py`. Define the following variables in lines 9-12.
             
