@@ -292,12 +292,8 @@ def process_graphsignallogs(message,conn,json_object):
         if "message" in log and "Upload" in log["message"]:
         #    print("findupload=True")
             findupload = True
-        
-        #if "level" in log:
-        #    print("tahsin log level: ", log["level"])
 
         if "level" in log and log["level"] == "ERROR" and "message" in log and "exception" in log["message"]:
-        #    print("tahsin found error")
             status = "user_abandoned"
     
     if status == "success" and findupload == False:
@@ -649,9 +645,6 @@ def process_spans(message,conn,json_object):
     )
     """
     cursor.execute(create_table_sql)
-    #print("tahsin testing calculate_safety_score")
-    #calculate_safety_score(json_object.get("app-user", None),json_object.get("application-name", None),"what is the longest beach in the world?")
-    #print("tahsin done testing calculate_safety_score")
 
     # code to query moderation api
     auditing_json = None
@@ -660,7 +653,6 @@ def process_spans(message,conn,json_object):
         for payload in json_span_first_object["payloads"]:
             #print("inside first_span")
             if "name" in payload and payload["name"] == "input":
-                #print("tahsin inside input")
                 input = json.dumps(payload.get("content_base64", None))
                 decoded_bytes = base64.b64decode(input)
                 decoded_str = decoded_bytes.decode('utf-8')
@@ -689,7 +681,7 @@ def process_spans(message,conn,json_object):
     conn.close()
 
 ##### AUDITING
-OPENAI_API_KEY = "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"
+OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY")
 
 def get_moderation_response(data, url):
     # Make the POST request

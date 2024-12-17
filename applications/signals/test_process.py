@@ -2,7 +2,7 @@ import json
 import base64
 import requests
 
-OPENAI_API_KEY = "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"
+OPENAI_API_KEY = "<OPENAI_API_KEY>"
 
 def get_moderation_response(data, url):
     # Make the POST request
@@ -62,7 +62,6 @@ if "payloads" in first_span:
     for payload in first_span["payloads"]:
         print("inside first_span")
         if "name" in payload and payload["name"] == "input":
-            print("tahsin inside input")
             input = json.dumps(payload.get("content_base64", None))
             decoded_bytes = base64.b64decode(input)
             decoded_str = decoded_bytes.decode('utf-8')

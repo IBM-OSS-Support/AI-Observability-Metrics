@@ -17,11 +17,7 @@ logger = logging.getLogger()
 logger.setLevel(logging.CRITICAL)
 load_dotenv(find_dotenv())
 
-# Load environment variables
-ANTHROPIC_API_KEY = os.getenv('ANTHROPIC_API_KEY')
-
 API_URL="http://localhost:12000"
-FLASK_SERVER_URL="http://127.0.0.1:12000"
 
 APPLICATION_UID = None
 
