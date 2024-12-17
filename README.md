@@ -10,7 +10,7 @@ In this project, we are building an `AI Observability Metrics extension `that le
 
 ### Reasons to Choose AI Observability Metrics
 
-- **Additional Metrics:** This tool adds additional metrics on top of Graphsignal's in-built metrics collection capabilities. Along with performance, metering, billing and application trace information, AI Observability Metrics also provides detailed auditing information with regards to Safety Scores, Application success and failure rates as well as detailed information on the AI models used.
+- **Additional Metrics:** This tool uses built-in Graphsignal metrics and adds additional metrics collection on top of existing capabilities. Graphsignal has built-in capabilities to pull various metrics about performance, metering, billing and application trace information. AI Observability Metrics retrieves such Graphsignal metrics and adds detailed auditing information related to Safety Scores, Application success and failure rates. It also includes extension information on the AI models used in the application.
 - **Lightweight:** This tool is very lightweight and resource friendly solution that requires almost no setup to get started. 
 - **Cost:** Many of these tools are paid solutions which require investment by the organization. For larger organizations, this would often include paid support and maintenance contracts which can be extremely costly and slow to negotiate.
 
