@@ -48,7 +48,8 @@ For using `AI Observability Metrics`, you need:
 
 3. You should now see terminal output for the installation steps for the extension. 
 
-***add instllation.mov gif here***
+![installation](doc/media/installation.gif)
+
 
 ### How to execute an application in MacOS:
 
@@ -74,8 +75,7 @@ Note: You can also define these variables within `ai_observability_metrics_app.p
 
 Here is a walkthrough of how to use the AI Observability Metrics tool:
 
-***add runapp.mov gif here***
-
+![installation](doc/media/runapp.gif)
  
  ### Visualization
 After your application and run to completion, you can view your metrics by opening any web browser and visiting 
