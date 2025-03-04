@@ -26,7 +26,7 @@ async function runInsertCodeTemplateCommand(context: vscode.ExtensionContext) {
         terminal.sendText('python3 -m venv myenv');
         terminal.sendText('source myenv/bin/activate');
         terminal.sendText('pip3 uninstall -y graphsignal python-dotenv requests requests-oauthlib openai');
-        terminal.sendText('pip3 install graphsignal==0.15.1 python-dotenv==1.0.1 requests requests-oauthlib==1.4.0 openai==1.14.0');
+        terminal.sendText('pip3 install graphsignal==0.15.1 python-dotenv==1.0.1 requests requests-oauthlib==1.4.0 openai==1.14.0 langchain==0.1.12 langchain-openai==0.0.8 langchain-community==0.0.28');
 
         // Docker setup
         terminal.sendText('docker pull ghcr.io/ibm-oss-support/ai_observability_metrics:3.0');
