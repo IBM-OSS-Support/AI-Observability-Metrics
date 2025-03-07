@@ -1,11 +1,8 @@
 import React, { forwardRef, useEffect, useImperativeHandle, useState } from "react";
-import moment from "moment";
 
 // Components ----------------------------------------------------------------->
-import { CodeSnippetSkeleton, Tile } from "@carbon/react";
+import { CodeSnippetSkeleton, Tile, Button } from "@carbon/react";
 import { GaugeChart } from "@carbon/charts-react";
-import { useStoreContext } from "../../../store";
-import { Tooltip, Button } from '@carbon/react';
 import { InformationFilled } from "@carbon/icons-react";
 import NoData from "../../common/NoData/NoData";
 
@@ -41,7 +38,7 @@ const AdoptionRate = forwardRef(({selectedUser, selectedItem}, ref) => {
   const [messageFromServerAdoption, setMessageFromServerAdoption] = useState([]);
   const [totalNumber, setTotalNumber] = useState(0);
 
-  const { state } = useStoreContext();
+  
   const [loading, setLoading] = useState(true); // Add loading state
 
   useImperativeHandle(ref, () => ({
@@ -49,87 +46,52 @@ const AdoptionRate = forwardRef(({selectedUser, selectedItem}, ref) => {
   }));
 
   // Function to send query to the API and get the response
+
+  const buildAdoptionQuery = (selectedItem, selectedUser) => {
+    let baseQuery = `WITH user_counts AS (
+                       SELECT app_user, COUNT(*) AS user_count
+                       FROM auditing`;
+  
+    const conditions = [];
+    if (selectedItem) conditions.push(`application_name = '${selectedItem}'`);
+    if (selectedUser) conditions.push(`app_user = '${selectedUser}'`);
+  
+    if (conditions.length) baseQuery += ` WHERE ${conditions.join(" AND ")}`;
+    
+    baseQuery += ` GROUP BY app_user),
+                   total_count AS (
+                     SELECT COUNT(*) AS total FROM auditing
+                   )
+                   SELECT uc.app_user, uc.user_count, (uc.user_count * 100.0 / tc.total) AS percentage_usage
+                   FROM user_counts uc, total_count tc
+                   ORDER BY percentage_usage DESC;`;
+  
+    return baseQuery;
+  };
+  
   const sendMessageToServerAdoption = async (selectedItem, selectedUser) => {
-    let q = ` WITH user_counts AS (
-              SELECT app_user, COUNT(*) AS user_count
-              FROM auditing
-              GROUP BY app_user
-            ),
-            total_count AS (
-              SELECT COUNT(*) AS total
-              FROM auditing
-            )
-            SELECT uc.app_user, uc.user_count, (uc.user_count * 100.0 / tc.total) AS percentage_usage
-            FROM user_counts uc, total_count tc
-            ORDER BY percentage_usage DESC;`;
-
-    if (selectedItem) {
-      q = `WITH user_counts AS (
-            SELECT app_user, COUNT(*) AS user_count
-            FROM auditing WHERE application_name = '${selectedItem}'
-            GROUP BY app_user
-          ),
-          total_count AS (
-            SELECT COUNT(*) AS total
-            FROM auditing
-          )
-          SELECT uc.app_user, uc.user_count, (uc.user_count * 100.0 / tc.total) AS percentage_usage
-          FROM user_counts uc, total_count tc
-          ORDER BY percentage_usage DESC;`;
-    }
-
-    if (selectedUser) {
-      q = `WITH user_counts AS (
-            SELECT app_user, COUNT(*) AS user_count
-            FROM auditing WHERE app_user = '${selectedUser}'
-            GROUP BY app_user
-          ),
-          total_count AS (
-            SELECT COUNT(*) AS total
-            FROM auditing
-          )
-          SELECT uc.app_user, uc.user_count, (uc.user_count * 100.0 / tc.total) AS percentage_usage
-          FROM user_counts uc, total_count tc
-          ORDER BY percentage_usage DESC;`;
-    }
-
-    if (selectedUser && selectedItem) {
-      q = `WITH user_counts AS (
-            SELECT app_user, COUNT(*) AS user_count
-            FROM auditing WHERE app_user = '${selectedUser}' AND application_name = '${selectedItem}'
-            GROUP BY app_user
-          ),
-          total_count AS (
-            SELECT COUNT(*) AS total
-            FROM auditing
-          )
-          SELECT uc.app_user, uc.user_count, (uc.user_count * 100.0 / tc.total) AS percentage_usage
-          FROM user_counts uc, total_count tc
-          ORDER BY percentage_usage DESC;`;
-    }
-
+    setLoading(true);
+    const query = buildAdoptionQuery(selectedItem, selectedUser);
+  
     try {
-      const apiUrl = process.env.REACT_APP_BACKEND_API_URL; // Use API URL instead of WebSocket URL
+      const apiUrl = process.env.REACT_APP_BACKEND_API_URL;
       const response = await fetch(apiUrl, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ query: q }),
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ query }),
       });
-
-      var responseData = await response.json();
+  
+      if (!response.ok) throw new Error("Network response was not ok");
+  
+      const responseData = await response.json();
       setMessageFromServerAdoption(responseData);
     } catch (error) {
-      console.error('Error fetching data from API:', error);
-    }finally {
-      if (Array.isArray(responseData) && responseData.length > 0) {
-        setLoading(false); // Stop loading
-      }else {
-        setLoading(false); // Stop loading in case of empty data or error
-    }
+      console.error("Error fetching data from API:", error);
+    } finally {
+      setLoading(false);
     }
   };
+  
 
   useEffect(() => {
     if (messageFromServerAdoption.length > 0) {
