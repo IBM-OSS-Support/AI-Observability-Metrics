@@ -1,6 +1,7 @@
 import * as vscode from 'vscode';
 import * as fs from 'fs';
 import * as path from 'path';
+import * as os from 'os';
 
 export function activate(context: vscode.ExtensionContext) {
 
@@ -19,14 +20,25 @@ export function activate(context: vscode.ExtensionContext) {
 
 async function runInsertCodeTemplateCommand(context: vscode.ExtensionContext) {
     try {
+        const platform = os.platform(); // 'win32', 'darwin', or 'linux'
+
         // Create a terminal and run setup commands
         const terminal = vscode.window.createTerminal('AI Observability Metrics');
 
-        // Virtual environment setup
-        terminal.sendText('python3 -m venv myenv');
-        terminal.sendText('source myenv/bin/activate');
-        terminal.sendText('pip3 uninstall -y graphsignal python-dotenv requests requests-oauthlib openai');
-        terminal.sendText('pip3 install graphsignal==0.15.1 python-dotenv==1.0.1 requests requests-oauthlib==1.4.0 openai==1.14.0 langchain==0.1.12 langchain-openai==0.0.8 langchain-community==0.0.28');
+        if (platform === 'win32') {
+            terminal.sendText('python -m venv myenv');
+            terminal.sendText('.\\myenv\\Scripts\\activate');
+            terminal.sendText('pip uninstall -y graphsignal python-dotenv requests requests-oauthlib openai');
+            terminal.sendText('pip install graphsignal==0.15.1 python-dotenv==1.0.1 requests requests-oauthlib==1.4.0 openai==1.14.0 langchain==0.1.12 langchain-openai==0.0.8 langchain-community==0.0.28');
+        } else if (platform === 'darwin' || platform === 'linux') {
+            terminal.sendText('python3 -m venv myenv');
+            terminal.sendText('source myenv/bin/activate');
+            terminal.sendText('pip3 uninstall -y graphsignal python-dotenv requests requests-oauthlib openai');
+            terminal.sendText('pip3 install graphsignal==0.15.1 python-dotenv==1.0.1 requests requests-oauthlib==1.4.0 openai==1.14.0 langchain==0.1.12 langchain-openai==0.0.8 langchain-community==0.0.28');
+        } else {
+            vscode.window.showErrorMessage('Unsupported OS for setup script.');
+            return;
+        }
 
         // Docker setup
         terminal.sendText('docker pull ghcr.io/ibm-oss-support/ai_observability_metrics:3.0');
