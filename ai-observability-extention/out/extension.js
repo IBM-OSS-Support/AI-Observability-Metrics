@@ -43,15 +43,29 @@ async function runInsertCodeTemplateCommand(context) {
     try {
         // Create a terminal and run setup commands
         const terminal = vscode.window.createTerminal('AI Observability Metrics');
-        // Virtual environment setup
-        terminal.sendText('python3 -m venv myenv');
-        terminal.sendText('source myenv/bin/activate');
-        terminal.sendText('pip3 uninstall -y graphsignal python-dotenv requests requests-oauthlib openai');
-        terminal.sendText('pip3 install graphsignal==0.15.1 python-dotenv==1.0.1 requests requests-oauthlib==1.4.0 openai==1.14.0 langchain==0.1.12 langchain-openai==0.0.8 langchain-community==0.0.28');
-        // Docker setup
-        terminal.sendText('docker pull ghcr.io/ibm-oss-support/ai_observability_metrics:3.0');
-        terminal.show();
-        terminal.sendText('docker run --name ai-observability-metrics -itd --memory="2g" --restart unless-stopped -p 5432:5432 -p 15000:15000 -p 12000:12000 -p 3000:3000 ghcr.io/ibm-oss-support/ai_observability_metrics:3.0');
+        const platform = os.platform(); // 'win32', 'darwin', or 'linux'
+        if (platform === 'win32') {
+            terminal.sendText('python -m venv myenv');
+            terminal.sendText('.\\myenv\\Scripts\\activate');
+            terminal.sendText('pip uninstall -y graphsignal python-dotenv requests requests-oauthlib openai');
+            terminal.sendText('pip install graphsignal python-dotenv requests requests-oauthlib openai langchain langchain-openai langchain-community');
+            terminal.sendText('docker pull ghcr.io/ibm-oss-support/ai_observability_metrics_windows:2.0');
+            terminal.show();
+            terminal.sendText('docker run --name ai-observability-metrics -itd --memory="2g" --restart unless-stopped -p 5432:5432 -p 15000:15000 -p 12000:12000 -p 3000:3000 ghcr.io/ibm-oss-support/ai_observability_metrics_windows:2.0');
+        }
+        else if (platform === 'darwin' || platform === 'linux') {
+            terminal.sendText('python3 -m venv myenv');
+            terminal.sendText('source myenv/bin/activate');
+            terminal.sendText('pip3 uninstall -y graphsignal python-dotenv requests requests-oauthlib openai');
+            terminal.sendText('pip3 install graphsignal python-dotenv requests requests-oauthlib openai langchain langchain-openai langchain-community');
+            terminal.sendText('docker pull ghcr.io/ibm-oss-support/ai_observability_metrics:3.0');
+            terminal.show();
+            terminal.sendText('docker run --name ai-observability-metrics -itd --memory="2g" --restart unless-stopped -p 5432:5432 -p 15000:15000 -p 12000:12000 -p 3000:3000 ghcr.io/ibm-oss-support/ai_observability_metrics:3.0');
+        }
+        else {
+            vscode.window.showErrorMessage('Unsupported OS for setup script.');
+            return;
+        }
         // File copying
         const folder = vscode.workspace.workspaceFolders ? vscode.workspace.workspaceFolders[0].uri.fsPath : undefined;
         if (!folder) {
