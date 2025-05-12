@@ -33,86 +33,79 @@ const options = {
 
 
 
-const FailureRate = forwardRef(({selectedUser, selectedItem}, ref) => {
+const FailureRate = forwardRef(({ selectedUser, selectedItem }, ref) => {
   const [data, setData] = useState([]);
   const [avg, setAvg] = useState(0);
-  const [messageFromServerFailure, setMessageFromServerFailure] = useState([]);
   const [failureNumber, setFailureNumber] = useState(0);
-  
+  const [messageFromServerFailure, setMessageFromServerFailure] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   const { state } = useStoreContext();
-  const [loading, setLoading] = useState(true); // Add loading state
 
   useImperativeHandle(ref, () => ({
     sendMessageToServerFailure,
   }));
 
-  // Function to fetch data from the API
-  const sendMessageToServerFailure = async (selectedItem, selectedUser) => {
-    let query = "SELECT COUNT(*) AS total_count, COUNT(*) FILTER (WHERE status = 'failure') * 100.0 / COUNT(*) AS failure_percentage FROM log_history ";
+  const buildQuery = (user, app) => {
+    if (user && app) {
+      return `SELECT COUNT(*) FILTER (WHERE app_user = '${user}' AND application_name = '${app}') AS total_count, COUNT(*) FILTER (WHERE status = 'failure' AND app_user = '${user}' AND application_name = '${app}') * 100.0 / COUNT(*) AS failure_percentage FROM log_history`;
+    }
+    if (user) {
+      return `SELECT COUNT(*) FILTER (WHERE app_user = '${user}') AS total_count, COUNT(*) FILTER (WHERE status = 'failure' AND app_user = '${user}') * 100.0 / COUNT(*) AS failure_percentage FROM log_history`;
+    }
+    if (app) {
+      return `SELECT COUNT(*) FILTER (WHERE application_name = '${app}') AS total_count, COUNT(*) FILTER (WHERE status = 'failure') * 100.0 / COUNT(*) AS failure_percentage FROM log_history`;
+    }
+    return `SELECT COUNT(*) AS total_count, COUNT(*) FILTER (WHERE status = 'failure') * 100.0 / COUNT(*) AS failure_percentage FROM log_history`;
+  };
 
-    if (selectedItem) {
-      query = `SELECT COUNT(*) FILTER (WHERE application_name = '${selectedItem}') AS total_count, COUNT(*) FILTER (WHERE status = 'failure') * 100.0 / COUNT(*) AS failure_percentage FROM log_history`;
-    }
-    if (selectedUser) {
-      query = `SELECT COUNT(*) FILTER (WHERE app_user = '${selectedUser}') AS total_count, COUNT(*) FILTER (WHERE status = 'failure' AND app_user = '${selectedUser}') * 100.0 / COUNT(*) AS failure_percentage FROM log_history`;
-    }
-    if (selectedUser && selectedItem) {
-      query = `SELECT COUNT(*) FILTER (WHERE app_user = '${selectedUser}' AND application_name = '${selectedItem}') AS total_count, COUNT(*) FILTER (WHERE status = 'failure' AND app_user = '${selectedUser}' AND application_name = '${selectedItem}') * 100.0 / COUNT(*) AS failure_percentage FROM log_history`;
+  const processResponseData = (data) => {
+    if (!Array.isArray(data) || data.length === 0) {
+      return;
     }
 
+    const { failure_percentage, total_count } = data[0];
+    const percentage = parseFloat(failure_percentage || 0);
+    const avgFixed = percentage.toFixed(2);
+    const failedJobs = Math.ceil((percentage * total_count) / 100);
+
+    setFailureNumber(failedJobs);
+    setAvg(avgFixed);
+    setData([{ group: 'value', value: percentage }]);
+  };
+
+  const sendMessageToServerFailure = async (app, user) => {
+    const query = buildQuery(user, app);
+    const apiUrl = process.env.REACT_APP_BACKEND_API_URL;
+
+    setLoading(true);
     try {
-      const apiUrl = process.env.REACT_APP_BACKEND_API_URL;
       const response = await fetch(apiUrl, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ query }), // Sending query as body
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ query }),
       });
 
-      if (!response.ok) {
-        throw new Error("Network response was not ok");
-      }
+      if (!response.ok) throw new Error('Failed to fetch data');
 
-      var responseData = await response.json();
-      setMessageFromServerFailure(responseData); // Assuming the data format matches the expected structure
-    } catch (error) {
-      console.error("Error fetching data:", error);
-    }finally {
-      if (Array.isArray(responseData) && responseData.length > 0) {
-        setLoading(false); // Stop loading
-      }else {
-        setLoading(false); // Stop loading in case of empty data or error
-    }
+      const responseData = await response.json();
+      setMessageFromServerFailure(responseData);
+      processResponseData(responseData);
+    } catch (err) {
+      console.error('Fetch error:', err);
+    } finally {
+      setLoading(false);
     }
   };
 
   useEffect(() => {
-    if (state.status === 'success') {
-      const appData = getAppData();
-      if (messageFromServerFailure.length > 0) {
-        const newAvgValue = messageFromServerFailure[0].failure_percentage; 
-        const newAvgValueToNumber = parseFloat(newAvgValue);
-        const newAvg = newAvgValueToNumber.toFixed(2);
-        const number = Math.ceil((newAvgValueToNumber * messageFromServerFailure[0].total_count)/100);
-        setFailureNumber(number);
-
-        setData([
-          {
-            group: 'value',
-            value: newAvgValueToNumber || 0
-          }
-        ]);
-        setAvg(newAvg);
-      }
+    if (state.status === 'success' && messageFromServerFailure.length > 0) {
+      processResponseData(messageFromServerFailure);
     }
   }, [messageFromServerFailure, state]);
 
-  return (
-    <>
-    {loading ? (
-      <Tile className="infrastructure-components cpu-usage">
+  const renderLoading = () => (
+    <Tile className="infrastructure-components cpu-usage">
       <h4 className="title">
         Failure Rate
         <Button
@@ -127,45 +120,42 @@ const FailureRate = forwardRef(({selectedUser, selectedItem}, ref) => {
       <CodeSnippetSkeleton type="multi" />
       <CodeSnippetSkeleton type="multi" />
     </Tile>
-    ) : (
-
-      <Tile className="infrastructure-components cpu-usage">
-        <h4 className="title">
-          Failure Rate
-          <Button
-            hasIconOnly
-            renderIcon={InformationFilled}
-            iconDescription="Failure rate can be defined as the anticipated number of times that an item fails in a specified period of time."
-            kind="ghost"
-            size="sm"
-            className="customButton"
-          />
-        </h4>
-        { data.length > 0 ?(
-          <>
-        <p>
-          <ul className="sub-title">
-            <li><strong>User Name:</strong> { `${selectedUser || 'For All User Name'}`}</li>
-            <li><strong>Application Name:</strong> { `${selectedItem || 'For All Application Name'}`}</li>
-          </ul>
-        </p>
-        <div className="cpu-usage-chart">
-          <GaugeChart data={data} options={options} />
-        </div>
-        <div className="cpu-usage-data">
-          <div className="label">Number of jobs failed</div>
-          <h3 className="data">{failureNumber}</h3>
-        </div>
-          </>
-        ) : (
-          <NoData/>
-        )
-        }
-      </Tile>
-    )
-    }
-    </>
   );
+
+  const renderContent = () => (
+    <Tile className="infrastructure-components cpu-usage">
+      <h4 className="title">
+        Failure Rate
+        <Button
+          hasIconOnly
+          renderIcon={InformationFilled}
+          iconDescription="Failure rate can be defined as the anticipated number of times that an item fails in a specified period of time."
+          kind="ghost"
+          size="sm"
+          className="customButton"
+        />
+      </h4>
+      {data.length > 0 ? (
+        <>
+          <ul className="sub-title">
+            <li><strong>User Name:</strong> {selectedUser || 'For All User Name'}</li>
+            <li><strong>Application Name:</strong> {selectedItem || 'For All Application Name'}</li>
+          </ul>
+          <div className="cpu-usage-chart">
+            <GaugeChart data={data} options={options} />
+          </div>
+          <div className="cpu-usage-data">
+            <div className="label">Number of jobs failed</div>
+            <h3 className="data">{failureNumber}</h3>
+          </div>
+        </>
+      ) : (
+        <NoData />
+      )}
+    </Tile>
+  );
+
+  return loading ? renderLoading() : renderContent();
 });
 
 export default FailureRate;
