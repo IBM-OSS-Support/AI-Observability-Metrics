@@ -33,41 +33,57 @@ const options = {
 
 
 
-const SuccessRate = forwardRef(({selectedUser, selectedItem}, ref) => {
+const SuccessRate = forwardRef(({ selectedUser, selectedItem }, ref) => {
   const [data, setData] = useState([]);
   const [avg, setAvg] = useState(0);
-  const [messageFromServerSuccess, setMessageFromServerSuccess] = useState([]);
   const [successNumber, setSuccessNumber] = useState(0);
-  
+  const [loading, setLoading] = useState(true);
+  const [messageFromServerSuccess, setMessageFromServerSuccess] = useState([]);
 
   const { state } = useStoreContext();
-  const [loading, setLoading] = useState(true); // Add loading state
 
   useImperativeHandle(ref, () => ({
     sendMessageToServerSuccess,
   }));
 
-  // Function to fetch data from the API
-  const sendMessageToServerSuccess = async (selectedItem, selectedUser) => {
-    let query = `SELECT COUNT(*) AS total_count, COUNT(*) FILTER (WHERE status = 'success') * 100.0 / COUNT(*) AS success_percentage FROM log_history`;
-
-    if (selectedItem) {
-      query = `SELECT COUNT(*) FILTER (WHERE application_name = '${selectedItem}') AS total_count, COUNT(*) FILTER (WHERE status = 'success') * 100.0 / COUNT(*) AS success_percentage FROM log_history`;
-    }
-    if (selectedUser) {
-      query = `SELECT 
-          COUNT(*) FILTER (WHERE app_user = '${selectedUser}') AS total_count, 
-          COUNT(*) FILTER (WHERE status = 'success' AND app_user = '${selectedUser}') * 100.0 / 
-          (SELECT COUNT(*) FROM log_history WHERE app_user = '${selectedUser}') AS success_percentage
-          FROM log_history`;
-    }
+  const buildSuccessQuery = (selectedItem, selectedUser) => {
     if (selectedUser && selectedItem) {
-      query = `SELECT 
+      return `
+        SELECT 
           COUNT(*) FILTER (WHERE app_user = '${selectedUser}' AND application_name = '${selectedItem}') AS total_count,
           COUNT(*) FILTER (WHERE status = 'success' AND app_user = '${selectedUser}' AND application_name = '${selectedItem}') * 100.0 / 
           (SELECT COUNT(*) FROM log_history WHERE app_user = '${selectedUser}' AND application_name = '${selectedItem}') AS success_percentage
-          FROM log_history`;
+        FROM log_history`;
     }
+
+    if (selectedUser) {
+      return `
+        SELECT 
+          COUNT(*) FILTER (WHERE app_user = '${selectedUser}') AS total_count,
+          COUNT(*) FILTER (WHERE status = 'success' AND app_user = '${selectedUser}') * 100.0 / 
+          (SELECT COUNT(*) FROM log_history WHERE app_user = '${selectedUser}') AS success_percentage
+        FROM log_history`;
+    }
+
+    if (selectedItem) {
+      return `
+        SELECT 
+          COUNT(*) FILTER (WHERE application_name = '${selectedItem}') AS total_count,
+          COUNT(*) FILTER (WHERE status = 'success' AND application_name = '${selectedItem}') * 100.0 / 
+          (SELECT COUNT(*) FROM log_history WHERE application_name = '${selectedItem}') AS success_percentage
+        FROM log_history`;
+    }
+
+    return `
+      SELECT 
+        COUNT(*) AS total_count,
+        COUNT(*) FILTER (WHERE status = 'success') * 100.0 / COUNT(*) AS success_percentage 
+      FROM log_history`;
+  };
+
+  const sendMessageToServerSuccess = async (selectedItem, selectedUser) => {
+    setLoading(true);
+    const query = buildSuccessQuery(selectedItem, selectedUser);
 
     try {
       const apiUrl = process.env.REACT_APP_BACKEND_API_URL;
@@ -76,105 +92,90 @@ const SuccessRate = forwardRef(({selectedUser, selectedItem}, ref) => {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ query }), // Sending query as body
+        body: JSON.stringify({ query }),
       });
 
-      if (!response.ok) {
-        throw new Error("Network response was not ok");
-      }
-
-      var responseData = await response.json();
-      setMessageFromServerSuccess(responseData); // Assuming the data format matches the expected structure
+      const responseData = await response.json();
+      setMessageFromServerSuccess(responseData);
     } catch (error) {
-      console.error("Error fetching data:", error);
-    }finally {
-      if (Array.isArray(responseData) && responseData.length > 0) {
-        setLoading(false); // Stop loading
-      }else {
-        setLoading(false); // Stop loading in case of empty data or error
-    }
+      console.error("Error fetching success rate:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
-  useEffect(() => {
-    if (state.status === 'success') {
-      const appData = getAppData(selectedUser, selectedItem);
-  
-      if (messageFromServerSuccess.length > 0) {
-        const newAvgValue = messageFromServerSuccess[0].success_percentage; 
-        const newAvgValueToNumber = parseFloat(newAvgValue);
-        const newAvg = newAvgValueToNumber.toFixed(2);
-        const number = Math.ceil((newAvgValueToNumber * messageFromServerSuccess[0].total_count)/100);
-        setSuccessNumber(number);
+  const processSuccessData = () => {
+    if (!Array.isArray(messageFromServerSuccess) || messageFromServerSuccess.length === 0) return;
 
-        setData([
-          {
-            group: 'value',
-            value: newAvgValueToNumber || 0
-          }
-        ]);
-        setAvg(newAvg);
-      }
+    const { success_percentage, total_count } = messageFromServerSuccess[0];
+    const percent = parseFloat(success_percentage || 0);
+    const formattedAvg = percent.toFixed(2);
+    const successJobs = Math.ceil((percent * total_count) / 100);
+
+    setAvg(formattedAvg);
+    setSuccessNumber(successJobs);
+    setData([{ group: "value", value: percent }]);
+  };
+
+  useEffect(() => {
+    if (state.status === "success") {
+      processSuccessData();
     }
   }, [messageFromServerSuccess, state]);
 
   return (
     <>
-    {
-      loading ? (
+      {loading ? (
         <Tile className="infrastructure-components cpu-usage">
-      <h4 className="title">
-        Success Rate
-        <Button
-          hasIconOnly
-          renderIcon={InformationFilled}
-          iconDescription="The success rate is measured by the number of times the application runs and completes successfully without an error."
-          kind="ghost"
-          size="sm"
-          className="customButton"
-        />
-      </h4>
-      <CodeSnippetSkeleton type="multi" />
-      <CodeSnippetSkeleton type="multi" />
-    </Tile>
+          <h4 className="title">
+            Success Rate
+            <Button
+              hasIconOnly
+              renderIcon={InformationFilled}
+              iconDescription="The success rate is measured by the number of times the application runs and completes successfully without an error."
+              kind="ghost"
+              size="sm"
+              className="customButton"
+            />
+          </h4>
+          <CodeSnippetSkeleton type="multi" />
+          <CodeSnippetSkeleton type="multi" />
+        </Tile>
       ) : (
-    <Tile className="infrastructure-components cpu-usage">
-      <h4 className="title">
-        Success Rate
-        <Button
-          hasIconOnly
-          renderIcon={InformationFilled}
-          iconDescription="The success rate is measured by the number of times the application runs and completes successfully without an error."
-          kind="ghost"
-          size="sm"
-          className="customButton"
-        />
-      </h4>
-      {data.length > 0 ? (
-      <>
-      <p>
-        <ul className="sub-title">
-          <li><strong>User Name:</strong> { `${selectedUser || 'For All User Name'}`}</li>
-          <li><strong>Application Name:</strong> { `${selectedItem || 'For All Application Name'}`}</li>
-        </ul>
-      </p>
-      <div className="cpu-usage-chart">
-        <GaugeChart data={data} options={options} />
-      </div>
-      <div className="cpu-usage-data">
-        <div className="label">Number of jobs succeeded</div>
-        <h3 className="data">{successNumber}</h3>
-      </div>
-      </>
-      ) : (
-        <NoData />
-      )
-    }
-    </Tile>
-      )
-    }
+        <Tile className="infrastructure-components cpu-usage">
+          <h4 className="title">
+            Success Rate
+            <Button
+              hasIconOnly
+              renderIcon={InformationFilled}
+              iconDescription="The success rate is measured by the number of times the application runs and completes successfully without an error."
+              kind="ghost"
+              size="sm"
+              className="customButton"
+            />
+          </h4>
+          {data.length > 0 ? (
+            <>
+              <ul className="sub-title">
+                <li><strong>User Name:</strong> {selectedUser || "For All User Name"}</li>
+                <li><strong>Application Name:</strong> {selectedItem || "For All Application Name"}</li>
+              </ul>
+              <div className="cpu-usage-chart">
+                <GaugeChart data={data} options={options} />
+              </div>
+              <div className="cpu-usage-data">
+                <div className="label">Number of jobs succeeded</div>
+                <h3 className="data">{successNumber}</h3>
+              </div>
+            </>
+          ) : (
+            <NoData />
+          )}
+        </Tile>
+      )}
     </>
   );
 });
+
 
 export default SuccessRate;
