@@ -1,0 +1,28 @@
+name: SonarQube Scan
+
+on:
+  push:
+    branches:
+      - ci_automation
+  pull_request:
+    branches:
+      - ci_automation
+
+jobs:
+  sonarqube:
+    runs-on: self-hosted  # Your VM with SonarQube and Java installed
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Run SonarQube scanner
+        env:
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: |
+          sonar-scanner \
+            -Dsonar.projectKey=your-project-key \
+            -Dsonar.sources=. \
+            -Dsonar.host.url=$SONAR_HOST_URL \
+            -Dsonar.login=$SONAR_TOKEN
+
