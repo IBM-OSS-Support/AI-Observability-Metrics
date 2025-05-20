@@ -10,8 +10,10 @@ on:
 
 jobs:
   sonarqube:
-    runs-on: self-hosted  # Your VM with SonarQube and Java installed
+    runs-on: self-hosted  
     steps:
+      - run: echo "Runner is working!"
+  
       - name: Checkout code
         uses: actions/checkout@v3
 
