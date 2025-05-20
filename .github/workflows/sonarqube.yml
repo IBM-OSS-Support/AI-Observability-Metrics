@@ -28,8 +28,29 @@ jobs:
             -Dsonar.sources=. \
             -Dsonar.host.url=$SONAR_HOST_URL \
             -Dsonar.login=$SONAR_TOKEN
-    
-       - name: Cleanup workspace
-         if: always()
-         run: |
-           rm -rf * .[^.] .??*
+
+      - name: Get SonarQube metrics summary
+        env:
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+          SONAR_USER_TOKEN: ${{ secrets.SONAR_USER_TOKEN }}
+        run: |
+          echo "Fetching SonarQube metrics summary..."
+          metrics="bugs,vulnerabilities,security_hotspots,code_smells"
+          response=$(curl -s -u $SONAR_USER_TOKEN: "$SONAR_HOST_URL/api/measures/component?component=Ai-observability-metrics&metricKeys=$metrics")
+          echo "Raw response:"
+          echo "$response"
+          bugs=$(echo "$response" | jq -r '.component.measures[] | select(.metric=="bugs") | .value')
+          vulnerabilities=$(echo "$response" | jq -r '.component.measures[] | select(.metric=="vulnerabilities") | .value')
+          security_hotspots=$(echo "$response" | jq -r '.component.measures[] | select(.metric=="security_hotspots") | .value')
+          code_smells=$(echo "$response" | jq -r '.component.measures[] | select(.metric=="code_smells") | .value')
+          echo "SonarQube Metrics for project Ai-observability-metrics:"
+          echo "Bugs: $bugs"
+          echo "Vulnerabilities: $vulnerabilities"
+          echo "Security Hotspots: $security_hotspots"
+          echo "Code Smells: $code_smells"
+
+      - name: Cleanup workspace
+        if: always()
+        run: |
+          rm -rf * .[^.] .??*
+
