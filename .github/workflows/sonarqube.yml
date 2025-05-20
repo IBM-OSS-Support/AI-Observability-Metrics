@@ -22,6 +22,7 @@ jobs:
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: |
+          export PATH=/opt/sonar-scanner-6.2.1.4610-linux-x64/bin:$PATH
           sonar-scanner \
             -Dsonar.projectKey=Ai-observability-metrics \
             -Dsonar.sources=. \
