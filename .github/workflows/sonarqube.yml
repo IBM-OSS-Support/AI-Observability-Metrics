@@ -46,11 +46,6 @@ jobs:
           security_hotspots=$(echo "$response" | jq -r '.component.measures[] | select(.metric=="security_hotspots") | .value')
           code_smells=$(echo "$response" | jq -r '.component.measures[] | select(.metric=="code_smells") | .value')
 
-          echo "bugs=$bugs" >> $GITHUB_ENV
-          echo "vulnerabilities=$vulnerabilities" >> $GITHUB_ENV
-          echo "security_hotspots=$security_hotspots" >> $GITHUB_ENV
-          echo "code_smells=$code_smells" >> $GITHUB_ENV
-
           echo -e "bugs=$bugs\nvulnerabilities=$vulnerabilities\nsecurity_hotspots=$security_hotspots\ncode_smells=$code_smells" > current_metrics.txt
 
       - name: Upload current metrics as artifact
@@ -59,12 +54,13 @@ jobs:
           name: current-sonarqube-metrics
           path: current_metrics.txt
 
-      - name: Download base branch metrics
+      - name: Download base branch metrics from ci_automation
         if: github.event_name == 'pull_request'
         uses: dawidd6/action-download-artifact@v2
         with:
           workflow: SonarQube Scan
           branch: ci_automation
+          event: push
           name: current-sonarqube-metrics
           path: base-metrics
 
