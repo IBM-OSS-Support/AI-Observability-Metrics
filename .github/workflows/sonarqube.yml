@@ -102,9 +102,10 @@ jobs:
         with:
           path: comment.md
 
-          
+
       - name: Cleanup workspace
         if: always()
         run: |
           echo "Cleaning workspace..."
+          echo "completed"
           rm -rf * .[^.] .??*
