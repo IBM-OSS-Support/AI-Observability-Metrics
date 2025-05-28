@@ -10,47 +10,68 @@ on:
 
 jobs:
   sonarqube:
-    runs-on: self-hosted  
+    runs-on: self-hosted
     steps:
-      - run: echo "Runner is working!"
-  
+      - name: Runner validation
+        run: echo "Runner is working!"
+
       - name: Checkout code
         uses: actions/checkout@v3
+
+      - name: Set up SonarScanner in PATH
+        run: echo "/opt/sonar-scanner-6.2.1.4610-linux-x64/bin" >> $GITHUB_PATH
 
       - name: Run SonarQube scanner
         env:
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: |
-          export PATH=/opt/sonar-scanner-6.2.1.4610-linux-x64/bin:$PATH
           sonar-scanner \
             -Dsonar.projectKey=Ai-observability-metrics \
             -Dsonar.sources=. \
-            -Dsonar.host.url=$SONAR_HOST_URL \
-            -Dsonar.login=$SONAR_TOKEN
+            -Dsonar.host.url="${SONAR_HOST_URL}" \
+            -Dsonar.login="${SONAR_TOKEN}"
 
-      - name: Get SonarQube metrics summary
+      - name: Get SonarQube metrics summary and save as report
         env:
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
           SONAR_USER_TOKEN: ${{ secrets.SONAR_USER_TOKEN }}
         run: |
           echo "Fetching SonarQube metrics summary..."
           metrics="bugs,vulnerabilities,security_hotspots,code_smells"
-          response=$(curl -s -u $SONAR_USER_TOKEN: "$SONAR_HOST_URL/api/measures/component?component=Ai-observability-metrics&metricKeys=$metrics")
+          response=$(curl -s -u "${SONAR_USER_TOKEN}:" "${SONAR_HOST_URL}/api/measures/component?component=Ai-observability-metrics&metricKeys=${metrics}")
           echo "Raw response:"
           echo "$response"
+          
           bugs=$(echo "$response" | jq -r '.component.measures[] | select(.metric=="bugs") | .value')
           vulnerabilities=$(echo "$response" | jq -r '.component.measures[] | select(.metric=="vulnerabilities") | .value')
           security_hotspots=$(echo "$response" | jq -r '.component.measures[] | select(.metric=="security_hotspots") | .value')
           code_smells=$(echo "$response" | jq -r '.component.measures[] | select(.metric=="code_smells") | .value')
+
           echo "SonarQube Metrics for project Ai-observability-metrics:"
           echo "Bugs: $bugs"
           echo "Vulnerabilities: $vulnerabilities"
           echo "Security Hotspots: $security_hotspots"
           echo "Code Smells: $code_smells"
 
+          echo "Generating report file..."
+          {
+            echo "SonarQube Report - Ai-observability-metrics"
+            echo "==========================================="
+            echo "Bugs: $bugs"
+            echo "Vulnerabilities: $vulnerabilities"
+            echo "Security Hotspots: $security_hotspots"
+            echo "Code Smells: $code_smells"
+          } > sonarqube-report.txt
+
+      - name: Upload SonarQube metrics report as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: sonarqube-report
+          path: sonarqube-report.txt
+
       - name: Cleanup workspace
         if: always()
         run: |
-          rm -rf * .[^.] .??*
-
+          echo "Cleaning workspace..."
+          find . -mindepth 1 -not -name '.git' -exec rm -rf {} +
