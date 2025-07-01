@@ -156,7 +156,7 @@ const Accuracy = forwardRef(
 
         setData(newData);
         setAvg(newAvg);
-        setChartOptions(options(chartColor, statusText, startDate, endDate));
+        setChartOptions(options(chartColor, statusText));
       }
     }, [messageFromServerAccuracy, state.status]);
 
